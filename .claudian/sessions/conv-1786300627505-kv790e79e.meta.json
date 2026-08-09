@@ -4,22 +4,21 @@
   "title": "Analyze Claude Desktop + Obsidian integration",
   "titleGenerationStatus": "success",
   "createdAt": 1786300627505,
-  "updatedAt": 1786301005157,
-  "lastResponseAt": 1786301005157,
+  "updatedAt": 1786301576726,
+  "lastResponseAt": 1786301576726,
   "sessionId": "4110f147-7d97-474e-88f2-6b77323df92c",
   "selectedModel": "sonnet",
   "providerState": {
     "providerSessionId": "4110f147-7d97-474e-88f2-6b77323df92c"
   },
-  "currentNote": "Daily Notes/2026-08-09.md",
   "usage": {
     "model": "sonnet",
     "inputTokens": 2,
-    "cacheCreationInputTokens": 51911,
-    "cacheReadInputTokens": 0,
+    "cacheCreationInputTokens": 1361,
+    "cacheReadInputTokens": 65511,
     "contextWindow": 1000000,
     "contextWindowIsAuthoritative": true,
-    "contextTokens": 51913,
-    "percentage": 5
+    "contextTokens": 66874,
+    "percentage": 7
   }
 }
