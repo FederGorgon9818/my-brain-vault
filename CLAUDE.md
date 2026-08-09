@@ -96,7 +96,8 @@ Wenn eine Session endet oder Max darum bittet:
 ## 🎯 Aktueller Fokus
 
 - **Trading-Pipeline: Eval → Funded → Live.** Einstieg immer über [[Day Trading]].
-- **Aktuelle Phase: [[Eval-Passing]]** (Prop-Eval bestehen, Apex). Optimiert wird NUR auf hohe Passchance in kurzer Zeit, nicht auf Funded/Payouts.
+- **Aktuelle Phase: [[Eval-Passing]]** (Prop-Eval bestehen, **E8**, nicht Apex — Sim-Eval am 03.08.26 bestanden, echte Eval noch nicht gekauft). Optimiert wird NUR auf hohe Passchance in kurzer Zeit, nicht auf Funded/Payouts.
+- **Plattform: NinjaTrader 8 / NinjaScript (C#)** auf Tradovate, nicht MultiCharts/PowerLanguage (siehe [[Tech-Stack]]).
 - Nächster Schwerpunkt: **[[Alpha-Suche]]** (First-Passage-Sizing + Cross-Asset-Signale).
 - Werkzeuge: [[Backtest-Engine]], [[Portfolio-Simulator]], [[Strategie-Logbuch]].
 

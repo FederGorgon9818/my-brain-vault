@@ -52,3 +52,11 @@ erstellt: 2026-07-21
 > - RDP nie öffentlich lassen (Schritt 12 ist Pflicht, sonst kloppen Bots aufs Login)
 > - Windows-Update-Neustarts NIE in die Session fallen lassen (Schritt 7)
 > - Auto-Flat bei Disconnect wird zusammen mit den NinjaScript-Strategien konfiguriert
+
+## Teil 9: Fernsteuerung & Watchdog (eingerichtet 09.08.2026)
+
+Die Box (`vmd202078`, Tailscale `100.127.89.9`, Zeitzone = deutsche Zeit) ist voll fernsteuerbar:
+
+- **SSH von Max' PC:** OpenSSH auf der Box, Key `C:\Users\maxlk\.ssh\id_ed25519`. Claude kann aus jeder Session per `ssh Administrator@100.127.89.9` deployen, kompilieren, Logs lesen. Genutzt auch von `sync_live.ps1` (Task "MaxLab Live Sync", alle 2 Min) und `vps_health.ps1`.
+- **Watchdog auf der Box:** `C:\Users\Administrator\maxlab_watchdog.ps1`, geplante Aufgabe **"MaxLab Watchdog"** (alle 5 Min, SYSTEM). Prüft: NT8-Prozess (immer), Marktdaten-Frische via `bars_MNQ.csv` (Mo-Fr 15:35-22:00), Disk. Alerts per Telegram (Config `C:\Users\Administrator\maxlab_watchdog.json`, Token = gleicher Bot wie RiskGuard), gleicher Alert max. 1×/h. Log: `maxlab_watchdog_log.txt`. Bewusst **nur Alarm, kein Auto-Restart** (kein unbeaufsichtigter Eingriff). Lokale Kopie des Skripts: `engine\maxlab_watchdog.ps1`.
+- **Claude Code auf der Box:** nativ installiert (`C:\Users\Administrator\.local\bin\claude.exe`, v2.1.226, PATH gesetzt). Login einmalig per RDP nötig. Für autonome Health-Checks/Mitdenken direkt auf der Box.
