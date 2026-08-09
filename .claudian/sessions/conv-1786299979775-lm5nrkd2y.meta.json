@@ -1,0 +1,24 @@
+{
+  "id": "conv-1786299979775-lm5nrkd2y",
+  "providerId": "claude",
+  "title": "Backtest Matteo Coni's Trading Strategy",
+  "titleGenerationStatus": "success",
+  "createdAt": 1786299979775,
+  "updatedAt": 1786300550692,
+  "lastResponseAt": 1786300426614,
+  "sessionId": "fb7a51d9-5e9a-4aad-af70-022fd6923b30",
+  "selectedModel": "sonnet",
+  "providerState": {
+    "providerSessionId": "fb7a51d9-5e9a-4aad-af70-022fd6923b30"
+  },
+  "usage": {
+    "model": "sonnet",
+    "inputTokens": 2,
+    "cacheCreationInputTokens": 1254,
+    "cacheReadInputTokens": 88832,
+    "contextWindow": 1000000,
+    "contextWindowIsAuthoritative": false,
+    "contextTokens": 90088,
+    "percentage": 9
+  }
+}

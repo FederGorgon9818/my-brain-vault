@@ -1,0 +1,24 @@
+{
+  "id": "conv-1785790580827-a3gwoxzrv",
+  "providerId": "claude",
+  "title": "Check riskGuard v4 Server und Aktivierung",
+  "titleGenerationStatus": "success",
+  "createdAt": 1785790580827,
+  "updatedAt": 1785942543235,
+  "lastResponseAt": 1785875113224,
+  "sessionId": "b99e7e67-78dd-4db9-a307-a9cb8728cb41",
+  "selectedModel": "sonnet",
+  "providerState": {
+    "providerSessionId": "b99e7e67-78dd-4db9-a307-a9cb8728cb41"
+  },
+  "usage": {
+    "model": "sonnet",
+    "inputTokens": 2,
+    "cacheCreationInputTokens": 5932,
+    "cacheReadInputTokens": 255937,
+    "contextWindow": 1000000,
+    "contextWindowIsAuthoritative": true,
+    "contextTokens": 261871,
+    "percentage": 26
+  }
+}

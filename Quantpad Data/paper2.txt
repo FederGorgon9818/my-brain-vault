@@ -1,0 +1,1060 @@
+ANATOMY OF THE RETEST IN THE QQQ
+    OPENING RANGE BREAKOUT
+    Exploratory Evidence on Price Behavior Following the
+               QQQ Opening Range Breakout
+
+
+                                       Mario Pineda
+
+
+First Version: March 29, 2026
+Email: marioppineda.2901@gmail.com
+
+
+ABSTRACT
+This paper is an exploratory and descriptive study. The author makes no claims of causality or
+exploitability regarding the documented patterns.
+We present an exploratory study of the post-breakout sequence in the Invesco QQQ Trust ETF, using
+intraday data at one-minute resolution from January 2017 through December 2024. The existing
+literature on the Opening Range Breakout focuses on entry at the moment of the breakout; the internal
+dynamics of the minutes that follow have not been measured to date.
+We decompose the sequence into four levels — the opening range, the breakout, the retest, and the
+outcome — and document the statistical associations observed at each level. We find that range size
+is associated with the magnitude of the subsequent move, that a consistent fraction of breakouts
+generates a retest of the broken level within a defined time window, that the time elapsed until that
+retest shows the strongest association with the subsequent outcome, and that larger pre-retest
+excursions are associated with a lower probability of continuation — a counterintuitive pattern that
+we document along with its interpretive limitations.
+All results are descriptive associations conditional on operational definitions that we document with
+precision. Causal mechanisms are unknown. We invite other researchers to replicate, challenge, and
+extend this work.
+
+
+
+
+Keywords: Opening Range Breakout, intraday momentum, breakout retest, QQQ, ETF microstructure
+1. INTRODUCTION
+1.1 The Starting Point
+The Opening Range Breakout is one of the most studied and longest-standing intraday trading
+strategies in financial markets. Its premise is simple: the price range established during the first
+minutes of the trading session reflects the accumulated order imbalance from the previous night, and
+a decisive move beyond that range signals sufficient directional conviction for the market to continue
+in that direction for the remainder of the day.
+Despite its long history, the strategy retains both academic and practical relevance. The most recent
+and rigorous work — Zarattini and Aziz (2023) and Zarattini, Barbon, and Aziz (2024), distributed
+through the Swiss Finance Institute — documented that a five-minute ORB strategy applied to QQQ
+from 2016 through 2023 produced an annualized alpha of 33% net of commissions. These results
+place the ORB among the few market anomalies supported by solid academic evidence.
+However, all prior literature shares one common feature: the position is initiated at the moment of the
+breakout and managed from that point forward. What occurs in the minutes following the breakout
+— whether price retraces to the level it just broke, whether that retrace has measurable properties,
+and whether those properties are associated with subsequent price behavior — has never been
+systematically measured. That is the gap this paper begins to address.
+1.2 The Questions Guiding This Paper
+This paper does not aim to demonstrate that the retest is exploitable in trading, nor that the patterns
+we find will persist in the future. The objective is more modest and, we believe, more honest: to
+measure for the first time what occurs after the ORB breakout in QQQ, with sufficient methodological
+rigor for other researchers to replicate, challenge, or extend the findings.
+The four questions guiding the analysis are as follows. What fraction of ORB breakouts generates a
+retest of the broken level, under the conditions we define? What are the properties of the price
+excursion prior to that retest? How long does the retest take to occur? Are the conditions under which
+the retest occurs associated with subsequent price behavior, as classified by our definitions?
+The explicit inclusion of the phrases "under the conditions we define" and "as classified by our
+definitions" in those questions is not accidental. It reflects the approach we adopt throughout this
+paper: being precise about what each number we report measures, and what it does not.
+1.3 Why QQQ and Why This Period
+QQQ was selected for three concrete reasons. First, it is one of the most liquid instruments in the
+global equity market, with bid-ask spreads at one-minute resolution typically ranging from $0.01 to
+$0.02, allowing price dynamics to be studied without the microstructure noise that contaminates less
+liquid assets. Second, it tracks the Nasdaq-100, with massive participation from both institutional and
+individual investors, ensuring that the observed patterns reflect genuine market behavior with
+sufficient depth. Third, the most relevant prior literature uses QQQ as its primary instrument, enabling
+direct comparisons with existing work.
+The 2017–2024 period spans five qualitatively distinct market regimes: a low-volatility bull market
+(2017–2019), the COVID-19 crisis and subsequent recovery (2020), an accelerated bull market
+(2021), a sustained bear market driven by the Federal Reserve's monetary tightening with a 32.6%
+decline (2022), and a recovery to new highs (2023–2024). This diversity of conditions is important
+for evaluating whether the observed patterns are specific to a particular type of market or appear with
+broader generality.
+1.4 Scope of the Study
+This paper is a descriptive and exploratory study of a single instrument over a specific period. It
+neither implements nor evaluates trading strategies. It does not incorporate transaction costs or
+execution slippage. It makes no claim that the patterns found are causal or that they will persist outside
+the sample studied.
+A caveat the reader should keep in mind from the outset: in a study such as this, operational definitions
+are not neutral conventions. They are decisions that determine what is measured and, therefore, what
+is found. In particular, the way we define the Continuation outcome and the Failure outcome can
+mechanically influence some of the numerical results we report. We document these effects with
+precision in Section 3 and revisit them each time they are relevant. This transparency about the
+limitations of our own definitions is, in our view, an essential part of the contribution this paper seeks
+to make.
+1.5 Structure of the Paper
+Section 2 reviews the related literature. Section 3 describes the data, the analytical framework, and,
+with particular care, the operational definitions of all measured events and their possible effects on
+the results. Sections 4 through 7 present the results for each level of the analysis. Section 8 presents
+the multivariate analysis. Section 9 presents the robustness analysis. Section 10 discusses the
+observed patterns, their possible interpretations as unverified hypotheses, and their limitations.
+Section 11 concludes with the questions this paper leaves open for future research.
+
+
+
+2. RELATED LITERATURE
+2.1 The ORB in Academia
+Academic research on the ORB begins formally with Holmberg, Lönnbark, and Lundström (2012),
+who proposed a statistical framework for evaluating the profitability of ORB strategies using daily
+OHLC data. Applied to crude oil futures from 1983 to 2011, they found significantly positive average
+returns concentrated in periods of elevated volatility. Lundström (2017) extended this finding,
+documenting that ORB profitability grows monotonically with realized volatility. This result is
+relevant as context for the patterns we observe in Level 1 regarding opening range size.
+Tsai, Wang, and collaborators (2018) introduced the concept of the Timely Opening Range Breakout,
+using one-minute data across five index futures markets from 2003 to 2013. Their main finding was
+that the optimal range formation period is short — typically five minutes or less — and that the quality
+of the breakout signal decays rapidly with the time of day. This is consistent with the patterns we
+observe in Level 2.
+The most directly relevant work is the series of papers by Zarattini and collaborators. Zarattini and
+Aziz (2023) investigated ORB profitability in QQQ using a five-minute range, documenting an
+annualized alpha of 33% and a Sharpe ratio above 2.0. Zarattini, Barbon, and Aziz (2024) extended
+the analysis to more than 7,000 U.S. stocks.
+None of these papers studies the post-breakout retest. Entry occurs on the breakout candle and
+position management begins from that point. The internal dynamics of the minutes that follow are
+not addressed in any prior work known to the authors.
+2.2 Intraday Microstructure as Theoretical Context
+Chordia, Roll, and Subrahmanyam (2002) documented that order imbalances at the start of the session
+are substantially larger than at other times of day. This is consistent with the concentration of
+breakouts at the open that we document in Level 2, although it does not establish causality between
+the two phenomena.
+Dim, Eraker, and Vilkov (2023) documented that market maker inventory gamma predicts intraday
+price reversals. We mention this work as context for the interpretive hypotheses proposed in the
+Discussion. We do not verify those hypotheses directly, and it should not be understood as evidence
+that the mechanism operates in our data.
+2.3 Positioning of This Paper
+This paper differs from the existing literature in three concrete respects. First, it disaggregates the
+post-breakout sequence into measurable components with statistical properties that can be studied
+separately. Second, the retest is operationalized using a precise, pre-specified definition that allows
+for reproducibility. Third, the questions are descriptive rather than prescriptive — we seek not the
+optimal strategy but the properties of the phenomenon as it appears in the data under our definitions.
+
+
+
+3. DATA AND METHODOLOGY
+3.1 The Thinking Behind the Design
+Before formally describing the data, it is worth explaining the logic that led to this design. The original
+question was simple: after price breaks the QQQ opening range, what happens?
+The most immediate answer is that price sometimes continues in the direction of the breakout and
+sometimes reverses. But that is too vague to serve as a useful scientific starting point. What we want
+to know is whether there is something observable — in the range that preceded the breakout, in the
+breakout itself, or in the minutes that follow — that is associated with one outcome or the other.
+To answer that in an orderly way, we designed a framework that moves from the general to the
+specific. It makes no sense to jump directly to the outcome without first characterizing the context in
+which that outcome occurs. That chain of reasoning led to the design of four sequential levels: first
+the range, then the breakout, then the retest, then the outcome. Each level builds on the previous one,
+and its results serve as input for the next.
+3.2 The Data
+The dataset consists of one-minute OHLCV bars — open, high, low, close, and volume — for the
+Invesco QQQ Trust from January 26, 2017 through December 31, 2024, covering the regular trading
+session from 9:30 AM to 3:59 PM Eastern Time. All timestamps are converted to Eastern Time with
+explicit UTC offset handling to ensure correct treatment of daylight saving time transitions.
+3.3 Why One-Minute Data
+The choice of one-minute resolution reflects a balance between granularity and noise. Daily data does
+not allow the internal sequence of the breakout to be studied. Tick or second-level data adds
+microstructure noise that complicates the identification of meaningful events without providing
+substantive additional information for the questions of this paper. One-minute resolution allows
+precise measurement of when the breakout occurs, when the retest occurs, and how long each event
+takes, while filtering out smaller-scale fluctuations.
+3.4 The Four-Level Analytical Framework
+The analysis is organized into four sequential levels, where each level builds on the outputs of the
+previous one. This architecture reflects the natural temporal sequence of the phenomenon: first the
+range forms, then the breakout occurs, then the retest may occur, and finally the subsequent price
+behavior is observed. The goal of this structure is to identify at which point in the sequence the
+information associated with the outcome is concentrated, and whether that information is statistically
+independent across levels.
+3.5 Opening Range Durations
+
+All analyses are conducted in parallel for 24 durations from 5 to 120 minutes in 5-minute increments.
+This decision reflects the absence of prior empirical consensus on the optimal range duration for QQQ
+specifically. Results are reported for the 15-minute range as the representative case, selected because
+it yields an adequate sample size and a formation period long enough to absorb the most volatile
+minutes of the open. Where patterns differ materially across durations, this is documented explicitly.
+
+3.6 Operational Definitions and Their Relationship to the Results
+
+This is the most important section of the paper for any reader who wishes to interpret the results
+correctly. In an empirical study such as this, operational definitions are not merely technical
+conventions: they are decisions that determine what enters the sample, how each observation is
+classified, and consequently what numbers appear in the tables. A result that appears to describe a
+market phenomenon may in part reflect the properties of the definition used to measure it.
+
+We present each definition alongside an explicit note on how it may affect the results. All definitions
+were fixed prior to running any analysis, which is important for transparency, but does not eliminate
+the effects described below.
+
+Opening Range (OR): The price range defined by the highest high and lowest low of all one-minute
+bars from 9:30 AM to 9:30 AM + N minutes, where N ∈ {5, 10, 15, ..., 120}.
+
+Breakout: The first one-minute bar whose high exceeds the OR high (bullish breakout) or whose low
+falls below the OR low (bearish breakout). Only the first breakout of the day is analyzed for each
+range duration.
+Note on the selection bias introduced by this definition: By analyzing only the first breakout of the
+day, we exclude days with multiple breakouts and days with no breakout. The resulting sample does
+not represent all QQQ trading days but a subset with specific properties. The patterns we document
+apply to that subset, and their generalization to other contexts requires caution.
+
+Valid Retest: A post-breakout event that satisfies three conditions sequentially and in order.
+
+Condition 1 — Minimum 0.20% excursion: After the breakout, price must reach a minimum favorable
+excursion of 0.20% of the breakout price before any pullback is considered a valid retest. This
+threshold was chosen to separate genuine retests from bars that simply oscillate around the level
+without price having established a defined direction. At QQQ prices between $130 and $500, 0.20%
+represents between $0.26 and $1.00.
+
+Condition 2 — Level contact, ±0.05% tolerance: After satisfying Condition 1, price must return to
+the breakout level within a tolerance of 0.05% of the breakout price. This tolerance acknowledges
+that price levels have finite width in practice and an exact price is rarely touched to the cent.
+
+Condition 3 — 120-minute window: The retest must occur within 120 minutes of the breakout. Retests
+occurring after that window are considered to belong to a different intraday context.
+
+Note on the sensitivity of these conditions: The robustness analysis in Section 9 shows that the relative
+gap between fast and slow retests ranges from 36.7 to 48.3 percentage points across all threshold
+specifications explored. This suggests that the temporal pattern of the retest does not depend critically
+on the exact values chosen, although the absolute figures change with the thresholds.
+
+Continuation Outcome: Within 60 minutes after the retest, price exceeds the maximum favorable
+pre-retest excursion — that is, it surpasses the furthest point it had reached between the breakout and
+the retest. We refer to that point as MFE_pre.
+
+Note on the mechanical effect of this definition: This is the most important definition to understand
+in terms of its implications for the results. The bar that price must clear to be classified as a
+Continuation is the MFE_pre. When the MFE_pre is small — for example, 0.25% — that bar is
+relatively easy to clear. When the MFE_pre is large — for example, 0.80% — the bar is substantially
+higher and harder to reach within the 60-minute window. This creates a mechanical relationship
+between MFE_pre and the Continuation rate: the larger the MFE_pre, the more demanding the
+definition, regardless of what the market does.
+
+The fourth pattern we document in Level 4 — that larger MFE_pre is associated with a lower
+Continuation rate — may be partially or entirely produced by this mechanical effect. We cannot
+determine with certainty how much of that pattern reflects a genuine market phenomenon and how
+much reflects the increasing difficulty imposed by the definition. We report the pattern because it is
+statistically robust and because the question of what produces it is itself valuable, but the reader
+should keep this caveat in mind when interpreting that result.
+
+One way to disentangle the two effects in future research would be to redefine Continuation using a
+fixed target — for example, an additional 0.20% move beyond the retest price — rather than the
+variable target used here. If the MFE_pre pattern persists under that alternative definition, it would
+constitute stronger evidence that it reflects a genuine market phenomenon.
+
+Failure Outcome: Within 60 minutes after the retest, price crosses the opposite boundary of the
+opening range — OR_low for bullish breakouts, OR_high for bearish breakouts — before achieving
+a Continuation Outcome.
+
+Note on the mechanical effect of this definition: The failure barrier is the opposite extreme of the OR.
+When the opening range is wider, that opposite extreme is farther from the breakout price. Therefore,
+the Failure definition requires a larger move on days with wide ranges than on days with narrow
+ranges. This may explain, at least in part, the observed pattern whereby larger ranges are associated
+with lower Failure rates — not necessarily because the phenomenon is different, but because the
+definition places the barrier farther away. The reader should keep this in mind when interpreting the
+results in Table 10 and Table 13.
+
+Neutral Outcome: Neither of the above occurs within 60 minutes of the retest. The analysis in
+Section 9 shows that these cases resolve approximately 50/50 between Continuation and Failure when
+the window is extended to the session close, suggesting they represent genuine market indecision
+within the original window.
+
+3.7 Sample Flow Diagram
+
+To facilitate exact replication of the analysis, we document the filtering process step by step for the
+15-minute OR case, which is the representative case used throughout the paper.
+
+The dataset begins with 2,290 trading days. Of these, 2,288 days yield a valid opening range with
+sufficient bars for full formation. Of those 2,288 days, all produce at least one OR breakout during
+the session, but only the first is analyzed. Of the 2,288 breakouts, 1,565 (68.4%) meet the minimum
+0.20% excursion criterion in the direction of the breakout before retracing. Of those 1,565, a total of
+1,045 (66.8%) generate a valid retest within the 120-minute window. Those 1,045 retests constitute
+the final Level 4 sample. Of them, 482 (46.1%) produce a Continuation Outcome, 195 (18.7%)
+produce a Failure Outcome, and 368 (35.2%) produce a Neutral Outcome within the 60-minute
+window.
+Differences in N across tables in the paper — 2,290, 2,288, 2,277, and other values — reflect this
+sequential filtering process across different analyses and OR durations. Each table reports the N
+corresponding to the specific subset analyzed in that table.
+
+3.8 Variable Table
+
+Table 1 — Complete Variable Definitions
+
+ Variable                Level Definition                                                 Unit
+
+ OR_size_pct             1       (OR_high − OR_low) / OR_low × 100                        %
+
+ OR_close_position       1       (close_last_OR_bar − OR_low) / OR_size                   0–1
+
+ gap_pct                 1       (open_day         −       close_previous_day)         / %
+                                 close_previous_day × 100
+
+ breakout_minute         2       Minutes from session open to the breakout bar            min
+
+ vol_ratio               2       breakout_bar_volume / mean(OR_bars_volume)               ratio
+
+ mfe_pre_retest_pct 3            Maximum excursion between breakout and retest / %
+                                 breakout_price × 100
+
+ mins_to_retest          3       Minutes from the breakout bar to the retest bar          min
+
+ outcome                 4       Continuation / Failure / Neutral per definitions in categorical
+                                 Section 3.6
+
+
+
+4. LEVEL 1 — ANATOMY OF THE OPENING RANGE
+4.1 The Question and Why We Start Here
+
+The first level aims to characterize the opening range before any breakout occurs. The reason for
+starting here is that the range is the context in which everything else takes place. If we want to
+understand what is associated with price behavior after the retest, we first need to understand the
+conditions under which that retest occurs. The opening range is the initial state of the system.
+
+4.2 Pattern 1.1 — Range Size Is Linearly Associated with Maximum Post-Breakout Excursion
+Table 2 — OR Size Quintiles and MFE by Quintile (OR = 15 minutes, N = 2,128 days with
+breakout)
+
+ Quintile       OR_si   N       %Up       %Down MFE_            MFE_       ClosePos_      ClosePos_
+                ze%                                   avg%      med%       Up             Down
+
+ Q1             0.23%   426     50.7%     49.3%       0.41%     0.30%      0.658          0.402
+ minimum
+
+ Q2 small       0.33%   426     54.0%     46.0%       0.53%     0.43%      0.703          0.335
+
+ Q3             0.43%   426     53.8%     46.2%       0.59%     0.43%      0.716          0.340
+ medium
+
+ Q4 large       0.57%   426     51.9%     48.1%       0.74%     0.57%      0.722          0.302
+
+ Q5 very 0.87%          426     49.5%     50.5%       1.15%     0.89%      0.733          0.248
+ large
+
+
+
+In the observed data, the average MFE — the maximum price excursion from the breakout level to
+the session close — grows monotonically from 0.41% in the minimum range quintile to 1.15% in the
+largest, a difference of 2.8 times. This association holds without exception across every quintile and
+across all 24 OR durations studied (Z=+7.109, p<0.001).
+
+What this association describes, in concrete terms, is that days on which QQQ establishes a wider
+opening range tend to produce breakouts with greater subsequent excursion, under the MFE definition
+we use. Why this association occurs is a separate question that these data do not answer. One possible
+hypothesis is that range size reflects the degree of imbalance between buyers and sellers during range
+formation, and that this imbalance persists after the breakout. But this is an interpretive hypothesis,
+not a result.
+
+4.3 Pattern 1.2 — The Closing Position of the OR Within the Range Is Associated with the
+Direction of the Subsequent Breakout
+
+The last two columns of Table 2 show where the OR formation period closed within its own range,
+separated by the direction of the breakout that subsequently occurred. The OR_close_position
+variable takes a value of 0 when the close is exactly the range low and 1 when it is exactly the range
+high.
+What is observed is consistent across all quintiles: when the subsequent breakout was bullish, the OR
+had closed on average in the upper 65–73% of the range. When the breakout was bearish, it had closed
+in the lower 25–40%. This information is observable before the breakout. However, the distribution
+of bullish versus bearish breakouts is approximately 50/50 across all quintiles, indicating that this
+variable does not predict direction with sufficient certainty to constitute a directional signal on its
+own.
+
+4.4 Pattern 1.3 — Days with a Bearish Gap Are Associated with a Higher Average MFE
+
+Table 3 — Effect of the Overnight Gap on MFE (OR = 15 minutes)
+
+ Gap Type                   N       %Break Up %Break Down MFE_avg% MFE_med%
+
+ Bullish gap (>+0.1%)       1,040 50.7%             49.3%               0.65%           0.48%
+
+ Bearish gap (<−0.1%) 775           54.1%           45.9%               0.79%           0.54%
+
+ Flat gap (±0.1%)           314     51.3%           48.7%               0.55%           0.39%
+
+
+
+In the data, days that open with a bearish gap show an average MFE of 0.79%, higher than the 0.65%
+observed on days with a bullish gap. One possible hypothesis is that bearish gaps concentrate greater
+uncertainty and volatility that persists through the session. We did not verify this hypothesis directly.
+
+4.5 Pattern 1.4 — Breakout Direction Is Approximately Equiprobable
+
+Across all range size quintiles, the fraction of bullish versus bearish breakouts ranges from 49.5% to
+54.0%. Range size is not associated with breakout direction — only with the magnitude of the
+subsequent excursion. This observation establishes that the ORB as a phenomenon does not resolve
+the problem of direction.
+
+
+
+5. LEVEL 2 — ANATOMY OF THE BREAKOUT
+5.1 The Question
+
+Once we understand the range, the natural next question is whether there is something in the breakout
+itself that is associated with the subsequent move. This distinction matters because in practice an
+observer does not only see the range that has formed — they also see how the breakout occurs: at
+what time, and with what relative volume.
+5.2 Pattern 2.1 — 82% of Breakouts Are Concentrated in the First 30 Minutes of the Session
+
+Table 4 — MFE by Breakout Time (OR = 15 minutes)
+
+         Time Window N              %Up      MFE_avg% MFE_med% Vol_ratio_avg
+
+         09:30 – 10:00     1,870 51.8% 0.71%                 0.50%           0.95
+
+         10:00 – 10:30     351      53.8% 0.67%              0.43%           0.90
+
+         10:30 – 11:00     44       63.6% 0.48%              0.36%           0.76
+
+         11:00 – 11:30     12       41.7% 0.48%              0.30%           0.76
+
+
+
+Of the 2,277 breakouts analyzed for the 15-minute OR, 1,870 (82.1%) occur within the 09:30–10:00
+window. Average MFE decreases with time of day: 0.71% in the first window versus 0.48% after
+10:30. Late breakouts are not only less frequent but are also associated with shorter average
+excursions. This is consistent with the findings of Chordia et al. (2002) and Tsai et al. (2018) on the
+concentration of price discovery at the open, although our measurement is descriptive and does not
+establish the same causal relationship as those studies.
+
+5.3 Pattern 2.2 — Vol_ratio Shows a Non-Linear Association with MFE
+
+Table 5 — MFE by Vol_ratio Quintile (OR = 15 minutes)
+
+               Quintile          Vol_ratio_avg N           MFE_avg% MFE_med%
+
+               Q1 — lowest       0.71              458 0.53%             0.36%
+
+               Q2                0.88              457 0.68%             0.50%
+
+               Q3 — optimal 0.95                   458 0.80%             0.57%
+
+               Q4                1.01              457 0.75%             0.52%
+
+               Q5 — highest      1.15              458 0.71%             0.49%
+
+
+
+The association is statistically significant (χ²=26.85, p=0.00075) but non-linear in form: average MFE
+peaks at quintile Q3 and declines at Q5. Breakouts with the highest relative volume show lower
+average MFE than those with moderate-to-high volume. One possible hypothesis is that very high
+volume may indicate that the move is being absorbed by participants on the opposite side, but this
+interpretation was not verified directly. What the data show is the association; the mechanism is a
+separate question.
+
+5.4 Pattern 2.3 — Day of the Week Shows No Statistically Significant Association
+
+Table 6 — MFE by Day of the Week (OR = 15 minutes)
+
+                     Day            N      %Up      MFE_avg% MFE_med%
+
+                     Monday         428 58.9% 0.66%                0.44%
+
+                     Tuesday        471 51.2% 0.68%                0.50%
+
+                     Wednesday 467 51.0% 0.69%                     0.49%
+
+                     Thursday       460 48.3% 0.73%                0.49%
+
+                     Friday         462 52.8% 0.71%                0.50%
+
+
+
+The chi-square test yields χ²=4.63, p=0.796. The descriptive differences across days are statistically
+indistinguishable from chance. We include this analysis because scientific honesty requires reporting
+what was sought and not found.
+
+
+
+6. LEVEL 3 — ANATOMY OF THE RETEST
+6.1 Previously Unmeasured Territory
+
+Levels 1 and 2 characterized the context of the breakout. Level 3 is where this paper enters genuinely
+unmeasured territory in the prior literature. We found no study that has quantified what fraction of
+ORB breakouts generates a retest under precisely defined conditions, how long that retest takes to
+occur, or how the price excursion before it is distributed.
+
+6.2 Pattern 3.1 — Observed Retest Rates by OR Duration
+
+Table 7 — Retest Statistics by OR Duration (selected durations)
+
+ OR_      N_break      N_excur     N_ret    %Excur      %Retest/Exc     MFE_pre_        Mins_retes
+ min      outs         sion        est      sion        ursion          avg%            t_avg
+
+ 5        2,290        1,583       1,096    69.1%       69.2%           0.361%          33.5
+
+ 10       2,289        1,538       1,037    67.2%       67.4%           0.349%          33.3
+ 15       2,288        1,565        1,045       68.4%     66.8%              0.351%          35.8
+
+ 30       2,274        1,484        966         65.3%     65.1%              0.351%          38.4
+
+ 60       2,198        1,316        810         59.9%     61.6%              0.336%          41.0
+
+ 120      1,953        1,057        638         54.1%     60.4%              0.348%          48.7
+
+
+
+For the 15-minute OR: of 2,288 breakouts, 1,565 (68.4%) reached the defined minimum excursion of
+0.20%. Of those, 1,045 (66.8%) generated a valid retest under the three defined conditions within 120
+minutes. The rate decreases modestly with OR duration. These percentages are descriptive of what
+occurs in the data under the conditions we define; they are not rates of anything that would occur
+under different definitions.
+
+6.3 Pattern 3.2 — MFE_pre Is Monotonically Associated with the Probability of Retest
+
+Table 8 — Retest Rate by MFE_pre Bin (OR = 15 minutes)
+
+                      MFE_pre Bin N               N_retest %Retest Avg_mins
+
+                      0.20 – 0.30%        1,041 560          53.8%        28.3
+
+                      0.30 – 0.40%        274     242        88.3%        36.9
+
+                      0.40 – 0.50%        108     103        95.4%        44.6
+
+                      0.50 – 0.75%        94      93         98.9%        56.4
+
+                      0.75 – 1.00%        32      31         96.9%        58.9
+
+                      1.00 – 1.50%        14      14         100.0%       58.3
+
+
+
+In the data, the greater the price excursion prior to the retest, the higher the probability that the retest
+occurs within the defined window. Beyond a 0.50% excursion, the retest is virtually certain. One
+interpretive hypothesis is that larger moves generate imbalances that the market tends to correct. This
+hypothesis was not verified directly.
+
+6.4 Pattern 3.3 — Faster Retests Are Associated with Smaller MFE_pre
+
+Table 9 — Temporal Distribution of the Retest (OR = 15 minutes, N = 1,045 retests)
+
+                      Minutes to Retest N          % of Total MFE_pre_avg%
+                     0 – 5 min             75     7.2%            0.257%
+
+                     5 – 10 min            138 13.2%              0.284%
+
+                     10 – 15 min           119 11.4%              0.305%
+
+                     15 – 20 min           107 10.2%              0.311%
+
+                     20 – 30 min           136 13.0%              0.338%
+
+                     30 – 45 min           143 13.7%              0.372%
+
+                     45 – 60 min           100 9.6%               0.420%
+
+                     60 – 90 min           136 13.0%              0.406%
+
+                     90 – 120 min          87     8.3%            0.461%
+
+
+
+The temporal distribution is relatively flat between 5 and 90 minutes. The observable pattern is that
+retests occurring more quickly have smaller MFE_pre, while later retests have larger MFE_pre. This
+pattern is relevant for interpreting the Level 4 results, but it also carries an important methodological
+implication: since MFE_pre mechanically influences the Continuation definition, fast retests face a
+lower continuation bar than late ones. The reader should keep this in mind when reading Table 11.
+
+
+
+7. LEVEL 4 — THE OUTCOME
+7.1 The Central Question and Its Accompanying Caveat
+
+We now reach the level where the central question of the paper is answered: given that a valid retest
+occurred under our definitions, what is observed in the following 60 minutes, as classified by our
+outcome definitions?
+
+This framing of the question — explicitly conditional on the definitions — is intentional. The numbers
+we present at this level are descriptive associations under specific conditions, not absolute properties
+of the market. Any reader wishing to compare these results with other studies or apply them to other
+contexts must first verify that the definitions are comparable.
+7.2 Base Outcome Distribution
+
+Table 10 — Outcome Distribution by OR Duration (selected durations)
+
+ OR_min       N_retests     %Cont       %Failure       %Neutral       MFE_post_        MAE_failure_
+                                                                      avg%             avg%
+
+ 5            1,096         47.7%       32.7%          19.6%          0.368%           0.412%
+
+ 10           1,037         47.8%       24.3%          27.9%          0.364%           0.522%
+
+ 15           1,045         46.1%       18.7%          35.2%          0.361%           0.584%
+
+ 30           966           47.9%       8.6%           43.5%          0.357%           0.641%
+
+ 60           810           44.2%       2.1%           53.7%          0.346%           0.889%
+
+ 120          638           42.2%       1.1%           56.7%          0.363%           1.137%
+
+
+
+For the 15-minute OR: 482 (46.1%) of the 1,045 retests produce a Continuation Outcome, 195
+(18.7%) produce a Failure Outcome, and 368 (35.2%) produce a Neutral Outcome within the 60-
+minute window.
+
+The most striking pattern in this table is the dramatic decline in the Failure rate as OR duration
+increases — from 32.7% at OR=5 min to 1.1% at OR=120 min. As documented in Section 3.6, part
+of this decline is a consequence of the definition: longer ranges place the Failure barrier farther away,
+making it mechanically harder to trigger. We cannot precisely quantify what fraction of this decline
+is a definitional effect and what fraction reflects a genuine market phenomenon.
+
+7.3 Pattern 4.1 — Time to Retest Is Negatively Associated with the Continuation Rate
+
+Table 11 — Continuation Rate by Time to Retest (OR = 15 minutes)
+
+       Minutes to Retest N        %Continuation 95% Wilson CI %Failure %Neutral
+
+       0 – 10 min           213 69.0%                 [62.5%, 74.8%]      20.2%        11.8%
+
+       10 – 20 min          226 54.0%                 [47.5%, 60.4%]      23.9%        23.9%
+
+       20 – 30 min          136 47.1%                 [38.9%, 55.4%]      21.5%        33.1%
+
+       30 – 45 min          143 39.2%                 [31.5%, 47.3%]      15.3%        44.4%
+
+       45 – 60 min          100 35.0%                 [26.4%, 44.8%]      24.5%        42.6%
+      > 60 min              227 25.6%                    [20.3%, 31.6%]    10.0%       63.8%
+
+
+
+χ²=170.67, p<0.001 | Cochran-Armitage Z=−9.708, p<0.001
+
+In the data, the rate of outcomes classified as Continuation decreases monotonically with time to
+retest, without exception across any bin. The confidence intervals of the extremes do not overlap: the
+upper bound of the CI for late retests (31.6%) is below the lower bound for fast retests (62.5%). This
+is the most statistically robust pattern in the paper.
+
+This pattern is not subject to the mechanical effect of the MFE_pre definition documented in Section
+3.6, as time to retest and the Continuation bar are independent variables. Section 8 further confirms
+that this pattern is independent of breakout time in the logistic regression.
+
+7.4 Pattern 4.2 — MFE_pre Is Negatively Associated with the Continuation Rate
+
+Table 12 — Continuation Rate by Pre-Retest Excursion (OR = 15 minutes)
+
+        MFE_pre Bin N            %Continuation 95% Wilson CI %Failure %Neutral
+
+        0.20 – 0.30%      560 54.6%                  [50.5%, 58.7%]       17.7%      27.5%
+
+        0.30 – 0.40%      242 46.3%                  [40.1%, 52.6%]       18.6%      35.1%
+
+        0.40 – 0.50%      103 34.0%                  [25.6%, 43.6%]       19.4%      46.6%
+
+        0.50 – 0.75%      93     22.6%               [15.3%, 32.1%]       20.4%      57.0%
+
+        0.75 – 1.00%      31     22.6%               [11.4%, 39.8%]       20.4%      57.0%
+
+        > 1.00%           16     6.2%*               [1.1%, 28.3%]*       25.5%      57.4%
+
+
+
+*N=16, low statistical power. Report with caution. Cochran-Armitage Z=−7.697, p<0.001
+
+In the data, the rate of outcomes classified as Continuation decreases monotonically with MFE_pre.
+This pattern is statistically robust (Z=−7.697, p<0.001) and persists in the multivariate model in
+Section 8. However, as cautioned in Section 3.6, defining Continuation as exceeding MFE_pre creates
+a mechanical relationship: the larger the MFE_pre, the higher the bar to clear. We cannot determine
+what fraction of this pattern reflects a genuine market phenomenon and what fraction is a consequence
+of that mechanical relationship. We report the pattern because it is statistically consistent and because
+the question of what produces it is itself valuable, but the reader should keep this caveat in mind.
+7.5 Secondary Associations
+
+Table 13 — Continuation Rate by Individual Predictors (OR = 15 minutes)
+
+            Variable          Segment       N     %Cont 95% CI                 %Failure
+
+            OR_size_pct Q1 minimum          209 29.2%        [23.5%, 35.7%] 27.8%
+
+                              Q3 medium     209 49.8%        [43.2%, 56.4%] 16.3%
+
+                              Q5 very large 209 58.9%        [52.2%, 65.3%] 14.4%
+
+            Vol_ratio         Q1 lowest     209 35.4%        [29.3%, 42.1%] 17.2%
+
+                              Q3 optimal    209 56.9%        [50.2%, 63.3%] 14.4%
+
+                              Q5 highest    207 46.9%        [40.3%, 53.7%] 21.7%
+
+
+
+OR_size (χ²=55.26, p<0.001) and vol_ratio (χ²=26.85, p=0.00075) show statistically significant
+associations with the outcome. For OR_size, part of the pattern in the %Failure column may be a
+consequence of the mechanical definitional effect documented in Section 3.6. The %Cont column is
+not subject to that effect.
+
+
+
+8. MULTIVARIATE ANALYSIS
+8.1 Purpose
+
+Levels 1 through 4 analyzed each variable independently. This analysis has two distinct objectives.
+The first is to verify whether the observed effects persist when mutually controlled — in particular,
+whether the association between mins_to_retest and the outcome is independent of breakout time,
+which is a potential source of confounding. The second is to measure the correlation among variables
+in order to assess whether they capture genuinely distinct dimensions of the phenomenon.
+
+8.2 Logistic Models
+
+We estimate four logistic models with the dependent variable equal to 1 for Continuation outcomes
+and 0 otherwise. All continuous variables were standardized — zero mean, unit standard deviation
+— so that coefficients are comparable across variables. The simplification of treating Failure and
+Neutral outcomes as a combined category is a methodological limitation: information about the
+distinction between the two is lost, which may bias the estimated probabilities.
+Table 14 — Logistic Model Comparison (OR = 15 minutes, N = 1,045)
+
+                 Model Variables Included                     Pseudo-R² AIC
+
+                 M1      mins_to_retest only                  0.0575        1363.49
+
+                 M2      mins_to_retest + breakout_minute 0.0584            1364.17
+
+                 M3      Full model (5 variables)             0.1037        1304.75
+
+                 M4      Full model + quadratic terms         0.1071        1305.94
+
+
+
+M3 has the best AIC. The fact that adding breakout_minute in M2 worsens the AIC relative to M1
+indicates that this variable contributes no additional relevant information once mins_to_retest is in
+the model.
+
+Table 15 — Full Model M3 Coefficients (standardized variables)
+
+     Variable                Coef     SE       Z        p-value Sig      OR      95% CI OR
+
+     mins_to_retest          −0.325 0.079 −4.115 <0.001           *** 0.722 [0.619, 0.843]
+
+     breakout_minute         −0.108 0.072 −1.499 0.134            n.s.   0.897 [0.779, 1.034]
+
+     or_size_pct             +0.450 0.083 +5.450 <0.001           *** 1.568 [1.334, 1.844]
+
+     vol_ratio               +0.120 0.069 +1.730 0.084            n.s.   1.127 [0.984, 1.291]
+
+     mfe_pre_retest_pct −0.622 0.099 −6.311 <0.001                *** 0.537 [0.442, 0.651]
+
+
+
+Three variables show independent, statistically significant associations with the Continuation
+outcome: mins_to_retest (OR=0.722; each standard deviation increase in time to retest is associated
+with a 27.8% reduction in the odds of Continuation), or_size_pct (OR=1.568), and
+mfe_pre_retest_pct (OR=0.537).
+
+breakout_minute is not significant in any model (p=0.257 in M2, p=0.134 in M3). This answers the
+critical question about potential confounding: the association between mins_to_retest and the
+outcome is not explained by the time of day at which the breakout occurred. The coefficient of
+mins_to_retest changes by less than 0.6% between M1 and M2 (from −0.612 to −0.608), confirming
+that breakout time was not biasing the estimate.
+For mfe_pre_retest_pct, the logistic model confirms that the association persists when controlling for
+the other variables. However, as documented in Section 3.6, the mechanical relationship between
+MFE_pre and the Continuation definition would also be captured by this model. The statistical
+significance of the coefficient does not allow the genuine effect to be separated from the definitional
+effect.
+
+No quadratic term is significant in M4 (all p>0.07), indicating that the relationships are approximately
+linear on the log-odds scale within the observed range of variation.
+
+8.3 Correlations Among Variables
+
+To assess whether the identified variables capture genuinely distinct dimensions, we computed the
+Phi correlation between their binarized versions.
+
+Table 16 — Phi Correlations Between Binarized Variables (OR = 15 minutes)
+
+                        Pair                                 φ         Level
+
+                        Large OR – Retest ≤10 min            0.293     Moderate
+
+                        Breakout ≤30 min – Aligned bias 0.245          Moderate
+
+                        All other pairs (13 pairs)           < 0.10 Negligible
+
+
+
+The maximum observed correlation is φ=0.293. This value is below the conventional threshold of
+0.30 for substantial correlation, suggesting that the variables operate relatively independently in the
+data.
+
+However, the Phi correlation measures linear association between binarized variables. A low Phi
+correlation does not guarantee full conceptual independence: all of these variables derive from the
+same temporal process and are measured on the same price bars. They may share sources of variation
+that this analysis does not capture. This nuance is important to avoid over-interpreting the
+independence results.
+9. ROBUSTNESS ANALYSIS
+9.1 The Five Market Regimes
+
+Table 17 — Subperiod Definitions
+
+          Period Dates              Regime                      QQQ Return N retests
+
+          P1        2017–2019 Quiet bull market                 +122%            274
+
+          P2        2020            COVID crash and recovery +48%                151
+
+          P3        2021            Accelerated bull market     +27%             88
+
+          P4        2022            Bear market                 −33%             170
+
+          P5        2023–2024 Recovery to new highs             +85%             233
+
+
+
+9.2 Base Rates by Subperiod
+
+Table 18 — Base Metrics by Subperiod (OR = 15 minutes)
+
+        Subperiod               N        %Cont 95% CI                %Failure %Neutral
+
+        TOTAL                   1,045 46.1%        [43.1%, 49.2%] 18.7%          35.2%
+
+        P1 — 2017–2019          274      39.8%     [34.3%, 45.6%] 17.9%          42.3%
+
+        P2 — 2020 COVID 151              52.3%     [44.3%, 60.2%] 16.6%          31.1%
+
+        P3 — 2021 bull          88       37.5%     [27.9%, 48.2%] 17.0%          45.5%
+
+        P4 — 2022 bear          170      60.6%     [53.1%, 67.6%] 19.4%          20.0%
+
+        P5 — 2023–2024          233      42.5%     [36.5%, 48.8%] 21.5%          36.1%
+
+
+
+Subperiod P4 (2022) shows the highest Continuation rate (60.6%) and is statistically different from
+all other subperiods (p<0.001 in all tests). The three bullish or normal periods P1, P3, and P5 are
+statistically indistinguishable from one another. The mechanism behind P4's difference is unknown.
+We report the statistical difference as an observation without proposing a causal explanation.
+9.3 Robustness of the Temporal Pattern Across Regimes
+
+Table 19 — Continuation Rate by mins_to_retest and Subperiod
+
+              Mins to Retest TOTAL P1                P2        P3       P4       P5
+
+              0–10 min           69.0%      73.0% 64.3% 71.4% 69.6% 68.3%
+
+              10–20 min          54.0%      44.7% 53.1% 62.5% 61.2% 49.1%
+
+              20–30 min          47.1%      40.0% 63.6% 33.3% 64.3% 38.2%
+
+              30–60 min          37.4%      41.5% 48.5% 16.7% 50.0% 25.0%
+
+              >60 min            25.6%      19.2% 22.7% 22.7% 31.2% 35.3%
+
+
+
+The 0–10 minute bin produces the highest Continuation rate in all five subperiods without exception,
+with a maximum variation of 8.7 percentage points across subperiods. The decreasing trend holds
+across all regimes studied.
+
+9.4 Robustness of the MFE_pre Pattern Across Regimes
+
+Table 20 — Continuation Rate by MFE_pre and Subperiod
+
+               MFE_pre Bin TOTAL P1                  P2       P3       P4        P5
+
+               0.20–0.30%       54.6%       48.7% 54.3% 58.5% 69.5% 52.4%
+
+               0.30–0.40%       46.3%       38.1% 64.3% 26.1% 71.1% 38.1%
+
+               0.40–0.50%       34.0%       26.1% 31.2% N/A            60.9% 30.4%
+
+               0.50–0.75%       22.6%       10.0% 40.0% 21.4% 22.2% 17.6%
+
+
+
+The decreasing trend is observed in four of the five subperiods. P2 (COVID 2020) is the most notable
+exception. The caveat regarding the mechanical definitional effect applies equally to each column of
+this table.
+
+9.5 Robustness to Variations in Definition Thresholds
+
+The correct metric for evaluating robustness to threshold variations is not the absolute Continuation
+rate — that varies because different thresholds include populations with different characteristics. The
+correct metric is the relative gap between fast and slow retests, which compares the same relative
+pattern within each population.
+
+Table 21 — Robustness of the Fast vs. Slow Retest Gap Under Threshold Variations
+
+    Varied Threshold         Range Explored Base Gap Min Gap Max Gap Max Dev.
+
+    Minimum excursion 0.10% to 0.30%              41.8pp       39.5pp       45.5pp      3.7pp
+
+    Touch tolerance          0.03% to 0.10%       41.8pp       36.7pp       41.3pp      5.1pp
+
+    Time window              60 min to close      41.8pp       41.6pp       48.3pp      6.5pp
+
+
+
+The gap ranges from 36.7 to 48.3 percentage points with a maximum deviation of 6.5pp. The
+Continuation rate associated with fast retests is exactly 68.1% across all four time window scenarios
+explored. These results suggest that the temporal pattern of the retest does not depend on the exact
+threshold values chosen.
+
+9.6 Resolution of Neutral Cases
+
+Table 22 — Resolution of Neutral Cases Under Extended Windows (OR = 15 minutes, N = 368)
+
+                Resolution        Between 60 and 120 min Through Session Close
+
+                Continuation 74 (20.1%)                       153 (41.6%)
+
+                Failure           77 (20.9%)                  146 (39.7%)
+
+                Unresolved        217 (59.0%)                 69 (18.8%)
+
+
+
+Neutral cases resolve approximately symmetrically between Continuation and Failure by the session
+close (41.6% versus 39.7%), under the same outcome definitions. This is consistent with the
+interpretation that Neutral cases represent genuine market indecision within the original 60-minute
+window, rather than continuations or failures that occurred later with a predominant direction.
+
+
+
+10. DISCUSSION
+10.1 On the Time-to-Retest Pattern
+
+The pattern that faster retests are associated with higher Continuation rates is the most robust finding
+in this paper. It appears across all market regimes studied, survives logistic regression with multiple
+controls, is independent of breakout time, and is not subject to the mechanical effect of the MFE_pre
+definition.
+
+One possible interpretive hypothesis, drawing on the microstructure concepts of Dim, Eraker, and
+Vilkov (2023), is that fast retests occur when participants have limit orders placed near the breakout
+level, waiting for a second entry opportunity. If those orders are sufficient to absorb the pullback
+pressure, price returns quickly to the level and resumes its direction. A late retest would occur in a
+context where that potential had been exhausted. This hypothesis is plausible as an interpretive
+framework, but was not verified directly in this paper. It remains a concrete direction for future
+research that would require order flow data not available in this study.
+
+10.2 On the MFE_pre Pattern
+
+The pattern that larger pre-retest excursions are associated with lower Continuation rates is
+statistically robust but methodologically more delicate than the temporal pattern. As documented with
+precision in Section 3.6, defining Continuation as exceeding MFE_pre creates a mechanical
+relationship: the bar to clear grows with MFE_pre. Any analysis using this definition will tend to
+show this pattern to some degree, regardless of what the market does.
+
+What we cannot determine with the current design is what fraction of the observed pattern reflects a
+genuine market phenomenon and what fraction is a consequence of the definition. We report the
+pattern because it is consistent and because the question of its origin is itself valuable. The way to
+resolve it in future research would be to compare results using a Continuation definition based on a
+fixed target rather than a variable one. If the pattern persists under that alternative definition, it would
+constitute stronger evidence that it reflects a genuine market phenomenon.
+
+10.3 On the Statistical Difference of the 2022 Subperiod
+
+Subperiod P4 (2022) shows a Continuation rate of 60.6%, statistically different from all other periods
+at the highest level of significance (p<0.001). We report this difference as a statistical observation
+without proposing a causal explanation. The mechanism is unknown and remains an open question
+for future research.
+
+10.4 Relationship with the Existing Literature
+
+The Level 1 associations are consistent with Lundström (2017)'s result on ORB profitability scaling
+with volatility, extended to the level of the individual breakout. Level 2 is consistent with Tsai et al.
+(2018) on the concentration of price discovery at the open. The time-to-retest pattern has no direct
+precedent in the literature known to us, which represents the most novel contribution of this paper.
+10.5 Limitations
+
+Limitation 1 — A single instrument over a single period. The observed patterns are specific to QQQ
+over 2017–2024. Generalization to other instruments, markets, or periods requires independent
+replication. This paper provides no basis for assuming that the same patterns, with the same numerical
+values, would appear in another instrument or period.
+
+Limitation 2 — No transaction costs. The analysis is conducted on the underlying price. No result
+should be interpreted as evidence of profitability in live trading. Bid-ask spreads, execution slippage,
+and commission costs are not incorporated.
+
+Limitation 3 — The effect of definitions on results. As documented in detail in Section 3.6, two of the
+observed patterns may be influenced by the chosen definitions. Continuation defined as exceeding
+MFE_pre mechanically tends to produce lower rates when MFE_pre is large. Failure defined as
+crossing the opposite OR extreme mechanically tends to produce lower rates when the range is wide.
+We cannot precisely quantify how much of the numerical patterns observed for those variables is
+attributable to these effects.
+
+Limitation 4 — Multiple testing. The analysis evaluated multiple variables, bins, OR durations, and
+subperiods without correction for multiple comparisons. Some results may be statistically significant
+by chance. The most reliable patterns are those that appear consistently across multiple specifications.
+
+Limitation 5 — Selection bias. Only the first breakout of the day is analyzed, and only retests that
+satisfy the three defined conditions. The analyzed sample does not represent all QQQ trading days
+but a filtered subset. The documented patterns apply to that specific subset.
+
+Limitation 6 — Heterogeneous sample sizes across subperiods. P3 (2021) contains only 88 retests
+with a 15-minute OR. Estimates for that subperiod have wide confidence intervals and should be
+treated as indicative.
+
+Limitation 7 — Temporal independence not formally verified. Daily observations may exhibit serial
+autocorrelation. Autocorrelation-robust standard errors were not applied, which may artificially
+inflate the reported statistical significance.
+
+Limitation 8 — Mechanisms are unverified hypotheses. All causal interpretations proposed in Section
+10 are plausible hypotheses grounded in microstructure literature. They were not verified using order
+flow data or any other method independent of the one-minute prices used in this paper.
+11. CONCLUSION
+This paper documents, in an exploratory and descriptive manner and under explicit operational
+definitions, four statistical associations in the post-breakout sequence of the ORB in QQQ, using
+intraday data from 2017 to 2024.
+
+We make no claims of causality. We make no claims of exploitability. We make no claims that these
+patterns will persist outside the sample or replicate in other instruments. We do claim that we
+measured them with the greatest care available to us, that we documented the ways in which our own
+definitions may have influenced the results, and that we present this work as a first step in a direction
+we consider valuable for research.
+
+The four documented associations are as follows.
+
+First, opening range size shows a linear and monotonic association with the observed maximum post-
+breakout excursion, with a 2.8-fold difference between the minimum and maximum quintiles
+(Z=+7.109, p<0.001). This pattern holds without exception across all 24 range durations studied.
+
+Second, under the retest conditions defined in this paper, 68.4% of breakouts generate a retest of the
+broken level within 120 minutes. The probability of that retest occurring grows monotonically with
+the price excursion prior to the retest and approaches 100% when that excursion exceeds 0.50%.
+
+Third, the time elapsed between the breakout and the retest shows the strongest and most robust
+association with the outcome classified as Continuation. Retests within 10 minutes are associated
+with a rate of 69.0% [95% CI: 62.5%, 74.8%] versus 25.6% [20.3%, 31.6%] for retests after 60
+minutes (χ²=170.67, p<0.001). Logistic regression confirms that this association is independent of
+breakout time (OR=0.722, p<0.001; breakout_minute not significant in any model). The pattern holds
+across all five market regimes studied.
+
+Fourth, larger pre-retest excursions are associated with lower Continuation outcome rates (Z=−7.697,
+p<0.001; OR=0.537 in the multivariate model). This pattern is statistically robust but must be
+interpreted with particular caution, as the Continuation definition used may mechanically produce
+part of this result regardless of market behavior.
+
+We present this work as an invitation to continue. The most important questions we leave open are
+the following. Do these patterns replicate in SPY, SPX, IWM, and other liquid instruments, or are
+they specific to QQQ in this period? Does the MFE_pre pattern persist when Continuation is redefined
+using a fixed rather than variable target? What explains the statistical difference of the 2022
+subperiod? Do data available from 2025 onward — not included in this analysis — confirm or
+contradict the documented associations?
+
+We hope that other researchers find in this paper a useful starting point, not a conclusion.
+
+Data, code, and complete results tables are available from the authors upon request.
+REFERENCES
+Chordia, T., Roll, R., and Subrahmanyam, A. (2002). Order imbalance, liquidity, and market returns.
+Journal of Financial Economics, 65(1), 111–130.
+
+Dim, C., Eraker, B., and Vilkov, G. (2023). 0DTEs: Trading, gamma risk and volatility propagation.
+SSRN Working Paper No. 4692190.
+
+Holmberg, U., Lönnbark, C., and Lundström, C. (2012). Assessing the profitability of intraday
+opening range breakout strategies. Journal of Banking & Finance, 36(5), 1412–1424.
+
+Lundström, C. (2017). The profitability of intraday opening range breakout strategies: Evidence from
+the energy and S&P 500 markets. Working Paper, Umeå University.
+
+Tsai, C.-Y., Wang, T.-Y., Chen, Y.-H., and Chen, Y.-S. (2018). Timely opening range breakout:
+Evidence from the Asia-Pacific and US equity index futures markets. SSRN Working Paper No.
+3291564.
+
+Zarattini, C., and Aziz, A. (2023). Can day trading really be profitable? Evidence from the QQQ
+opening range breakout strategy. Swiss Finance Institute Research Paper.
+
+Zarattini, C., Barbon, A., and Aziz, A. (2024). A profitable day trading strategy for the US equity
+market. Swiss Finance Institute Research Paper.
+

@@ -1,0 +1,24 @@
+{
+  "id": "conv-1785942554912-gc1kauqw1",
+  "providerId": "claude",
+  "title": "Audit Payout-Vorbereitungen und Tickets",
+  "titleGenerationStatus": "success",
+  "createdAt": 1785942555203,
+  "updatedAt": 1786292754621,
+  "lastResponseAt": 1785962401040,
+  "sessionId": "eb39d166-a84c-401a-93f7-12f3c3a56990",
+  "selectedModel": "sonnet",
+  "providerState": {
+    "providerSessionId": "eb39d166-a84c-401a-93f7-12f3c3a56990"
+  },
+  "usage": {
+    "model": "sonnet",
+    "inputTokens": 2,
+    "cacheCreationInputTokens": 1929,
+    "cacheReadInputTokens": 395867,
+    "contextWindow": 1000000,
+    "contextWindowIsAuthoritative": true,
+    "contextTokens": 397798,
+    "percentage": 40
+  }
+}

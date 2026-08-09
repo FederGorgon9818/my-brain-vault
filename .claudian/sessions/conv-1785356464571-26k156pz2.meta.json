@@ -1,0 +1,25 @@
+{
+  "id": "conv-1785356464571-26k156pz2",
+  "providerId": "claude",
+  "title": "Recherchiere und teste Alpha-Strategien",
+  "titleGenerationStatus": "success",
+  "createdAt": 1785356464571,
+  "updatedAt": 1785356670371,
+  "lastResponseAt": 1785356670371,
+  "sessionId": "49134e96-75ac-43ac-9f2f-bfc7015322e4",
+  "selectedModel": "opus",
+  "providerState": {
+    "providerSessionId": "49134e96-75ac-43ac-9f2f-bfc7015322e4"
+  },
+  "currentNote": "Ressourcen/Aufgaben-Guide (Modell & Skill Wahl).md",
+  "usage": {
+    "model": "opus",
+    "inputTokens": 0,
+    "cacheCreationInputTokens": 0,
+    "cacheReadInputTokens": 0,
+    "contextWindow": 200000,
+    "contextWindowIsAuthoritative": true,
+    "contextTokens": 0,
+    "percentage": 0
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "id": "conv-1786293582195-j6y8onjue",
+  "providerId": "claude",
+  "title": "Entwirf Ticket-Abhängigkeitssystem",
+  "titleGenerationStatus": "success",
+  "createdAt": 1786293582196,
+  "updatedAt": 1786294656553,
+  "lastResponseAt": 1786294525725,
+  "sessionId": "c2d0df3c-86d3-4637-8968-8ef0da029f4b",
+  "selectedModel": "opus",
+  "providerState": {
+    "providerSessionId": "c2d0df3c-86d3-4637-8968-8ef0da029f4b"
+  },
+  "usage": {
+    "model": "opus",
+    "inputTokens": 2,
+    "cacheCreationInputTokens": 1029,
+    "cacheReadInputTokens": 152509,
+    "contextWindow": 1000000,
+    "contextWindowIsAuthoritative": true,
+    "contextTokens": 153540,
+    "percentage": 15
+  }
+}

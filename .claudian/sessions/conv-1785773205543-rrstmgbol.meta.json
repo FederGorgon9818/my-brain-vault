@@ -1,0 +1,24 @@
+{
+  "id": "conv-1785773205543-rrstmgbol",
+  "providerId": "claude",
+  "title": "Evaluate session restart for token savings",
+  "titleGenerationStatus": "success",
+  "createdAt": 1785773205547,
+  "updatedAt": 1785773239688,
+  "lastResponseAt": 1785773219745,
+  "sessionId": "6c4a0b29-18c1-454b-bcda-d86aebc7a1e0",
+  "selectedModel": "haiku",
+  "providerState": {
+    "providerSessionId": "6c4a0b29-18c1-454b-bcda-d86aebc7a1e0"
+  },
+  "usage": {
+    "model": "haiku",
+    "inputTokens": 10,
+    "cacheCreationInputTokens": 17949,
+    "cacheReadInputTokens": 0,
+    "contextWindow": 200000,
+    "contextWindowIsAuthoritative": true,
+    "contextTokens": 17959,
+    "percentage": 9
+  }
+}

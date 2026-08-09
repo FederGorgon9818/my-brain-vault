@@ -1,0 +1,24 @@
+{
+  "id": "conv-1785790365491-2k9ue9egb",
+  "providerId": "claude",
+  "title": "Verify riskGuard v4 setup and activation",
+  "titleGenerationStatus": "success",
+  "createdAt": 1785790365495,
+  "updatedAt": 1785790573915,
+  "lastResponseAt": 1785790477305,
+  "sessionId": "4e11e1d7-1784-4fcb-b8bb-0902b219ec66",
+  "selectedModel": "fable",
+  "providerState": {
+    "providerSessionId": "4e11e1d7-1784-4fcb-b8bb-0902b219ec66"
+  },
+  "usage": {
+    "model": "fable",
+    "inputTokens": 2,
+    "cacheCreationInputTokens": 1053,
+    "cacheReadInputTokens": 51783,
+    "contextWindow": 1000000,
+    "contextWindowIsAuthoritative": false,
+    "contextTokens": 52838,
+    "percentage": 5
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "id": "conv-1785425772730-kkgvekqky",
+  "providerId": "claude",
+  "title": "Audit Server & Automate Profit Closure",
+  "titleGenerationStatus": "success",
+  "createdAt": 1785425772734,
+  "updatedAt": 1785773179240,
+  "lastResponseAt": 1785773015027,
+  "sessionId": "66810e5e-1a44-436e-ba24-0c157a329842",
+  "selectedModel": "opus",
+  "providerState": {
+    "providerSessionId": "66810e5e-1a44-436e-ba24-0c157a329842"
+  },
+  "usage": {
+    "model": "opus",
+    "inputTokens": 1029,
+    "cacheCreationInputTokens": 2159,
+    "cacheReadInputTokens": 596007,
+    "contextWindow": 1000000,
+    "contextWindowIsAuthoritative": true,
+    "contextTokens": 599195,
+    "percentage": 60
+  }
+}

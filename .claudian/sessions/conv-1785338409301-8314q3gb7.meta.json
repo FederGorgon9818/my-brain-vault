@@ -1,0 +1,23 @@
+{
+  "id": "conv-1785338409301-8314q3gb7",
+  "providerId": "claude",
+  "title": "Analyze external master prompt",
+  "titleGenerationStatus": "success",
+  "createdAt": 1785338409309,
+  "updatedAt": 1785339429131,
+  "lastResponseAt": 1785339269738,
+  "sessionId": "a848d6d6-18b4-453b-a224-96a63c20efd9",
+  "selectedModel": "sonnet",
+  "providerState": {
+    "providerSessionId": "a848d6d6-18b4-453b-a224-96a63c20efd9"
+  },
+  "usage": {
+    "model": "sonnet",
+    "inputTokens": 2,
+    "cacheCreationInputTokens": 598,
+    "cacheReadInputTokens": 138151,
+    "contextWindow": 1000000,
+    "contextTokens": 138751,
+    "percentage": 14
+  }
+}

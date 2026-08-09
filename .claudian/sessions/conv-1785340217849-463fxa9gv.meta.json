@@ -1,0 +1,24 @@
+{
+  "id": "conv-1785340217849-463fxa9gv",
+  "providerId": "claude",
+  "title": "Establish model guidance per task",
+  "titleGenerationStatus": "success",
+  "createdAt": 1785340217849,
+  "updatedAt": 1785342031329,
+  "lastResponseAt": 1785341788429,
+  "sessionId": "56b550e3-4117-4c31-b79d-d5aad1a5e135",
+  "selectedModel": "sonnet",
+  "providerState": {
+    "providerSessionId": "56b550e3-4117-4c31-b79d-d5aad1a5e135"
+  },
+  "usage": {
+    "model": "sonnet",
+    "inputTokens": 131,
+    "cacheCreationInputTokens": 1163,
+    "cacheReadInputTokens": 145650,
+    "contextWindow": 1000000,
+    "contextWindowIsAuthoritative": false,
+    "contextTokens": 146944,
+    "percentage": 15
+  }
+}

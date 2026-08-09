@@ -1,0 +1,24 @@
+{
+  "id": "conv-1786296223310-7e9hvylx8",
+  "providerId": "claude",
+  "title": "Explain and optimize ORB fund strategy",
+  "titleGenerationStatus": "success",
+  "createdAt": 1786296223311,
+  "updatedAt": 1786299934598,
+  "lastResponseAt": 1786298946526,
+  "sessionId": "036ec98e-927c-40a4-a6ea-191aba4813e5",
+  "selectedModel": "fable",
+  "providerState": {
+    "providerSessionId": "036ec98e-927c-40a4-a6ea-191aba4813e5"
+  },
+  "usage": {
+    "model": "fable",
+    "inputTokens": 2,
+    "cacheCreationInputTokens": 88,
+    "cacheReadInputTokens": 284539,
+    "contextWindow": 1000000,
+    "contextWindowIsAuthoritative": true,
+    "contextTokens": 284629,
+    "percentage": 28
+  }
+}

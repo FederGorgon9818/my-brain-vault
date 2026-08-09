@@ -1,0 +1,24 @@
+{
+  "id": "conv-1785339681166-uou54ddv1",
+  "providerId": "claude",
+  "title": "Create task-model reference matrix",
+  "titleGenerationStatus": "success",
+  "createdAt": 1785339681166,
+  "updatedAt": 1785340123319,
+  "lastResponseAt": 1785339800958,
+  "sessionId": "d87fbf82-d46b-4390-8282-99baf1fc0950",
+  "selectedModel": "sonnet",
+  "providerState": {
+    "providerSessionId": "d87fbf82-d46b-4390-8282-99baf1fc0950"
+  },
+  "usage": {
+    "model": "sonnet",
+    "inputTokens": 2,
+    "cacheCreationInputTokens": 586,
+    "cacheReadInputTokens": 52002,
+    "contextWindow": 1000000,
+    "contextWindowIsAuthoritative": true,
+    "contextTokens": 52590,
+    "percentage": 5
+  }
+}

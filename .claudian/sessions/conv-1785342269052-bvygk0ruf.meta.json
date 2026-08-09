@@ -1,0 +1,24 @@
+{
+  "id": "conv-1785342269052-bvygk0ruf",
+  "providerId": "claude",
+  "title": "Alpha-Strategien recherchieren und testen",
+  "titleGenerationStatus": "success",
+  "createdAt": 1785342269053,
+  "updatedAt": 1785356461891,
+  "lastResponseAt": 1785356438533,
+  "sessionId": "810d3d04-2646-4b8d-ac1e-546ae93b7ab4",
+  "selectedModel": "fable",
+  "providerState": {
+    "providerSessionId": "810d3d04-2646-4b8d-ac1e-546ae93b7ab4"
+  },
+  "usage": {
+    "model": "fable",
+    "inputTokens": 0,
+    "cacheCreationInputTokens": 0,
+    "cacheReadInputTokens": 0,
+    "contextWindow": 1000000,
+    "contextWindowIsAuthoritative": true,
+    "contextTokens": 0,
+    "percentage": 0
+  }
+}

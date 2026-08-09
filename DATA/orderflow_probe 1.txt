@@ -1,0 +1,38 @@
+==================================================================
+order-flow probe v2 2026-07-09 18:38:58
+
+--- SIGNATURES ---
+   get_bars_with_retry(symbol: 'str', timeframe: 'str', start_ms: 'int', end_ms: 'int', *, max_rows: 'int | None' = None, retries: 'int' = 3, sleep_seconds: 'int' = 10, roll_adjust: 'str | None' = None) -> 'pd.DataFrame'
+   get_trades(symbol: 'str', start_ms: 'int', end_ms: 'int', *, columns: 'list[str] | None' = None, chunk_rows: 'int' = 250000) -> 'Iterator[pd.DataFrame]'
+   get_trades_rth(symbol: 'str', start_ms: 'int', end_ms: 'int', *, columns: 'list[str] | None' = None, chunk_rows: 'int' = 250000) -> 'Iterator[pd.DataFrame]'
+   get_ticks(symbol: 'str', schema: 'str', start_ms: 'int', end_ms: 'int', *, columns: 'list[str] | None' = None, chunksize: 'int' = 250000) -> 'Iterator[pd.DataFrame]'
+   get_mbp1(symbol: 'str', start_ms: 'int', end_ms: 'int', *, columns: 'list[str] | None' = None, chunk_rows: 'int' = 250000) -> 'Iterator[pd.DataFrame]'
+   get_mbp1_rth(symbol: 'str', start_ms: 'int', end_ms: 'int', *, columns: 'list[str] | None' = None, chunk_rows: 'int' = 250000) -> 'Iterator[pd.DataFrame]'
+   get_mbp10(symbol: 'str', start_ms: 'int', end_ms: 'int', *, columns: 'list[str] | None' = None, chunk_rows: 'int' = 250000) -> 'Iterator[pd.DataFrame]'
+   get_mbp10_rth(symbol: 'str', start_ms: 'int', end_ms: 'int', *, columns: 'list[str] | None' = None, chunk_rows: 'int' = 250000) -> 'Iterator[pd.DataFrame]'
+   get_spread_1m_rth(symbol: 'str', start_ms: 'int', end_ms: 'int', *, chunk_rows: 'int' = 250000) -> 'pd.DataFrame'
+   iter_trades(symbol: 'str', start_ms: 'int', end_ms: 'int', *, columns: 'list[str] | None' = None, chunksize: 'int' = 250000) -> 'Iterator[pd.DataFrame]'
+   iter_mbp1(symbol: 'str', start_ms: 'int', end_ms: 'int', *, columns: 'list[str] | None' = None, chunksize: 'int' = 250000) -> 'Iterator[pd.DataFrame]'
+   symbology_resolve(dataset=None, symbols=None, stype_in=None, stype_out=None, start_date=None, end_date=None)
+
+--- TICK_SCHEMAS ---
+('trades', 'mbp-1', 'mbp-10', 'cmbp-1', 'tcbbo', 'cbbo-1s', 'cbbo-1m', 'definition', 'statistics', 'status')
+
+--- TRADES (10 min) ---
+OK get_trades_rth  args=3
+   get_trades_rth args=3 failed: object of type 'generator' has no len()
+   get_trades_rth args=4 failed: get_trades_rth() takes 3 positional arguments but 4 were given
+OK get_trades  args=3
+   get_trades args=3 failed: object of type 'generator' has no len()
+   get_trades args=4 failed: get_trades() takes 3 positional arguments but 4 were given
+
+--- MBP1 top-of-book (5 min) ---
+   get_mbp1_rth args=3 failed: object of type 'generator' has no len()
+   get_mbp1_rth args=4 failed: get_mbp1_rth() takes 3 positional arguments but 4 were given
+   get_mbp1 args=3 failed: object of type 'generator' has no len()
+   get_mbp1 args=4 failed: get_mbp1() takes 3 positional arguments but 4 were given
+
+--- SPREAD 1m (1 day) ---
+spread failed: Tried reading schema message, was null or length 0
+==================================================================
+DONE

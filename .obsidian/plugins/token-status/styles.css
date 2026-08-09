@@ -1,0 +1,9 @@
+.token-status-item {
+  cursor: pointer;
+  transition: color 0.3s ease, opacity 0.3s ease;
+}
+
+.token-status-item.token-status-pulse {
+  color: var(--interactive-accent);
+  opacity: 0.75;
+}

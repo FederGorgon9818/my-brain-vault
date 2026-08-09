@@ -1,0 +1,122 @@
+// © QuantPad LLC
+//@version=5
+// Combined Opening-Range-Breakout + Fast-Retest strategy.
+//  Paper 1 (Zarattini & Aziz 2023): ORB direction, tight stop, let profits run, 1% risk.
+//  Paper 2 (Pineda 2026): enter on a FAST retest of the broken level (high continuation).
+// Designed for the RTH session of index futures (NQ, ES). Best on the 1- or 5-minute chart.
+strategy("ORB Fast-Retest [QuantPad]", overlay=true, initial_capital=25000, margin_long=0, margin_short=0, pyramiding=0, default_qty_type=strategy.fixed, calc_on_every_tick=false, commission_type=strategy.commission.cash_per_contract, commission_value=0.0)
+
+// ------------------------------- inputs -----------------------------------
+orMin      = input.int(5, "Opening range (minutes)", minval=1)
+excPct     = input.float(0.20, "Min favourable excursion %", step=0.05) / 100.0
+tolPct     = input.float(0.05, "Retest touch tolerance %", step=0.01) / 100.0
+retestMax  = input.int(20, "Fast-retest window (minutes)", minval=1)
+stopFrac   = input.float(0.25, "Stop = fraction of OR beyond level", step=0.05)
+targetR    = input.float(3.0, "Profit target (R multiples)", step=0.5)
+riskPct    = input.float(1.0, "Risk per trade (% of equity)", step=0.25) / 100.0
+sessStr    = input.session("0930-1600", "RTH session")
+tz         = input.string("America/New_York", "Session timezone")
+sessLenMin = input.int(390, "Session length (minutes, for EoD exit)", minval=30)
+useFixedQty = input.bool(false, "Use fixed contracts (for prop) instead of % risk")
+fixedQty    = input.int(1, "Fixed contracts", minval=1)
+webhookSym  = input.string("", "Webhook symbol override (blank = chart ticker)")
+
+// ---------------------------- session state -------------------------------
+t        = time(timeframe.period, sessStr, tz)
+inSess   = not na(t)
+sessStart = inSess and na(t[1])
+
+var int   sessOpen = na
+var float orH      = na
+var float orL      = na
+var int   boDir    = 0      // 0 none, 1 long, -1 short
+var int   boTime   = na
+var float level    = na
+var float stopLvl  = na
+var float mfe      = 0.0
+var bool  excDone  = false
+var bool  traded   = false
+var bool  dayVoid  = false
+
+if sessStart
+    sessOpen := time
+    orH      := high
+    orL      := low
+    boDir    := 0
+    boTime   := na
+    level    := na
+    stopLvl  := na
+    mfe      := 0.0
+    excDone  := false
+    traded   := false
+    dayVoid  := false
+
+mins = na(sessOpen) ? na : (time - sessOpen) / 60000.0
+
+// accumulate the opening range
+if inSess and not sessStart and not na(mins) and mins < orMin
+    orH := math.max(orH, high)
+    orL := math.min(orL, low)
+
+orDone = inSess and not na(mins) and mins >= orMin and not na(orH) and orH > orL
+
+// --------------------------- breakout detection ---------------------------
+if orDone and boDir == 0 and not dayVoid
+    up = high > orH
+    dn = low < orL
+    if up and dn
+        dayVoid := true
+    else if up
+        boDir   := 1
+        level   := orH
+        stopLvl := orH - stopFrac * (orH - orL)
+        boTime  := time
+        mfe     := (high - orH) / orH
+    else if dn
+        boDir   := -1
+        level   := orL
+        stopLvl := orL + stopFrac * (orH - orL)
+        boTime  := time
+        mfe     := (orL - low) / orL
+
+// ------------------- excursion + fast-retest -> entry ---------------------
+priorExc = excDone
+if boDir != 0 and not na(level)
+    fav = boDir == 1 ? (high - level) / level : (level - low) / level
+    mfe := math.max(mfe, fav)
+    if fav >= excPct
+        excDone := true
+
+minsFromBO = (boDir != 0 and not na(boTime)) ? (time - boTime) / 60000.0 : na
+touched = boDir == 1 ? low <= level * (1 + tolPct) : (boDir == -1 ? high >= level * (1 - tolPct) : false)
+canEnter = boDir != 0 and not traded and not dayVoid and priorExc and touched and not na(minsFromBO) and minsFromBO > 0 and minsFromBO <= retestMax and strategy.position_size == 0
+
+if canEnter
+    riskPts   = boDir == 1 ? (level - stopLvl) : (stopLvl - level)
+    dollarRsk = riskPts * syminfo.pointvalue
+    qtyF      = dollarRsk > 0 ? (strategy.equity * riskPct) / dollarRsk : 0.0
+    qty       = useFixedQty ? fixedQty : math.max(1, math.floor(qtyF))
+    wsym      = webhookSym == "" ? syminfo.ticker : webhookSym
+    longMsg   = '{"action":"buy","symbol":"' + wsym + '","quantity":' + str.tostring(qty) + '}'
+    shortMsg  = '{"action":"sell","symbol":"' + wsym + '","quantity":' + str.tostring(qty) + '}'
+    flatMsg   = '{"action":"exit","symbol":"' + wsym + '"}'
+    if boDir == 1
+        strategy.entry("Long", strategy.long, qty=qty, alert_message=longMsg)
+        strategy.exit("Long X", from_entry="Long", stop=stopLvl, limit=level + targetR * riskPts, alert_message=flatMsg)
+    else
+        strategy.entry("Short", strategy.short, qty=qty, alert_message=shortMsg)
+        strategy.exit("Short X", from_entry="Short", stop=stopLvl, limit=level - targetR * riskPts, alert_message=flatMsg)
+    traded := true
+
+// ------------------------------ EoD exit ----------------------------------
+tfms    = timeframe.in_seconds(timeframe.period) * 1000
+sessEnd = na(sessOpen) ? na : sessOpen + sessLenMin * 60000
+if strategy.position_size != 0 and not na(sessEnd) and (time + tfms >= sessEnd)
+    eodMsg = '{"action":"exit","symbol":"' + (webhookSym == "" ? syminfo.ticker : webhookSym) + '"}'
+    strategy.close_all(comment="EoD", alert_message=eodMsg)
+
+// -------------------------------- plots -----------------------------------
+plot(inSess and not na(orH) ? orH : na, "OR high", color=color.new(color.teal, 0), style=plot.style_linebr)
+plot(inSess and not na(orL) ? orL : na, "OR low", color=color.new(color.red, 0), style=plot.style_linebr)
+plot(inSess and boDir != 0 and not traded ? level : na, "Break level", color=color.new(color.orange, 0), style=plot.style_circles)
+bgcolor(dayVoid ? color.new(color.gray, 90) : na, title="Void day")

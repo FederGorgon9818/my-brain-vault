@@ -1,0 +1,273 @@
+{
+  "main": {
+    "id": "ef4cd74070c10704",
+    "type": "split",
+    "children": [
+      {
+        "id": "1ce71c892f1b34f2",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "7045f1e3b88fa380",
+            "type": "leaf",
+            "state": {
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "Graph-Ansicht"
+            }
+          },
+          {
+            "id": "13ab61c971d0fa4a",
+            "type": "leaf",
+            "state": {
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "Graph-Ansicht"
+            }
+          },
+          {
+            "id": "e74ce95808d35592",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Daily Notes/2026-08-09.md",
+                "mode": "source",
+                "source": false,
+                "backlinks": true,
+                "backlinkOpts": {
+                  "collapseAll": false,
+                  "extraContext": false,
+                  "sortOrder": "alphabetical",
+                  "showSearch": false,
+                  "searchQuery": "",
+                  "backlinkCollapsed": false,
+                  "unlinkedCollapsed": true
+                }
+              },
+              "icon": "lucide-file",
+              "title": "2026-08-09"
+            }
+          }
+        ],
+        "currentTab": 2
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "c936f5704199dc03",
+    "type": "split",
+    "children": [
+      {
+        "id": "4385857f0253743e",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "2c72038f93a8e704",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Dateiexplorer"
+            }
+          },
+          {
+            "id": "20e03098643db4ca",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "tag:#trading/mean-reversion",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Suchen"
+            }
+          },
+          {
+            "id": "ec9613fe5c511a09",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Lesezeichen"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "0c3e29ee38ccf6b1",
+    "type": "split",
+    "children": [
+      {
+        "id": "71495377099787b2",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "6884c9e3a88bb301",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Rückverweise"
+            }
+          },
+          {
+            "id": "97fd8147279251c7",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Ausgehende Links"
+            }
+          },
+          {
+            "id": "147bd20a9e337420",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "78f0297302b53766",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "Alle Eigenschaften"
+            }
+          },
+          {
+            "id": "2949acc087728107",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Gliederung"
+            }
+          },
+          {
+            "id": "cc41df7790a0ef11",
+            "type": "leaf",
+            "state": {
+              "type": "claudian-view",
+              "state": {},
+              "icon": "bot",
+              "title": "Claudian"
+            }
+          }
+        ],
+        "currentTab": 5
+      }
+    ],
+    "direction": "horizontal",
+    "width": 1409.5
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "terminal:Open terminal": false,
+      "obsidian42-brat:BRAT": false,
+      "switcher:Schnellauswahl öffnen": false,
+      "graph:Graph-Ansicht öffnen": false,
+      "canvas:Neuen Canvas erstellen": false,
+      "daily-notes:Heutige Notiz öffnen": false,
+      "templates:Vorlage einfügen": false,
+      "command-palette:Befehlspalette öffnen": false,
+      "bases:Neue Base erstellen": false,
+      "realclaudian:Open Claudian": false
+    }
+  },
+  "active": "cc41df7790a0ef11",
+  "lastOpenFiles": [
+    "Bereiche/Strategie-Logbuch.md.tmp.14140.1f46975fcd47",
+    "Ressourcen/Research-Cache.md.tmp.10852.ebfdde62a140",
+    "Ressourcen/Research-Cache.md.tmp.10852.46e61b53afbc",
+    "Bereiche/Portfolio-Simulator.md.tmp.10852.4dac1981b831",
+    "Daily Notes/2026-08-09.md",
+    "Anhänge/tickets-ablaeufe.png",
+    "Anhänge/tickets-reihenfolge.png",
+    "Bereiche/Steuer & Gewerbe (Prop-Payouts).md.tmp.11204.695499a7bbd5",
+    "Bereiche/Steuer & Gewerbe (Prop-Payouts).md.tmp.11204.96ddca2d487c",
+    "Bereiche/Strategie-Logbuch.md.tmp.20216.a969875b9c6b",
+    "Bereiche/Strategie-Logbuch.md.tmp.20216.e04f6870427b",
+    "Bereiche/Steuer & Gewerbe (Prop-Payouts).md",
+    "Bereiche/Day Trading.md.tmp.20216.c097235e5881",
+    "Bereiche/Steuer & Gewerbe (Prop-Payouts).md.tmp.20216.f256c473046d",
+    "Ressourcen/Paper-Analysen/Mean-Reversion Paper (High-Winrate Fokus).md",
+    "Projekte/Token Tracker App.md.tmp.9548.20123a50c68b",
+    "Daily Notes/2026-08-03.md",
+    "Daily Notes/2026-08-02.md",
+    "Bereiche/Wochenreport 2026-W31 (27.07-31.07).md",
+    "Daily Notes/2026-07-31.md",
+    "Bereiche/Strategie-Logbuch.md",
+    "Ressourcen/Paper-Analysen/Strategie-Familien.md",
+    "Bereiche/Discovery-Prozess (wie wir Alpha finden).md",
+    "Daily Notes/2026-07-30.md",
+    "2026-07-30.md",
+    "Unbenannt 1.canvas",
+    "Ressourcen/Aufgaben-Guide (Modell & Skill Wahl).md",
+    "Daily Notes/2026-07-29.md",
+    "Ressourcen/Paper-Analysen/TSI Mean Reversion (Requejo 4708400).md",
+    "Archiv/Strategie-Logbuch Archiv (001-025).md",
+    "Ressourcen/VPS-Einrichtung Schritt für Schritt.md",
+    "Ressourcen/Agent-Architektur Token-Optimierung.md",
+    "Ressourcen/Research-Cache.md",
+    "Bereiche/Live-Setup (Algo auf Prop).md",
+    "Bereiche/Idee-Generierung (wie Institutionen).md",
+    "Ressourcen/Edge-Decay-Monitor (Konzept + Regeln).md",
+    "Bereiche/Live-Account.md",
+    "Ressourcen/MFFU 50k Pläne (Regeln + Wahl).md",
+    "Ressourcen/Paper-Analysen/Order-Flow Predictive Research.md",
+    "Unbenannt 2.canvas",
+    "Unbenannt.canvas"
+  ]
+}

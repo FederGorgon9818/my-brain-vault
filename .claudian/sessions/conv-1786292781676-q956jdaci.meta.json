@@ -1,0 +1,24 @@
+{
+  "id": "conv-1786292781676-q956jdaci",
+  "providerId": "claude",
+  "title": "Klären: Revolut Privatkontos für Day-Trading",
+  "titleGenerationStatus": "success",
+  "createdAt": 1786292781679,
+  "updatedAt": 1786293572829,
+  "lastResponseAt": 1786293390386,
+  "sessionId": "4aff5ba1-9938-40d4-9349-04b718124d0b",
+  "selectedModel": "opus",
+  "providerState": {
+    "providerSessionId": "4aff5ba1-9938-40d4-9349-04b718124d0b"
+  },
+  "usage": {
+    "model": "opus",
+    "inputTokens": 2,
+    "cacheCreationInputTokens": 503,
+    "cacheReadInputTokens": 82088,
+    "contextWindow": 1000000,
+    "contextWindowIsAuthoritative": false,
+    "contextTokens": 82593,
+    "percentage": 8
+  }
+}

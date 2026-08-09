@@ -1,0 +1,54 @@
+---
+tags:
+  - ressource/anleitung
+  - trading/live
+erstellt: 2026-07-21
+---
+# 🖥️ VPS-Einrichtung: Klick-für-Klick
+
+⬅️ [[Live-Setup (Algo auf Prop)]]
+
+> [!tip] Ziel
+> Contabo Windows-VPS (~€13-15/Mon.) mieten, absichern, NinjaTrader drauf. Danach läuft das Trading unabhängig vom eigenen PC. Dauer gesamt: ~1-2h + Wartezeit auf die Zugangs-Mail.
+
+## Teil 1: Kaufen (contabo.com)
+1. `contabo.com/de/vps/` → **Cloud VPS 6** (6 vCPU / 12 GB / €7,50) → Auswählen
+2. Konfigurator: Laufzeit **1 Monat** · Region **US-Central (St. Louis)** · NVMe falls wählbar · Image **Windows Server 2022** (+~€5-6 = das "Windows-Addon") · sonst NICHTS anhaken
+3. Warenkorb → Konto anlegen → zahlen → auf Mail **"Your login data"** warten (IP + Administrator-Passwort)
+
+## Teil 2: Verbinden
+4. Windows-Taste → `mstsc` → Enter → IP aus Mail → Verbinden → `Administrator` + Passwort → Zertifikat mit Ja bestätigen
+
+## Teil 3: Passwort ändern
+5. Im Server-Fenster **Strg+Alt+Ende** → "Kennwort ändern" → langes eigenes PW (Passwort-Manager!)
+
+## Teil 4: Updates
+6. Einstellungen → Windows Update → alles installieren (bei Neustart: warten, neu verbinden)
+7. Windows Update → Erweiterte Optionen → **Nutzungszeit 14:00-23:00** (kein Auto-Reboot in der US-Session)
+
+## Teil 5: Tailscale (RDP absichern)
+8. Eigener PC: `tailscale.com` → mit Google anmelden → Client installieren
+9. Server: `tailscale.com/download` → Client installieren → **gleiches Konto**
+9b. **PFLICHT: Tailscale-Icon (Tray) → Settings → "Run unattended" anhaken!** Sonst verbindet Tailscale nur, solange ein Benutzer angemeldet ist → nach Reboot/Abmeldung ist der Server im Tailnet offline und man ist ausgesperrt (Rettung: Contabo-Panel → VNC-Konsole). Danach Reboot-Test: Server neu starten und prüfen, dass er OHNE Anmeldung in Tailscale "Connected" wird.
+10. Tailscale-IP des Servers notieren (100.x.y.z)
+11. **Test:** RDP neu verbinden über die 100er-IP → muss klappen
+12. NUR DANN, auf dem Server in Admin-PowerShell:
+    `Set-NetFirewallRule -DisplayGroup "Remote Desktop" -RemoteAddress 100.64.0.0/10`
+    (Notausgang: Contabo-Panel → VNC-Konsole)
+
+## Teil 6: NinjaTrader 8
+13. Auf dem Server: `ninjatrader.com` → Konto anlegen → NT8 Desktop installieren + einloggen
+14. Win+R → `shell:startup` → NT-Verknüpfung reinkopieren (Autostart)
+15. Prop-Konto-Verbindung (Tradovate-Credentials) → **erst nach Eval-Kauf**
+
+## Teil 7: Reboot-Test
+16. Server neu starten → 3 Min → über Tailscale-IP verbinden → NT8 muss von allein offen sein ✅
+
+## Teil 8: Handy (Aufsicht)
+17. App Store: **"Windows App"** (Microsoft) + **"Tailscale"** → anmelden
+18. Windows App → + → PC → 100er-IP → Administrator → Aufsicht aus der Hosentasche
+
+> [!warning] Merken
+> - RDP nie öffentlich lassen (Schritt 12 ist Pflicht, sonst kloppen Bots aufs Login)
+> - Windows-Update-Neustarts NIE in die Session fallen lassen (Schritt 7)
+> - Auto-Flat bei Disconnect wird zusammen mit den NinjaScript-Strategien konfiguriert

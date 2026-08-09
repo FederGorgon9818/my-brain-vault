@@ -1,0 +1,53 @@
+/* =========================================================
+   Ordnerfarben – Max' zweites Gehirn
+   Einheitliche Palette, passend zu den Graph-Farbgruppen.
+   ========================================================= */
+
+/* Grund-Styling für alle Top-Level-Ordner */
+.nav-folder-title[data-path="Kontext"],
+.nav-folder-title[data-path="Inbox"],
+.nav-folder-title[data-path="Projekte"],
+.nav-folder-title[data-path="Bereiche"],
+.nav-folder-title[data-path="Ressourcen"],
+.nav-folder-title[data-path="Daily Notes"],
+.nav-folder-title[data-path="Archiv"],
+.nav-folder-title[data-path="Anhänge"] {
+  font-weight: 600;
+  border-left: 3px solid var(--fc);
+  border-radius: 4px;
+  color: var(--fc);
+}
+
+/* Farbe pro Ordner */
+.nav-folder-title[data-path="Kontext"]     { --fc: #a78bfa; } /* Violett  */
+.nav-folder-title[data-path="Inbox"]       { --fc: #f59e0b; } /* Amber    */
+.nav-folder-title[data-path="Projekte"]    { --fc: #3b82f6; } /* Blau     */
+.nav-folder-title[data-path="Bereiche"]    { --fc: #10b981; } /* Grün     */
+.nav-folder-title[data-path="Ressourcen"]  { --fc: #06b6d4; } /* Cyan     */
+.nav-folder-title[data-path="Daily Notes"] { --fc: #ec4899; } /* Pink     */
+.nav-folder-title[data-path="Archiv"]      { --fc: #94a3b8; } /* Grau     */
+.nav-folder-title[data-path="Anhänge"]     { --fc: #a8a29e; } /* Sand     */
+
+/* Der Aufklapp-Pfeil übernimmt die Ordnerfarbe */
+.nav-folder-title[data-path="Kontext"] .nav-folder-collapse-indicator,
+.nav-folder-title[data-path="Inbox"] .nav-folder-collapse-indicator,
+.nav-folder-title[data-path="Projekte"] .nav-folder-collapse-indicator,
+.nav-folder-title[data-path="Bereiche"] .nav-folder-collapse-indicator,
+.nav-folder-title[data-path="Ressourcen"] .nav-folder-collapse-indicator,
+.nav-folder-title[data-path="Daily Notes"] .nav-folder-collapse-indicator,
+.nav-folder-title[data-path="Archiv"] .nav-folder-collapse-indicator,
+.nav-folder-title[data-path="Anhänge"] .nav-folder-collapse-indicator {
+  color: var(--fc);
+}
+
+/* Dezenter Hintergrund beim Hover, in Ordnerfarbe */
+.nav-folder-title[data-path="Kontext"]:hover,
+.nav-folder-title[data-path="Inbox"]:hover,
+.nav-folder-title[data-path="Projekte"]:hover,
+.nav-folder-title[data-path="Bereiche"]:hover,
+.nav-folder-title[data-path="Ressourcen"]:hover,
+.nav-folder-title[data-path="Daily Notes"]:hover,
+.nav-folder-title[data-path="Archiv"]:hover,
+.nav-folder-title[data-path="Anhänge"]:hover {
+  background-color: color-mix(in srgb, var(--fc) 15%, transparent);
+}

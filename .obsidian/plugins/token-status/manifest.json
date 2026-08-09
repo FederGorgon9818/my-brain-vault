@@ -1,0 +1,9 @@
+{
+  "id": "token-status",
+  "name": "Token Status",
+  "version": "1.0.0",
+  "minAppVersion": "1.7.2",
+  "description": "Zeigt den aktuellen Claude-Token-Verbrauch (heute + rollierendes 5h-Fenster) live in der Statusleiste. Reagiert per Datei-Watcher direkt auf neue Eintraege in den Claude-Code-Logs, keine feste Polling-Verzoegerung.",
+  "author": "Max (gebaut mit Claudian)",
+  "isDesktopOnly": true
+}

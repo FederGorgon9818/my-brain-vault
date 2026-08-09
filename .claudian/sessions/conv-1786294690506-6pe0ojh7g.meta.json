@@ -1,0 +1,24 @@
+{
+  "id": "conv-1786294690506-6pe0ojh7g",
+  "providerId": "claude",
+  "title": "Debug strategy order rejection bug",
+  "titleGenerationStatus": "success",
+  "createdAt": 1786294690506,
+  "updatedAt": 1786296191283,
+  "lastResponseAt": 1786296044386,
+  "sessionId": "fa070a1a-96da-4f31-aaf5-d1b31d5c454a",
+  "selectedModel": "fable",
+  "providerState": {
+    "providerSessionId": "fa070a1a-96da-4f31-aaf5-d1b31d5c454a"
+  },
+  "usage": {
+    "model": "fable",
+    "inputTokens": 2,
+    "cacheCreationInputTokens": 281,
+    "cacheReadInputTokens": 166794,
+    "contextWindow": 1000000,
+    "contextWindowIsAuthoritative": false,
+    "contextTokens": 167077,
+    "percentage": 17
+  }
+}

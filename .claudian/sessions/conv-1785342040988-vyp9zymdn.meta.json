@@ -1,0 +1,25 @@
+{
+  "id": "conv-1785342040988-vyp9zymdn",
+  "providerId": "claude",
+  "title": "Überblick aktuelle Projekte und Prioritäten",
+  "titleGenerationStatus": "success",
+  "createdAt": 1785342040988,
+  "updatedAt": 1785342211431,
+  "lastResponseAt": 1785342073064,
+  "sessionId": "a59510d7-8b2e-45ad-8971-a7a9affffe57",
+  "selectedModel": "opus",
+  "providerState": {
+    "providerSessionId": "a59510d7-8b2e-45ad-8971-a7a9affffe57"
+  },
+  "currentNote": "Ressourcen/Aufgaben-Guide (Modell & Skill Wahl).md",
+  "usage": {
+    "model": "opus",
+    "inputTokens": 2906,
+    "cacheCreationInputTokens": 2699,
+    "cacheReadInputTokens": 24663,
+    "contextWindow": 1000000,
+    "contextWindowIsAuthoritative": true,
+    "contextTokens": 30268,
+    "percentage": 3
+  }
+}
