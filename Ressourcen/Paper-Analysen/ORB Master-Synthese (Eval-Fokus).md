@@ -12,6 +12,9 @@ erstellt: 2026-07-06
 > [!abstract] Zweck
 > Mein eigenes synthetisiertes Research-Dokument: alle nützlichen ORB-Erkenntnisse aus der Literatur + unsere eigenen Engine-Funde, kombiniert zu **einem konkreten, prop-eval-optimierten ORB-Bauplan**. Basis für die iterative Entwicklung im [[Strategie-Logbuch]].
 
+> [!warning] **NACHTRAG #070 (09.08.2026, zweite ORB-Runde):** Auch die drei „Überlebenden" unten sind schwächer als gedacht.
+> **VIX-Band ist auf dem Noise-ORB falsifiziert** (hebt nur IS, Gegenprobe außerhalb ist OOS besser — der VIX ist dort nur ein Vola-Proxy, corr(σ,VIX)=0,44). **Noise-Band generalisiert nicht** (RTY/YM tot, ES fraglich) — er ist NQ-spezifisch, aber auf NQ der sauberste ehrliche ORB-Verwandte (IS≈OOS, 10/11 Jahre, top5 0,29). **Und der ORB-Fade im Buch ist eine Regime-Wette**: 8 Jahre netto +95$, dann +5.672$; Top-10 von 422 Trades = 127% des Gewinns. Details: [[Strategie-Logbuch]] #070, [[ORB-Runde 070 (Hypothesen vorab)]].
+
 > [!danger] **KORREKTUR 09.08.2026 (#066-#068): Der Kernbefund unten ist für Index-Futures FALSIFIZIERT.**
 > Die "Filter heben Win-Rate auf 55-65%"-Belege beruhten bei uns auf Look-ahead (Filter der Ausbruchs-Bar bei Level-Fill). Ehrlich gemessen (NQ 1m, 10J, netto): **kein Follow-Through nach dem Linien-Break** (+1,1 Pkt in der Bar, −0,6 danach bis EOD), alle klassischen Filter-Stacks tot, NR7-Varianten = Tail-Lotterie (2025/26 negativ), Pineda-Retest 2× falsifiziert, "in Play"-Volumen überträgt sich nicht von Aktien auf Index. **Was ehrlich überlebt:** ORB-Fade (Bein 4, +0,063), Chuk-VIX-Band 15-25 als Kontext (+0,10, Bank), **Zarattini Noise-Band** (`NOISE_ORB_NQ`, +0,094, IS=OOS). Details: [[Strategie-Logbuch]] #067/#068, `Research-Cache` #068-Block.
 

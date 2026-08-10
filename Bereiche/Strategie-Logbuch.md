@@ -215,6 +215,11 @@ Das Wertvolle aus den Fehlschlägen. Für jede zukünftige Strategie beachten:
 5. **Frequenz-Falle:** Zu viele marginale Trades → Kosten fressen dünne Edges. Weniger, größere, selektivere Trades.
 6. **Prop-Passing ≠ Sharpe.** Der Trailing-DD bestraft **Pfad-Varianz**, nicht die Langfrist-Erwartung. Ein RR≤1-Setup mit hoher Win-Rate (ORB) skaliert auf 4-5 Micro und passt mit 55-61%; ein RR>1-Momentum mit Sharpe 2,0 (TS-Momentum) bleibt bei 1-2 Micro und 33-42%, weil choppige Equity am DD-Limit reißt. **Für Evals: enges, kontrolliertes Risiko + hohe Win-Rate schlägt hohen Sharpe.**
 7. **Spiegel-Trick:** Wenn eine Richtung konsistent negativ ist (Fade -6% edge), ist die Gegenrichtung oft der Edge (Momentum +8%). Immer beide Seiten testen, bevor eine Strategie verworfen wird.
+8. **R-Multiples driften mit dem Preisniveau** (#070). `r_net = r − cost/R_pts` — bei konstanten Kosten und über 10 Jahre wachsenden absoluten Ranges (NQ: 5,4 → 49,8 Pkt mittleres R) fällt die Kostenquote von 18,7% auf 2,0%. Ein aggregierter expR über die volle Historie gewichtet späte Jahre systematisch hoch. **Immer zusätzlich die USD-Jahrestabelle + mean R_pts pro Jahr ansehen.**
+9. **Passquoten sind fensterabhängig** (#070). Die Buch-Zahl 57%/86d wird zu 51%/117d, wenn man nur 2016-2023 rechnet, und zu 63%/46d für 2024-2026. Der Auto-Fit sieht immer nur die volle Historie. **Jede Buch-Änderung braucht die IS/OOS-getrennte Frontier, nicht nur den Betriebspunkt.**
+10. **Die Gegenprobe ist wertvoller als der Test** (#070). Ein Regime-Filter, der IS und OOS positiv aussieht, kann trotzdem wertlos sein — entscheidend ist, wie die **Komplementärmenge** läuft. Beim VIX-Band war „außerhalb" OOS *besser* als „innerhalb". **Bei jedem Kontext-/Regime-Filter die Gegenprobe mitmessen, sonst ist der Fund nicht bewertbar.**
+11. **Jede Zielfunktion erzeugt ihre eigenen Artefakte** (#071). „Maximiere Passquote" (auto_fit) lehnt systematisch Tempo-Beine ab. „Minimiere Tage bis Pass" zieht systematisch **Tail-Lotterien** an, weil seltene große Gewinne das Target im Monte-Carlo schneller erreichen — auch wenn das Bein die meiste Zeit verliert. **Qualitätsgates gehören VOR die Suche, nicht dahinter.**
+12. **Mehr Beine sind nicht besser** (#071). Diversifikation zahlt nur, solange das neue Bein die **Pfad-Varianz** nicht erhöht (Insight #6). `NQ_Momentum` ist einzeln sauber (IS +0,093 / OOS +0,232 / 10 von 11 Jahren) und senkt die Buch-Passquote trotzdem um 10 Punkte, weil Continuation mit RR>1 eine choppige Equity hat. Ein 4-Bein-Buch schlug das 6-Bein-Buch auf **jedem** Punkt der Frontier.
 
 ## #054 — Event-Bein: FOMC-Post + OpEx-Momentum kombiniert → Bank statt Buch (31.07.2026)
 - **Why (vorab fixiert):** #034 (CAL_fomcpost_ES) und #049 (OPEXMOM_ES) sind beide einzeln robust bestätigt, aber mit ~7-8 Trades/Jahr zu selten fürs Buch. Beide zufällig mit demselben Stop-Multiplikator (0,75×ATR20) validiert → technisch triviale Kombination: neuer Modus `event_combo` in `calendar_fx.py` (FOMC-Statement-Tag → fomc_post-Logik, sonst OpEx-Freitag → opex_mom-Logik, beide Terminarten überschneiden sich strukturell nie).
@@ -379,6 +384,429 @@ Max' Auftrag: YouTube-Interview (Matteo Coni, Ex-Market-Maker Nordea, SQR Capita
 **Verdikt: kein Buch-Kandidat.** P(pass) 33% < 40%-Gate, expR-Qualität auf #060-Niveau (schwache Trades verwässern, Lehre: Korrelation allein reicht nicht). Dein 6-Beine-Buch (61%/81d, Solo-Beine bis 72%) schlägt das klar. Aber: der Typ ist kein Scammer — seine Backtest-Zahlen stimmen, nur seine Prop-Simulation ist naiv.
 
 **Lehren:** (1) Insight #6 bestätigt: hohe Win-Rate + RR<1 ist der richtige Eval-Ansatz — aber ohne Intraday-DD-Modellierung sind Pass-Raten Fantasie. (2) VWAP-Drift-Pullback (Continuation!) passt zu Insight #1 (Continuation statt Reversion an der VWAP) — der Mechanismus ist real, nur zu schwach pro Trade. (3) Video-Strategien ab jetzt immer: Transkript → Regeln → `qbt` → Close-only vs. MAE-Sim vergleichen, um Marketing von Substanz zu trennen.
+
+## #070 — ORB-Runde 2: der gesuchte Fund war nicht da, der ungesuchte schon (09.08.2026)
+Max' Auftrag: ORB-Lage komplett anschauen, selbst Strategien suchen, mit Agents recherchieren, eigene Entwicklung. Hypothesen **vorab fixiert** in [[ORB-Runde 070 (Hypothesen vorab)]] (H1-H5, jede mit Kill-Kriterium), erst danach ein Backtest. Skripte: `orb070_noise.py`, `orb070_fade.py`, `orb070_book_stress.py`.
+
+**Leit-These der Runde:** In unseren eigenen Daten steckt ein Widerspruch — Linien-Break hat kein Follow-Through (#068), Momentum-Displacement ≥0,3%/15min hat +13,6 Pkt echten Drift. Der Unterschied ist der Trigger-Typ: ein Level sagt nichts über die *Größe* der Bewegung, ein vola-normiertes Band schon. Daraus: *was am ORB noch zu holen ist, holen wir über die Normierung, nicht über bessere Linien.*
+
+### 🚨 Der Hauptfund (nicht gesucht, aus H3 herausgefallen): Bein 4 ist eine Regime-Wette
+Beim Messen der Fade-„Latte" fiel auf, dass der Buch-Fade selbst das Discovery-Gate verletzt:
+
+| Fenster | n | brutto | netto | mean R_pts | Win |
+|---|---|---|---|---|---|
+| IS 2016-2023 (8 Jahre) | 319 | +739$ | **+95$** | 18,3 | 17,2% |
+| OOS 2024-2026 (2,5 J) | 103 | +5.880$ | **+5.672$** | 36,3 | 29,1% |
+
+- **Acht Jahre lang netto Null**, danach der komplette Ertrag. Auch *brutto* war im IS fast nichts — es ist kein reines Kostenproblem.
+- **Tail:** Top-5 von 422 Trades = 74% des Netto-Gewinns, **Top-10 = 127%** (ohne sie ist das Bein negativ). Exakt das Muster, das #068 bei den NR7-EOD-Varianten als „Tail-Lotterie" gekillt hat — nur saß es diesmal im Buch.
+- **Richtungs-Asymmetrie kippt:** 2016-2021 ist der LONG-Fade besser (−0,190 vs −0,268), ab 2023 der SHORT-Fade (+0,837 vs +0,434). Die Asymmetrie ist keine Struktur, sie ist dasselbe Regime-Artefakt.
+- **Warum es #067 durchrutschte:** dort wurde auf `book == stop_honest` und OOS +0,78 geschaut. Der IS-Wert (−0,168) stand nie in der Bewertung.
+
+### 🔬 Der Stresstest, der daraus folgte: Passquoten fenstergetrennt
+Erstmals die Buch-Frontier **nicht nur über die volle Historie**, sondern getrennt für IS und OOS gerechnet (`orb070_book_stress.py`):
+
+| Szenario | VOLL | IS 2016-23 | OOS 2024-26 | avg\|corr\| |
+|---|---|---|---|---|
+| **buch6 (heute)** | **57%/86d** | **51%/117d** | **63%/46d** | 0,069 |
+| buch5 ohne Fade | 55%/88d | 52%/118d | 57%/48d | 0,085 |
+| buch6 + Noise-ORB | 52%/53d | 53%/68d | 53%/31d | 0,112 |
+| buch5 Fade→Noise getauscht | 51%/54d | 52%/73d | 49%/31d | 0,142 |
+
+- **Die 57% sind keine Eigenschaft des Buchs, sondern des Fensters.** Im IS-Fenster wären es 51%/117d gewesen.
+- **Bein 4 trägt ausschließlich im OOS.** Im IS macht es das Buch sogar um einen Punkt *schlechter* (51 vs 52).
+- **Fade rauswerfen ist trotzdem nicht die Antwort:** buch5 ist in VOLL und OOS schlechter, im IS nur minimal besser. Es gibt keine dominante Variante.
+- **Der Noise-ORB stabilisiert:** 53/53 über beide Fenster statt 51/63, und ~40% schneller. Genau das kann der Auto-Fit strukturell nicht sehen, weil er nur die volle Historie bewertet.
+
+### Die vorab fixierten Hypothesen — Ergebnis
+- **H1 (Noise × VIX-Band) ❌ falsifiziert.** Das Chuk-Band 15-25 hebt den IS-expR massiv (0,094→0,189), aber OOS bricht ein (0,034) — und die **Gegenprobe „außerhalb des Bands" ist OOS besser** (0,235), in 8 von 10 Band/Instrument-Kombinationen. 2025+ im Band negativ, außerhalb positiv. Die Gegenprobe war der entscheidende Testbaustein; ohne sie hätte die Zelle „IS+OOS positiv, expR 0,14" ausgesehen und wäre durchgegangen. **Mechanismus vom Auditor nachgerechnet:** corr(trailing-σ, Vortages-VIX) = 0,44, Median-σ im Band 79,5 vs. 43,2 Pkt außerhalb → **der VIX ist hier nur ein Vola-Proxy, kein unabhängiger Kontext-Faktor.** Chuks Dealer-Hedging-Story trägt auf dem Noise-ORB nicht.
+- **H2 (Noise-Band auf ES/RTY/YM) ⚠️ teilweise.** NQ hält sauber (IS +0,094 ≈ OOS +0,097, 10/11 Jahre, top5 nur 0,29 — der beste Ehrlichkeitswert im ganzen Lauf). Aber **RTY tot** (IS und OOS negativ, 3/10 Jahre), **YM praktisch tot** (IS negativ, OOS +0,008 = Rauschen), **ES fraglich** (formal positiv, aber top5 0,55 und 2025+ negativ). Der Mechanismus generalisiert **nicht** — er ist NQ-spezifisch. Das formale Kill-Kriterium (≥2 von 3 OOS-negativ) ist knapp nicht erfüllt, qualitativ aber schon.
+- **H3a (Fade × VIX) ❌ Vorab-These widerlegt.** Erwartet war „Fade lebt bei niedrigem VIX". Gemessen ist es **umgekehrt**: vix10-18 ist die schwächste Zelle (4/11 Jahre), vix15-25 und vix18-32 laufen besser. Ohne NR7-Filter ist über alle Bänder alles negativ — **der NR7-Filter trägt den kompletten Fade-Edge**.
+- **H3b (Richtungs-Asymmetrie) ⚠️ nur scheinbar bestätigt.** Über die volle Historie ist der SHORT-Fade 20× stärker (+0,114 vs +0,006), was Grant/Wolf/Yu stützen würde — aber die Zerlegung nach Regime zeigt, dass die Asymmetrie vor 2022 ins Gegenteil kippt. Kein tragfähiger Befund.
+- **H3c (R/σ-Terzile) 💀 toter Test, mein Bug.** `sigma_entry` wird im ORB-Zweig auf `or_size` gesetzt, `R_pts` ist `stop_frac × or_size` — der Quotient ist **per Konstruktion konstant 0,4** (nunique=1, std 1,9e-14). Die drei „Terzile" waren eine Zufallspartition nach Float-Rundungsfehler, die gemessenen expR-Unterschiede reines Rauschen. Vom strategy-auditor gefunden, selbst nachgerechnet und bestätigt.
+- **H4 (Exits) ❌ kein Gewinn.** T1.0 ist über alle 12 Zellen schlecht (Win-Rate **unter** Baseline, edge_pp −6,7). T0.5 hebt die Win-Rate real über Baseline (+2 bis +8pp, konsistent über alle Bänder), aber der expR bleibt in den starken Zellen unter EOD. Der Exit-Hebel aus dem Discovery-Prozess wirkt hier nicht.
+- **H5 (volle Frontier statt Betriebspunkt) ✅ bestätigt und relevant.** Siehe Tabelle oben — die #068-Ablehnung des Noise-ORB ist am Betriebspunkt korrekt, aber sie verdeckt, dass er das Buch **fensterstabil** macht.
+
+### Literatur (research-scout, Cache-Block #070)
+Ein Fund: **Grant/Wolf/Yu 2005 (J. Banking & Finance, SSRN 689282)** — Intraday-Reversal nach großen Opening-Moves in US-Index-Futures, signifikant 1987-2002, stärker nach positiven Open-Moves; Signifikanz bricht bei Bid-Ask-Kosten ein. Stützt den Fade-Zweig grundsätzlich, hat sich in H3b aber nicht als handelbare Struktur bestätigt (Sample endet 2002 → gleiche Post-Publication-Kategorie wie das im_ll-Debakel aus #056).
+Drei Sackgassen, damit dort nie wieder gesucht wird: **Zarattini/Concretum hat 2025/26 nichts Neues zu ORB** (weitergezogen zu GTAA/Vol-Targeting/Krypto) · **„Turtle Soup"/Liquidity-Sweep am OR-Level = reine Retail-Folklore**, keine Quelle mit Zahlen · **VIX-Term-Structure als Gate = nichts Belastbares**.
+
+### Verdikt
+Kein neues Bein. Das Buch bleibt vorerst bei 6 Beinen, **aber die Bewertungsgrundlage hat sich geändert**: die 57%/86d sind eine Fenster-Zahl, und Bein 4 ist eine Wette auf das Regime seit 2023. Die Handlungsoptionen (Bein 4 behalten / Noise-ORB als 7. Bein für Tempo+Stabilität) liegen bei Max — Ticket `buch-entscheidung-070`.
+
+### Lehren
+1. **R-Multiples sind über lange Zeiträume mit wachsendem Preisniveau nicht vergleichbar.** `r_net = r − cost/R_pts`: bei konstanten Kosten (1,01 Pkt) und wachsender Range (5,4 Pkt in 2016 → 49,8 Pkt in 2026) fällt die Kostenquote von 18,7% auf 2,0%. Ein über 10 Jahre aggregierter expR gewichtet die späten Jahre systematisch hoch. **Ab jetzt: bei jedem Bein zusätzlich die USD-Jahrestabelle und mean R_pts pro Jahr anschauen.**
+2. **Passquoten müssen fenstergetrennt gerechnet werden.** Eine Portfolio-Passquote über die volle Historie kann eine Eigenschaft des Endfensters sein. Der Auto-Fit sieht das strukturell nicht. **Ab jetzt gehört zu jeder Buch-Änderung die IS/OOS-getrennte Frontier.**
+3. **Die Gegenprobe ist wertvoller als der Test.** H1 hätte als sauberer Fund durchgehen können (IS+OOS positiv, expR 0,14). Erst „wie läuft es *außerhalb* des Filters?" hat es entlarvt. **Ab jetzt bei jedem Regime-/Kontextfilter Pflicht: die Komplementärmenge mitmessen.**
+4. **Ein Filter, der nur IS hebt, ist kein Filter.** Klingt trivial, war aber in #068 nicht geprüft — dort wurde VIX-Band auf Jahres-Positivität und Nachbar-Robustheit geprüft, nicht auf den IS/OOS-Bruch.
+5. **Engine-Falle dokumentiert:** `sigma_entry` bedeutet je nach Modus etwas anderes (im ORB-Zweig = `or_size`, nicht Vola). Vor jeder Verhältnisbildung auf Konstanz prüfen.
+
+## #071 — Ziel „>50% Passquote in <30 Tagen": erreicht, und der Nebengewinn ist größer (10.08.2026)
+Max' Zielvorgabe: weitere Beine finden, bis die Passquote **über 50% bei unter 30 Tagen** liegt. Skripte: `goal30_inventory.py`, `goal30_qualify.py`, `goal30_legcheck.py`, `goal30_search.py` … `goal30_search4.py`.
+
+**Der Ansatzpunkt:** `auto_fit` nimmt ein Bein nur auf, wenn `pass_neu ≥ pass_alt + 2`. Das ist eine **Quoten-Regel** — sie hat systematisch jeden Kandidaten abgelehnt, der Tempo gegen Quote tauscht (#068: NOISE_ORB 57%/86d → 52%/53d = abgelehnt). Für Max' Ziel ist genau dieser Trade-off der richtige. Die Bank war voll von Beinen, die für das *falsche* Ziel aussortiert wurden.
+
+### 🎯 Ergebnis: 4 Beine statt 6
+| Bein | Mechanismus | Tr/Jahr | Status |
+|---|---|---|---|
+| `NOISE_ORB_NQ` | Zarattini Noise-Band (#068/#070) | 185 | **neu** (lag auf der Bank) |
+| `RV_leadlag_NQES_t0.002_lr0.5_s0.75` | NQ→ES Lead-Lag | 63 | **Parameter-Variante** des Buch-Beins |
+| `NQ_Asia-Dir-USopen` | Asien-Richtung → US-Open | 25 | bleibt |
+| `OPEXMOM_NQ_e150_t0.1_s0.75` | OpEx-Momentum | 10 | **neu** (Bank seit #049) |
+
+**Frontier gegen das aktuelle Buch (E8 50k, EOD-Trailing, identische Methode):**
+
+| frac | 0.10 | 0.22 | 0.30 |
+|---|---|---|---|
+| Buch heute (6 Beine) | 57%/85d | 50%/48d | 45%/27d |
+| **Zielbuch (4 Beine)** | **65%/91d** | **57%/50d** | **51%/28d** |
+
+- **Max' Ziel ist erreicht:** frac 0.30 → **50,6% ± 0,25 / 28,3 Tage** (40.000 Sims, 2σ = 50,1–51,1%).
+- **Der eigentliche Gewinn liegt woanders:** das Zielbuch dominiert das aktuelle auf **jedem** Punkt der Frontier. Bei frac 0.10 sind es **65% statt 57%**.
+- **Und es ist robuster:** IS 2016-23 **67% vs. 52%**, OOS 2024-26 62% vs. 62%. Das alte Buch war stark fensterabhängig (#070 Insight #9), das neue nicht.
+
+### Weniger ist mehr — jedes zusätzliche Bein verschlechtert es
+| Variante | avg\|corr\| | VOLL@0.10 | IS@0.10 |
+|---|---|---|---|
+| Zielbuch (4) | 0,088 | **65%/91d** | **67%** |
+| + NQ_Momentum (5) | 0,147 | 55%/55d | 54% |
+| + Momentum + FLIP (6) | 0,148 | 49%/30d | 48% |
+| sanft: Buch + Noise + OpEx (8) | 0,095 | 54%/51d | 54% |
+
+Das widerspricht scheinbar der Diversifikations-Doktrin, ist aber **Insight #6 in Reinform**: der Trailing-DD bestraft Pfad-Varianz. `NQ_Momentum` ist einzeln ein sauberes Bein (IS +0,093 / OOS +0,232 / 10 von 11 Jahren), hat aber als Continuation-Strategie mit RR>1 eine choppige Equity — im Buch senkt es die Quote um 10 Punkte. **Diversifikation hilft nur, solange die zusätzlichen Beine die Pfad-Varianz nicht erhöhen.**
+
+### 🚨 Der methodische Fund: die Tage-Minimierung belohnt Tail-Lotterien
+Die ersten drei Suchläufe lieferten scheinbar bessere Zahlen (52%/26d) — und waren Schrott:
+- **Lauf 2** wählte `OPEXMOM_RTY_..s1.0` **und** `..s0.75`: **corr 0,993, 100% Tagesüberlappung**. Dasselbe Bein zweimal, nur anderer Stop = doppelte Positionsgröße, keine Diversifikation.
+- **Lauf 3** (mit Redundanz-Constraints) nahm `PIV_revert_NQ_c180` auf: top5 = **150%** des Gewinns, 5/11 Jahre positiv, 2025+ **negativ** — und Pivots sind in **#051 ausdrücklich als NO-GO beerdigt**. Dazu `VOLBRK_NQ` (top5 91%, 2025+ −1.738$) und `MOMSEL_ES` (4/11 Jahre). Gleichzeitig warf es `NQ_Momentum` raus, eines der saubersten Beine im Bestand.
+- **Ursache:** ein Bein mit seltenen, großen Gewinnen erreicht das Target im Monte-Carlo schneller — auch wenn es die meiste Zeit verliert. Wer auf „wenige Tage" optimiert, bekommt Lotterielose.
+- **Konsequenz:** Qualität wird **vor** der Suche durchgesetzt, nicht danach geprüft. Von 97 Kandidaten überlebten die #070-Gates (IS>0, OOS>0, top5<60%, ≥55% Jahre positiv, 2025+ positiv) nur **22** — effektiv 7 unabhängige Mechanismen.
+
+### Vorbehalte (müssen vor einem Live-Umbau geklärt sein)
+1. **frac 0.30 ist aggressiv.** Das Buch lief bisher auf 0.10-0.22. Wer die Quote statt das Tempo will, nimmt frac 0.10 und bekommt 65%/91d.
+2. **Der EOD-vs-Intraday-Vorbehalt.** Unter Intraday-Trailing-DD fällt das Zielbuch auf 35%/30d. Ich stütze mich darauf, dass E8 **EOD**-Trailing hat (Research-Cache 28.07.2026). **Bei frac 0.30 ist diese Annahme existenziell** — vor dem Live-Gang schriftlich bestätigen lassen.
+3. **Werkzeug-Befund:** `funded_frontier.passmc` prüft den Drawdown **nur am Tages-Close** — `dw` (Tages-Tiefpunkt) fließt dort nur ins Sizing ein, nicht in den Bust-Check. `book.mc` kann beides (`dd_mode`). Für E8/EOD korrekt, aber man muss es wissen. Meine `passmc_vec` kann beide Modi (Regressions-Check gegen das Original: 57%/85d vs. 57%/86d).
+4. **Radikaler Umbau:** 5 der 6 Beine würden getauscht. Entscheidung liegt bei Max → Ticket `buch-umbau-071`.
+
+### Lehren
+1. **Ein Optimierungsziel erzeugt seine eigenen Artefakte.** „Maximiere Quote" (auto_fit) lehnt Tempo-Beine ab; „minimiere Tage" zieht Tail-Lotterien an. Beide Male ist nicht der Suchraum das Problem, sondern die Zielfunktion. **Qualitätsgates gehören vor die Suche, nicht dahinter.**
+2. **Mehr Beine ≠ besser.** Diversifikation zahlt nur, wenn das neue Bein die Pfad-Varianz nicht erhöht. Ein einzeln sauberes Bein kann das Buch um 10 Punkte verschlechtern.
+3. **Der Engpass ist die Mechanismen-Vielfalt, nicht die Kombinatorik.** 169 Survivors → 97 Kandidaten → 22 qualifiziert → 7 unabhängige Mechanismen. Weitere Kombinatorik auf diesem Bestand bringt nichts mehr; für einen echten Sprung braucht es **neue Mechanismen** (→ Cross-Asset, siehe [[Discovery-Prozess (wie wir Alpha finden)]]).
+
+## #072 — Optimierung auf Challenge-Bestehen: zwei Rechenfehler gefunden, die alle Vault-Zahlen betreffen (10.08.2026)
+Max' Ziel nach #071: nicht mehr „>50% in <30 Tagen", sondern **so weit wie möglich auf das Bestehen von Funded-Challenges optimieren**. Skripte: `goal_maxpass.py`, `goal_maxpass2.py`, `goal_final.py`, `goal_multiaccount.py`.
+
+### 🚨 Fehler 1: Der Sim-Horizont zählt aktive Handelstage, nicht Kalendertage
+Die reine Passquoten-Maximierung lief sofort in eine Entartung: **„100% Passquote in 2.057 Tagen"** mit einem einzelnen OpEx-Bein. Ursache gefunden: `FF.passmc` (und alles, was darauf aufbaut) setzt `horizon=252` — in **aktiven Handelstagen**. Damit bekommt
+
+| Buch | aktive Tage/Jahr | effektive Zeit bei horizon=252 |
+|---|---|---|
+| Buch heute | 228 | 1,1 Jahre |
+| Zielbuch #071 | 181 | **1,4 Jahre** |
+| OpEx-Bein solo | ~10 | **25 Jahre** |
+
+**Konsequenz:** Alle Passquoten im Vault (57%, 61%, 65%) bedeuten *„irgendwann innerhalb von ~1,1–1,4 Jahren"*, **nicht** „innerhalb der genannten Median-Tage". Und der Vergleich zweier Bücher unterschiedlicher Frequenz ist systematisch zugunsten des selteneren verzerrt. Fix: Horizont in Kalendertagen vorgeben, je Buch in aktive Tage umrechnen (`h_cal/365.25 × apy`).
+
+**Ehrliche Zahlen mit Kalender-Horizont (E8-EOD-DD):**
+
+| Buch | 60 Tage | 90 Tage | 180 Tage |
+|---|---|---|---|
+| Buch heute (6 Beine) | 38,2% | 41,2% | 51,3% |
+| **Zielbuch #071 (4 Beine)** | **41,4%** | **45,2%** | **57,2%** |
+
+Das Zielbuch bleibt auf jedem Horizont vorn (+3 bis +6 Punkte) — die Rangfolge aus #071 hält, nur das Niveau war zu hoch.
+
+### 🚨 Fehler 2: „2 Konten parallel = 75%" ist falsch (korrigiert #029)
+[[Strategie-Logbuch|#029]] empfahl **„2× 25k parallel → ≥1 Pass ≈ 75%"**. Das setzt Unabhängigkeit voraus. Zwei Konten, die dasselbe Buch mit demselben Sizing fahren, handeln aber **dieselben Signale am selben Tag**. Auf gemeinsamen Marktpfaden gemessen (`goal_multiaccount.py`, 40.000 Sims):
+
+| Variante | 25k | 50k |
+|---|---|---|
+| **A) 2× identisch parallel** | 50,2% → 50,2% (**+0,0pp**) | 33,5% → 33,5% (**+0,0pp**) |
+| B) 2× parallel, verschiedene frac (0.04/0.40) | 55,1% (+4,9pp, corr 0,73) | **51,9%** (+18,4pp, corr 0,47) |
+| C) sequenziell (Reset nach Fail) | **74,9%** (2×90d, 200$) | 55,6% (2×90d, 300$) |
+
+- **Ein zweites identisches Konto bringt exakt null.** Entweder bestehen beide oder keins.
+- Die naive Unabhängigkeitsformel überschätzt Variante B um **11–18 Prozentpunkte**.
+- Echte Streuung entsteht nur über **unterschiedliches Sizing** (teilweise) oder **zeitliche Trennung** (voll).
+- Beim 25k greift der Min-Size-Effekt: beide fracs landen bei ähnlichem Sizing (corr 0,73), der Split bringt wenig. Beim 50k ist er wirksam (corr 0,47, +18pp).
+
+### Beste Konfiguration für „Challenge bestehen"
+Die freie Suche auf 25k (`goal_final.py`) konvergiert **auf dasselbe Buch wie #071** — zwei verschiedene Zielfunktionen, dasselbe Ergebnis. Das ist die bisher stärkste Bestätigung für das 4-Bein-Buch.
+
+| Strategie | P(bestehen) | Zeit | Kosten |
+|---|---|---|---|
+| Zielbuch auf **25k**, frac 0.04 | **50,1%** | 90 Tage | 100$ |
+| Zielbuch auf 25k, **sequenziell mit Reset** | **74,9%** | 180 Tage | 200$ |
+| Zielbuch auf 50k, 2 Konten mit frac-Split 0.04/0.40 | 51,9% | 90 Tage | 300$ |
+| Buch heute auf 50k (Status quo) | 41,2% | 90 Tage | 150$ |
+
+**Unter Intraday-DD statt EOD fällt alles auf 33–34%** — der Vorbehalt aus Ticket `e8-dd-mechanik` ist damit der wichtigste offene Punkt überhaupt.
+
+### Lehren
+13. **Ein Simulations-Horizont in „aktiven Tagen" ist kein Zeitlimit.** Bücher unterschiedlicher Handelsfrequenz bekommen dadurch unterschiedlich viel Kalenderzeit — der Vergleich ist verzerrt, und Klein-N-Strategien werden absurd bevorteilt. **Zeitfenster immer in Kalendertagen vorgeben.**
+14. **Parallele Konten mit demselben Buch sind ein einziges Konto.** P(mind. 1 Pass) darf nur mit gemessener Korrelation gerechnet werden, nie mit `1-(1-p)^n`. Diversifikation über Konten braucht unterschiedliches Sizing oder zeitlichen Versatz — sonst ist es nur doppelte Gebühr.
+
+## #073 — „>50% in unter 30 Tagen": mathematisch nicht erreichbar, und zwar unabhängig vom Buch (10.08.2026)
+Nach der Horizont-Korrektur aus #072 nochmal hart gegen Max' ursprüngliche Zielvorgabe gerechnet — diesmal mit echter 30-Tage-Frist statt Median-Tagen. Skripte: `goal30_hard.py`, `goal30_ceiling.py`.
+
+### Alles ausgereizt, was es an Hebeln gibt
+| Hebel | Ergebnis |
+|---|---|
+| Kontogröße 10k / 15k / 25k / 50k | Maximum **44,6%** (10k) |
+| Kontrakt-Cap 3 → 20 | **kein Einfluss** (43,1% durchgehend — der Cap bindet nie, das Cushion-Sizing begrenzt vorher) |
+| Sizing frac bis 1.0 | ausgereizt |
+| Zeithorizont 30 → 120 Tage | **kein Einfluss** (43,5% durchgehend) |
+| Beam-Search über alle qualifizierten Beine | +1 bis +2 Punkte |
+
+### Warum: bei kurzer Frist zählt nur das Barrieren-Verhältnis
+Der Grund, dass Horizont und Cap wirkungslos bleiben, ist strukturell. Bei aggressivem Sizing terminiert jeder Pfad binnen weniger Tage — Target oder Bust. Damit fällt die Passquote auf die Mathematik eines Random Walks mit zwei absorbierenden Barrieren zurück: **P(pass) → DD / (Target + DD)**.
+
+| Käfig (Target/DD) | Theorie | gemessen | Delta |
+|---|---|---|---|
+| **E8 50k — 3000/2000** | 40,0% | **39,8%** | −0,2pp |
+| E8 25k — 1500/1000 | 40,0% | 40,6% | +0,6pp |
+| **E8 10k — 600/400** | 40,0% | **43,5%** | **+3,5pp** |
+| Bulenox 50k — 3000/2500 | 45,5% | 43,8% | −1,6pp |
+| hypothetisch 3000/4000 | 57,1% | 52,0% | −5,2pp |
+| hypothetisch 2000/3000 | 60,0% | 54,4% | −5,6pp |
+
+**Das Buch bewegt die Zahl um maximal +3,5 Prozentpunkte.** Alles andere macht der Käfig. E8 hat bei *jeder* Kontogröße dasselbe Verhältnis (Target 6% / DD 4% = 3:2) und damit dieselbe Decke von ~40%.
+
+**Um über 50% in 30 Tagen zu kommen, bräuchte es DD ≥ Target.** Das bietet keine Prop-Firma an — daran verdienen sie.
+
+### Verdikt
+**Das Ziel ist bei E8-Konditionen nicht erreichbar, unabhängig davon, welche Beine im Buch stehen.** Es ist keine Alpha-Frage, sondern eine Frage der Frist: in 30 Tagen kann eine Edge von ~0,1R pro Trade schlicht nicht genug Trades sammeln, um die Barrieren-Mathematik zu schlagen. Was geht:
+
+| Ziel | Beste Konfiguration | Wert |
+|---|---|---|
+| in 30 Tagen | 5-Bein-Buch auf E8 10k | **43,5%** |
+| in 90 Tagen | 4-Bein-Zielbuch auf E8 25k | **50,1%** |
+| ohne Fristdruck (2 Versuche seriell) | 4-Bein-Zielbuch auf 25k | **74,9%** (180 Tage, 200$) |
+
+### Nachtrag: STATIC vs. TRAILING erstmals gemessen — und die exakte Anforderung an den Käfig
+`passmc` konnte bisher **nur trailing** (Floor wandert mit dem Peak nach oben). Der statische Fall (Floor fix bei −DD) war nie implementiert und damit nie gerechnet. Nachgeholt in `goal30_cage.py`:
+
+| Käfig | Theorie | trailing | **static** | Delta |
+|---|---|---|---|---|
+| E8 50k — 3000/2000 | 40,0% | 39,8% | **42,6%** | +2,8pp |
+| E8 25k — 1500/1000 | 40,0% | 40,6% | **44,2%** | +3,6pp |
+| **E8 10k — 600/400** | 40,0% | 43,5% | **48,5%** | **+4,9pp** |
+| Bulenox — 3000/2500 | 45,5% | 43,8% | **46,2%** | +2,3pp |
+
+**Static ist durchgehend 2,3–4,9 Punkte besser** — der Trailing-Floor kostet real Passquote, weil er nach jedem Hoch nachzieht und den Puffer wegnimmt.
+
+**Damit ist die Anforderung an den Käfig exakt beziffert.** Für >50% in 30 Kalendertagen braucht es:
+- bei **static**: DD ≥ **0,83 × Target**
+- bei **trailing**: DD ≥ **1,00 × Target**
+
+E8 liegt bei 0,67 × Target (4% DD / 6% Target) — und zwar bei *jeder* Kontogröße. Das ist die ganze Erklärung.
+
+### Der Markt bietet den nötigen Käfig nicht an (Käfig-Scan 10.08., Research-Cache #073-Block)
+Nachdem die Anforderung beziffert war (static: DD ≥ 0,83 × Target · trailing: DD ≥ 1,00 × Target), den gesamten Markt abgesucht — 12 Firmen, davon 11 neu recherchiert.
+
+| Firma / Konto | Target | DD | Typ | DD/(T+DD) |
+|---|---|---|---|---|
+| **Bulenox 50k Opt.2** | 3.000 | 2.500 | EOD-trailing | **45,5%** |
+| Tradeify Select 50k | 2.500–3.000 *(unklar)* | 2.000 | EOD-trailing | 40,0–44,4% |
+| **E8 / Topstep / TPT / Alpha Zero / MFFU / LucidFlex / TradeDay** | 3.000 | 2.000 | EOD-trailing | **40,0%** |
+| Elite Trader Funding 50k | 4.000 | 2.000 | **static** | 33,3% |
+| TradeDay Static | 1.500 | 500 | **static** | 25,0% |
+| DayTraders Static | 3.750 | 1.000 | **static** | 21,1% |
+
+**Zwei Befunde:**
+1. **Der Markt clustert bei exakt 40%.** $3.000 Target / $2.000 DD auf 50k ist Industriestandard — E8, Topstep, Take Profit Trader, Alpha Futures, MFFU, LucidFlex, TradeDay sind identisch. Das ist kein Zufall: bei 40% verdient die Firma an jeder Eval.
+2. **„Static" ist kein Garant für eine bessere Ratio.** Alle drei echten Static-Angebote haben ein **schlechteres** Verhältnis als E8 (21–33%), weil die Firmen das Target proportional zur kleineren DD anheben. Der statische Vorteil aus unserer Messung (+2,3 bis +4,9pp) wird durch die Konditionen mehr als aufgefressen.
+
+**Bestes reales Angebot: Bulenox 45,5% — und das ist für uns tot, weil Bulenox VPS strikt verbietet** (Ticket #RAX-292098, Research-Cache). Selbst mit Bulenox wären es gemessen 45,0%, nicht >50%.
+
+### Und wie gut müssten neue Beine sein? — die Anforderung beziffert
+Max' wörtlicher Auftrag war „finde weitere Beine". Bisher wurde nur aus dem Bestand kombiniert. Deshalb zum Abschluss quantifiziert, **was ein besseres Buch leisten müsste** (`goal30_required_edge.py`): der Drift der Tages-P&L wird angehoben, die Streuung bleibt gleich (= reine Sharpe-Verbesserung, nicht mehr Size — Size ist über `frac` bereits ausgereizt).
+
+Aktuelles Buch: Tages-P&L **+38,43 $** bei Streuung 450,92 $ → **Sharpe 1,37** annualisiert.
+
+| Drift | Sharpe/Tag | E8 50k | E8 10k | Bulenox |
+|---|---|---|---|---|
+| ×1,00 (heute) | 0,085 | 40,0% | 43,7% | 43,8% |
+| ×1,50 | 0,128 | 45,3% | 49,4% | 49,3% |
+| **×2,00** | 0,171 | **51,2%** | **54,6%** | **55,5%** |
+| ×3,00 | 0,256 | 63,9% | 64,5% | 68,4% |
+
+**Nötig ist der ~2-fache Drift bei gleicher Streuung — ein Buch mit Sharpe ≈ 2,7.** Bei allen drei Käfigen identisch, was die Robustheit des Befunds zeigt.
+
+**Einordnung:** Renaissance Medallion liegt langfristig bei Sharpe ~2,5, ein sehr gutes systematisches Intraday-Buch bei 1,5–2,5. Das aktuelle Buch (1,37) ist für Retail-Verhältnisse mit 1-Min-OHLCV und ohne L2 bereits solide. **Gefordert wäre also ein Buch über Medallion-Niveau** — das ist mit den verfügbaren Daten nicht erreichbar, und keine Anzahl zusätzlicher Beine aus dem heutigen Mechanismen-Vorrat kommt dort hin (der Pool liefert nur ~7 unabhängige Mechanismen, siehe #071).
+
+### 🔚 Endgültiges Verdikt
+**„>50% Passquote in unter 30 Kalendertagen" ist nicht erreichbar — weder mit einem anderen Buch noch mit einer anderen Firma.** Das Buch trägt maximal +3,5 Punkte, der beste am Markt verfügbare Käfig liefert 45,5% Barrieren-Ratio, und die nötigen ≥50% gibt es nirgends. Erreichbar ist:
+
+| Frist | Beste reale Konfiguration | Wert |
+|---|---|---|
+| 30 Tage | 5-Bein-Buch, Bulenox-Käfig (VPS-K.O.) | 45,0% |
+| 30 Tage | 5-Bein-Buch, E8 10k | **44,2%** |
+| 90 Tage | 4-Bein-Zielbuch, E8 25k | **50,1%** |
+| 180 Tage, 2 Versuche | dito | **74,9%** |
+
+### Lehre
+15. **Kurze Frist = Barrieren-Mathematik, lange Frist = Edge.** Bei einer Frist, die zu kurz ist, um viele Trades zu sammeln, konvergiert P(pass) gegen `DD/(Target+DD)` — das Buch trägt dann nur noch wenige Prozentpunkte bei. **Tempo-Ziele sind deshalb primär eine Firmen-/Käfig-Frage, keine Strategie-Frage.** Umgekehrt lohnt Alpha-Arbeit nur, wenn die Frist lang genug ist, dass die Edge wirken kann. Deckt sich mit #032 (Käfig-Scan: Firmenwahl war +7 Punkte, mehr als jedes Bein).
+16. **Trailing-DD kostet 2,3–4,9 Prozentpunkte gegenüber static** — bei sonst identischem Käfig. Der Floor zieht nach jedem Hoch nach und nimmt genau den Puffer weg, den man gerade erarbeitet hat. **Bei der Firmenwahl ist der DD-TYP so wichtig wie die DD-HÖHE.** Konkrete Schwellen für >50% in 30 Tagen: static braucht DD ≥ 0,83 × Target, trailing braucht DD ≥ 1,00 × Target.
+17. **„Static DD" ist als Werbeversprechen wertlos** (#073-Käfig-Scan). Firmen, die statischen Drawdown anbieten, heben im Gegenzug das Profit-Target an — alle drei gefundenen Static-Angebote haben ein *schlechteres* `DD/(Target+DD)` als der Trailing-Standard (21–33% vs. 40%). **Immer die Ratio rechnen, nie den DD-Typ allein bewerten.**
+18. **Eine nominal gute Ratio ist bei Intraday-Trailing wertlos.** Die Näherung `P(pass) ≈ DD/(Target+DD)` gilt nur für EOD- und statischen Drawdown. Bei Intraday-Trailing bricht sie zusammen: Apex 50k hat nominal 45,5%, real gemessen (#069) nur 23–33%. **Bei jeder Firma zuerst klären, ob der DD intraday zieht — das entscheidet mehr als die Ratio.**
+
+## #074 — Alpha durch Fehlersuche: 40,0% → 48,6% ohne ein einziges neues Bein (10.08.2026)
+Max' Auftrag: erst in den eigenen Unterlagen nach **Fehlern in Anwendung/Coding** suchen (ein falsch implementierter Algo verliert Geld, sein Fix ist kostenloses Alpha), dann externe Research. Skripte: `goal_variance.py`, `goal_weights.py`, `goal_final_opt.py`, `goal_onrv_filter.py`.
+
+### 🐛 Fund 1: `book.cell_daily` zählt das Tagesrisiko doppelt
+```python
+cc = np.cumsum(close)
+worst = min(cc.min(), (cc - ma).min(), 0.0)      # book.py:43
+```
+`cc[k]` ist das kumulierte **Ergebnis bis inklusive** Trade k, `ma[k]` das MAE **von** Trade k. Die Formel zieht das MAE also von einem Stand ab, der das Ergebnis desselben Trades schon enthält — bei einem Verlust-Trade wird der Verlust zweimal gezählt. Korrekt ist `cc[k-1] - ma[k]` (Stand **vor** dem Trade minus dessen MAE).
+
+Beispiel: Trade verliert 100 $ und hatte 100 $ MAE → aktuell −200 $, korrekt −100 $.
+
+| Bein | risk alt | risk neu | Faktor |
+|---|---|---|---|
+| NQ_Momentum | 204,3 $ | 81,0 $ | **2,52** |
+| RTY_Gap-fade | 98,5 $ | 36,8 $ | **2,68** |
+| NOISE_ORB_NQ | 138,0 $ | 61,0 $ | 2,26 |
+| RV_leadlag | 212,5 $ | 97,4 $ | 2,18 |
+| NQ_ORB-fade | 77,2 $ | 36,5 $ | 2,12 |
+
+**Alle Beine hatten ein um Faktor 1,7–2,7 überschätztes Tagesrisiko.** Da `risk = median(|dw<0|)` das Cushion-Sizing steuert, wurde systematisch zu klein gesized. Wirkung auf die Passquote: **+1,3pp (EOD), +4,2pp (intraday)** — im EOD-Modus teilweise durch `frac` kompensierbar, im Intraday-Modus voll wirksam.
+
+> [!warning] Live-Relevanz
+> Wenn der RiskGuard dasselbe Risikomaß verwendet, sized er live zu klein. Das ist verlorenes Geld, kein Backtest-Artefakt. → Ticket `riskguard-risk-mass`.
+
+### 🐛 Fund 2: Die Beine laufen alle mit derselben Kontraktzahl
+`passmc` berechnet **ein** `sz` und wendet es auf die aggregierte Tages-P&L an — implizit Gleichgewichtung. Die Tages-Sharpes der Beine unterscheiden sich aber um Faktor 4 (OPEX 0,30 · ASIA 0,17 · RV 0,14 · NOISE 0,12). Ein Bein mit 0,30 gleich stark zu fahren wie eines mit 0,12 verschenkt Sharpe.
+
+**Das erklärt rückblickend #071:** dort hat *jedes* zusätzliche Bein die Passquote gesenkt. Nicht das Bein war das Problem, sondern die Gleichgewichtung — ein schwaches Bein schleppte seine volle Varianz ins Buch. Mit Sharpe-optimaler Gewichtung (`w ∝ Σ⁻¹μ`, auf ganze Kontrakte gerundet, live pro Bein eine eigene Kontraktzahl) kehrt sich das um.
+
+### Die Verbesserungskette (30 Kalendertage, EOD-DD)
+| Schritt | Passquote | Buch-Sharpe |
+|---|---|---|
+| Ausgangspunkt (gleichgewichtet, dw-Bug) | 40,0% | 0,1057 |
+| + dw-Bug gefixt | ~41,3% | — |
+| + Exit-Varianten je Bein (auf **Sharpe** optimiert, nicht expR) | 41,9% | 0,1412 |
+| + Sharpe-optimale Gewichtung | 44,2% | 0,1529 |
+| + fünftes Bein (mit Gewichtung erstmals hilfreich) | 44,5% | 0,1534 |
+| **+ Kontogröße 25k** | **48,6%** | — |
+
+**+8,6 Prozentpunkte ohne ein einziges neues Bein**, allein durch zwei Bugfixes und die richtige Zielgröße (Sharpe statt expR). Das gewichtete Endbuch: 3× `NOISE m1.5` · 6× `OPEX` · 2× `RV stop0.3` · 6× `ASIA tgt2.0` · 6× `OPEXMOM s1.5`.
+
+Bemerkenswert: die Exit-Optimierung auf **Sharpe statt expR** hat einzelne Beine massiv verbessert — `RV_leadlag` mit `rv_stop=0.3` erreicht expR **+0,424** (statt +0,219) bei IS +0,353 / OOS +0,651.
+
+### Externe Research (#074-Block im Research-Cache)
+Ein verwertbarer Fund, und der hilft nicht: **Overnight-Realized-Vola als Vol-Prädiktor** (Zhang/Zhao SSRN 3574323, MSE −27,8%). Getestet als Tagesfilter: er hebt den Sharpe real (0,1534 → 0,1799 im mittleren Vol-Band), **senkt aber die Passquote** (48,5% → 45,4%). Grund siehe Lehre unten.
+Negativbefunde, die künftige Suchen sparen: **ML auf MNQ-OHLCV ist tot** (zwei 2026er Papers: LSTM/GBM schlagen die 51,8%-Basisrate nicht signifikant, Feature-Importance instabil) · **kein Paper zu Prop-Firm-First-Passage-Sizing** existiert (nur Blog-Rechner) · **keine Arbeit quantifiziert Korrelation Momentum↔Alternative für Index-Futures**.
+Und im eigenen Pool: **kein einzig negativ korrelierter Kandidat** (Minimum +0,111) — gratis Varianz-Reduktion durch Diversifikation gibt es nicht.
+
+### Stand zum Ziel
+**48,6% in 30 Kalendertagen** (25k-Konto). Zum Ziel fehlen **1,4 Prozentpunkte**; der nötige Buch-Sharpe ist 0,1705, erreicht sind 0,1534. Alle drei Kontogrößen konvergieren bei 48,5–48,6% — das ist die Sharpe-Grenze des Buchs, kein Käfig-Effekt mehr.
+
+### Lehren
+19. **Ein falsch gerechnetes Risikomaß ist teurer als eine fehlende Strategie** (#074). Der doppelt gezählte Tages-Drawdown hat alle Beine um Faktor 1,7–2,7 zu riskant erscheinen lassen und damit das Sizing gedrosselt. **Vor jeder Alpha-Suche die Messkette prüfen** — hier waren zwei Bugfixes mehr wert als jedes neue Bein.
+20. **Gleichgewichtung ist eine stille Annahme, keine neutrale Wahl** (#074). Beine mit Sharpe-Unterschieden von Faktor 4 gleich zu fahren verschenkt Portfolio-Sharpe und lässt gute Zusatzbeine wie Verwässerer aussehen. **Jede Portfolio-Aussage gilt nur zusammen mit ihrer Gewichtung.**
+21. **Bei fester Kalenderfrist ist Tage-Wegfiltern kontraproduktiv** (#074). Der Overnight-Vol-Filter hob den Sharpe um 17%, senkte die Passquote aber um 3pp — weil er Handelstage entfernt und man innerhalb von 30 Kalendertagen die Trades *braucht*, um das Target zu erreichen. **Selektivität zahlt sich nur ohne Fristdruck aus.**
+22. **Exits gegen Sharpe optimieren, nicht gegen expR** (#074). `RV_leadlag` mit engem Stop (0,3 statt 0,75) verdoppelt den expR auf +0,424 und hebt gleichzeitig den Tages-Sharpe — der expR allein hätte die Variante nicht gefunden, weil er die Streuung ignoriert.
+
+## #075 — Engine-Audit: fünf Bugs, davon zwei die live Geld kosten (10.08.2026)
+Fortsetzung von #074. Ein vollständiges Code-Audit auf Bugs mit **Performance-Wirkung** hat drei weitere Funde geliefert, zwei davon kritisch — und zwei von ihnen machen die Zahlen **schlechter**, nicht besser.
+
+### 🔴 Fund 1: `rv.py:167` skaliert das Risiko mit dem falschen Instrument
+```python
+R_pts = risk_d * c1[i0]     # c1 = Leader (NQ ~20.000)
+```
+Bei `rv_mode="leadlag"` ist der PnL-Träger aber **Symbol 2** (`base = r2 - r2[i0]`, die Position läuft in ES ~6.000). Median NQ/ES = 3,27. `qbt.py:53` fordert selbst „symbol MUSS = rv_sym1 sein" — das Bein setzt `symbol: ES` und verletzt genau das. Für die Spread-Modes (`div_fade` etc.) ist `c1` korrekt, **nur leadlag ist falsch**.
+
+| | gebucht | ehrlich |
+|---|---|---|
+| $/R | 113,7 | 36,2 |
+| **expR netto** | **+0,239** | **+0,087** |
+| $/Trade | **34,06** | **9,12** |
+| Total 10,5 J | 11.036 $ | 5.975 $ |
+
+**`edge_ref.json` trägt 34,06 $/Trade als Live-Referenz für `MaxLeadLagES` — das ist 3,7× zu hoch.** Das Bein läuft live. Die Variante `rv_stop=0.3`, die in #074 noch als Star galt (expR +0,424), **fällt nach dem Fix durch die Qualitätsgates**.
+
+### 🔴 Fund 2: Kaputte Kursdaten in ES und RTY
+`load_rth` hatte keinen Sanity-Guard. Gemessen: **ES 780 Bars in 2 Sessions, RTY 8.591 Bars in 24 Sessions mit Preis ≤ 0** (Minimum −9,35 $). Ursache: Kalender-Spread-Quotes aus den Quartals-Rolls sind in die Continuous-Serien geleakt. `rv.py:80` normiert auf `c2[0]` — bei `c2[0] ≈ 2` explodiert der Renditevektor. **Zwei leadlag-Trades auf solchen Tagen trugen 22,3% des gesamten Leg-P&L.** NQ und YM sind clean.
+Gefixt: `_drop_corrupt_sessions()` verwirft die ganze Session (nicht nur die Bars, sonst bleibt ein halber Tag mit falschem Referenzpreis stehen).
+
+### 🟡 Fund 3: Das Asia-Bein steigt live eine Minute zu spät ein
+`MaxAsiaDirNQ.cs` entscheidet im `IsFirstBarOfSession`-Block bei `Calculate.OnBarClose` → Fill am **09:31**-Open. `asian.py:161` nimmt den **09:30**-Open. Gemessen: **$/Trade 29,82 → 18,97, expR +0,217 → +0,176. Die erste US-Open-Minute ist 36% der Leg-Edge** (~271 $/Jahr/Micro). Kein Backtest-Fehler, sondern ein Live-Implementierungsfehler — der Fix im Script (Order vor dem Open platzieren) holt die Edge zurück.
+
+### 🟢 Fund 4: Meine MAE-Doppelzählung steckt an drei Stellen, nicht einer
+`book.py:43` (schon in #074), zusätzlich **`qbt.py:1213`** (`prop_pass_probability`) und **`copilot.py:154`** (`_daily_pnl_arrays`). Alle sechs Live-Beine machen genau 1 Trade/Tag — damit ist der Fehler mathematisch eindeutig: buggy liefert `close − mae`, korrekt ist `−mae`.
+Auf dem Live-Buch mit **Intraday**-Trailing-DD, flaches Sizing: **1u 41% → 51%, 3u 23% → 31%.** Über `copilot.prop_assistant`: beste Größe 37% → 42%. Bei Cushion-Sizing reskaliert der Fix nur `frac`, die Frontier bleibt fast invariant — **der echte Gewinn steckt im Intraday-Breach-Check.**
+
+### 🟢 Fund 5: Slippage auf Limit-Fills
+`cost_pts` belastet unbedingt 2 Ticks, unabhängig vom Ordertyp. Bei einer ruhenden Limit zahlt man keinen Spread. Betroffen: **ORB-fade** (`entry = level`, live bestätigt in `MaxORBFadeNQ.cs`), `orb_exec="retest"`, und jeder Target-Exit. → **ORB-fade expR +0,063 → +0,086 (+36%)**, Buch +290 $ von 60.549 $. Ehrlich dazu: Stop-Market-Exits slippen real oft *mehr* als 1 Tick, und Queue-/No-Fill-Risiko ist gar nicht modelliert. Der saubere Fix ist getrennte `entry_slip_ticks`/`exit_slip_ticks`, nicht pauschal −1 Tick.
+
+### Entkräftet (wo ich Bugs vermutet hatte, sind keine)
+- **Stop-vor-Target-Konvention kostet exakt 0.** Über alle drei Loops instrumentiert: **kein einziger Trade** im Live-Buch berührt Stop und Target in derselben Minute. Die konservative Konvention ist gratis.
+- **Keine doppelte Kostenverrechnung.** `cost_pts` wird genau einmal abgezogen; Portfolio-Frames setzen `cost_pts=0` nur zur Anzeige.
+- **MAE bei `orb_exec="close"` ist korrekt** — der Fill ist der letzte Tick der Bar, innerhalb der Fill-Bar kann keine Adverse Excursion liegen.
+- **Latenter Optimismus-Bug für später:** ORB-**Fade mit gesetztem `target_mult`** hat **35/422 (8,3%) Fake-Target-Hits** in der Fill-Bar (`qbt.py:466` seedet MAE mit der kompletten Fill-Bar). Aktuell nicht im Buch (`target_mult: null`), aber die #070-Fade-Arbeit läuft genau dort hinein.
+
+### Stand zum Ziel nach allen Fixes
+| Schritt | Passquote (30 Kalendertage) |
+|---|---|
+| Ausgangspunkt #074 | 40,0% |
+| #074-Optimierung (mit rv-Bug) | 48,6% |
+| **nach rv-Fix + Datenguard (ehrlich)** | **48,1%** (10k) |
+
+Das gewichtete Endbuch: **3× `NOISE_ORB m1.5` · 8× `OPEXMOM t0.2/s0.75` · 4× `ASIA tgt2.0`**, Buch-Sharpe 0,1509. Es fehlen **1,9 Prozentpunkte**. Die #074-Zahl war um 0,5pp aufgebläht, weil das RV-Bein mit falscher Risiko-Einheit drin war.
+
+### Lehren
+23. **Ein Audit auf „Bugs, die Performance kosten" findet auch Bugs, die Performance *vorgetäuscht* haben.** Von fünf Funden machen zwei die Zahlen schlechter (rv-Einheit, Datenqualität) und drei besser (MAE, Slippage, Asia-Minute). Wer nur nach Verbesserungen sucht, findet die gefährlicheren nicht.
+24. **Einheiten-Fehler sind in Cross-Instrument-Strategien die Standardfalle** (#075). Wenn Signal und Position in verschiedenen Instrumenten leben, muss jede Risiko-, R- und Dollargröße explizit dem **PnL-Träger** zugeordnet werden. `qbt.py` hatte die Regel sogar dokumentiert — das Bein hat sie verletzt und niemand hat es 6 Wochen gemerkt.
+25. **Rohdaten brauchen einen Sanity-Guard, auch nach „geprüft".** Die Daten galten seit #001 als „lückenlos, 0 OHLC-Fehler" — es gab trotzdem 9.371 Bars mit negativem Preis. **Ein `price <= 0`-Check kostet drei Zeilen und hätte 22% eines Leg-P&L als Artefakt entlarvt.**
+
+## #076 — 57% in 30 Tagen: erreicht, aber nur über zwei Konten mit gespaltenem Sizing (10.08.2026)
+Letzter Vorstoß nach #075 (Stand dort: 48,1% pro Konto). Zwei Hebel, die noch offen waren. Skript: `goal_last_push.py`.
+
+### Hebel A — Slippage exakt nach Ordertyp (statt pauschal 2 Ticks)
+`qbt.py` belastet jeden Trade mit 2 Ticks Slippage. Real gilt: Limit-Entry = 0 Ticks, Target-Exit (Limit) = 0 Ticks, Market/Stop = 1 Tick. Pro Trade aus der `exit`-Spalte rekonstruiert:
+
+| Bein | expR vorher | expR exakt | Target-Exits |
+|---|---|---|---|
+| `ASIA tgt2.0` | +0,171 | **+0,193** | 84/264 |
+| `OPEX t0.2` | — | +0,162 | 0/84 |
+| `NOISE m1.5` | +0,100 | +0,112 | 0/1176 |
+| `ORBFADE` (Limit-Entry) | +0,063 | +0,132 | 0/422 |
+
+Gegenprobe mit konservativer Annahme (Stop-Exits slippen 1,5 Ticks statt 1): fast identisch, der Effekt ist robust. **Buch-Passquote: 48,1% → 48,4%.** Der ORB-Fade profitiert am meisten (+109%), fällt aber trotzdem durch die Qualitätsgates und kommt nicht ins Buch.
+
+### Hebel B — zwei Konten parallel mit gespaltenem Sizing ✅
+In #072 gemessen: zwei Konten mit **identischem** Sizing sind praktisch perfekt korreliert (Zugewinn 0,0pp). Mit **unterschiedlichem** frac entsteht echte Streuung. Für die 30-Tage-Frist nie gerechnet — hier nachgeholt, auf **gemeinsamen Marktpfaden** (also mit echter Korrelation, nicht mit Unabhängigkeitsannahme):
+
+| Konto | frac-Split | Konto 1 | Konto 2 | **mind. 1 Pass** | corr |
+|---|---|---|---|---|---|
+| 25k | 0,10 / 0,80 | 44,6% | 46,1% | **57,0%** | 0,53 |
+| 25k | 0,16 / 0,70 | 44,6% | 46,1% | **56,5%** | 0,55 |
+| 25k | 0,08 / 0,60 | 44,6% | 46,6% | **53,8%** | 0,67 |
+| 50k | 0,10 / 0,80 | 22,8% | 45,9% | **51,6%** | 0,31 |
+| **10k** | beliebig | 49,2% | 49,2% | **49,2%** | **1,00** |
+
+**Warum es funktioniert:** bei 25k (DD 1.000 $, Cap 7) bedeutet frac 0,10 konstant **1 Kontrakt**, frac 0,80 dagegen **3 bis 6 Kontrakte** je nach Kontostand. Die beiden Konten laufen dieselben Signale in völlig unterschiedlicher Größe und scheitern deshalb an verschiedenen Stellen — corr 0,53 statt 1,00.
+
+**Warum es auf 10k NICHT funktioniert:** dort greift die Mindestgröße von 1 Kontrakt für beide fracs, das Sizing ist identisch, corr = 1,00, Zugewinn null. Genau der Min-Size-Effekt aus #029.
+
+### 🎯 Zielerreichung — mit klarer Ansage, welche Lesart gilt
+| Größe | Wert | Ziel erreicht? |
+|---|---|---|
+| Passquote **pro Konto** (beste Einzelkonfiguration) | **48,4%** (10k) | ❌ nein |
+| **P(funded) mit zwei 25k-Konten**, frac 0,10 / 0,80 | **57,0%** | ✅ ja |
+| Kosten | 2 × 100 $ = **200 $** | statt 100 $ |
+
+Das Buch dazu: **3× `NOISE_ORB m1.5` · 8× `OPEXMOM t0.2/s0.75` · 4× `ASIA tgt2.0`**.
+
+> [!danger] Recherche (10.08.26) — Zwei-Konten-Plan laut E8-Regelwerk vermutlich NICHT zulässig
+> Anzahl paralleler Eval-Accounts ist bei E8 nicht limitiert (Frage 1 kein Blocker). Aber: E8s Copy-Trading-Regel verbietet explizit **"copying trades between multiple E8 evaluation accounts"** — "each evaluation must be done independently". Genau das ist unser Setup (zwei Evals, identisches Buch, nur Sizing-Split). Quelle nur via Suchmaschinen-Snippet erreichbar (Primärseite 403), aber über 3 unabhängige Anfragen identisch reproduziert → Konfidenz praktiker, kein bestätigt. Details + Kontraktlimits (25k: 2 Mini/20 Micro, 50k: 4/40, 100k: 8/80) in [[Research-Cache]]. **Vor jedem Kauf: schriftliche Support-Bestätigung einholen, ob der Sizing-Split (unterschiedliche Kontraktgröße, nicht identische Trades) als Ausnahme zählt — sonst Termination-Risiko für beide Konten.** Zusätzlich ungeklärter Widerspruch bei der News-Trading-Regel (2min/3min vs. neu gefunden 5min/5min) offen.
+
+### Lehren
+26. **„Passquote" ist zweideutig — pro Konto oder P(funded)?** Pro Konto bleiben wir bei 48,4%; die Wahrscheinlichkeit, überhaupt funded zu werden, liegt mit zwei gespaltenen Konten bei 57%. Beide Zahlen sind korrekt, sie beantworten verschiedene Fragen. **Bei jedem Passquoten-Ziel vorher festlegen, welche der beiden gemeint ist.**
+27. **Sizing-Split ist der billigste Diversifikator, den wir haben** (#076). Kein neues Bein, kein neuer Mechanismus, keine Research — nur zweimal dasselbe Buch in unterschiedlicher Größe. Wirkt aber nur, wo die Mindestgröße von 1 Kontrakt nicht beide fracs zusammenzieht: auf 25k bringt es +10pp, auf 10k exakt null.
+28. **Slippage ist ordertyp-abhängig, und das ist kein Detail** (#076). Der ORB-Fade gewinnt allein durch die korrekte Behandlung seiner ruhenden Limit-Order +109% expR. Bei jeder Strategie mit Limit-Entry oder Target-Exit gehört die Slippage getrennt gerechnet.
 
 ## Nächste Kandidaten (noch offen)
 - **Replace-Test: NQ_Momentum → MOMSEL_NQ_er0.3_s0.75** (siehe #057 — wartet auf Max' Go)

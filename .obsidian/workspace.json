@@ -93,11 +93,13 @@
               "title": "Lesezeichen"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 200,
+    "collapsed": true
   },
   "right": {
     "id": "0c3e29ee38ccf6b1",
@@ -196,7 +198,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 687.5
+    "width": 246.5
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -212,22 +214,24 @@
       "realclaudian:Open Claudian": false
     }
   },
-  "active": "cc41df7790a0ef11",
+  "active": "e74ce95808d35592",
   "lastOpenFiles": [
-    "Daily Notes/2026-08-09.md.tmp.4100.db149fc096a0",
-    "Daily Notes/2026-08-09.md.tmp.4100.edbcd3b82a42",
-    "CLAUDE.md.tmp.12748.44f622707269",
+    "Bereiche/Strategie-Logbuch.md.tmp.3208.7b052291307a",
+    "Ressourcen/Research-Cache.md.tmp.3208.f7093f3600de",
+    "Daily Notes/2026-08-10.md.tmp.12456.75f060171a28",
+    "Bereiche/Strategie-Logbuch.md.tmp.12456.f4f75ce50f43",
+    "Bereiche/Strategie-Logbuch.md.tmp.12456.2d4460450da9",
+    "Bereiche/Strategie-Logbuch.md.tmp.12456.2af779ba1d68",
+    "Ressourcen/Research-Cache.md.tmp.12456.14c24ca3b6dc",
+    "Bereiche/Strategie-Logbuch.md.tmp.12456.42fa3928ad34",
+    "Bereiche/Strategie-Logbuch.md.tmp.12456.39c52e716882",
+    "Bereiche/Strategie-Logbuch.md.tmp.12456.7e71f262aae2",
+    "Daily Notes/2026-08-10.md",
+    "Ressourcen/Paper-Analysen/ORB Master-Synthese (Eval-Fokus).md.tmp.12456.977e48254cb2",
+    "Ressourcen/ORB-Runde 070 (Hypothesen vorab).md",
     "Daily Notes/2026-08-09.md",
-    "Bereiche/Strategie-Logbuch.md.tmp.14140.1f46975fcd47",
-    "Ressourcen/Research-Cache.md.tmp.10852.ebfdde62a140",
-    "Ressourcen/Research-Cache.md.tmp.10852.46e61b53afbc",
-    "Bereiche/Portfolio-Simulator.md.tmp.10852.4dac1981b831",
     "Anhänge/tickets-ablaeufe.png",
     "Anhänge/tickets-reihenfolge.png",
-    "Bereiche/Steuer & Gewerbe (Prop-Payouts).md.tmp.11204.695499a7bbd5",
-    "Bereiche/Steuer & Gewerbe (Prop-Payouts).md.tmp.11204.96ddca2d487c",
-    "Bereiche/Strategie-Logbuch.md.tmp.20216.a969875b9c6b",
-    "Bereiche/Strategie-Logbuch.md.tmp.20216.e04f6870427b",
     "Bereiche/Steuer & Gewerbe (Prop-Payouts).md",
     "Ressourcen/Paper-Analysen/Mean-Reversion Paper (High-Winrate Fokus).md",
     "Daily Notes/2026-08-03.md",
@@ -251,8 +255,6 @@
     "Bereiche/Idee-Generierung (wie Institutionen).md",
     "Ressourcen/Edge-Decay-Monitor (Konzept + Regeln).md",
     "Bereiche/Live-Account.md",
-    "Ressourcen/MFFU 50k Pläne (Regeln + Wahl).md",
-    "Ressourcen/Paper-Analysen/Order-Flow Predictive Research.md",
     "Unbenannt 2.canvas",
     "Unbenannt.canvas"
   ]
