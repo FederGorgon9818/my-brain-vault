@@ -808,6 +808,85 @@ Das Buch dazu: **3× `NOISE_ORB m1.5` · 8× `OPEXMOM t0.2/s0.75` · 4× `ASIA t
 27. **Sizing-Split ist der billigste Diversifikator, den wir haben** (#076). Kein neues Bein, kein neuer Mechanismus, keine Research — nur zweimal dasselbe Buch in unterschiedlicher Größe. Wirkt aber nur, wo die Mindestgröße von 1 Kontrakt nicht beide fracs zusammenzieht: auf 25k bringt es +10pp, auf 10k exakt null.
 28. **Slippage ist ordertyp-abhängig, und das ist kein Detail** (#076). Der ORB-Fade gewinnt allein durch die korrekte Behandlung seiner ruhenden Limit-Order +109% expR. Bei jeder Strategie mit Limit-Entry oder Target-Exit gehört die Slippage getrennt gerechnet.
 
+## #077 — E8 DD-Mechanik schriftlich geklärt: schlechtester Fall bestätigt (10.08.2026)
+Antwort von E8-Support (Fábio, schriftlich, mit Verweis auf Help-Center-Artikel) auf Ticket `e8-dd-mechanik` (AP51):
+
+> "Yes, the equity is also monitored. [...] if your account equity or balance reaches/falls below the loss level, your account will be permanently closed [...] the EOD Dynamic Drawdown only gets updated by a new EOD highest closed balance, but if the equity and/or balance falls below the EOD DD level for your account, this rule will be violated."
+
+**Damit ist der befürchtete dritte Fall bestätigt, nicht der erhoffte:** der Floor selbst trailt EOD (nur geschlossene Gewinne heben ihn an, das war schon bekannt) — aber der Bruch wird KONTINUIERLICH gegen diesen (tagsüber statischen) Floor geprüft, nicht nur am Tages-Close. Ein kurzer Intraday-Touch unter den Floor beendet das Konto sofort, auch wenn die Bilanz am Abend wieder darüber steht.
+
+**Konsequenz:** Alle Passquoten-Rechnungen im Vault (48,4%/57%/65% etc., #071–#076) sind mit reinem EOD-Bust-Check gerechnet (`funded_frontier.passmc` prüft nur den Tages-Close, siehe #072). Nach eigener Messung (#073) fällt das unter Intraday-Bust-Check auf **33–34%**. Das ist jetzt keine Vorsichtsannahme mehr, sondern der bestätigte Live-Fall.
+
+Quelle: [E8 Help Center — EOD Dynamic Drawdown](https://intercom.help/e8/en/articles/11864596-eod-dynamic-drawdown), Support-Chat 10.08.2026 (Fábio, schriftlich).
+
+Ticket AP51 (`e8-dd-mechanik`) damit geschlossen und im Tracker gelöscht (Ergebnis hier dokumentiert statt im Tracker archiviert). Blocker für AP53 (Buch-Entscheidung) entfällt, aber die Entscheidung selbst braucht jetzt eine Neu-Rechnung mit `dd_mode="intraday"` — bisher existiert dafür kein Lauf mit dem aktuellen Zielbuch.
+
+### Lehre
+29. **„EOD-Drawdown" ist Marketing-Sprache für „der Floor trailt EOD", nicht für „der Bruch wird nur EOD geprüft".** Zwei unabhängige Eigenschaften, die Prop-Firmen-Werbetexte routinemäßig vermischen. Präzedenzfall #069 (Matteo Coni) hatte genau diese Verwechslung schon einmal gekostet — diesmal wurde vor dem Kauf-Commitment nachgefragt statt danach.
+
+## #078 — Intraday-DD nachgerechnet: kein pauschaler Einbruch auf 33%, sondern frac-abhängig (10.08.2026)
+Nach #077 (E8 prüft den Bust kontinuierlich, nicht nur EOD) nachgerechnet: `goal_intraday_check.py`, `passmc_vec` (E8-50k-Default TARGET 3000/DD 2000 war im Code schon korrekt gesetzt), 8000 Sims, Fracs 0.10/0.18/0.22/0.30.
+
+| Buch | Frac | EOD | Intraday | Δpp |
+|---|---|---|---|---|
+| Zielbuch (4 Beine, #071) | 0.10 | 59,3%/75d | 52,4%/69d | −6,9 |
+| Zielbuch | 0.18 | 46,3%/20d | 36,3%/16d | −10,0 |
+| Zielbuch | 0.22 | 42,2%/14d | 33,2%/10d | −9,0 |
+| Zielbuch | 0.30 | 40,3%/8d | 30,1%/6d | −10,2 |
+| Aktuelles Buch (3 Beine, #076) | 0.10 | 61,9%/43d | 47,9%/37d | −14,0 |
+| Aktuelles Buch | 0.18 | 60,0%/40d | 45,7%/34d | −14,3 |
+| Aktuelles Buch | 0.22 | 58,6%/40d | 43,5%/34d | −15,1 |
+| Aktuelles Buch | 0.30 | 52,9%/18d | 34,5%/15d | −18,4 |
+
+**Die #073-Prognose („Einbruch auf 33-34%") stimmt nur am oberen Frac-Ende (0.22–0.30), nicht pauschal.** Bei niedrigem Sizing (frac 0.10) bleibt deutlich mehr übrig (48–52%). Der Einbruch wächst mit dem Frac — die übliche Pfad-Varianz-Strafe von Trailing-DD wird durch den Intraday-Check verschärft, weil aggressives Sizing weniger Puffer gegen kurze Dochte lässt. **Konsequenz für AP53 (Buch-Entscheidung):** niedriger Frac (Tempo runter, Quote rauf) ist jetzt noch klarer im Vorteil als schon in #071/#073 gefunden.
+
+**Zwei Nebenbefunde beim Nachrechnen:**
+1. Das „aktuelle Buch" hat laut #076 tatsächlich nur 3 Beine (NOISE/OPEX/ASIA), nicht 5 — RV und ORBFADE fielen durch die Qualitätsgates und sind nicht im finalen Buch. Damit gerechnet.
+2. Die EOD-Baseline hier (Zielbuch 59,3%/75d bei frac 0.10) liegt spürbar unter der in #071 zitierten 65%/91d. Grund: `book.py`/`goal30_search.py` liefen seit #071 durch mehrere Bugfixes (#075: RV-Instrument-Einheit, korrupte ES/RTY-Sessions, MAE-Doppelzählung), die die #071-Zahl künstlich gehoben hatten. Hier wurde mit dem bereits gefixten Code gerechnet — ehrlicher, aber nicht 1:1 mit der #071-Schlagzeile vergleichbar. Die relative EOD→Intraday-Verschlechterung (die eigentliche AP51-Frage) bleibt davon unberührt gültig.
+
+**Bekanntes Restrisiko unverändert:** Das OPEX-Bein hat nur 9–10 Trades/Jahr (84–101 über 10,5 Jahre) und trägt mit Gewicht 8 stark zum aktuellen Buch bei — Tail-Abhängigkeit von wenigen OpEx-Freitagen, schon in #071 als Lehre notiert, unter Intraday-DD schärfer weil weniger Puffer.
+
+Skript: `engine/goal_intraday_check.py` · Ergebnis: `engine/goal_intraday_check_results.json`.
+
+## #079 — OR_DELTA_BIAS_NQ: der Beifang aus der IVB-Runde ueberlebt (LONG), SHORT nicht (10.08.2026)
+Vertiefung des in #078-Umfeld dokumentierten Beifangs (Research-Cache "Filter-Lab-Runde 10.08.2026"): reiner Session-Bias aus dem Tick-Rule-Delta des OR-Fensters 09:30-10:00 ET auf NQ, KEIN Breakout mehr. Vier Pruefpunkte vorab festgelegt, alle durchgerechnet (`Quantpad Data/fixed/or_delta_bias_lab.py`, `_deepcheck.py`, `_overlap.py`, NQ RTH 1m 2016-2025, Kosten 0,87 Pkt/RT, IS 2016-2021, OOS 2022-2025):
+
+**(a) Kontroll-Check — bestanden.** Signal schlaegt den naiven unconditional Long-Halt bei identischem Stop/Exit klar: gefiltert (delta>0) avgR +0,109 R/Trade (n=1318) gegen ungefiltert +0,033 R/Trade (n=2578, smul=0,75). Bei engem Stop (smul=0,5) ist der naive Long-Halt sogar netto NEGATIV (IS avgR -0,037, OOS -0,006) — das Delta-Vorzeichen filtert also echt, es ist keine bloße Verpackung des NQ-Aufwaertsdrifts.
+
+**(b) Stop/Target-Grid — smul entscheidet, Target schadet.** 4x4-Grid (smul 0,25/0,5/0,75/1,0 × tmul None/1/1,5/2), LONG:
+
+| smul | tmul | IS avgR | IS Sharpe | OOS avgR | OOS Sharpe |
+|---|---|---|---|---|---|
+| 0,5 | None | +0,007 | +0,05 | +0,100 | +0,62 |
+| 0,75 | None | +0,068 | +0,57 | +0,170 | +1,28 |
+| 1,0 | None | +0,046 | +0,47 | +0,146 | +1,35 |
+| 0,75 | 1,0 | +0,027 | +0,33 | +0,035 | +0,41 |
+
+Jedes feste Target (egal welcher smul) verschlechtert avgR/Sharpe gegenueber reinem Zeit-Exit — die Kante braucht Platz zum Laufen, kein Gewinnmitnahme-Deckel. Enge Stops (smul 0,25/0,5) sind IS praktisch bei Null. Bester Kandidat: **smul=0,75, tmul=None**.
+
+**(c) Jahres-Stabilitaet — solide, kein Tail-Ritt.** Mit smul=0,75/tmul=None: 8 von 10 Jahren netto positiv (nur 2016 mit -1,4R quasi flach, 2020/2022 leicht negativ mit -7,1R/-7,0R). IS-Periode selbst schon positiv (+54,2R, 793 Trades), OOS staerker (+89,1R, 525 Trades) — kein reines "OOS-Glueck". Top-5-Gewinntrades nur 3,6% der Bruttogewinne, groesster Einzeltrade 5,0% des Gesamt-NetR, staerkstes Jahr (2024) 28,7% des Gesamt-NetR — keine gefaehrliche Konzentration.
+
+**(d) Fensterlaenge-Sweep (cum_delta-Gegenrechnung) — keine saubere Kausalitaet fuers enge Fenster.** Fensterlaengen 15/30/45/60/90/120 Min. ab 09:30 (Entry direkt am Fensterende, smul=0,5 fix) zeigen KEIN monotones "kuerzer=besser": 15min stark (IS Sharpe +0,80), 30min schwach (+0,05), 90/120min wieder stark (+0,87/+0,70). Bei smul=0,5 ist der Stop zu eng fuer 30min-Trades, bei smul=0,75 wird schon das 30min-Fenster robust profitabel (siehe b). **Interpretation:** die Kante haengt primaer an der Stop-Kalibrierung (genug R fuer Marktrauschen), nicht an der Fensterlaenge selbst. Die alte Beobachtung "cum_delta funktioniert nicht" aus der IVB-Runde war vermutlich ein Artefakt der Breakout+d_ratio-Kombination (#068: Level-Break ohne Follow-Through), nicht des Signalfensters.
+
+**(g) SHORT-Seite — faellt durch.** Bei jeder getesteten smul/tmul-Kombination ist die IS-Periode (2016-2021) praktisch bei Null (bestes Ergebnis smul=0,75/tmul=None: avgR 0,000, Sharpe +0,01). Die gesamte positive Gesamtperformance (+60,0R) stammt fast vollstaendig aus der OOS-Periode (+59,7R von +60,0R). Das verletzt das eigene Selektionskriterium (IS UND OOS muessen tragen) — SHORT ist eher Regime-Glueck (2022er Baeren-Start) als robustes Signal und wird NICHT aufgenommen.
+
+**Overlap-Check final (fuer smul=0,75/tmul=None neu gerechnet, nicht die alte Breakout-Config):** 28% Tagesueberlappung mit NQ_Momentum, Tages-PnL-Korrelation (Union) +0,17, auf gemeinsamen Tagen +0,49. Performance ist auf Tagen MIT und OHNE gleichzeitiges Momentum-Signal fast identisch (avgR +0,104 vs. +0,106) — kein verstecktes Duplikat, die Kante traegt unabhaengig vom Momentum-Zustand.
+
+**Engine-Verifikation:** Modul `engine/or_delta.py` (Mode `or_delta` in `qbt.run_strategy`) gebaut und gegen die volle Engine-Datenreihe (2016 bis Juli 2026) gegengerechnet — reproduziert den Vault-Befund (avgR +0,098, PF 1,18, n=1391), 2026 bislang flach (Teiljahr).
+
+**Portfolio-Whatif (6. Bein zum aktuellen Buch, `book_state.json`, Lucid Flex 50k, Target 3000/DD 2000, `engine/or_delta_portfolio_whatif.py`, reiner Lesezugriff, KEIN Schreiben in book_state.json):** |corr| bleibt niedrig (0,08 → 0,11 mit 6. Bein), aber die Passquoten-Frontier verbessert sich in der aktuellen Monte-Carlo-Rechnung NICHT klar (z.B. frac 0,14: 49%/49d Basis vs. 48%/44d mit 6. Bein; frac 0,18: 46%/28d vs. 45%/29d). Das Bein ist eigenstaendig profitabel und niedrig-korreliert, hilft im gepruften Sizing-Modell aber nicht messbar beim Passquote-Tempo — Nutzen liegt eher in Diversifikation als in Geschwindigkeit.
+
+**Verdict: LONG-Seite besteht statistisch als Kandidat "OR_DELTA_BIAS_NQ" (Familie Intraday Bias), SHORT-Seite ist Friedhof.**
+
+**Max' Entscheidung (10.08.2026): No-Go fuer die Bein-Aufnahme.** Ein statistisch sauberes, eigenstaendiges, niedrig-korreliertes Bein ist nutzlos fuers Buch, wenn es die Passquoten-Frontier nicht verbessert (siehe Portfolio-Whatif oben: frac 0,14 sogar leicht schlechter mit 6. Bein). Aufnahme-Kriterium ist nicht "positive Edge", sondern "verbessert den Betriebspunkt" — Ticket AP82 daher wieder geloescht (Ticket-Workflow: erledigt = geloescht, nicht archiviert). Code/Modul bleiben als Referenz liegen (`engine/or_delta.py`), falls ein anderes Sizing-Modell oder ein spaeteres Buch mit anderer Bein-Mischung den Nutzen doch zeigt.
+
+Skripte (Vault, Analyse): `Quantpad Data/fixed/or_delta_bias_lab.py`, `or_delta_bias_deepcheck.py`, `or_delta_bias_overlap.py`. Engine-Modul: `engine/or_delta.py`. Whatif: `engine/or_delta_portfolio_whatif.py`.
+
+### Lehre
+30. **Ein Kontroll-Check gegen "einfach long halten" ist Pflicht, bevor ein Delta-Filter als Kante gilt — aber er muss beim GLEICHEN Stop laufen wie das Signal, nicht bei irgendeinem.** Bei engem Stop sah der naive Long-Halt hier sogar negativ aus, bei weiterem Stop weniger dramatisch — das Ergebnis des Kontroll-Checks haengt selbst von der Stop-Kalibrierung ab, ein einzelner Vergleichspunkt waere irrefuehrend gewesen.
+31. **Ein IS-Sharpe von praktisch Null ist ein Stop-Schild, keine Randnotiz — auch wenn die OOS-Zahlen gut aussehen.** Die SHORT-Seite haette bei laxerer Pruefung ("Gesamtsumme positiv") durchgewunken werden koennen; erst die getrennte IS/OOS-Betrachtung zeigt, dass die gesamte Kante aus einem einzigen Regimefenster stammt.
+32. **Positive Edge ist eine notwendige, keine hinreichende Bedingung fuer Bein-Aufnahme.** OR_DELTA_BIAS_NQ ist statistisch sauber (8/10 Jahre positiv, IS+OOS beide tragend, niedrig-korreliert) und wird trotzdem nicht aufgenommen, weil es die eigentliche Zielgroesse — die Passquoten-Frontier des Buchs — nicht verbessert. Das eigentliche Aufnahmekriterium ist der Betriebspunkt, nicht die Einzel-Edge (Praezedenz: #076 Sizing-Split wirkt nur, wo die Mindestgroesse es nicht auffrisst — gleiches Prinzip, hier eben negativ ausgefallen).
+
 ## Nächste Kandidaten (noch offen)
 - **Replace-Test: NQ_Momentum → MOMSEL_NQ_er0.3_s0.75** (siehe #057 — wartet auf Max' Go)
 - ~~Momentum selektiver~~ → in #057 getestet, NQ 8/8 robust (siehe oben)

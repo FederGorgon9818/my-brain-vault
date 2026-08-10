@@ -31,10 +31,24 @@
             "id": "e74ce95808d35592",
             "type": "leaf",
             "state": {
-              "type": "graph",
-              "state": {},
-              "icon": "lucide-git-fork",
-              "title": "Graph-Ansicht"
+              "type": "markdown",
+              "state": {
+                "file": "Ressourcen/QuantPad Brief - Engine Verification.md",
+                "mode": "source",
+                "source": false,
+                "backlinks": true,
+                "backlinkOpts": {
+                  "collapseAll": false,
+                  "extraContext": false,
+                  "sortOrder": "alphabetical",
+                  "showSearch": false,
+                  "searchQuery": "",
+                  "backlinkCollapsed": false,
+                  "unlinkedCollapsed": true
+                }
+              },
+              "icon": "lucide-file",
+              "title": "QuantPad Brief - Engine Verification"
             }
           }
         ],
@@ -72,7 +86,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "tag:#trading/mean-reversion",
+                "query": "QuantPad Brief",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -216,18 +230,19 @@
   },
   "active": "e74ce95808d35592",
   "lastOpenFiles": [
-    "Bereiche/Strategie-Logbuch.md.tmp.3208.7b052291307a",
-    "Ressourcen/Research-Cache.md.tmp.3208.f7093f3600de",
-    "Daily Notes/2026-08-10.md.tmp.12456.75f060171a28",
-    "Bereiche/Strategie-Logbuch.md.tmp.12456.f4f75ce50f43",
-    "Bereiche/Strategie-Logbuch.md.tmp.12456.2d4460450da9",
-    "Bereiche/Strategie-Logbuch.md.tmp.12456.2af779ba1d68",
-    "Ressourcen/Research-Cache.md.tmp.12456.14c24ca3b6dc",
-    "Bereiche/Strategie-Logbuch.md.tmp.12456.42fa3928ad34",
-    "Bereiche/Strategie-Logbuch.md.tmp.12456.39c52e716882",
-    "Bereiche/Strategie-Logbuch.md.tmp.12456.7e71f262aae2",
+    "Bereiche/Strategie-Logbuch.md.tmp.17796.971db3a27c26",
+    "Quantpad Data/fixed/or_delta_bias_overlap.py",
+    "Quantpad Data/fixed/or_delta_bias_deepcheck.py",
+    "Quantpad Data/fixed/or_delta_bias_lab.py",
+    "Ressourcen/Research-Cache.md.tmp.13124.8deecbed3a8f",
+    "Quantpad Data/fixed/ivb_overlap_check.py",
+    "Quantpad Data/fixed/ivb_overlap_check.py.tmp.13124.6b5e65fdce73",
+    "Quantpad Data/fixed/ivb_candidate_check.py",
+    "Quantpad Data/fixed/ivb_filter_lab.py",
+    "Quantpad Data/fixed/ivb_test.py",
+    "Projekte/Token Tracker App.md.tmp.6384.92469a0bd430",
     "Daily Notes/2026-08-10.md",
-    "Ressourcen/Paper-Analysen/ORB Master-Synthese (Eval-Fokus).md.tmp.12456.977e48254cb2",
+    "Ressourcen/QuantPad Brief - Engine Verification.md",
     "Ressourcen/ORB-Runde 070 (Hypothesen vorab).md",
     "Daily Notes/2026-08-09.md",
     "Anhänge/tickets-ablaeufe.png",
@@ -254,7 +269,6 @@
     "Bereiche/Live-Setup (Algo auf Prop).md",
     "Bereiche/Idee-Generierung (wie Institutionen).md",
     "Ressourcen/Edge-Decay-Monitor (Konzept + Regeln).md",
-    "Bereiche/Live-Account.md",
     "Unbenannt 2.canvas",
     "Unbenannt.canvas"
   ]
