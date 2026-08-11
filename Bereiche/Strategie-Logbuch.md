@@ -887,8 +887,193 @@ Skripte (Vault, Analyse): `Quantpad Data/fixed/or_delta_bias_lab.py`, `or_delta_
 31. **Ein IS-Sharpe von praktisch Null ist ein Stop-Schild, keine Randnotiz — auch wenn die OOS-Zahlen gut aussehen.** Die SHORT-Seite haette bei laxerer Pruefung ("Gesamtsumme positiv") durchgewunken werden koennen; erst die getrennte IS/OOS-Betrachtung zeigt, dass die gesamte Kante aus einem einzigen Regimefenster stammt.
 32. **Positive Edge ist eine notwendige, keine hinreichende Bedingung fuer Bein-Aufnahme.** OR_DELTA_BIAS_NQ ist statistisch sauber (8/10 Jahre positiv, IS+OOS beide tragend, niedrig-korreliert) und wird trotzdem nicht aufgenommen, weil es die eigentliche Zielgroesse — die Passquoten-Frontier des Buchs — nicht verbessert. Das eigentliche Aufnahmekriterium ist der Betriebspunkt, nicht die Einzel-Edge (Praezedenz: #076 Sizing-Split wirkt nur, wo die Mindestgroesse es nicht auffrisst — gleiches Prinzip, hier eben negativ ausgefallen).
 
+## #080 — MOMSEL-Replace-Test v2: alter "klarer Gewinn" repliziert nicht (10.08.2026)
+- **Anstoß:** Max' neues Dauerkriterium (10.08.): einzige Messlatte für jede Entscheidung ist die **Passquoten-Frontier, ehrlich gerechnet** (aktuelles Buch, gefixte Engine, Intraday-DD nach #077). Der alte Replace-Test vom 03.08. (`_test_momsel_replace.py`: 53,2%→55,0%, "KLARER GEWINN") war auf drei Achsen veraltet: 9-Bein-Buch, Vor-Bugfix-Pipeline (#074/#075), nur EOD-Bust-Check.
+- **Neuauflage `momsel_replace_v2.py`** (Methodik = #078: `book.cell_daily` + `passmc_vec`, EOD+Intraday, Fracs 0.10-0.22, 8000 Sims): NQ_Momentum vs. identisches Bein + `rev_er_min=0.3` im aktuellen 5-Bein-Buch.
+- **Ergebnis: das Pass-Delta ist überall MC-Rauschen** (−1,2 bis +0,5pp). Konsistent ist nur das **Tempo-Signal**: Tage-bis-Pass sinken in allen 8 Zellen oder bleiben gleich, am stärksten bei frac 0.10 (EOD 94→73d, Intraday 86→64d bei gleicher/leicht besserer Quote 48,2→48,7%). Solo bleibt MOMSEL klar besser (expR 0,168 vs 0,125, PF 1,30 vs 1,21, 83 statt 122 Tr/J).
+- **Verdict nach Kriterium: gekoppelt an den Betriebspunkt.** Bei frac ≈0.10 (wohin #078 unter Intraday-DD ohnehin zeigt): Replace lohnt — gleiche Quote, ~25% schneller = besserer Zeit-bis-Funded-EV. Bei frac 0.18-0.22: kein relevanter Unterschied → Original behalten (Simplex beats Komplex). **Entscheidung hängt an AP53 (Betriebspunkt-Wahl) und liegt bei Max.**
+- Ergebnis: `momsel_replace_v2_results.json`. Der alte 03.08.-Lauf gilt nicht mehr als Entscheidungsgrundlage.
+
+### Lehre
+33. **Ein Verdict ist nur so aktuell wie seine Pipeline.** Derselbe Test, 7 Tage später auf ehrlicher Basis gerechnet, dreht von "klarer Gewinn" auf "Rauschen mit Tempo-Vorteil". Vor jeder Buch-Entscheidung prüfen, ob das zugrundeliegende Ergebnis noch auf dem aktuellen Buch, der gefixten Engine und dem Intraday-Check steht.
+
+## #081 — Intraday-Bust-Vergleich fürs AKTUELLE Buch: Portfolio-Tab-Kopfzahl bei frac 0.22 um 9,1pp zu optimistisch (11.08.2026)
+- **Anstoß:** Ticket `max-1786396290151` — `funded_frontier.passmc` (Basis von `funded_finalize.py`/Portfolio-Tab) prüft den Bust NUR am Tages-Close, `dw` fließt dort nur in die Sizing-Formel. #077/#078 hatten den Intraday-Effekt schon fürs damalige #071/#076-Buch beziffert, das aktuelle 5-Bein-Buch (`book_state.json`: NQ_Momentum, NQ_LastHour, RTY_Gap-fade, NQ_ORB-fade, NQ_Asia-Dir-USopen) war seither nicht mehr auf dieser Basis nachgerechnet.
+- **Lauf:** neues Skript `goal_intraday_check_current.py`, Beine wie `funded_finalize.py` sie lädt, `goal30_search.passmc_vec` (E8-50k-Default TARGET 3000/DD 2000), Fracs 0.10-0.30, 8000 Sims, `dd_mode` eod vs. intraday. Sanity-Check: eod-Reproduktion trifft `portfolio.json`s Frontier auf <1pp/<1 Tag (z.B. frac 0.22: 43,3%/17,8d gegen dort dokumentierte 43%/18d).
+
+| frac | eod % | eod Tage | intraday % | intraday Tage | Δ pp |
+|---|---|---|---|---|---|
+| 0.10 | 54,1 | 94,0 | 48,2 | 85,9 | −5,9 |
+| 0.12 | 50,8 | 58,4 | 44,7 | 50,3 | −6,1 |
+| 0.14 | 48,7 | 47,0 | 42,9 | 40,5 | −5,8 |
+| 0.18 | 45,2 | 25,9 | 38,5 | 22,7 | −6,8 |
+| **0.22** | **43,3** | **17,8** | **34,2** | **14,6** | **−9,1** |
+| 0.26 | 41,7 | 13,0 | 30,5 | 9,7 | −11,2 |
+| 0.30 | 40,7 | 11,3 | 28,1 | 8,1 | −12,6 |
+
+- **Betriebspunkt frac 0.22 (aktuell im Tab):** eod-Kopfzahl 43,3%, ehrlich unter #077-Mechanik (Floor trailt EOD, Bruch wird kontinuierlich geprüft) nur 34,2% — 9,1pp weniger, Bust bei Fail auch schneller (Median 14,6 statt 17,8 Tage). Der Effekt wächst mit dem frac (0,30: −12,6pp): je aggressiver gesized wird, desto mehr überschätzt der reine EOD-Check.
+- **Entscheidung Max (11.08.2026): Portfolio-Tab/`book_state.json`/`funded_finalize.py`-Default bleiben auf EOD.** Dies ist ein einmaliger Vergleichslauf, keine Umstellung — `portfolio.json` wurde nicht neu geschrieben, `funded_finalize.py` nicht ausgeführt. Grund: die E8-Bust-Mechanik ist zwar schriftlich bestätigt (#077/AP51), aber Max will die Umstellung des Tabs bewusst separat entscheiden statt sie an diesem Ticket mitlaufen zu lassen. Ticket `dd-mode-intraday-default` (Epic GROUNDTRUTH) bleibt dafür offen.
+- Ergebnis: `goal_intraday_check_current_results.json`. Ticket `max-1786396290151` geschlossen (gelöscht aus `tasks.json`), Ergebnis hier archiviert statt im Tracker.
+
+### Lehre
+34. **Eine bestätigte Firmenregel (#077) ist kein Freifahrtschein, sie automatisch überall einzubauen.** Die ehrliche Zahl existiert jetzt für das aktuelle Buch, aber ob der Tab künftig darauf umstellt, ist eine bewusste zweite Entscheidung — sonst verwischt der Unterschied zwischen "wir wissen es jetzt" und "wir haben uns danach gerichtet".
+
+## #082 — AP73 (MAE-Doppelzählung) verifiziert: Portfolio-Tab unbetroffen, echter Nutzen kleiner als #075 dachte (11.08.2026)
+- **Anstoß:** Ticket `mae-bug-3-stellen` (AP73, Fund 4 aus #075) — der Fix (`book.py:43` war schon korrekt, `qbt.py::prop_pass_probability` und `copilot.py::_daily_pnl_arrays` jetzt gefixt: `prev_cc = cc − eigener Close` statt `cc` direkt vor dem MAE-Abzug) sollte laut Ticket-Text einen breiten Blast Radius treffen (`funded_frontier.py`, `portfolio.py`, `run_copilot.py`, `copilot.py` Report-Tab, `matteo_vwap_drift.py`).
+- **Sanity-Check bestanden:** alle drei Funktionen liefern jetzt für dasselbe Bein bitidentische „worst equity"-Werte (max. Diff 0,0 $; `book.py`s minimale Restabweichung von 2,02 $ kommt vom dortigen MAE-Clipping, nicht von der Formel).
+- **Wichtigste Korrektur am Ticket-Text: `funded_finalize.py`/`portfolio.json` sind vom Bug NICHT betroffen.** Der Pfad läuft über `funded_frontier.passmc` → `book.cell_daily`, und `book.py` hatte die Formel schon immer richtig. Der im Ticket vermutete Blast Radius war für den Portfolio-Tab falsch — **`portfolio.json` wurde deshalb bewusst nicht neu geschrieben, `book_state.json`/Betriebspunkt bleiben unverändert** (frac 0.22 = 43%/18d aus #081, EOD-Basis).
+- **Der reale Fix-Effekt zeigt sich nur im `copilot.prop_assistant`/`qbt.prop_pass_probability`-Pfad** (Lab Report-Tab, `run_copilot.py`, `matteo_vwap_drift.py`). Gegengerechnet auf dem AKTUELLEN 5-Bein-Buch (flat Sizing, intraday DD, E8 Futures 50k, gleicher Seed alt/neu):
+
+| Size | vorher | nachher | Δ |
+|---|---|---|---|
+| 1u | 25,1% | 26,3% | +1,2pp |
+| 2u (beste Größe) | 35,0% | 38,6% | +3,6pp |
+| 3u | 31,7% | 36,4% | +4,7pp |
+
+- **Das ist deutlich weniger als #075s Erwartung** (1u 41%→51%, 3u 23%→31%, beste Größe 37%→42%) — kein Widerspruch, sondern Buch-Drift: #075 rechnete auf dem damaligen Buch, seither ist IVB raus, OR_DELTA_BIAS verworfen (#079), das Buch mehrfach umgebaut. **Die #075-Prozentsätze sind für das heutige Buch nicht mehr gültig und sollten nicht mehr zitiert werden.**
+- Nebenbei mitgeprüft (Cache-Rebuild für Discovery, nicht Teil des Bugs selbst): `goal30_inventory.py` neu gelaufen (97 Kandidaten, ~14,5 Min, keine Fehler) → `goal30_cells_wide.pkl` aktuell. `goal30_cells.pkl` (schmal, ohne „_wide") ist stale (09.08.), wird von keinem vorhandenen Skript mehr geschrieben — bewusst liegen gelassen, keine aktive Nutzung erkennbar.
+- Ticket `mae-bug-3-stellen` (AP73) damit geschlossen (aus `tasks.json` gelöscht), Ergebnis hier archiviert.
+
+### Lehre
+35. **Ein „Blast Radius" im Ticket-Text ist eine Hypothese, keine geprüfte Tatsache** (AP73). Zwei von drei Bug-Fundorten trafen zu, der dritte (Portfolio-Tab) hing über einen anderen Call-Pfad (`book.cell_daily`) an einer bereits korrekten Formel. **Nach jedem Fix den tatsächlichen Call-Graph prüfen, nicht nur die Symptom-Liste aus der ursprünglichen Diagnose abarbeiten** — sonst hält man einen Tab für „jetzt auch gefixt", der es nie kaputt war, oder umgekehrt einen für „unberührt", der es war.
+
+## #083 — IVB-Nachtest mit exakter Paper-Spec: auch die Original-Regeln haben keine Edge (11.08.2026)
+- **Anstoß:** Max lieferte das Original-PDF ("The Institutional Protocol", Matteo Conti / @matfinog, 16 Seiten) mit dem kompletten EasyLanguage-Quellcode des Fabio-Valentini-IVB-Modells. Der #079-Test (`ivb_test.py`) hatte die Range als 09:30-10:00 RTH interpretiert — die Paper-Spec weicht materiell ab: **Range 08:30-09:00 NY (Pre-Market inkl. Makro-Prints), LONG-only, ein Entry/Tag, Entry = erster 5m-Close > ORB-High zwischen 09:00 und 14:00, Filter BarDelta ≥ 200 auf der Signal-Bar, Stop = ORB-Low, TP = 1R, flat 14:00** (Prosa sagt 15:00, Inputs sagen 14:00 → beides getestet).
+- **Nachtest `Quantpad Data/fixed/ivb_paper_exact_083.py`** auf `NQ_full.parquet` (1m, voller Globex, NY-Zeit, 2016-2026/07), ehrliche Fills (F1 next-1m-open, F4 Stop gewinnt Same-Bar, F5), Kosten 0,87 Pkt/RT. Delta als Tick-Rule-Proxy (echtes Bid/Ask-Delta haben wir nicht), Schwellen-Sweep 200-12000 inkl. Frequenz-Matching auf deren 823 Trades.
+- **Ergebnis: tot, in jeder Variante.** Deren Fenster 2021-2026/04: ohne Filter n=1073, **Win 50,5%, PF netto 0,96, −24,0k$**; mit Delta-Proxy>0 Win 50,9%, PF netto 0,97; flat-15:00-Variante identisch tot. Pre-Sample 2016-2020 ebenso negativ. Schwellen-Sweep nicht-monoton (thr=6000: netto +$10,63/Trade PF 1,01 = Rauschen; thr=8000/12000 wieder negativ). **Die Paper-Zahlen (Win 58,3%, PF 1,31, avg $201/Trade) sind auch mit der exakten Spec nicht ansatzweise reproduzierbar** — wir finden ~50% Win und avg −$5 brutto.
+- **Warum das Paper trotzdem "VALIDATED" sagt:** Das eigene Statement of Limitations gibt es zu — die gesamte Validierung (Bootstrap, 1.000 Permutationen, 20.000 MC-Sims, Kosten-Rerun) läuft auf dem **vom Autor gelieferten MultiCharts-Trade-Log**, "no independent re-execution of the strategy on raw market data was performed". Alle vier "unabhängigen" Tests resampeln dieselbe Liste; wenn die Liste optimistisch erzeugt ist, erben sie den Fehler. Wahrscheinlichste Quellen der ~8pp-Win-Differenz: MC-Intrabar-Auflösung von TP/SL auf 5m-Bars ohne Bar Magnifier + synthetisches BarDelta auf Historien-Daten ohne Tickdaten — exakt die #066-Fallenklasse.
+- **Verdict: IVB bleibt Friedhof, jetzt endgültig** (beide Interpretationen getestet: RTH-Range #079 UND Paper-Spec Pre-Market-Range #083). Der Beifang OR_DELTA_BIAS (#079) bleibt davon unberührt in der Bank.
+
+### Lehre
+36. **"Institutional-grade validation" eines Trade-Logs ist keine Validierung der Strategie.** Bootstrap/Permutation/Monte-Carlo prüfen nur, ob eine Zahlenliste statistisch signifikant ist — nicht, ob die Liste ehrlich zustande kam. Der einzige Test, der zählt, ist die Re-Execution der Regeln auf Rohdaten mit ehrlichen Fills. Steht im Kleingedruckten sogar selbst drin ("no independent re-execution").
+
+## #084 — Erster vollautomatischer Deploy auf die Box: RiskPerMicro 104 live, dabei zwei stille Selbstzerstörungs-Fallen im Deploy-Pfad gefunden (11.08.2026)
+- **Anstoß:** AP78 (RiskGuard `RiskPerMicro` 80 → 104) und AP83 (Sammel-Compile inkl. AP72 Asia-Entry-Fix) sollten endlich durch. Bisher hieß der Weg dahin „RDP auf den VPS, F5 drücken". Diesmal komplett per SSH von Max' PC aus gefahren (`ssh Administrator@100.127.89.9`, `box_deploy.ps1`), ohne einen einzigen Klick am Chart.
+- **Vorher geprüft statt angenommen:** Session lief (17:25, US-Session bis 22:00) und NT8 war oben — aber der NT8-Log des Tages hatte **2 Zeilen, beide nur Verbindung**. Keine Strategie, keine Order. Damit war der Deploy mitten in der Session gefahrlos. Der Umweg über den Log ist billiger und ehrlicher als die Annahme „ist ja eh alles aus".
+- **Falle 1, Staging als Zombie-Lager (→ AP84, rot):** im `_staging` lagen noch 8 `.cs` vom 09.08.-Deploy, darunter `MaxORBBreakoutNQ`, `MaxORBScalpNQ`, `MaxORBScalpNQ2` — **drei Beine, die auf der Box längst nicht mehr deployed sind.** `box_deploy.ps1` kopiert stumpf alles aus dem Staging in den Strategies-Ordner. Ein ahnungsloser Lauf hätte die drei wieder in den Baum geholt. Aufgefallen nur, weil vorher manuell abgeglichen wurde.
+- **Falle 2, das Skript stellt sich selbst die Falle (→ AP85, rot):** der erste Build starb mit **18× CS2001**. Die `NinjaTrader.Custom.csproj` listete noch 10 Dateien aus `Strategies\_bak-20260809-2225` und 9 generierte `obj\Release`-Dateien, die alle nicht mehr existieren. Ursache ist die bekannte NT8-Eigenart (F5 schreibt *alles* unterhalb `bin\Custom` in die csproj) — nur andersherum als bisher gedacht: **`box_deploy.ps1` räumt in Schritt 6 selbst obj/bin weg und hinterlässt damit die toten Referenzen für den nächsten Build.** Der bekannte CS0579-Fehler und dieser CS2001-Fehler sind zwei Seiten derselben Münze. Einmalig behoben (`fix_csproj.ps1`, 441 → 422 Zeilen, Backup im `_bak_archiv`), danach Build sauber.
+- **Ergebnis live:** `RiskPerMicro = 104` und der AP72-Fix (`Calculate.OnEachTick`) liegen deployed im Strategies-Ordner, DLL neu gesetzt 17:40:47, Pre-Flight und Build fehlerfrei, Baum sauber. Wichtiger Nebenbefund: der **Workspace hatte keinen serialisierten `RiskPerMicro`-Wert** — der Code-Default greift also wirklich, statt von einer gespeicherten 80 überschrieben zu werden. Das war nicht selbstverständlich und ist der Grund, warum der Fix überhaupt wirkt.
+- **Grenze der Fernsteuerung (→ AP86):** NT8 ließ sich per interaktivem Task in Session 2 starten (PID 3444), blieb dann aber über zehn Minuten bei 17-31 MB RAM, eingefrorener CPU und einer einzigen Logzeile stehen. **Sobald Max sich per RDP anmeldete, lief er sofort durch** (438 MB, `E8: Primary connection=Connected, Price feed=Connected`, Workspace restored). Ursache ist also nicht ein Wiederherstellungsdialog, sondern die **fehlende angemeldete Desktop-Session** — ohne aktiven Desktop hängt NT8 beim UI-Aufbau. **Deploy und Build sind fernsteuerbar, der Wiederanlauf nicht.** Fix-Richtung: Autologon, oder die RDP-Session konsequent nur trennen statt abmelden.
+- **Vorher-Prüfung, die sich gelohnt hat:** der komplette Post-Deploy-Zustand wurde vorab in einem Wegwerf-Ordner kompiliert (`_check_compile.ps1 -SrcDir`), bevor NT8 überhaupt angefasst wurde. Hätte der neue Code nicht gebaut, wäre die Box nie gestoppt worden.
+
+### Lehre
+37. **Ein Deploy-Skript, das aufräumt, muss auch die Referenzen aufräumen.** Ordner löschen und Projektdatei stehen lassen heißt: der Lauf, der aufräumt, ist grün — der *nächste* stirbt. Solche Fehler datieren sich selbst in die Zukunft und treffen einen garantiert dann, wenn es eilig ist. Gilt für jedes Skript, das Artefakte entfernt: **was auf die gelöschten Pfade zeigt, muss im selben Schritt mit.**
+38. **Ein Staging-Ordner ohne Verfallsdatum ist ein Wiederbelebungsapparat für gelöschte Beine.** Was einmal deployed wurde, gehört sofort raus. Sonst entscheidet nicht `book_state.json` darüber, was live läuft, sondern der Altbestand eines Ordners, in den keiner mehr reinschaut.
+39. **„Der Prozess läuft" ist kein Gesundheitszeichen.** NT8 stand mit `Responding=True` in der Prozessliste und war trotzdem nicht handelsbereit — verraten haben es erst RAM (17 MB statt 438), eingefrorene CPU-Zeit und ein Log, das bei einer Zeile stehenblieb. Genau darauf schaut der Watchdog aktuell nicht: er prüft nur, **ob** NT8 existiert. Ein NT8, das nach einem Reboot in dieser Halbtot-Lage hängt, würde er als grün melden.
+
+## #085 — AP77 final geklärt: Sizing-Split zwischen zwei Evals erlaubt, News-Sperre bei Futures existiert nicht (11.08.2026)
+- **Anstoß:** Ticket `e8-support-copytrading-klaeren` (AP77) — vor dem Kauf von zwei parallelen 25k-Evals (#076-Plan, frac 0,10/0,80, P(funded) 57,0% statt 48,4% auf einem Konto) musste geklärt sein, ob E8s Copy-Trading-Verbot das trifft. Quelle bis dahin nur ein Suchmaschinen-Snippet (403 auf Primärseite), Konfidenz „praktiker".
+- **Erste Support-Antwort (Fábio, 18:04)** war generisch: „Copying between your own Challenge, Performance, or personal accounts" ist erlaubt, verboten nur Signaldienste/Team-Trading. Deckte das konkrete Szenario (zwei GLEICHZEITIG aktive Evals) nicht explizit ab und verlinkte für die News-Frage die allgemeine/Forex-Domain statt Futures — also nachgefasst, explizit für **E8 Signature Futures** und den **Parallel-Eval-Fall**.
+- **Nachfass-Antwort (Fábio, 19:08), beide Punkte final geklärt:**
+  1. *„Yes, if both challenge accounts will be only trade by you, it does count as copying your own trades."* → **Sizing-Split zwischen zwei gleichzeitigen Evals ist erlaubt.** #076-Parallelplan freigegeben, Kauf der zwei 25k-Konten kann erfolgen.
+  2. *„You can trade news with no restrictions in the Signature program [...] we recommend that users avoid trading during high-impact news"* → **kein hartes News-Trading-Verbot bei E8 Signature Futures**, weder Eval noch Funded — nur eine Empfehlung. Löst den Widerspruch 5min/5min vs. 2min/3min auf: **beide Zahlen waren falsch/veraltet, es gibt gar keine Pflicht-Sperrzeit.**
+- **Konsequenzen:**
+  - `dialin`-Epic: `ein-oder-zwei-konten` kann jetzt zugunsten des Parallelplans entschieden werden (hängt weiterhin an AP53/Betriebspunkt, aber die Blockade durch die Regelfrage ist weg).
+  - `gatekeeper`-Epic: `e8-zwei-konten` (rot) kann geschlossen werden, die 57,0%-Zahl aus #076 ist buchbar.
+  - RiskGuard hat aktuell `NewsFlatEnabled` aktiv (#048) — das war eine Vorsichtsmaßnahme auf Verdacht, keine Firmenpflicht. Bewusst NICHT automatisch abgeschaltet, das ist eine eigene Entscheidung wert (Empfehlung von E8 selbst ist ja durchaus vernünftig, auch ohne Zwang).
+- Beide Screenshots + vollständiger Wortlaut archiviert in [[E8-Support-Anfrage (Sizing-Split + News-Fenster)]], [[Research-Cache]] aktualisiert (beide Einträge jetzt „bestätigt"). Ticket `e8-support-copytrading-klaeren` (AP77) gelöst, aus `tasks.json` gelöscht.
+
+### Lehre
+40. **Eine generische erste Support-Antwort ist noch keine Antwort auf die eigentliche Frage** (AP77). Fábios erste Nachricht klang nach „ja, erlaubt", hätte aber weder das exakte Parallel-Szenario noch das richtige Programm (Futures vs. E8 One) sauber abgedeckt. Erst die gezielte Nachfrage mit den exakten Stichworten aus der eigenen Frage brachte die belastbare, direkt zitierbare Bestätigung. **Bei geldrelevanten Regelfragen die erste Antwort auf Präzision prüfen, nicht auf Freundlichkeit — im Zweifel nachfassen, bevor Geld fließt.**
+
+## #086 — Wochen-Review W32 (03.08.–11.08.): keine Decay-Ampeln, aber die Sim-Validierung ist zurück auf Null (11.08.2026)
+- **Anstoß:** Tickets AP8 + AP50 (Wochen-Review: Ampeln + Journal + Logbuch). Vollständiger Report: [[Wochenreport 2026-W32 (03.08-11.08)]].
+- **Ampeln:** keine roten/gelben Edge-Decay-Ampeln. Momentum (n=12, +2.320,50 $, z=+2,55) und PowerHour (n=15, +1.557 $, z=+2,29) laufen **über** Backtest-Erwartung — bei dem N Klein-Stichproben-Glück, kein Edge-Beweis, aber sicher kein Decay. ORB-Fade (neuer Limit-Port), GapFade, AsiaDir: **0 Live-Trades**, grau.
+- **Live-Woche Simtestsim2 (aus Fills rekonstruiert):** 04.08. +1.069 · 05.08. −146,50 · 06.08. −28,25 · 07.08. −190,50 → **+703,75 $**, 9 Round-Trips. Danach nichts mehr.
+- **Der eigentliche Befund: die Sim-Phase misst seit dem 07.08. nichts.** Letzte Bar 07.08. 09:46 ET, NT8-Prozess 22:22 down, Watchdog hat den Dauerzustand nicht als solchen gemeldet (AP87). Dazu endet `maxlab_equity.csv` schon am 05.08. (keine EOD-Zeilen für 06./07.08. trotz Trades — beim Sim-Neustart prüfen, zusammen mit dem noch offenen 3-Spalten-Fix aus #058). Ab 10.08. zusätzlich FIREFIGHT (bewusst alles aus).
+- **Sim-vs-Backtest-Verdict:** 3 von 5 Beinen ohne einen einzigen Live-Trade, das Buch selbst steht zur Disposition (AP53) → **Sim-Neustart erst nach der Buch-Entscheidung**, sonst validiert man zwei Wochen ein Buch, das danach umgebaut wird.
+- Tickets AP8 (`review-2026-30`) + AP50 (`review-2026-32`) geschlossen und aus `tasks.json` gelöscht. Nebenbei Logbuch-Hygiene: der AP77-Eintrag lief doppelt als „#083" — auf **#085** umnummeriert (Referenzen in [[Ticket-Epics]] + [[E8-Support-Anfrage (Sizing-Split + News-Fenster)]] mitgezogen), Lehren-Nummerierung fortlaufend gefixt.
+
+### Lehre
+41. **Eine Sim-Phase ohne überwachte Datenpipeline validiert nichts.** Vier Tage toter Feed sind unbemerkt durchgelaufen, weil der Watchdog Frische ohne Datum meldete — der Abgleich war blind, obwohl alles „grün" aussah. Vor jedem Sim-(Neu-)Start gehört die Messstrecke selbst geprüft: frische Bars, Equity-Zeilen pro Handelstag, Fills-Sync. Und: eine Ampel, die **über** Erwartung steht, ist genauso ein Prüfsignal wie eine darunter — erst die Stichprobengröße macht daraus eine Aussage.
+
+## #087 — Discovery-Batch AP49: MOC-These falsifiziert, VIX-Fear-Reversion überlebt (Bank) (11.08.2026)
+- **Anstoß:** Ticket AP49 (wöchentlicher Discovery-Batch). Vom Ticket-Text waren Frequenz-Bein (#043 tot) und OpEx-Momentum (#049/#054 fertig) schon abgearbeitet — der echte Backlog der Idea Engine gab zwei Mechanismen her: **MOC-Imbalanz** (letzter offener Punkt der Kalender-Karte) und **Cross-Asset/VIX**. Multi-Day-Pairs bleibt gesperrt (Overnight-Verbot), Turn-of-Month bleibt Watchlist. 96 Configs, ehrliche Engine, IS/OOS-Split 01.01.2024, Klein-N-Skepsis (Edge ≥3% bei n<200). Skript: `moc_vix_discovery.py`, neues Engine-Modul `vix_bias.py` (mode `vix_bias`).
+- **MOC-Imbalanz: 0/72 Survivors, These falsifiziert.** WHY vorab: MOC-/Leveraged-ETF-Rebalancing verstärkt die Tagesrichtung in den Schlussminuten → Late-Entry-Momentum (15:00/15:30/15:45 ET) müsste zum Close hin BESSER werden. Ergebnis ist das Gegenteil: ref 15:00 grenzwertig (bestes MOC_NQ PF 1,13, OOS kippt), 15:30/15:45 klar negativ, auf allen 4 Indizes. Der handelbare Teil des Late-Day-Momentums steckt schon im Power-Hour-Bein (Entry 13:30) — danach ist nur noch Rauschen plus Kosten. Kalender-Karte damit **komplett abgearbeitet und geschlossen**.
+- **VIX-Fear-Reversion: 8/24 Survivors, sauber einseitig.** WHY vorab (Vol-Risk-Premium/Leverage-Effekt): VIX-Spike gestern = Angst-Overshoot → positive Drift am Folgetag. Signal ausschließlich aus Vortags-Closes (VIXCLS/FRED), kein Lookahead. **Alle 8 Survivors sind die Long-Seite (spike_rev), der Short-Gegentest (spike_mom) ging 0/12 unter** — genau das Muster, das man sieht, wenn die These stimmt, statt eines Data-Mining-Artefakts. Beste Config: `VIX_spike_rev_NQ_t0.12_s0.75` (VIX-Anstieg ≥12% → NQ Long open→EOD, Stop 0,75×ATR20): Verdict **A (Score 100)**, win 54,1% vs. Baseline 43,8%, OOS PF **1,91**, +5.771 $ OOS.
+- **Aber: Klein-N und kein Passquoten-Gewinn.** 170 Trades gesamt, ~16/Jahr — VIX-Spike-Tage sind selten. Auto-Fit: Buch 55%/96d vs. mit VIX-Bein 55%/**90d** (corr 0,07) → **abgelehnt, Bank**. Grenzfall: gleiche Passquote, aber 6 Tage schneller — bei Reset-Strategie zählt Tempo mit (#076). Entscheid liegt bei Max: **AP89**.
+- **Daten-Lücke dokumentiert:** Vom Cross-Asset-Backlog (VIX/ZN/DXY/Breadth) existiert nur VIX als Daten. Bonds, Dollar, Sektor-Breadth sind nicht im QuantPad-Export — Karte wird bei Datenzugang wieder geöffnet.
+- **Housekeeping:** Kalender-Karte → Getötet (Sammelkarte fertig), Cross-Asset-Karte → Validiert (VIX-Teil), neue Karte „VIX-Spike-Reversion" (Validiert, Bank). AP49 aus `tasks.json` gelöscht, AP89 (VIX-Entscheid) angelegt. Ergebnisse: `moc_vix_results.json`, Report `VIX_spike_rev_NQ_t0.12_s0.75.html`.
+
+### Lehre
+42. **Der Gegentest ist der billigste Artefakt-Detektor.** Beide Richtungen derselben These mitzutesten kostet ein paar Configs, liefert aber das stärkste Ehrlichkeitssignal des ganzen Batches: 8/12 Survivors auf der These-Seite, 0/12 auf der Gegenseite — so sieht ein echter Mechanismus aus. Hätten BEIDE Seiten „funktioniert", wäre es Rauschen gewesen. Und die MOC-Runde zeigt den Wert des vorab dokumentierten WHY: weil die These eine prüfbare Vorhersage machte (Edge steigt zum Close), war ihr Scheitern eine klare Falsifikation statt eines „fast guten" Ergebnisses, dem man hinterheroptimiert.
+
+## #088 — Split-Half-Validierung (AP52): das Zielbuch bricht im Test nicht ein, aber seine Herkunft ist widerlegt (11.08.2026)
+- **Anstoß:** Ticket `splithalf-validierung` (AP52) — der strategy-auditor hatte am 10.08. den #071-Fenstertest als ZIRKULÄR entlarvt (die Qualitätsgates verlangten „OOS-expR > 0", die Beine wurden also danach ausgewählt, im OOS-Fenster zu liefern; dazu ~1000 MC-bewertete Kombinationen über 4 Suchläufe). Sauberer Test: Qualifizierung UND Beam-Search NUR auf Train (Jahre < 2022), dann EINMALIGE Bewertung auf Test (≥ 2022) ohne Nachjustieren. Skript: `engine/goal30_splithalf.py`, 97 Kandidaten, 30.000 MC-Sims, Exit-Code 0. (Der Lauf vom 10.08. 00:32 war nach Schritt 1 abgebrochen, ohne Ergebnis-JSON — heute frisch durchgelaufen.)
+- **Qualifizierung auf Train: nur 4 von 97 Beinen bestehen** die reinen Train-Gates (expR>0 in 16-19 UND 20-21, top5<60%, ≥55% profitable Jahre): FLIP_NQ_b0.5_WINDOW, FLIP_NQ_b0.75_SIGNALS, FLIP_NQ_b0.75_WINDOW, **NOISE_ORB_NQ**. **Von den 4 Zielbuch-Beinen (#071) qualifiziert sich nur ein einziges: NOISE_ORB_NQ.** RV_leadlag_NQES, NQ_Asia-Dir-USopen und OPEXMOM_NQ fallen schon an den Train-Gates durch. Der Beam-Search auf Train wählte danach sogar nur **1 Bein** (NOISE_ORB_NQ), Runde 2 brach an den Constraints ab.
+- **Kernzahlen** (First-Passage-Passquote/Tage, frac wie im Skript, MC 30k):
+
+| Buch | Train | Test (≥2022) | Δpp |
+|---|---|---|---|
+| Split-Half-Buch (Train-gewählt, 1 Bein) | 47,0%/29d | 52,0% (±0,29)/70d | **+5,0** |
+| Buch heute (6 Beine, Referenz) | 34,2%/23d | 61,2% (±0,28)/58d | +27,0 |
+| Zielbuch #071 (4 Beine) | 45,6%/22d | 59,6% (±0,28)/50d | +13,9 |
+
+- **Verdict — zweischneidig, aber klar:**
+  1. **Kein Einbruch im Test-Fenster** — alle drei Bücher werden ≥2022 sogar besser (Regime-Rückenwind hilft allen). Das Katastrophen-Szenario „Buch bricht ein → reiner Sucheffekt" ist NICHT eingetreten.
+  2. **Aber die Herkunft des Zielbuchs ist widerlegt:** eine Suche, die nur Train sieht, findet das 4-Bein-Zielbuch NICHT — 3 der 4 Beine bestehen die Train-Gates gar nicht. Ihre Qualifizierung in #071 stützte sich also (mindestens teilweise) auf Information aus 2022+, exakt der monierte Zirkularitätsfehler. **Die Test-Performance des Zielbuchs (59,6%) ist damit kein unabhängiger Beweis** — das Buch wurde mit Wissen über das Test-Fenster gebaut. Der einzige Teil mit echter Train→Test-Bestätigung ist **NOISE_ORB_NQ solo** (47%→52%, robust).
+- **Konsequenz für AP53 (Buch-Entscheidung):** stärkt die 10.08.-Empfehlung **gegen den Umbau** deutlich. Der marginale Frontier-Vorteil des Zielbuchs (#078: 52,4% vs. 47,9% bei frac 0.10, aber 69 statt 37 Tage) stand schon vorher auf der Kippe; jetzt kommt dazu, dass 3 der 4 Zielbeine sucheffekt-verdächtig sind. AP53 ist entblockt und entscheidungsreif.
+- **Methodik-Vorbehalt:** der Lauf rechnet mit `dd_mode="eod"`, nicht intraday (#077) — die absoluten Passquoten sind daher NICHT mit den Intraday-Zahlen aus #078/#081 vergleichbar. Für den eigentlichen Zweck (Train-only-Suche vs. #071-Suche) ist das unerheblich, da alle Vergleiche im selben Modus laufen. Ticket `dd-mode-intraday-default` (GROUNDTRUTH) bleibt offen.
+- **Skript-Bug gefunden & gefixt:** `goal30_splithalf.py` schrieb in `goal30_splithalf.json` das Feld `train_pass` mit dem Test-Wert (Copy-Paste, Zeile 138: `p` statt `pt`) — die echten Train-Werte standen nur im String-Feld `train`. Gefixt; das vorliegende JSON hat den Fehler noch drin (String-Felder stimmen).
+- Ticket `splithalf-validierung` (AP52) geschlossen und aus `tasks.json` gelöscht, `blocked_by` bei AP53 entfernt. Dateien: `engine/goal30_splithalf.py`, `engine/goal30_splithalf.json`, `engine/goal30_splithalf.log`.
+
+### Lehre
+43. **„Kein Einbruch im OOS" und „unabhängig bestätigt" sind zwei verschiedene Aussagen.** Der ehrliche Test einer Buch-Konstruktion ist nicht, ob das fertige Buch im Test-Fenster hält (das kann Regime-Glück sein und ist bei zirkulärer Auswahl sogar zu erwarten) — sondern ob eine Suche, die das Test-Fenster nie gesehen hat, **dasselbe Buch noch einmal findet**. Hier fand sie 1 von 4 Beinen. Künftige Buch-Qualifizierung muss strikt Train-only laufen, BEVOR ein Bein ins Buch kommt, nicht als Nachtest.
+
+## #089 — Betriebspunkt unter Kauf-Budget (max. 2 Evals/Monat): die „niedriger frac"-Empfehlung kippt (11.08.2026)
+- **Anstoß (Max, 11.08.):** „Ich kaufe höchstens 2 Evals im Monat — welcher frac bringt mir damit die höchste Chance auf funded?" Alle bisherigen Betriebspunkt-Zahlen (#076/#078/#081, AP53) bewerten **ein einzelnes Konto ohne Nachkauf**. Unter einer Kauf-**Rate** ist das die falsche Zielgröße. Neues Skript: `engine/frac_pair_budget.py` (gemeinsame Marktpfade wie #076-Hebel-B, `dd_mode="intraday"` (#077), 6.000 Sims, 12 Monatskohorten rollend, Beobachtungsfenster 24 Monate, Kauf-Stopp nach dem ersten Pass). Ergebnis: `frac_pair_budget_results.json`.
+- **Modellannahme (geprüft, #085/Research-Cache):** parallele Evals sind bei E8 unlimitiert und der Sizing-Split zwischen zwei eigenen Evals ist schriftlich erlaubt. **Ungeprüft und kritisch: ob die E8-Eval ein Zeitlimit oder Mindest-Handelstage hat** → AP90.
+
+### Befund 1: Tempo bleibt wertvoll — die Vermutung „Kaufdeckel entwertet Tempo" ist falsch
+Die Intuition war: wenn nur 2 Käufe/Monat möglich sind, ist die knappe Ressource der Versuch (nicht die Zeit), also gewinnt der niedrigste frac mit der höchsten Passquote. Gemessen ist das Gegenteil richtig, weil das Kontingent eine **Rate** ist und nicht ansammelbar — ein Konto, das 85 Tage bis zur Entscheidung braucht, verbrennt keine Käufe, sondern Kalendermonate.
+
+E8 **50k**, 1 Konto/Monat rollend, intraday:
+
+| frac | solo pass% | solo Median | P(funded) 3M | 6M | 12M | Ø Kosten |
+|---|---:|---:|---:|---:|---:|---:|
+| 0.08 | **50,1%** | 94 d | 28,1% | 58,6% | 87,9% | 929 $ |
+| 0.10 | 47,8% | 85 d | 30,1% | 59,7% | 87,6% | 914 $ |
+| 0.14 | 42,0% | 37 d | 51,3% | 77,6% | 95,7% | 652 $ |
+| 0.18 | 38,2% | 21 d | 60,0% | 83,8% | 97,5% | 558 $ |
+| **0.22** | 34,3% | 12 d | **62,9%** | **85,7%** | 97,9% | **530 $** |
+| 0.30 | 28,0% | 6,5 d | 61,3% | 83,8% | 97,3% | 553 $ |
+
+**Der frac mit der besten Einzelquote ist der mit der schlechtesten P(funded) — und der teuerste.** frac 0.08 hat +16pp Solo-Vorsprung auf 0.22 und liegt nach 3 Monaten trotzdem 35pp zurück, bei 400 $ mehr Erwartungskosten. Grund: bei 94 Tagen Median ist das erste Konto nach 3 Monaten noch nicht einmal entschieden, während gleichzeitig weitergekauft wird.
+
+### Befund 2: der Sizing-Split ist auch hier der Gratis-Hebel (+10pp, und billiger)
+Zwei Konten pro Monat auf **demselben** frac bringen fast nichts (corr ≈ 1, exakt der #076-Befund, hier auch für zeitversetzte Kohorten bestätigt). Erst der Split zwischen langsam und aggressiv erzeugt Streuung. E8 **25k**, 2 Konten/Monat:
+
+| Paar | 1M | 3M | 6M | Median | Ø Kosten |
+|---|---:|---:|---:|---:|---:|
+| 0.10 / 0.10 | 20,4% | 60,3% | 85,1% | 71 d | 733 $ |
+| 0.30 / 0.30 | 27,8% | 63,4% | 85,4% | 62 d | 705 $ |
+| 0.10 / 0.22 | 29,4% | 69,8% | 90,9% | 52 d | 606 $ |
+| **0.10 / 0.30** | **32,7%** | **73,2%** | **92,3%** | **45 d** | **568 $** |
+
+Der Split kostet nichts und liefert +10pp gegenüber zweimal demselben frac — **und senkt die Erwartungskosten**, weil man früher aufhört zu kaufen. Auf 25k sind alle fracs ≤ 0,14 identisch (Min-Size-Effekt aus #029/#076: 1 Kontrakt egal was man einstellt) — die Wahl ist real also „Min-Size-Konto + aggressives Konto".
+
+### Befund 3: 25k schlägt 50k klar, sobald rollend gekauft wird
+| Käfig | bestes Paar | 3M | 6M | Ø Kosten |
+|---|---|---:|---:|---:|
+| **25k (100 $)** | 0.10 / 0.30 | **73,2%** | **92,3%** | **568 $** |
+| 50k (150 $) | 0.18 / 0.30 | 70,9% | 90,8% | 898 $ |
+
+Gleiche Barrieren-Ratio (1500/1000 = 3000/2000 = 40%), aber der kleinere Käfig entscheidet schneller und kostet ein Drittel weniger pro Los. 50k gewinnt nur die **Solo**-Quote (50,1% bei frac 0.08) — also genau die Kennzahl, die unter Nachkauf nicht mehr die relevante ist.
+
+### Empfehlung
+**2 × E8 25k pro Monat, frac-Split 0,10 / 0,30, rollend nachkaufen bis das erste Konto besteht.** ≈73% funded in 3 Monaten, ≈92% in 6, Erwartungskosten ≈570 $. Vorbehalte: gerechnet auf dem aktuellen 5-Bein-Buch, dessen Herkunft #088 teilweise widerlegt hat — die absoluten Zahlen wandern mit AP53. Die **Richtung** (Tempo + Split + kleiner Käfig) ist davon unabhängig, weil sie aus der Barrieren-/Zeitstruktur kommt, nicht aus der Edge.
+
+### Konsequenzen für offene Tickets
+- **AP53:** die dort notierte Empfehlung „frac 0.10 als Betriebspunkt" gilt nur ohne Nachkauf. Unter Max' Kaufplan ist der Betriebspunkt ein **Paar**, nicht ein Wert. Im Ticket ergänzt.
+- **AP89 (VIX-Bein):** das Argument „gleiche Passquote, aber 6 Tage schneller → Tempo zählt bei Reset-Strategie" wird durch diesen Lauf **bestätigt und quantifizierbar** — Tempo ist unter rollendem Nachkauf kein Beiwerk, sondern der Haupthebel.
+- **AP90 (neu):** Eval-Zeitlimit/Mindesthandelstage bei E8 Signature Futures schriftlich klären. Ohne das steht das langsame Bein des Splits auf ungeprüftem Grund.
+
+### Lehre
+44. **Ein Betriebspunkt ist nur zusammen mit der Kaufpolitik definiert.** Dieselbe Frontier liefert gegensätzliche Empfehlungen, je nachdem ob man ein Konto einmalig kauft (→ niedriger frac, hohe Einzelquote) oder rollend nachkauft (→ hoher frac, kurze Entscheidungszeit). **Vor jeder Betriebspunkt-Frage zuerst festlegen: ein Versuch oder eine Kauf-Rate?** Ergänzt Lehre 26 („Passquote ist zweideutig") um die zeitliche Dimension.
+45. **Eine Kauf-Obergrenze pro Monat ist keine Budget-Restriktion, sondern eine Rate.** Nicht ansammelbares Kontingent heißt: langsame Konten sparen keine Käufe ein, sie verzögern nur den Zeitpunkt, an dem sich das Kontingent auszahlt. Deshalb kippt die Optimierung Richtung Tempo, obwohl weniger Versuche zur Verfügung stehen.
+
 ## Nächste Kandidaten (noch offen)
-- **Replace-Test: NQ_Momentum → MOMSEL_NQ_er0.3_s0.75** (siehe #057 — wartet auf Max' Go)
+- ~~Replace-Test: NQ_Momentum → MOMSEL_NQ_er0.3_s0.75~~ → in #080 ehrlich neu gerechnet: nur bei frac ≈0.10 sinnvoll, Entscheidung an AP53 gekoppelt
 - ~~Momentum selektiver~~ → in #057 getestet, NQ 8/8 robust (siehe oben)
 - ~~Intraday Time Series Reversal auf Index (SSRN 5807282)~~ → in #056 als on_rev/min30-Variante mitgetestet (eod-Variante war stärker)
 - Overnight-Intraday Reversal (SSRN 2730304)

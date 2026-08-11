@@ -93,6 +93,53 @@ Wenn eine Session endet oder Max darum bittet:
 
 ---
 
+## 🖥️ Portfolio-Tab immer mitziehen (Regel Max, 10.08.2026)
+
+Sobald sich am Portfolio etwas ändert (neues Bein, Bein raus, andere Parameter, neue Firma/Frac), **im selben Zug den Portfolio-Tab im Strategy Lab aktualisieren** — nicht erst „später".
+
+1. `book_state.json` ist die einzige Quelle der Wahrheit für das Buch **und seit 11.08.2026 auch für Käfig und Betriebspunkt** (Block `plan`: Firma, Target/DD, Cap, Preis pro Eval, Käufe pro Monat, `dd_mode`, und die Konten mit ihrem Cushion-Frac). Vorher standen Käfig und frac hartkodiert in `funded_finalize.py` und liefen still auseinander, sobald sich am Plan etwas änderte.
+2. `cd C:\Users\maxlk\Projects\trading-data\engine && python funded_finalize.py` → schreibt `portfolio.json` + Report `PORTFOLIO_optimized` und legt fehlende Bein-Reports automatisch an.
+3. Danach prüfen: jedes Bein hat ein `report`-Feld, das auf eine existierende Datei in `reports/` zeigt (sonst 404 beim Klick).
+4. `portfolio_tab.py` **nicht** benutzen (veraltet, eingefrorene Juli-Beine, läuft nur noch mit `--force` und fasst `portfolio.json` nicht mehr an).
+
+### Was „Änderung am Portfolio" heißt (Auslöser für Schritt 2)
+Nicht nur Beine rein/raus. **Jede** dieser Änderungen zieht denselben Zug nach sich:
+
+| Änderung | Wo eintragen |
+|---|---|
+| Bein rein/raus, andere Bein-Parameter | `book_state.json` → `legs` |
+| Anderer Cushion-Frac / Betriebspunkt | `book_state.json` → `plan.accounts` |
+| Andere Kontogröße, andere Firma, anderes Target/DD | `book_state.json` → `plan` (+ `firm`/`target`/`dd`) |
+| Andere Kaufpolitik (Evals pro Monat, Preis) | `book_state.json` → `plan.buys_per_month` / `price_per_eval_usd` |
+| Umstellung des Bust-Checks (eod ↔ intraday) | `book_state.json` → `plan.dd_mode` |
+
+Danach **immer** `funded_finalize.py` laufen lassen, im selben Zug, nicht „später". Der Portfolio-Tab zeigt dann automatisch: Kaufplan (beide Konten mit Frac, Solo-Quote, Median-Dauer), P(funded) rollend über 1/2/3/6/12 Monate, erwartete Eval-Anzahl und Kosten, sowie die Frontier in **beiden** Bust-Modi (EOD-Kopfzahl + ehrliche Intraday-Zahl nach #077).
+
+**Betriebspunkt ist ein PAAR, kein einzelner frac** ([[Strategie-Logbuch]] #089): Wer rollend nachkauft, optimiert nicht die Einzel-Passquote, sondern P(funded) pro Zeit. Fragt Max nach „dem besten frac", immer zuerst klären: ein einzelnes Konto oder eine Kauf-Rate? Die Antwort ist in beiden Fällen eine andere.
+
+Die Rechenlogik dafür liegt in `eval_plan.py` (gemeinsame Quelle für `funded_finalize.py` und den Analyse-Lauf `frac_pair_budget.py`) — Änderungen an der Passquoten-Mathematik gehören dorthin, nicht in eine Kopie.
+
+**Seit 11.08.2026 gibt es zusätzlich ein Live-Buch** (Regel Max: nichts von dem, was je eine Edge zeigte, soll verloren gehen, nur weil es nicht ins Prop-Buch passt). Portfolio-Tab hat jetzt 3 Unter-Reiter: 🎓 Eval / 💰 Funded (beide identisch, `portfolio.json`) / 🚀 Live (`live_portfolio.json`).
+- `python live_finalize.py` (Engine-Ordner) = Buch-Beine aus `book_state.json` **plus** die per Hand kuratierten Grade-A-„Bank"-Funde in `LIVE_EXTRA` (Strategien mit robuster OOS-Bestätigung, die der Auto-Fit nur mangels Portfolio-Beitrag/Frequenz fürs Prop-Buch abgelehnt hat — kein Prop-Firma-Limit mehr, also kein Ausschlussgrund).
+- Neuer Grade-A-Bank-Fund? → in `LIVE_EXTRA` in `live_finalize.py` eintragen (Params, Familie, Why mit Logbuch-Bezug), dann `python live_finalize.py` laufen lassen. Grade-C/D-Funde bewusst NICHT aufnehmen (ehrliches Backtesting: schwache Qualität bleibt schwach, auch live).
+- **Falle, auf die schon einmal reingefallen:** ein alter Report kann durch spätere Engine-Fixes überholt sein, ohne dass ideas.json es merkt (bei RV_leadlag_NQES so passiert — Report vom 31.07. zeigte Grade A, mit dem seit 10.08. gefixten `rv.py` neu gerechnet PF 0.91/tot). `live_finalize.py` rechnet jedes Bein bei jedem Lauf frisch mit dem aktuellen Engine-Code — bei Abweichung vom alten Report-Stand zählt die frische Rechnung, nicht das `.meta.json`.
+- Kein Prop-Pass-Frontier und keine Kapital-/Sizing-Kurve im Live-Tab (Kapitalgröße & Risiko/Trade noch nicht festgelegt) — nur die ehrliche kombinierte Backtest-Sicht.
+
+---
+
+## 🖥️ Box-Fernzugriff (Regel Max, 11.08.2026 — WICHTIG, nie wieder vergessen)
+
+**Claude hat vollen SSH-Zugriff auf die Trading-Box und soll ihn immer selbst nutzen, statt zu behaupten, er habe keinen Zugriff oder Max müsse das manuell machen.**
+
+- Zugang: `ssh Administrator@100.127.89.9` (Tailscale, Key liegt lokal unter `C:\Users\maxlk\.ssh\id_ed25519`, kein Passwort nötig). Box-Hostname `vmd202078`, Zeitzone deutsche Zeit.
+- **F5/manuelles Kompilieren ist tot.** Deploy läuft extern über `box_deploy.ps1` auf der Box (NT8 beenden → Backup außerhalb des NT8-Baums → Staging rein → Pre-Flight-Compile → `dotnet build` → DLL setzen → `obj`/`bin` wieder entfernen). Details und bekannte Fallen: [[VPS-Einrichtung Schritt für Schritt]], [[Strategie-Logbuch]] #084.
+- Vor jedem Deploy: NT8-Log des Tages checken ob wirklich nichts Live läuft, danach den kompletten Zielzustand in einem Wegwerf-Ordner vorab kompilieren (`_check_compile.ps1 -SrcDir`), bevor NT8 überhaupt gestoppt wird. Das Leichen-Problem im `_staging` ist seit 11.08. (AP84) im Skript selbst entschärft: `box_deploy.ps1` sagt vor allem anderen die Deploy-Kandidaten an, warnt bei Dateien die es in `Strategies` noch nicht gibt (neues Bein oder Leiche?) und leert das Staging nach erfolgreichem Lauf. Die Ansage trotzdem immer lesen, bevor NT8 gestoppt wird.
+- **Wiederanlauf braucht aktuell eine angemeldete RDP-Session** (Autologon fehlt noch, AP86) — NT8 hängt sonst beim UI-Aufbau. Bis das gefixt ist, nach jedem Deploy kurz Bescheid geben, dass eine RDP-Anmeldung nötig ist.
+- Ticket-Tracker liegt in `C:\Users\maxlk\Projects\trading-data\engine\tasks.json` (Feld `ap_id` = die AP-Nummern, die Max nennt — bei unklaren AP-Nummern immer erst dort nachschauen statt zu raten).
+- **Geplant (Max, 11.08.26):** ein zentraler „Deployer" — eine Oberfläche/Skript, in dem Max nur noch die gewünschten Strategien + Parameter einträgt und der Rest (Staging, Pre-Flight, Build, Deploy, Restart) automatisch läuft. Noch nicht gebaut, aber das Zielbild für den Deploy-Workflow — künftige Deploy-Arbeit sollte darauf einzahlen statt Einzelskripte zu vermehren.
+
+---
+
 ## 🎯 Aktueller Fokus
 
 - **Trading-Pipeline: Eval → Funded → Live.** Einstieg immer über [[Day Trading]].
@@ -102,6 +149,7 @@ Wenn eine Session endet oder Max darum bittet:
 - Werkzeuge: [[Backtest-Engine]], [[Portfolio-Simulator]], [[Strategie-Logbuch]].
 
 ### 🧭 Stehende Trading-Prinzipien (für JEDE künftige Strategie)
+- **⭐ DAS einzige Entscheidungskriterium (Max, 10.08.26):** Bei JEDER Empfehlung/Entscheidung (Bein rein/raus, Parameter, Firma, Sizing) zuerst fragen: **verbessert oder verschlechtert es die Wahrscheinlichkeit auf einen funded Account (Passquoten-Frontier)?** Nicht Einzel-Edge, nicht Sharpe, nicht Eleganz. Die Rechnung muss auf der ehrlichen aktuellen Basis stehen: aktuelles Buch, gefixte Engine, **Intraday-Bust-Check** (#077 — E8 prüft kontinuierlich). Positive Edge ist notwendig, nicht hinreichend (Präzedenz: OR_DELTA_BIAS #079).
 - **Simplex beats Komplex:** immer so einfach wie möglich starten. Komplexität nur mit OOS-Beweis + Why, sonst raus (mehr Regeln = fragiler). Siehe [[Simplex beats Komplex]].
 - **Jede Strategie = vollständiges Skript:** Entry + Stop + Take-Profit + Notausgang(Zeit) + Sizing + **WHY**. Siehe [[Strategie-Anatomie (Framework)]].
 - **Jede Strategie gehört in genau eine der 5 [[Strategie-Familien]]:** Trend Following · Mean Reversion · Intraday Bias · Swing · Relative Value.

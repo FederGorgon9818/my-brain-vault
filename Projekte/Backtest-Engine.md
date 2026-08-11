@@ -97,6 +97,14 @@ Tickets hängen jetzt zusammen. Datenmodell: `blocked_by` als Liste von Ticket-I
 
 ![[tickets-reihenfolge.png]]
 
+### 🧩 Portfolio-Tab: Quelle der Wahrheit + 404-Fix (10.08.2026)
+Klick auf ein Bein landete im rohen `Error code: 404 / Message: Not Found` statt im Report. Zwei Ursachen, beide behoben:
+- **Daten:** `portfolio_tab.py` (Stand Juli, eigene eingefrorene Bein-Liste, schreibt kein `report`-Feld pro Bein) hatte die gute `portfolio.json` überschrieben → die Beine hießen „Momentum NQ" statt `NQ_Momentum`, dazu passte keine Datei in `reports/`. Jetzt gebaut aus **`book_state.json` via `funded_finalize.py`** (legt fehlende Bein-Reports selbst an). `portfolio_tab.py` ist deprecated: läuft nur mit `--force` und fasst `portfolio.json` nicht mehr an.
+- **Server/UI:** `/reports/...` dekodiert jetzt `%20` (Namen mit Leerzeichen liefen immer ins Leere). Fehlt ein Report wirklich, kommt statt des http.server-404 eine Seite im Lab-Look mit den nächstliegenden Reports zum Anklicken. Zusätzlich löst die UI Anzeige-Namen per Token-Match auf echte Report-Namen auf („Momentum NQ" → `NQ_Momentum`), auch beim ⤢-Popout.
+- **Nebenbefund:** ein verwaister `app_server.py` aus einem alten Lauf hing noch auf Port 8756 und beantwortete die Requests mit altem Code, obwohl der Supervisor längst neu gestartet hatte. Bei „Änderung wirkt nicht": `netstat -ano | findstr 8756` prüfen, Zombie killen.
+
+**Regel ab jetzt:** jede Buch-Änderung → sofort `python funded_finalize.py`, damit der Tab nie ein altes Buch zeigt.
+
 ## Nächste Schritte
 - [ ] Regime-Filter + Selektivität testen (weniger, bessere Trades statt 261/Woche)
 - [ ] Andere Signale aus [[Mean-Reversion Paper (High-Winrate Fokus)]] durchjagen

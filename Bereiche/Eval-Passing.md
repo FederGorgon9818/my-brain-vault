@@ -6,7 +6,10 @@ erstellt: 2026-07-07
 ---
 # 🎯 Phase 1 – Eval-Passing (AKTUELLER FOKUS)
 
-⬅️ [[Day Trading]] · ➡️ [[Funded-Phase]]
+⬅️ [[Day Trading]] · ➡️ [[Funded-Phase]] · 🎫 **Arbeitsreihenfolge: [[Ticket-Epics]]**
+
+> [!warning] Stand 10.08.2026: Strategien deaktiviert
+> Zwei Beine liefen mit falschen Zahlen ([[Strategie-Logbuch]] #075). Alles aus, bis 🔥 FIREFIGHT in [[Ticket-Epics]] grün ist. Die Zahlen weiter unten in dieser Notiz sind älter als die Bugfixes vom 10.08. und **nicht mehr gültig**, siehe [[2026-08-10]].
 
 > [!important] Einziges Ziel dieser Phase
 > **Die Prop-Eval bestehen.** Nichts anderes zählt hier. Optimiert wird ausschließlich auf: **hohe Passchance in kürzester Zeit.** Payouts, Profit-Split, Funded-Management = spätere Phase ([[Funded-Phase]]), spielen für die Strategie-Wahl HIER keine Rolle.
@@ -30,7 +33,8 @@ Von allen Seiten geprüft (3 Objektiv-Läufe + Portfolio + Sizing): **70% in 3 W
 - [[Strategie-Logbuch]] – jede getestete Strategie + Verdict
 
 ## 📊 Detailergebnisse (Historie)
-- [[Wochenreport 2026-W31 (27.07-31.07)]] – aktuellster Stand: 9 Beine, NetLiq +2,8%, Live-Monitor-Bugfixes
+- [[Wochenreport 2026-W32 (03.08-11.08)]] – aktuellster Stand: Sim-Eval bestanden, ehrliche Passquoten (43%/34% intraday), FIREFIGHT, Sim-Abgleich auf Null
+- [[Wochenreport 2026-W31 (27.07-31.07)]] – 9 Beine, NetLiq +2,8%, Live-Monitor-Bugfixes
 - [[Portfolio-Simulator]] – Kombinationen, Empfehlung `PORTFOLIO_balance`
 - [[Refine-Lab-Ergebnisse (apex)]] – 20 Strategien auf Apex-Speed optimiert
 - [[Refine-Lab-Ergebnisse (prop)]] · [[Refine-Lab-Ergebnisse]] – Explorer-Läufe
