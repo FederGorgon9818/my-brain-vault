@@ -45,7 +45,7 @@ Alles, was **jetzt gerade** auf echtem oder Sim-Konto mit falschen Zahlen läuft
 **Fertig wenn:** kein laufendes Script mehr eine Referenz benutzt, von der wir wissen, dass sie falsch ist.
 
 - [ ] **Alle Strategien deaktiviert lassen**, bis dieses Epic grün ist (Zustand seit 10.08. abends)
-- [ ] `edge_ref.json`: `MaxLeadLagES` von 34,06 auf 9,12 $/Trade korrigieren ([[Strategie-Logbuch]] #075)
+- [x] ~~`edge_ref.json`: `MaxLeadLagES` von 34,06 auf 9,12 $/Trade korrigieren~~ ✅ erledigt, aber anders als geplant (11.08., [[Strategie-Logbuch]] #090): keine proportionale Skalierung, Bein komplett aus `edge_ref.json`/`book_state.json` entfernt — Nachrechnung zeigt negativen expR (−0,074), nicht nur einen kleineren positiven Wert
 - [ ] `MaxAsiaDirNQ`: Einstieg von 09:31 auf 09:30 fixen (`OnBarClose` im `IsFirstBarOfSession`-Block). Kostet aktuell 36% der Bein-Edge, ca. 271 $/Jahr/Micro
 - [ ] Ticket `riskguard-risk-mass`: nutzt der Live-RiskGuard dasselbe MAE-Maß wie `book.cell_daily:43`? Wenn ja, wird live systematisch zu klein gesized
 - [ ] Prüfen, ob noch weitere Live-Scripts gegen `edge_ref.json` oder das alte Risikomaß laufen
@@ -60,10 +60,10 @@ Die sieben Bugs von heute sind gefixt, aber nicht abgesichert. Hier geht es daru
 
 **Fertig wenn:** ein Regressionslauf beweist, dass die Engine gegen bekannte Referenzwerte rechnet, und kaputte Daten nicht mehr durchrutschen.
 
-- [ ] MAE-Doppelzählung an allen drei Fundstellen verifiziert: `book.py:43`, `qbt.py:1213`, `copilot.py:154`
-- [ ] Guard gegen korrupte Kursdaten aktiv und getestet (ES 780 Bars, RTY 8.591 Bars mit Preis ≤ 0 aus Quartals-Rolls)
-- [ ] `rv.py:167`: Risiko-Skalierung mit dem richtigen Instrument (ES statt NQ), Fix verifiziert
-- [ ] Slippage nach Ordertyp statt pauschal 2 Ticks (Limit-Entry 0, Target-Exit 0, Market/Stop 1 Tick)
+- [x] ~~MAE-Doppelzählung an allen drei Fundstellen verifiziert~~ ✅ 11.08. ([[Strategie-Logbuch]] #082): `book.py:43` war schon korrekt, `qbt.py`/`copilot.py` gefixt und bitidentisch gegengecheckt
+- [x] ~~Guard gegen korrupte Kursdaten aktiv und getestet~~ ✅ 11.08. ([[Strategie-Logbuch]] #091): 11 betroffene ES/RTY-Reports vor dem Fix nachgerechnet, nur 2 minimal verändert (leicht besser), keine Strategie kippt
+- [x] ~~`rv.py:167`: Risiko-Skalierung mit dem richtigen Instrument (ES statt NQ), Fix verifiziert~~ ✅ verifiziert 11.08. ([[Strategie-Logbuch]] #090): Mechanismus hergeleitet + 16er Robustheits-Sweep, Ergebnis bestätigt tot
+- [ ] Slippage nach Ordertyp statt pauschal 2 Ticks (Limit-Entry 0, Target-Exit 0, Market/Stop 1 Tick) — **Achtung (#091): war fälschlich als erledigt markiert.** Nur Einmal-Analyse in `goal_last_push.py`, nie in `qbt.py` integriert. Echt offen, betrifft ORB-fade/ASIA/NOISE/OPEX
 - [ ] `passmc`: Horizont in **Kalendertagen** statt Handelstagen, oder zumindest eindeutig benannt
 - [ ] **Golden-File-Test bauen:** ein fixer Datensatz, ein fixes Buch, erwartete Kennzahlen eingefroren. Läuft vor jeder Buch-Entscheidung
 - [ ] Backups der gefixten Dateien aufräumen, damit klar ist, welche Version gilt
@@ -93,6 +93,7 @@ Erst hier wird entschieden, **womit** wir antreten. Vorher ist jede Entscheidung
 
 **Fertig wenn:** Buch, frac, Kontogröße und Kontenanzahl schriftlich festgelegt sind, mit der ehrlichen Passquote daneben.
 
+- [x] ~~`cushion-size-uebertragung` (AP92)~~ ✅ erledigt 11.08. ([[Strategie-Logbuch]] #092): Cushion-Sizing aus dem RiskGuard an alle 9 Beine übertragen, Size-Datei jetzt pro Konto getrennt (`maxlab_size_<Konto>.txt`), deployed + kompiliert. AP91 entblockt
 - [ ] **AP53: Betriebspunkt wählen.** frac 0.10 (Quote hoch, langsam) oder höher (Tempo). #078 und #080 zeigen beide auf **niedrig**
 - [ ] MOMSEL-Replace entscheiden (#080). Lohnt nur bei frac ≈ 0.10, dort ca. 25% schneller bei gleicher Quote
 - [ ] Ticket `claude-071-buchumbau`: 5 von 6 Beinen raus ist radikal, gehört bewusst entschieden
@@ -111,6 +112,8 @@ Alles, was von außen entschieden wird und deshalb Vorlauf braucht. Darf **paral
 
 - [x] ~~`e8-dd-mechanik`~~ ✅ geklärt 10.08. (#077): Floor trailt EOD, Bruch wird kontinuierlich geprüft
 - [x] ~~`e8-zwei-konten`~~ ✅ geklärt 11.08. (#085, AP77): Sizing-Split zwischen zwei gleichzeitigen Evals erlaubt (Support-Bestätigung Fábio), 57% aus #076 buchbar. Nebenbefund: kein News-Trading-Verbot bei E8 Signature Futures
+- [x] ~~`e8-eval-zeitlimit` (AP90)~~ ✅ geklärt 11.08. (#093): kein Zeit-/Tageslimit für die Evaluation, nur eine Wochen-Inaktivitätsregel (Futures: 1 Trade auf+zu pro Woche, ab 0,1 Lot genügt)
+- [ ] **`e8-heartbeat-bein` (AP93):** dediziertes Mini-Bein (1 Lot/Woche auf+zu) statt Einzelbein-Audit, um die Wochen-Inaktivitätsregel sicher zu erfüllen — Idee Max 11.08., erst E8 kurz bestätigen lassen
 - [ ] **`e8-kontraktlimits`:** Sim nimmt Cap 14 Micros an. Stimmt das auf dem gewählten Konto?
 - [ ] VPS-Regel bei E8 schriftlich bestätigen (Bulenox ist genau daran gestorben, Ticket #RAX-292098)
 - [ ] Eval kaufen, erst nach 🎯 DIALIN
@@ -149,7 +152,7 @@ Flache Liste, wie die linke Spalte im Tracker. Jede Zeile: Status, Name, Epic-Ta
 ### 🔥 firefight
 | Status | Ticket | Wofür |
 |---|---|---|
-| 🔴 offen | `edge-ref-leadlag-korrektur` *(neu, heute)* | `MaxLeadLagES` Referenz 34,06 → 9,12 $/Trade in `edge_ref.json` |
+| ✅ erledigt 11.08. | ~~`edge-ref-leadlag-korrektur`~~ | Anders als geplant: Bein komplett aus `edge_ref.json` entfernt statt auf 9,12 $/Trade skaliert ([[Strategie-Logbuch]] #090) |
 | ✅ gelöscht 11.08. | ~~`asiadir-entry-fix` (AP72)~~ | Einstieg 09:31 → 09:30, deployed und kompiliert ([[Strategie-Logbuch]] #084) |
 | 🔴 offen | `riskguard-risk-mass` | Prüfen ob Live-RiskGuard dasselbe kaputte MAE-Maß nutzt wie `book.cell_daily` |
 | 🔴 offen | `riskguard-historical-replay-guard-f5` | `State.Historical`-Guard fürs RiskGuard-C#, wartet auf F5 |
@@ -163,12 +166,13 @@ Flache Liste, wie die linke Spalte im Tracker. Jede Zeile: Status, Name, Epic-Ta
 ### 🧹 cleanroom
 | Status | Ticket | Wofür |
 |---|---|---|
-| ✅ gefixt, Verifikation offen | `mae-doppelzaehlung-verify` | Fix an drei Stellen (`book.py:43`, `qbt.py:1213`, `copilot.py:154`) gegenchecken |
-| ✅ gefixt, Verifikation offen | `corrupt-data-guard-verify` | Guard gegen ES/RTY-Preis-≤-0-Bars aus Quartals-Rolls testen |
-| ✅ gefixt, Verifikation offen | `rv-instrument-scaling-verify` | `rv.py:167` ES-statt-NQ-Skalierung gegenchecken |
-| ✅ gefixt | `slippage-ordertyp` | Slippage nach Ordertyp statt pauschal 2 Ticks (Hebel A, #076) |
+| ✅ verifiziert 11.08. (#082) | `mae-doppelzaehlung-verify` | Fix an drei Stellen gegengecheckt: `book.py:43` war schon korrekt, `qbt.py`/`copilot.py` gefixt, bitidentische Werte |
+| ✅ verifiziert 11.08. (#091) | `corrupt-data-guard-verify` | 11 ES/RTY-Reports vor dem Fix nachgerechnet: nur 2 minimal (RTY_Gap-fade, VWAPPULL_RTY leicht besser), keine tot |
+| ✅ verifiziert 11.08. (#090) | `rv-instrument-scaling-verify` | `rv.py:167` ES-statt-NQ-Skalierung gegengecheckt: Mechanismus hergeleitet, 16er Sweep bestätigt tot |
+| 🟡 **Status falsch, korrigiert 11.08. (#091)** | `slippage-ordertyp` | War NIE in `qbt.py` integriert — nur Einmal-Analyse in `goal_last_push.py`. Jeder normale `run_strategy()`-Call (inkl. alle Reports und `live_finalize.py`) rechnet noch pauschal 2 Ticks. Echtes Ticket bleibt offen |
 | 🔴 offen | `passmc-kalender-horizont` | Horizont von Handelstagen auf Kalendertage umstellen (einer der 3 roten aus #076) |
 | 🟡 offen, neu | `golden-file-test` | Fixer Datensatz + erwartete Kennzahlen, läuft vor jeder Buch-Entscheidung |
+| 🔴 offen, neu (#091) | `slippage-ordertyp-integration` | `entry_slip_ticks`/`exit_slip_ticks` echt in `qbt.py::run_strategy` einbauen (bisher nur Analyse-Skript). Betrifft v.a. Limit-Entry/Target-Exit-Beine (ORB-fade, ASIA, NOISE, OPEX) |
 
 ### 🔬 groundtruth
 | Status | Ticket | Wofür |

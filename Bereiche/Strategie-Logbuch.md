@@ -1072,8 +1072,755 @@ Gleiche Barrieren-Ratio (1500/1000 = 3000/2000 = 40%), aber der kleinere Käfig 
 44. **Ein Betriebspunkt ist nur zusammen mit der Kaufpolitik definiert.** Dieselbe Frontier liefert gegensätzliche Empfehlungen, je nachdem ob man ein Konto einmalig kauft (→ niedriger frac, hohe Einzelquote) oder rollend nachkauft (→ hoher frac, kurze Entscheidungszeit). **Vor jeder Betriebspunkt-Frage zuerst festlegen: ein Versuch oder eine Kauf-Rate?** Ergänzt Lehre 26 („Passquote ist zweideutig") um die zeitliche Dimension.
 45. **Eine Kauf-Obergrenze pro Monat ist keine Budget-Restriktion, sondern eine Rate.** Nicht ansammelbares Kontingent heißt: langsame Konten sparen keine Käufe ein, sie verzögern nur den Zeitpunkt, an dem sich das Kontingent auszahlt. Deshalb kippt die Optimierung Richtung Tempo, obwohl weniger Versuche zur Verfügung stehen.
 
+## #090 — RV_leadlag_NQES nachgetestet: Tod bestätigt, Mechanismus vollständig erklärt, zwei Tracker-Leichen bereinigt (11.08.2026)
+- **Anstoß (Max):** nach dem Bau des Live-Tabs (siehe [[Backtest-Engine]]) nochmal explizit durchtesten, ob `RV_leadlag_NQES` (die einzige Relative-Value-Karte im Vault) wirklich durchfällt oder nicht — der `live_finalize.py`-Lauf hatte sie ausgeschlossen, weil der alte Report vom 31.07. (Grade A) mit dem seit 10.08. gefixten `rv.py` neu gerechnet auf PF 0,91 kippte.
+- **Root Cause exakt lokalisiert** (nicht nur bestätigt, sondern hergeleitet): `rv.py`, Modus `leadlag`. Die Position läuft im Laggard (Symbol 2 = ES, `base = r2 - r2[i0]`), aber `R_pts` (das Dollar-Risiko, mit dem sowohl PnL als auch Kosten pro Trade normiert werden) wurde vor dem Fix mit `c1[i0]` (NQ-Preis) statt `c2[i0]` (ES-Preis) berechnet — ein Copy-Paste-Rest aus den Spread-Modi, wo `c1` korrekt ist. Median-`R_pts` fällt durch den Fix von 22,74 auf 7,24 (Faktor ~3,1×). Der raw R-Multiple (`r`) jedes Trades bleibt dabei unverändert (direkt geprüft: alte und neue `trades()`-Ausgabe liefern bitidentische `r`-Werte) — der Fix wirkt ausschließlich über die Kosten-Normierung in `qbt.run_strategy`: `r_net = r - cost_pts / R_pts`. Mit dem kleineren, korrekten `R_pts` verdreifacht sich der Kosten-Drag pro Trade (3,1% → 9,7% von R) und kippt die Strategie von PF 1,37/expR +0,239 auf **PF 0,91/expR −0,074/Sharpe −0,37** (324 Trades, identisch in beiden Versionen).
+- **Robustheits-Sweep statt Einzelpunkt:** alle 16 in `rv_results.json` dokumentierten `leadlag`-Configs (8× NQ-ES, 8× NQ-RTY, das komplette ursprüngliche Discovery-Grid) mit dem gefixten Code neu gerechnet. NQ-RTY ist ein Totalschaden (PF 0,36–0,57, Sharpe −1,5 bis −2,2 über alle 8 Configs). NQ-ES: 7 von 8 Nachbarn fallen auf PF ≤1,15 mit gemischtem Vorzeichen bei expR, nur **ein** Ausreißer (`t0.002/lr0.5/s0.75`: Win 42%, expR +0,087, PF 1,15, Sharpe 0,70) zeigt noch einen schwachen positiven Rest — bei 8 getesteten Nachbarn und keiner IS/OOS-Bestätigung hier klar Multiple-Testing-verdächtig, **kein neuer Validierungs-Kandidat ohne frischen, sauberen Test**.
+- **Zwei Tracker-Leichen gefunden und bereinigt** ([[Ticket-Epics]]): Ticket `edge-ref-leadlag-korrektur` (FIREFIGHT) stand noch offen mit der Anweisung „`MaxLeadLagES` von 34,06 auf 9,12 $/Trade korrigieren" — das ist eine überholte Zwischenlösung (naive proportionale Skalierung um den R_pts-Faktor), die den nichtlinearen Effekt auf den Kosten-Drag ignoriert. Tatsächlich umgesetzt (siehe `gen_edge_ref.py`, Kommentar zu #075/AP71) wurde die richtige Lösung: Bein komplett aus `edge_ref.json` und `book_state.json` entfernt, nicht auf einen kleineren positiven Wert skaliert. Ticket `rv-instrument-scaling-verify` (CLEANROOM) stand seit dem Fix auf „gefixt, Verifikation offen" — mit diesem Eintrag verifiziert. Beide im Tracker als erledigt markiert.
+- **ideas.json aktualisiert:** Karte „NQ-ES Lead-Lag (Relative Value)" von `Validiert` auf `Getötet` gesetzt, Ergebnistext korrigiert (der alte Text zitierte „+0,087" als Korrektur-Zahl für die falsche Config — das war der o.g. Nachbar, nicht die tatsächlich validierte/live gelaufene `t0.002/lr0.3/s0.5`).
+- **Für den Live-Tab:** Ausschluss von `RV_leadlag_NQES` in `live_finalize.py` war korrekt. Relative Value bleibt damit die einzige der 5 Strategie-Familien ganz ohne aktuell bestätigten Kandidaten, weder fürs Prop-Buch noch fürs Live-Buch.
+
+### Lehre
+46. **Bei Multi-Instrument-Strategien muss jede Größe (Risiko, PnL-Referenz, Kosten-Normierung) am Instrument hängen, das tatsächlich die Position trägt — nicht am Instrument, das nur das Signal auslöst.** Leader und PnL-Träger sind bei Lead-Lag-Strategien per Konstruktion verschiedene Symbole; eine Formel, die stillschweigend das Signal-Symbol für die Risikoskalierung wiederverwendet, sieht in Backtests wie ein 3× überhöhter Edge aus, weil der Kosten-Drag im selben Verhältnis unterschätzt wird.
+47. **Eine proportionale „Korrektur" eines gefundenen Skalierungsfehlers ist nicht automatisch die richtige Korrektur**, wenn die fehlerhafte Größe nichtlinear in die Formel eingeht (hier: als Nenner im Kosten-Term). Bei jedem Bug-Fund erst nachrechnen, dann schätzen — nicht umgekehrt.
+
+## #091 — Leichenschau: alle offenen CLEANROOM-Verifikationen durchgetestet, eine Ticket-Leiche gefunden (11.08.2026)
+- **Anstoß (Max, per /loop):** nach #090 (RV-Leadlag) alle ähnlichen „Leichen" durchgehen — also jede Strategie/jeden Report, dessen Zahlen ein späterer Engine-Fix (#075) überholt haben könnte, und jedes Ticket, das „gefixt" behauptet, ohne dass das je nachgerechnet wurde.
+- **Sweep 1 — Corrupt-Data-Guard (`_drop_corrupt_sessions`, #075 Fund 2):** alle Reports mit `symbol` ES/RTY gesucht, deren `.meta.json` **vor** dem Fix (10.08. 08:52) generiert wurde → 11 Treffer (`ES_Momentum`, `RV_leadlag_NQRTY×1`, `CAL_fomcpost_ES`, `OPEXMOM_ES`, `OPEXMOM_RTY`, `RTY_Gap-fade`, `RV_leadlag_NQES` [schon #090], `EVENT_ES_primary`, `VWAPPULL_RTY`, `MOMSEL_ES`, `VOLBRK_ES`). Alle zehn (außer dem schon behandelten RV_leadlag_NQES) mit dem aktuellen Code frisch nachgerechnet und gegen die gespeicherten Werte verglichen.
+  - **8 von 10 exakt unverändert** (win/PF/expR/n bis auf Rundung identisch) — die korrupten Bars lagen nicht in ihren Handelstagen.
+  - **2 minimal verändert, beide leicht BESSER, nicht schlechter:** `RTY_Gap-fade` (im aktuellen Buch!) PF 1,185→1,214, expR +0,051→+0,058, 223→220 Trades (3 korrupte Tage raus). `VWAPPULL_RTY` PF 1,119→1,139, expR +0,033→+0,037, 341→331 Trades (10 raus). Beide Male: die entfernten Tage waren netto negativ, ihr Rauswurf hilft leicht.
+  - **Verdict: keine neue Leiche, keine neue Edge.** Der Corrupt-Data-Fix war für die einzige stark betroffene Strategie (RV_leadlag) schon in #090 abgehandelt; der Rest des Buchs war nie relevant exponiert. `RTY_Gap-fade`s Report ist technisch stale (Zahlen leicht zu konservativ), aber nicht materiell — Neu-Generierung optional, kein Handlungsdruck.
+- **Sweep 2 — Ticket-Status gegen Code geprüft:** `Ticket-Epics.md` (CLEANROOM) führte `slippage-ordertyp` als **„✅ gefixt"**. Direkt im Code nachgesehen: `qbt.py::run_strategy` berechnet `cost_pts` immer noch pauschal mit `2 * slippage_ticks * TICK` — es gibt **kein** `entry_slip_ticks`/`exit_slip_ticks` im ganzen Modul. Der in #075/#076 vorgeschlagene „saubere Fix" wurde nie gebaut. Was tatsächlich existiert: eine **einmalige externe Nachrechnung** in `goal_last_push.py` (aus der `exit`-Spalte manuell rekonstruiert), deren Ergebnis nur in die damalige #076-Buchentscheidung eingeflossen ist. **Jeder normale `run_strategy()`-Aufruf — inkl. jeder Report im Lab und `live_finalize.py` von gestern — rechnet nach wie vor mit der pauschalen, konservativeren Annahme.** Das ist keine falsche Zahl, aber eine falsche Ticket-Behauptung, die bei der nächsten Buch-Entscheidung Verwirrung gestiftet hätte.
+- **Konsequenz:** `Ticket-Epics.md` korrigiert — `slippage-ordertyp` von „gefixt" auf „Status war falsch" umgestellt, neues echtes Ticket `slippage-ordertyp-integration` (CLEANROOM) angelegt für den tatsächlichen Einbau. `mae-doppelzaehlung-verify` und `corrupt-data-guard-verify` als verifiziert markiert (waren beide schon erledigt, nur nicht abgehakt).
+- **Nicht mehr geprüft, weil nicht durch #075 betroffen:** die Asia-Entry-Minute (#075 Fund 3) war ein reiner Live-NinjaScript-Bug, kein Backtest-Fehler — `asian.py` hatte schon immer 09:30, keine Reports zu re-testen.
+
+### Lehre
+48. **„Leiche" ist nicht nur eine Strategie mit toter Edge — auch ein Ticket, das „gefixt" behauptet, ohne dass der Code das tut, ist eine Leiche.** Der Blast-Radius-Fehlschluss aus #082 (Lehre 35: Ticket-Text ist Hypothese, keine geprüfte Tatsache) gilt in beide Richtungen: sowohl „mehr kaputt als gedacht" als auch „mehr gefixt als tatsächlich passiert ist".
+49. **Ein systematischer Sweep (alle Reports vor einem Fix-Zeitpunkt) findet mehr als gezieltes Nachfragen** — hier wurden 10 zusätzliche potenziell betroffene Strategien gefunden, die niemand einzeln angefragt hätte, weil sie nie im Verdacht standen.
+
+## #092 — Cushion-Size an alle Beine übertragen, pro Konto getrennt (AP92, 11.08.2026)
+- **Anstoß (Max):** Ticket AP92 aus dem Lab-Tracker — RiskGuard rechnet seit Wochen jeden Session-Start die erlaubte Kontraktzahl aus (`cushion * CushionFrac / RiskPerMicro`, geclampt 1..MaxContracts) und schreibt sie nach `maxlab_size.txt`. Aber **kein Bein hat die Datei je gelesen** — alle 9 liefen mit `DefaultQuantity = 1` fix. Folge: der Sizing-Split zwischen den zwei geplanten E8-Konten (#089, AP91: bestehendes 50k-Konto + als nächstes zu kaufendes 25k-Konto, je eigener CushionFrac) wäre live wirkungslos gewesen — zwei identisch große Konten, Korrelation 1.0, der ganze Split-Vorteil (+10pp P(funded), #089 Befund 2) verschenkt.
+- **Umsetzung** (`engine/ninjascript/`, alle 9 Bein-Dateien + `MaxRiskGuard.cs`):
+  - RiskGuard schreibt die Size jetzt **pro Konto getrennt** (`maxlab_size_<Kontoname>.txt` statt eine gemeinsame Datei) — Voraussetzung dafür, dass zwei parallel laufende RiskGuard-Instanzen (eine je E8-Konto) sich nicht gegenseitig überschreiben. Kontoname wird für den Dateinamen sanitiert (ungültige Windows-Zeichen raus).
+  - Jedes Bein liest bei `Bars.IsFirstBarOfSession` seine **eigene** kontospezifische Datei (`Account.Name` ist pro Strategie-Instanz bekannt) und nutzt das Ergebnis (`liveQty`) statt `DefaultQuantity` in allen Entry-Calls.
+  - Fallback auf 1 Kontrakt, wenn die Datei fehlt, nicht parsebar ist, oder **veraltet** ist (`LastWriteTime.Date != Today` — RiskGuard hat sie heute noch nicht neu geschrieben). Nie ein Crash, im Zweifel die konservative Größe.
+  - Sonderfall `MaxORBFadeNQ` (ruhende Limit-Orders): `liveQty` wird beim Session-Start gecacht und beim späteren Platzieren der Limits verwendet — konsistent mit allen anderen Beinen, da RiskGuard ohnehin nur 1×/Tag schreibt.
+- **Deploy:** NT8 war seit 07.08. flach (alle Strategien seit FIREFIGHT-Start am 10.08. abends deaktiviert), Konto-Check vor dem Stop bestätigt (Position-Snapshot leer, letzte Order 07.08.). Über `box_deploy.ps1` auf der Box deployed, Pre-Flight + `dotnet build` beide grün, 0 Errors. NT8 danach gestoppt gelassen — Wiederanlauf braucht laut AP86 eine RDP-Session, macht Max selbst.
+- **Bewusst NICHT mitgemacht (Scope-Grenze):** `MaxRiskGuard.cs` schreibt neben der Size noch fünf weitere Dateien (State, Log, Orders, Position-Snapshot, Equity) — alle nach wie vor **ohne** Kontoname im Pfad. Sobald zwei RiskGuard-Instanzen gleichzeitig auf zwei E8-Konten laufen (AP91), würden sie sich diese fünf Dateien gegenseitig überschreiben (State-Kollision ist durch den bestehenden Konto-Check im Dateiinhalt zwar abgefangen — sieht man an den Log-Zeilen vom 05.08., wo `Simtestsim2` den `Sim101`-State korrekt verworfen hat — aber Log/Orders/Snapshot/Equity würden trotzdem Konto A und B vermischen). Eigenes Ticket dafür angelegt, nicht Teil von AP92.
+
+### Lehre
+50. **„Der Wächter rechnet die richtige Zahl aus" und „die Beine benutzen sie" sind zwei getrennte Behauptungen.** Cushion-Sizing stand seit Wochen als erledigt im Kopf, weil RiskGuard sie korrekt herleitet und protokolliert — dass die Konsumenten-Seite fehlte, fiel erst auf, als ein zweites Konto die Lücke real gekostet hätte. Bei jeder "Wächter schreibt X"-Architektur explizit gegenprüfen, ob auch etwas X liest.
+
+## #093 — E8 klärt Eval-Zeitlimit: keine Zeit-/Tagesgrenze, nur Wochen-Inaktivitätsregel (AP90, 11.08.2026)
+- **Anstoß (Max):** Ticket AP90 — der Betriebspunkt-Plan aus #089 (2x E8 25k, Split 0,10/0,30, rollend nachkaufen) braucht ein langsames Bein (median 45-85 Tage) und ein schnelles Bein (Pass in 6-8 Tagen möglich). War beides nirgends bestätigt: Zeitlimit hätte das langsame Bein wertlos gemacht, Mindest-Handelstage hätten das schnelle formal blockiert.
+- **Antwort E8-Support (Laerte, Support-Chat, 11.08.):** keine maximale oder minimale Zeitbegrenzung für die Evaluation. Stattdessen eine Inaktivitätsregel: Futures-Konten brauchen mindestens 1 Trade (auf+zu) pro Woche, ab 0,1 Lot genügt, gilt auch für frisch gekaufte Konten ohne Historie. Forex/Krypto: alle 60 Tage.
+- **Ergebnis:** alle drei offenen Fragen geklärt, der Split-Plan aus #089 ist ohne Einschränkung freigegeben. Einziger Nebenpunkt: die Wochen-Regel setzt voraus, dass jedes aktive Bein im Schnitt ≥1x/Woche einen Trade auslöst — vor dem Kauf (AP91) kurz gegen die tatsächliche Trade-Frequenz der Beine prüfen, Kandidat mit dem größten Risiko ist ein selektives Setup wie ORB-Fade+NR7-Filter.
+- **Dokumentiert:** [[E8-Support-Anfrage (Eval-Zeitlimit + Mindest-Handelstage)]]. AP90 aus `tasks.json` gelöscht, AP91 (Kauf-Ticket) hängt jetzt nur noch an AP53 (Buch-Entscheidung).
+- **Nachtrag (Max, 11.08.):** statt jedes Bein einzeln auf organische Wochen-Frequenz zu prüfen, lieber ein dediziertes Heartbeat-Bein bauen, das einmal pro Woche 1 Lot öffnet und sofort wieder schließt — deterministisch statt Vermutung, Kosten vernachlässigbar gegen das Tail-Risiko einer Kontoschließung. Als AP93 angelegt, vor Live-Einsatz noch kurz bei E8 bestätigen lassen, ob ein bewusst konstruierter Auf-Zu-Trade ohne Handelsabsicht für die Regel zählt.
+
+## #094 — Käfigwechsel auf E8 50k: Betriebspunkt neu bestimmt, zwei Live-Fehlkonfigurationen gefunden (15.08.2026)
+- **Anstoß (Max, 15.08.):** Max hat bereits einen **E8 50k gekauft** und tradet ihn. Die 2x25k aus #089 kommen später dazu. Ab sofort ist die Rechenbasis also 1x 50k (aktiv) + 2x 25k (geplant), nicht mehr 2x 25k.
+- **Frontier neu gerechnet** (Buch unverändert, 5 Beine, intraday-Bust #077):
+
+| frac | 25k (1500/1000) | **50k (3000/2000)** |
+|---|---|---|
+| 0,10 | 39 % / 31 d | **49 % / 88 d** |
+| 0,12 | 39 % / 31 d | **45 % / 49 d** |
+| 0,14 | 39 % / 31 d | **43 % / 41 d** |
+| 0,18 | 37 % / 28 d | **39 % / 23 d** |
+| 0,22 | 34 % / 15 d | **35 % / 15 d** |
+| 0,30 | 30 % / 10 d | **28 % / 8 d** |
+
+- **Kernbefund:** Der 50k ist der **bessere Käfig**, aber nur bei kleinem frac. Auf 25k faltet der Min-Size-Effekt (#029/#076) alles ≤0,14 auf „1 Kontrakt" zusammen — die Frontier ist dort links flach. Auf 50k differenziert sie wieder und öffnet oben 10 pp Passquote, die auf 25k schlicht nicht erreichbar waren.
+- **Betriebspunkt gewählt: frac 0,12** (Max' Entscheidung) = 45 % / median 49 Tage. Der Knick der Kurve: gegenüber 0,10 kostet er 4 pp und halbiert die Zeit, gegenüber 0,14 bringt er 2 pp für 8 Tage. Reine Max-Passquote wäre 0,10, aber 88 Tage Median blockieren den einzigen laufenden Slot über ein Quartal, und Max kauft demnächst nach — also zählt Zeit mit (#089).
+- **⚠️ Zwei Fehlkonfigurationen im Live-Setup gefunden** (`MaxRiskGuard.cs`, beide korrigiert, Deploy steht noch aus):
+  1. `MaxTrailingDD = 2500` — das ist der **Apex**-Wert aus der Sim-Phase. E8 50k hat **2.000**. Der Wächter hätte erst gegriffen, wenn E8 das Konto längst gebustet hat. Der Guard war damit auf dem echten Konto wirkungslos.
+  2. `CushionFrac = 0.22` — Sim-Wert aus AP18, kostet auf dem 50k-Käfig ~10 pp Passquote gegenüber 0,12.
+  Zusätzlich läuft der Guard laut Box-Log noch auf `Simtestsim2` (Sim-100k), muss aufs E8-Konto.
+- **Neu im Rechenkern:** `eval_plan.py` unterstützt jetzt **Käfig pro Konto** (`target`/`dd`/`price_usd` im Konto-Eintrag) plus `owned` (bereits gekauft → läuft ab Tag 0, wird nicht nachgekauft) und `buys_start_month`. Vorher waren target/dd global — jede gemischte Rechnung hätte die 25k-Konten im 50k-Käfig gerechnet und ihre Quoten zu gut ausgewiesen.
+- **Neuer Plan-Stand** (`portfolio.json`, 5 Beine, intraday): Konto A (50k, 0,12) solo 43,7 % / 47 d · Konto B (25k, 0,10) 36,8 % / 28 d · Konto C (25k, 0,30) 29,8 % / 8 d. **P(funded) rollend: 1M 14,4 % · 3M 64,3 % · 6M 90,3 % · 12M 99,2 %**, Median 66 Tage, ~4,8 Evals ≈ $476 zusätzlich zu den bereits bezahlten $150.
+- **Warum die 3M-Zahl schlechter aussieht als vorher (72,5 %):** ehrlicher, nicht schlechter. Vorher unterstellte der Plan zwei sofort laufende Konten ab Monat 0. Real läuft ein Konto, die anderen kommen ab Monat 1.
+
+### Lehre
+51. **Ein Käfigwechsel ist kein Parameter-Update, er verschiebt den ganzen Betriebspunkt.** Der Split 0,10/0,30 war auf den 25k-Min-Size-Effekt gefittet und auf 50k schlicht falsch. Bei jeder Änderung von Kontogröße/Firma/Target/DD gehört die Frontier neu gerechnet, bevor irgendein frac übernommen wird.
+52. **Sim-Parameter überleben den Kontowechsel und niemand merkt es.** `MaxTrailingDD 2500` stammte aus einem Apex-Vergleich, `CushionFrac 0.22` aus der Sim-Eval. Beide standen still im Live-Code und wären beim ersten echten Handelstag scharf gewesen. Vor jedem Scharfschalten die Guard-Defaults gegen die **tatsächlichen** Firm-Zahlen gegenlesen, nicht gegen die Erinnerung.
+
+## #095 — AP53 final: kein Buchumbau. Der ganze Vergleich war am falschen Betriebspunkt gerechnet (15.08.2026)
+
+- **Anstoß (Max, 15.08.):** AP53 entscheiden und das Portfolio so umbauen, wie es am besten ist. AP53 lag seit dem 10.08. offen und stützte sich auf die Tabelle aus #078 — gerechnet mit anderen Fracs, vor dem Käfigwechsel (#094) und mit **zwei verschiedenen Cell-Funktionen** für die beiden Bücher (`book.cell_daily` fürs Zielbuch, `goal_last_push.cells_exact_cost` fürs 3-Bein-Buch). Alles neu gerechnet, alle Kandidaten durch dieselbe Funktion. Skripte: `engine/ap53_book_decision.py`, `engine/ap53_operating_point.py`.
+
+### Der Methodenfehler, der die ganze Frage verdreht hat
+Erster Lauf, alle Bücher bei **fixem** frac 0,12 (der Betriebspunkt aus #094), 50k-Käfig, intraday, 5 Seeds:
+
+| Buch | Solo frac 0,12 | P(funded) 3M |
+|---|---|---|
+| Zielbuch #071 **mit** RV_leadlag | 47,8 % / 42d | **69,2 %** |
+| 3-Bein #076 (gew. 3/8/4) | 47,1 % / 37d | 68,3 % |
+| Live-Buch + NOISE_ORB_NQ | 42,9 % / 52d | 67,0 % |
+| Zielbuch **ohne** RV | 47,2 % / 48d | 64,6 % |
+| Live-Buch (Status quo) | 44,1 % / 50d | 64,3 % |
+
+Zeile 1 gegen Zeile 4 ist der Knackpunkt: **dasselbe Buch wird um 4,6pp besser, wenn man ihm ein Bein mit bestätigt negativer Erwartung hinzufügt** (`RV_leadlag_NQES`, PF 0,91, in #090 für tot erklärt). Kein Edge-Effekt — das Bein fügt Handelstage hinzu, das Konto entscheidet dadurch schneller, und unter rollendem Nachkauf zahlt Tempo (#089). Genau denselben Effekt bekommt man gratis über den frac.
+
+Damit ist jeder Buchvergleich bei fixem frac wertlos: er belohnt das Buch mit den meisten Handelstagen, nicht das mit der besten Edge. Zweiter Lauf deshalb mit **Optimierung des Konten-Tripels je Buch** (A = 50k owned, B/C = 25k geplant, 75 Kombinationen, Sieger mit 8 Seeds × 8.000 Sims nachgerechnet):
+
+| Buch | bester Punkt A/B/C | 3M | 6M | Median | Ø Kosten |
+|---|---|---|---|---|---|
+| Live-Buch + NOISE_ORB_NQ | 0,22 / 0,10 / 0,30 | **71,2 % ±0,3** | 92,3 % | 52d | 401 $ |
+| Zielbuch ohne RV | 0,22 / 0,18 / 0,30 | 69,4 % ±0,5 | 92,0 % | 52d | 403 $ |
+| **Live-Buch (Status quo)** | 0,22 / 0,10 / 0,30 | 69,2 % ±0,4 | 91,6 % | 57d | 413 $ |
+| 3-Bein #076 | 0,10 / 0,10 / 0,10 | 67,9 % ±0,3 | 90,3 % | 56d | 443 $ |
+
+**Am eigenen Optimum gemessen ist das Zielbuch vom Live-Buch nicht zu unterscheiden (69,4 vs. 69,2, sd 0,4-0,5).** Der ganze Umbau — 5 neue NinjaScript-Ports, 5 funktionierende raus — kauft exakt nichts. Das 3-Bein-Buch liegt sogar 1,3pp darunter. Zusammen mit #088 (Train-only-Suche findet 3 der 4 Zielbeine gar nicht) und #090 (RV tot) ist AP53 damit beantwortet.
+
+### Entscheidung 1: kein Umbau. Der Gewinn lag die ganze Zeit im Betriebspunkt, nicht im Buch
+Auf dem **unveränderten** Live-Buch: frac Konto A von 0,12 auf **0,22** → P(funded) 3M **64,8 % → 69,2 %** (+4,4pp), 6M 90,5 → 91,6 %, Median 66 → 57 Tage, Erwartungskosten 476 → 413 $. Besser, schneller **und** billiger, ohne eine Zeile NinjaScript.
+
+Warum 0,12 falsch war: der Wert wurde am 15.08. (#094) an der **Solo**-Frontier gewählt (45 % Passquote / 49 Tage) — also für ein einzelnes Konto ohne Nachkauf. Der beschlossene Plan kauft aber rollend nach. Das ist Lehre 44 aus #089, angewandt auf den eigenen Käfig und dabei einen Tag zuvor selbst übersehen.
+
+0,22 ist ein **inneres** Optimum, keine Randlösung: 0,18 → 68,5 % · **0,22 → 69,2 %** · 0,26 → 68,9 % · 0,30 → 68,6 % · 0,42 → 66,7 %. In Kontrakten heißt das: Startgröße 4 statt 2 (risk/Kontrakt 104 $, Cushion 2.000 $).
+
+**Bedingung, die mitgeschrieben gehört:** die 0,22 gelten nur, solange nachgekauft wird. Ohne Nachkauf ist der richtige Wert wieder 0,10 (Solo 47,7 % / 89d gegen 33,5 % / 14d). Betriebspunkt und Kaufpolitik sind ein Paar.
+
+### Entscheidung 2: NOISE_ORB_NQ als 6. Bein — ja, aber erst nach dem Port
++2,0pp (69,2 → 71,2 %, sd 0,3/0,4, also ~4 Sigma) und median 5 Tage schneller. Es ist das **einzige** Bein im ganzen Vergleich mit einer echten Train→Test-Bestätigung (#088), und `noise_orb.py` ist sauber gebaut (Signal am Bar-Close, Fill am nächsten Bar-Open, kein Look-ahead — die ORB-Falle aus #066/#067 greift hier nicht). Ticket **AP58** hochgezogen.
+
+Bewusst **nicht** in `book_state.json` eingetragen, solange das Bein nicht live handelbar ist: sonst zeigt der Portfolio-Tab 71,2 %, während real 69,2 % laufen. Genau die Drift, die einen Tag vorher zwei scharfe Fehlkonfigurationen im Guard produziert hat (Lehre 52).
+
+### Nebenbefund: Leave-one-out über das Live-Buch
+Jedes Bein einzeln entfernt, P(funded) 3M gegen die 64,3 %-Basis (frac 0,12):
+
+| entfernt | 3M | Δ |
+|---|---|---|
+| NQ_LastHour | 61,5 % | **−2,8** |
+| NQ_Asia-Dir-USopen | 62,5 % | −1,8 |
+| NQ_ORB-fade | 63,3 % | −1,0 |
+| RTY_Gap-fade | 63,3 % | −1,0 |
+| NQ_Momentum | 64,8 % | +0,5 (Rauschen) |
+
+Vier von fünf Beinen tragen. `NQ_Momentum` ist neutral — damit ist auch AP54 („Bein 4 streichen?") und die Restfrage aus #080 (MOMSEL-Replace) erledigt: es gibt nichts zu gewinnen, aber auch keinen Grund zu streichen, also bleibt es drin (Simplex-Regel gilt für neue Komplexität, nicht für das Abreißen funktionierender Teile).
+
+### Umgesetzt
+- `book_state.json` → `plan.accounts[A].frac` 0,12 → 0,22, Beine unverändert, Begründung + Bedingung im Feld
+- `funded_finalize.py` durchgelaufen → `portfolio.json` + Report neu
+- `ninjascript/MaxRiskGuard.cs` → `CushionFrac` 0,12 → 0,22 (**im Source, Deploy offen → AP96**)
+- Tickets: AP53/AP48/AP54 gelöscht (entschieden), AP58 auf gelb + Messwert, AP91 + AP80 nachgezogen, **AP96** (Deploy) und **AP97** (Konto C aggressiver?) neu
+
+### Nachtrag 15.08. abends: Port gebaut, verifiziert, deployed
+`ninjascript/MaxNoiseORBNQ.cs` als exakter Port von `noise_orb.py`, auf der Box seit 17:58 (Pre-Flight über alle 11 Dateien sauber, Build ok, Staging geleert). Vorher Trade-für-Trade verifiziert mit `engine/verify_noiseorb_port.py`: **1937 von 1937 Trades identisch** (Datum, Richtung, Einstiegsminute), max |ΔR| = 0,0, expR +0,1293 beidseitig.
+
+Die Prüfung hat sich sofort bezahlt gemacht: der erste Lauf zeigte **1938 statt 1937** Trades. Ursache war kein Logikfehler, sondern `if n < 60: continue` in `noise_orb.py` — ein Datenhygiene-Filter gegen kaputte Sessions (im Datensatz genau eine: 2020-06-30 mit 41 Bars). Live ist der nicht nachbaubar: um 10:00 weiß niemand, dass die Session um 10:11 abreißt. Im Header der `.cs` dokumentiert.
+
+Das Bein läuft zunächst **nur auf Simtestsim2** und kommt erst nach der Sim-Validierung in `book_state.json` (AP58) — sonst zeigt der Portfolio-Tab 71,2 %, während real 69,2 % laufen.
+
+### Lehre
+53. **Ein Buchvergleich bei fixem Sizing misst nicht das Buch, sondern die Anzahl der Handelstage.** Wer unter rollendem Nachkauf zwei Bücher bei demselben frac vergleicht, bevorzugt systematisch das Buch, das schneller entscheidet — auch wenn es das über eine Verlustbringer-Strategie tut. Jedes Buch muss an seinem **eigenen** optimierten Betriebspunkt gemessen werden, sonst vergleicht man ein getuntes mit einem ungetunten Buch.
+54. **Wenn ein Zusatz die Kennzahl verbessert, immer fragen: über Edge oder über Varianz?** Das tote RV-Bein, ein aggressiverer frac und ein zusätzliches Bein können dieselbe Zahl heben. Varianz ist die billigste dieser Zutaten und fast immer die falsche — sie kostet live echtes Geld, während der frac gratis ist. Test: Lässt sich derselbe Effekt durch reines Sizing erzeugen? Dann ist es kein Edge-Befund.
+55. **Ein am Solo-Konto gewählter Betriebspunkt gehört bei jeder Planänderung neu geprüft, nicht nur bei Käfigwechseln.** Die 0,12 von gestern waren nicht falsch gerechnet, sondern für die falsche Frage gerechnet — und standen trotzdem einen Tag später als „der Betriebspunkt" im Guard.
+
+## #096 — Strategy Developer: NQ VWAP Trend-Pullback, Parameter-Sweep über VWAP-Fenster/SL-TP (15.08.2026)
+
+Max' erste eigene Idee im neuen Developer-Tab: 5m-Chart, Richtung über 15min-VWAP (Preis-Seite + Slope + 1h-Momentum ≥0,1%), Trigger = erste Gegenfarben-Kerze Richtung VWAP, SL 80/TP 40-50 Punkte, Tages-Limits (max 4 Trades, max 2 Verluste), Fenster 10:30-15:30 ET, flat 15:55 ET.
+
+**v1 (Original-Parameter): F (38), expR +0,009R, PF 1,035.** OOS (letzte 30%) hält (expR +0,0086, kein Overfitting), aber die Kante ist zu schwach: 59% Winrate wird vom ungünstigen R:R (SL 80 vs. TP 40/50) fast komplett aufgefressen. Solo nicht käfigtauglich (31% Pass in 86 Tagen, Ziel ≥60%/≤50d). **Buch-Beitrag: schlechter** (-7,3pp P(funded) 3M, klar über dem Rauschen).
+
+**Sweep (`engine/developer/sweep_vwap_v1.py`, 77 Kombis in 22s):** VWAP-Fenster 1h/2h/3h/4h × Richtungsregel-Varianten (bei 2h zusätzlich: ohne Slope-Filter / ohne Momentum-Filter / nur Preis-vs-VWAP, je mit 3 Momentum-Schwellen) × SL/TP-Grid (7 Varianten von symmetrisch 40/40 bis asymmetrisch 80/40).
+
+- **3h/4h strukturell unbrauchbar, nicht "schlecht getestet":** mit Slope-Lookback = 1x Fenstergröße braucht 3h-VWAP 6h Vorlauf, 4h braucht 8h — bei einer RTH-Session von nur ~6,5h bleibt praktisch kein/kein Handelsfenster übrig (0 Trades über die gesamte Historie bei beiden). Kein Strategie-Problem, sondern eine Grenze dieser Fenster-Definition auf RTH-Daten.
+- **Größter Hebel war nicht die Richtungsregel, sondern das R:R.** Symmetrisches SL/TP 40/40 schlug in fast jeder Fenster-Kombination das ungünstige Original 80/40-50 deutlich — die Winrate ändert sich kaum (51-52% statt 59%), aber PF steigt, weil der durchschnittliche Verlust nicht mehr 2x so groß ist wie der Gewinn.
+- Lockern der Richtungsregel (ohne Slope-Filter, ohne Momentum-Filter, nur Preis-vs-VWAP) hat in JEDER getesteten Variante die OOS-Performance verschlechtert oder ins Negative gedreht — die volle 3-Bedingungen-Regel aus Max' Originalansage war schon die robusteste Variante, nicht die zu lockernde.
+
+**Zwei Kandidaten mit vollem Report + Buch-Vergleich durchgerechnet** (`developer_run.py`, jetzt v2/v3 im Developer):
+
+| | v2 (2h-VWAP, SL/TP 40/40) | v3 (1h-VWAP, SL/TP 40/40) |
+|---|---|---|
+| Grade | D (46) | F (38) |
+| Trades / Woche | 4,3 | 10,5 |
+| expR (IS / OOS) | +0,024 / +0,015 R | +0,014 / +0,012 R |
+| PF (IS / OOS) | 1,06 / 1,03 | 1,03 / 1,03 |
+| Max DD (1 Micro) | −2.069 $ | −3.051 $ |
+| Solo Käfig-tauglich | Nein (33% / 86d) | Nein (32%) |
+| **Buch-Beitrag** | **neutral** (score −0,5, Rauschen 0,5) | **schlechter** (score −7,5) |
+
+**v2 gewinnt klar** — deutlich kleinerer Drawdown, besserer Sharpe (0,54 vs. 0,36), und als einzige der drei Versionen kein klar negativer Buch-Beitrag mehr (v1 und v3 beide "schlechter", v2 "neutral"). Trotzdem: **keine der drei Versionen verbessert das Buch**, und solo ist keine käfigtauglich. Der Sweep hat die Idee von "schadet dem Buch" auf "neutral" gehoben, nicht auf "gehört rein".
+
+### Umgesetzt
+- `developer/state.json`: v2 (2h/40-40) und v3 (1h/40-40) als Versionen angelegt, aktive Version auf v2 gesetzt
+- `developer/sweep_vwap_v1.py` neu: wiederverwendbarer Sweep-Runner (5m-Bars einmal pro Tag vorberechnet, danach ~1s pro Parameter-Kombo)
+- `report.py`: Subtitle-Branch für `mode="vwap_pullback"` ergänzt (fehlte, Report-Build crashte sonst mit KeyError auf z_entry/stop_mult — die generischen Report-Felder sind auf Mean-Reversion-Strategien zugeschnitten)
+
+### Nachtrag: Ranking-Kriterium korrigiert (Max' Nachfrage: "geht es nicht eigentlich nur ums Passen?")
+Der Sweep oben hat 77 Kombis nach OOS-expR sortiert und v2 daraus als besten Fund gewaehlt — expR ist aber nur ein Proxy. Das tatsaechliche Kriterium ist die Passquote, die vom kompletten Tagesverteilungsprofil abhaengt (Drawdown-Clustering), nicht nur vom Mittelwert. `developer/sweep_vwap_pass2.py` hat deshalb fuer alle 63 Kombis mit ≥300 Trades die echte Solo-Intraday-Frontier nachgerechnet (Tages-Zellen -> `passmc_vec` ueber alle Kaefig-Fracs, 4000 Sims je Frac).
+
+Ergebnis: **0 von 63 Kombis sind käfigtauglich** (bestes Feld 34% vs. Ziel ≥60% in ≤50 Tagen — grosse Luecke, keine knappe Verfehlung). Die beiden Kombis mit der hoechsten simulierten Passquote (34%, `1h orig_asym` und `1h sym80`) haben dabei **keine belastbare OOS-Kante mehr** (expR +0,007 bzw. −0,0004) — die minimal bessere Passquote dort ist vermutlich MC-Sampling-Rauschen, keine echte Verbesserung. v2 liegt bei 33% Passquote (Rang 3/63, mit dem Spitzenfeld statistisch nicht unterscheidbar) UND hat als einzige Top-Kombi eine durchgehend positive, robuste IS+OOS-Kante. Die urspruengliche Wahl (v2) war damit im Ergebnis richtig, aber aus dem falschen Grund begruendet — am Gesamturteil (keine der Varianten ist tradebar) aendert die Korrektur nichts.
+
+### Lehre
+56. **Bei einer schwachen ersten Version zuerst das R:R prüfen, bevor an der Signal-Logik gedreht wird.** Eine hohe Winrate mit schlechtem PF ist fast immer ein R:R-Problem, kein Filter-Problem — ein Parameter-Sweep über SL/TP allein hob v1s expR von +0,009R auf bis zu +0,024R, ganz ohne die Richtung/Trigger-Logik anzufassen.
+57. **Ein Rolling-Window-Indikator (VWAP, Slope, o.ä.) braucht 2x seine eigene Fenstergröße an Historie, wenn "Änderung über die Fenstergröße" geprüft wird.** Bei kurzen Sessions (RTH ~6,5h) macht das große Fenster (3h+) strukturell unbrauchbar, unabhängig von der Signalqualität — vor einem Sweep über Fenstergrößen die verfügbare Session-Länge gegen 2x-Fenster gegenrechnen, sonst verschwendet man Rechenzeit auf Kombis, die nie eine Chance hatten.
+58. **Ein Parameter-Sweep muss direkt nach dem Entscheidungskriterium ranken (Passquote), nicht nach einem Proxy (expR/Sharpe).** Beide korrelieren meistens, aber nicht immer — hier hatte die Kombi mit der besten simulierten Passquote gar keine echte OOS-Kante mehr (wahrscheinlich MC-Rauschen). expR eignet sich zum Vorfiltern (billig zu rechnen), die finale Auswahl/Bewertung muss aber immer über die tatsächliche Solo-Frontier bzw. den Buch-Beitrag laufen.
+
+### Nachtrag: Quelle identifiziert, Transkript wortgenau abgeglichen (Max: "hast du wirklich getestet was er sagt?")
+Max' Idee stammt aus YouTube "Market Maker Reveals His 'Golden Ticket' VWAP Strategy" (Matteo Conti, SQR Capital, Kanal IQCapital, `youtube.com/watch?v=wm4A6qo0g3I`). Untertitel-Track per Browser ausgelesen (JSON3-Transkript ueber die YouTube-timedtext-API, nicht nur Beschreibung) und Wort fuer Wort gegen v1 geprueft.
+
+**Zwei echte Abweichungen gefunden, in v4 korrigiert:**
+1. VWAP-Definition: v1 hatte einen ROLLIERENDEN 3-Bar-VWAP gebaut (reines 15min-Fenster, kein Anker). Die Quelle sagt explizit "anchored at the market open, so 9:30 Eastern Time" — es ist der Standard-Session-VWAP (kumulativ ab 9:30 ET), nur auf 15-Minuten-Basis berechnet und auf dem 5m-Chart angezeigt.
+2. Entry-Fill: v1 fuellt am Close der Trigger-Kerze. Die Quelle: "it's going to be at the opening of the next candle" — Fill am Open der naechsten 5m-Kerze.
+
+Alles andere (SL 80/TP 40-50, Guardrails max 4 Trades/max 2 Verluste/Tag, Fenster 10:30-15:30 ET, flat 15:55 ET, 1h-Move-Filter 0,1%) deckte sich exakt mit dem, was Max beschrieben hatte — keine weiteren Abweichungen.
+
+**v4 (korrigiert) vs. v1:**
+
+| | v1 | v4 (Original-Quelle) |
+|---|---|---|
+| Win-Rate | 59,1% | **60,1%** (Quelle behauptet 64-65%) |
+| expR | +0,009R | **+0,015R** |
+| PF | 1,035 | **1,054** |
+| Sharpe | 0,32 | **0,55** |
+| Solo-Passquote (best) | 31% (86d) | **37%** (108d) |
+| Buch-Beitrag | schlechter (-7,3) | schlechter (-5,2, aber weniger schlecht) |
+
+Die Korrektur bringt ein durchgehend besseres, aber immer noch nicht ausreichendes Ergebnis — Passquote 37% bleibt weit unter dem Käfig-Ziel von 60%, und die im Video behauptete 49,8%-Einzel-Eval-Passquote (bzw. 93,6% bei 4 Versuchen) wird nicht annaehernd erreicht. Die Quelle nennt weder Prop-Firma noch Konto-DD/Target noch ob EOD- oder Intraday-Bust-Check verwendet wurde — ohne diese Angaben ist ihre Zahl nicht nachrechenbar, nur die Handelsregeln selbst waren reproduzierbar.
+
+**Zweites Video geprueft** (`youtube.com/watch?v=XWJlBBikUc0`, Robert Rother, Ex-Hedgefonds-Manager) — **keine Variante derselben Strategie**, sondern ein komplett anderer, diskretionärer Ansatz: 3 verschiedene VWAP-Anker (Day/London/US-Session) plus Bookmap-Orderbuch-Lesen (Liquiditäts-Cluster, Spoofing-Erkennung), Entscheidung "welcher VWAP wird gerade respektiert" laut Aussage im Interview explizit ohne festen Regelwert ("I do not have a specific number for that... you simply were watching it"). Nicht backtestbar mit unseren Daten: braucht Orderbuch-/DOM-Tiefe (Bookmap), die in den historischen 1m-OHLCV-Parquets nicht existiert. SL 10 Ticks/TP 10-15 Ticks auf ES sind zwar genannt, aber der Entry-Trigger selbst ist diskretionär, keine kodierbare Regel.
+
+### Lehre
+59. **Bei einer YouTube-/Kurs-Quelle immer das Transkript wortgenau ziehen, nicht nur mitschreiben was im Gespräch hängen bleibt.** Zwei stille Annahmen (VWAP-Definition, Entry-Timing) waren beim ersten Bau falsch geraten — beide handfest korrigierbar, sobald das Transkript vorlag. `youtube.com/api/timedtext` liefert das automatische Untertitel-JSON auch ohne sichtbaren Transkript-Button, wenn man den ueber die Player-Response referenzierten Track direkt abruft.
+60. **Eine im Marketing-Video behauptete Passquote ohne genannte Käfig-Parameter (Firma/DD/Target/Bust-Modus) ist nicht nachrechenbar und nicht vertrauenswürdig, auch wenn die Handelsregeln exakt stimmen.** v4 mit wortgenau nachgebauten Regeln bleibt bei 37% Solo-Passquote, weit unter den behaupteten 49,8% — die Lücke liegt vermutlich in unbekannten (evtl. günstigeren) Simulationsannahmen der Quelle, nicht in unserer Umsetzung.
+
+## #097 — VWAP-Pullback systematisch ausgereizt: ein echter Fund, vier Falsifikationen (15.08.2026)
+
+Max' Auftrag: über den VWAP-Pullback informieren, daraus eine Bereicherung fürs Prop-Firm-Passing entwickeln, mit Agents in Papern recherchieren, jeweils genau prüfen ob eine Edge da ist, nicht aufhören bis etwas gefunden ist.
+
+**Ausgangslage:** #069 hatte das Coni-Video schon verworfen (P(pass) 33 %), #096 die Regeln wortgenau nachgebaut (v4: 37 % Solo, Buch −5,2pp). Der Satz aus #069 — *„der Mechanismus ist real, nur zu schwach pro Trade"* — war der Ansatzpunkt: nicht die Regeln ändern, sondern die schwachen Trades identifizieren.
+
+### ⭐ Der Fund: Distanz zum VWAP trennt — genau gegen die Aussage der Quelle
+Das Video sagt ausdrücklich *„it doesn't matter how close it is to the VWAP"*. Eine Feature-Diagnostik über alle 5.967 v4-Trades (`developer/vwap_diag.py`, protokolliert pro Trade Distanz/Berührungszahl/Tageszeit/Vol-Regime/Slope-Stärke/Wochentag) zeigt das Gegenteil: **der Abstand des Trigger-Closes zum VWAP, in ATR gemessen, ist die einzige Dimension die in IS UND OOS gleichgerichtet trennt.**
+
+| Filter | n | IS expR | OOS expR | Solo-Passquote |
+|---|---|---|---|---|
+| ohne (v4) | 5967 | +0,0195 | +0,0072 | 37 % |
+| Distanz ≥ 2,5 ATR | 3596 | +0,0384 | +0,0085 | **46 %** |
+
+Robustheitskontrollen alle bestanden: monoton steigend bis 2,5 ATR, **Gegenprobe** (nur Trades NAHE am VWAP) durchgehend negativ/flat, Split-Half innerhalb IS beidseitig positiv, und **in allen 11 Jahren positiv** — auch 2026, wo die ungefilterte Version −0,0365 macht und die gefilterte +0,0143.
+
+**Kausales Why (kein Fit ohne Why):** Der research-scout bestätigt aus Cache + Literatur — reine VWAP-Mean-Reversion ist in den eigenen Tests tot (#002-#005), der belegte Effekt ist **Intraday-Continuation** (Gao/Han/Li/Zhou, JFE 2018, peer-reviewed, deckt sich mit Insight #211). Genau den selektiert der Filter: weit weg vom VWAP = Trend intakt = Continuation greift; nah dran = kein Stretch, nichts zu holen. Die Strategie ist damit korrekt als Continuation-Setup mit Pullback-Timing einzuordnen, nicht als Reversion.
+
+**Wirkung auf das eigentliche Kriterium:** der Filter hebt den Buch-Beitrag von **−4,86pp (schädlich) auf +0,02pp (neutral)** — 5 Seeds, Rauschschwelle 1,50pp. Beste Variante überhaupt +0,37pp (dist≥2,5 mit 40/40), ebenfalls klar innerhalb des Rauschens. **Keine einzige Variante erreicht „besser".**
+
+### Vier Falsifikationen (alle sauber nachgewiesen)
+
+**1. Post-hoc-Filtern ist ein Look-ahead — kostete mich hier 7pp Schönfärberei.** Erster Filter-Test wandte die Distanzregel NACHTRÄGLICH auf fertige Trades an → 53 % Passquote. Im Durchlauf angewandt (live-korrekt) → 46 %. Ursache: die Tages-Caps (max 4 Trades / 2 Verluste) wurden von den ungefilterten Signalen verbraucht; gefilterte Signale verbrauchen sie live nicht, es rutschen andere Trades nach. Nachgewiesen mit identischer Sim-Zahl in `developer/vwap_posthoc_check.py`.
+
+**2. ATR-normierte Stops sind schlechter als feste Punkte.** Hypothese war: SL 80 Pkt = 3,1× ATR im Median, aber 9× ATR in ruhigen und 1,5× in volatilen Phasen — das müsse man normieren. Falsch: ATR-normiert halbiert die NQ-Kante (OOS +0,0046 statt +0,0085). Der feste Stop ist ein Feature: in ruhigen Phasen laufen Gewinner ins Target statt ausgestoppt zu werden, und die Zeit-Exits sind kleine Verluste statt voller Stops.
+
+**3. Die Kante ist NQ-spezifisch — 3 von 4 Index-Futures sind negativ.** Gleiche Regeln, ATR-normiert (also fair skaliert): NQ IS +0,0188 / OOS +0,0046, aber ES −0,0247/−0,0265, RTY −0,0545/−0,0335, YM −0,0361/−0,0344. Multi-Symbol als Frequenz-Hebel ist damit tot (kombiniert 29 % statt 46 %). Das ist ein hartes Querschnitts-Falsifikationsergebnis und schwächt das Vertrauen in den NQ-Fund erheblich — es bleibt offen, ob NQ wirklich anders ist (stärkstes Intraday-Momentum) oder ob der NQ-Befund selbst Rauschen ist.
+
+**4. Der Trend-Tag-Effekt ist real, aber nicht prognostizierbar.** Der VWAP-Stretch eines Tages sagt das Buch-Tagesergebnis stark voraus (Korr. **+0,249 IS / +0,241 OOS**, oberstes Quartil +223 $/Tag OOS gegen −66 $ im untersten) — aber er steht erst am Tagesende fest. Aus Vortagsinformation gebildete Varianten tragen nichts: `stretch_prev` Korr. ~0,00; alle Trailing-Mittel (3/5/10/20 Tage) **kippen im OOS das Vorzeichen**; von allen geprüften am Open bekannten Regime-Massen (Stretch-MAs, Vol-MAs, Trendstärke, VIX-Level/-Änderung) übersteht nur `vol_ma20` die Konsistenzprüfung, und das mit Korr. +0,057 bei n=721 ≈ 1,5 Sigma, also nicht signifikant.
+
+### Was sonst noch getestet und verworfen wurde
+- **168 Kombis** (Distanz × SL/TP × Tages-Caps × Momentum-Schwelle), nach Passquote gerankt: Maximum 46 %, kein Feld käfigtauglich. SL/TP-Varianten und das Lockern der Tages-Caps bewegen praktisch nichts.
+- **Exit-Logik strukturell** (`vwap_exit_test.py`): Zeit-Exits bluten (−0,117 R über 27 % der Trades), aber keine Gegenmassnahme hilft. Breakeven-Stops und ATR-Trailing drehen die OOS-Kante ins **Negative** (−0,018 bis −0,027) — sie verwandeln Gewinner in Nullnummern und behalten die Verlierer. Früherer Zwangsausstieg (15:20 statt 15:55) hebt zwar die OOS-expR auf +0,0207, die Passquote bleibt bei 45 %.
+- **Berührungszähler** („erste VWAP-Berührung ist das A+-Setup", Behauptung aus dem zweiten Video): IS +0,036 für die erste Berührung, OOS **−0,039** — kippt, also Folklore. Deckt sich mit dem Rechercheergebnis, dass es dafür keine einzige Primärquelle gibt.
+
+### Fazit
+**Gefunden: ja — ein echter, robuster, mechanistisch begründeter Edge-Verstärker.** Der Distanz-Filter ist der erste Eingriff, der die Familie von „schadet dem Buch" auf „neutral" hebt, und er ist über Jahre, Split-Half und Gegenprobe stabil. **Nicht gefunden: eine Bereicherung fürs Passing.** Bei Target 3.000 $ / DD 2.000 $ liefert schon ein driftfreier Zufallspfad ~40 % (2000/5000); 46 % liegen 6pp darüber. Für 60 % bräuchte es einen Sharpe, den diese Familie nicht hat (0,55). Weiteres Parameter-Drehen wäre genau das Overfitting, vor dem Lehre 54 und „Simplex beats Komplex" warnen — deshalb hier Schluss statt noch eine Runde.
+
+### Nachtrag 16.08.: v5 gebaut — und dabei einen Bug in `developer_run.py` gefunden
+Der Distanz-Filter liegt jetzt als **v5** im Developer (`versions/nq-vwap-pullback__v5.py`, aktiv). Beim Gegenrechnen fiel ein Widerspruch auf: `developer_run.py` meldete für v5 einen Buch-Beitrag von −4,20pp, mein separater Test für dieselbe Konfiguration +0,02pp. Gleiche Trades (n=3596 beidseitig, identische r_net und mae_r), gleiche Tagesgewinne — aber **unterschiedliche Intraday-Worst-Werte**.
+
+**Ursache:** `get_trades()` machte `tr.sort_values("date")` mit dem Default `kind="quicksort"` — der ist **nicht stabil**. Bei vielen Zeilen mit demselben Datum verwürfelt er die Reihenfolge INNERHALB eines Tages: gemessen **225 von 887 Mehrtrade-Tagen** (25 %). `daily_cells()` rechnet den Intraday-Worst als kumulativen Pfad durch den Tag — bei falscher Reihenfolge ist er schlicht falsch. Beispiel 2016-01-20: echte Reihenfolge (−1,013 dann +0,487) ergibt worst −211 $, verwürfelt (+0,487 dann −1,013) nur −85 $.
+
+**Reichweite geprüft:** betroffen war ausschließlich `developer_run.get_trades()` — also Intraday-Frontier (#077), Buch-Beitrag und Prop-Check **jeder** Developer-Version seit dem Tab-Start. **Nicht betroffen ist der Portfolio-Tab:** `book.cell_daily()` sortiert gar nicht, sondern nutzt die bereits chronologische Ausgabe von `qbt.run_strategy` — die P(funded)-Zahlen des Buchs waren immer korrekt. In `book.py`/`funded_finalize.py`/`live_finalize.py` steht derselbe Aufruf, dort aber nur für den Anzeige-Report und `qbt.metrics` (betrifft den angezeigten `max_dd_usd`, nicht die Passquoten) — vorsorglich mit korrigiert.
+
+**Fix:** `sort_values("date", kind="stable")` an allen vier Stellen. Danach 0 von 887 Tagen verwürfelt, und die Zahlen decken sich mit der unabhängigen Rechnung. Alle fünf Versionen neu gerechnet:
+
+| | Grade | n | expR | PF | Sharpe | Solo-Pass | Buch-Beitrag |
+|---|---|---|---|---|---|---|---|
+| v1 (Max' Erstfassung) | F (38) | 4814 | +0,0092 | 1,035 | +0,32 | 31 % | −7,10pp schlechter |
+| v4 (Quelle wortgetreu) | D (51) | 5967 | +0,0148 | 1,054 | +0,55 | 37 % | −4,90pp schlechter |
+| **v5 (+ Distanz-Filter)** | **C (58)** | 3596 | **+0,0275** | **1,116** | **+0,94** | **46 %** | **±0,00pp neutral** |
+
+Der Bug hatte durchgehend zu pessimistisch gerechnet (v5 −4,20pp statt korrekt ±0,00pp). Am Gesamturteil ändert das nichts: v5 ist mit Grade C, Sharpe 0,94 und einem Drittel weniger Drawdown (−3.498 $ statt −5.553 $) die klar beste Version der Familie, bleibt aber solo nicht käfigtauglich (46 % gegen ≥60 %) und als Bein neutral statt verbessernd.
+
+### Lehre
+61. **Post-hoc-Filtern auf einem Trade-Set mit Tages-Limits ist Look-ahead.** Wer erst ungefiltert rechnet und danach Trades entfernt, misst eine Strategie, die so nie handelbar war: die Auswahl, welche Signale überhaupt Trades wurden, kannte den Filter noch nicht, und die Caps wurden von Trades verbraucht, die live nie stattgefunden hätten. Hier +7pp Schönfärberei. **Jeder Filter gehört in den Durchlauf, nicht in die Auswertung** — gilt für jede künftige Filter-Idee.
+62. **Ein Filter, der auf einem Symbol trägt und auf drei verwandten nicht, ist ein Warnsignal, kein Alleinstellungsmerkmal.** Der Querschnitts-Test über ES/RTY/YM war der billigste und härteste Robustheitstest der ganzen Runde und hätte VOR dem ganzen Parameter-Sweep kommen sollen. Bei jeder künftigen Einzel-Symbol-Entdeckung zuerst: gilt das auch auf den Nachbar-Märkten?
+63. **Ein starker Regime-Effekt ist wertlos, solange er nicht aus Information VOR dem Handelstag gebildet werden kann.** Der VWAP-Stretch erklärt das Buch-Tagesergebnis mit Korr. 0,24 in IS und OOS — und ist trotzdem nutzlos, weil er erst abends feststeht. Bei jedem Regime-/Sizing-Signal zuerst den Zeitstempel prüfen: wann genau weiß ich das? Erst danach die Korrelation ansehen.
+64. **Breakeven- und Trailing-Stops sind kein neutraler „Risikoschutz".** Auf einer Continuation-Strategie mit niedrigem RR drehten beide die OOS-Kante ins Negative, weil sie systematisch die Gewinner abschneiden, die die Verlierer bezahlen müssen. Wer sie einbaut, ändert die Strategie fundamental und muss sie neu validieren.
+65. **Bei jeder kumulativen Intraday-Rechnung muss die Sortierung stabil sein — `sort_values()` ist es per Default NICHT.** Sobald viele Zeilen denselben Schlüssel haben (hier: alle Trades eines Tages), zerwürfelt Quicksort ihre Reihenfolge. Alles, was danach einen Pfad durch den Tag rechnet (Intraday-DD, MAE-Ketten, Equity innerhalb des Tages), wird dadurch falsch — lautlos, ohne Fehlermeldung, und in eine nicht vorhersagbare Richtung. Regel: `kind="stable"` überall dort, wo nach der Sortierung kumuliert wird. Zweite Lehre daraus: **zwei unabhängige Rechenwege für dieselbe Zahl haben den Bug gefunden** — die Abweichung zwischen Eigenbau-Test und `developer_run` war das einzige Warnsignal.
+
+## #098 — Ist die VWAP-Richtung überhaupt bestimmbar? Long ja, Short nein (16.08.2026)
+
+Max' Frage nach v5: trägt die 3-Bedingungen-Richtungsregel (Preis vs. VWAP + Slope + 1h-Move) überhaupt echte Information, isoliert von Trigger/Caps/SL-TP? Bisher wurde immer nur die Gesamtstrategie getestet — ein guter Gesamttest kann an einer wertlosen Richtung liegen, wenn Entry-Timing oder R:R zufällig kompensieren.
+
+**Isolierter Vorwärtstest** (`developer/vwap_direction_test.py`): pro 5m-Bar im 10:30-15:30-ET-Fenster (identisches Fenster wie die Strategie) Richtung nach den 3 Bedingungen bestimmt, dann geprüft ob Preis über 15/30/60/120 Minuten tatsächlich in diese Richtung läuft — ganz ohne Trigger-Kerze oder SL/TP.
+
+**Befund: die Gesamt-Trefferquote lag nahe am Basiswert (49-52%) — aber das verdeckte eine scharfe Asymmetrie:**
+
+| | Trefferquote (60min) | Drift |
+|---|---|---|
+| IS LONG | 53,6% | +0,119 ATR |
+| IS SHORT | **46,7%** | +0,031 ATR |
+| OOS LONG | 53,7% | +0,081 ATR |
+| OOS SHORT | **47,6%** | +0,020 ATR |
+
+Long trägt die gesamte Richtungs-Information (vermutlich schlicht NQ's Langfrist-Aufwärtstrend im Datensatz — `c_price`/`c_slope` haben beide einen Long-Bias von ~57%), Short liegt in IS **und** OOS unter Münzwurf. Keine der 3 Einzelbedingungen trägt für sich genommen viel (Trefferquoten alle 50-51%); erst die Kombination mit Long-Filterung zeigt eine Kante. Persistenz ist zudem schwach: Median-Länge einer Richtungsphase nur 3 Bars (15 min), 30% flackern sofort wieder weg — kein stabiles Mehrstunden-Regime, wie die "Trend"-Erzählung suggeriert.
+
+**Bestätigt im echten v5-Backtest** (mit Trigger+Caps+SL/TP):
+
+| | Win% | expR | PF |
+|---|---|---|---|
+| IS LONG | 60,6% | +0,044 | 1,255 |
+| IS SHORT | 55,9% | +0,031 | 1,127 |
+| OOS LONG | 62,1% | +0,015 | 1,058 |
+| **OOS SHORT** | 59,3% | **±0,0000** | **1,000** |
+
+Short liefert OOS eine expR von exakt null — keine graduelle Schwäche, totes Gewicht trotz plausibel aussehender 59% Winrate (PF genau 1,0 zeigt: die Winrate kompensiert nur exakt das R:R, keine echte Kante mehr übrig).
+
+**v6 gebaut: v5 minus Short-Seite.** Ergebnis nuanciert, kein klarer Sieger:
+
+| | n | tpw | Sharpe | OOS expR | MaxDD | Solo-Pass | Buch-Beitrag |
+|---|---|---|---|---|---|---|---|
+| v5 | 3596 | 6,6 | 0,94 | +0,0085 | −3.498$ | 46% | +0,00pp neutral |
+| v6 | 2041 | 3,8 | **1,14** | **+0,0113** | **−1.880$** | 43% | +1,60pp — genau auf der Rauschschwelle (1,60), noch "neutral" |
+
+v6 ist pro Trade klar sauberer (höherer Sharpe, PF, halbierter Drawdown) — bestätigt die Diagnose exakt. Aber die verlorene Frequenz (fast halbiert) kostet auf der Solo-Passquote mehr, als die Qualität dort bringt (43% < 46%), und der Buch-Beitrag liegt bei genau der 2×-Rauschen-Schwelle (score 1,6 = threshold 1,6) — technisch noch nicht "besser", aber ein Wimpernschlag davon entfernt. Klassische Qualität-vs-Frequenz-Spannung: keine der beiden Versionen ist eindeutig überlegen für das Buch-Kriterium.
+
+### Umgesetzt
+- `developer/vwap_direction_test.py` neu: 5-Schritte-Diagnostik (Basisraten, Vorwärtstrefferquote vs. Baseline, Einzelbedingungen, Persistenz, Distanz-Kreuzcheck) — wiederverwendbar für jede künftige Richtungs-/Filter-Regel
+- v6 als Developer-Version angelegt und aktiv, v5 bleibt im Verlauf erhalten (Rollback jederzeit möglich)
+
+### Bei der Gelegenheit: Bug in `developer_run.py` gefunden und gefixt
+Beim Gegenrechnen von v5 fiel ein Widerspruch zwischen zwei unabhängigen Rechenwegen auf (−4,20pp vs. +0,02pp Buch-Beitrag bei identischen Trades). Ursache: `get_trades()` sortierte mit `sort_values("date")` — Default `kind="quicksort"` ist **nicht stabil** und verwürfelt bei vielen Zeilen mit gleichem Datum die Reihenfolge innerhalb eines Tages (225 von 887 Mehrtrade-Tagen betroffen). Da `daily_cells()` den Intraday-Worst als kumulativen Pfad durch den Tag rechnet, war er dadurch lautlos falsch — betraf Intraday-Frontier, Buch-Beitrag und Prop-Check jeder Developer-Version. **Der Portfolio-Tab war nicht betroffen** (`book.cell_daily` sortiert nicht, nutzt die bereits chronologische `qbt.run_strategy`-Ausgabe). Fix: `kind="stable"` in `developer_run.py`, `book.py`, `funded_finalize.py`, `live_finalize.py`. Alle Versionen neu gerechnet, Zahlen oben sind bereits die korrigierten. Siehe Lehre 65.
+
+### Lehre
+66. **Eine Gesamtstrategie kann eine schwache Gesamt-Kennzahl zeigen, obwohl eine Hälfte exzellent ist — Durchschnittsbildung versteckt Asymmetrien.** Die Richtungsregel sah in Summe wertlos aus (Trefferquote nahe Münzwurf); erst der Long/Short-Split zeigte, dass eine Hälfte eine echte, robuste Kante hat und die andere strukturell dagegen kämpft. Bei jeder Regel mit einer Long/Short- oder sonstigen Symmetrie-Annahme: immer beide Seiten getrennt prüfen, bevor man die Regel als Ganzes verwirft oder behält.
+67. **Qualität schlägt Frequenz nicht automatisch, wenn die Zielgröße zeitabhängig ist.** v6 hatte den saubereren Trade (Sharpe, PF, Drawdown), aber die halbierte Frequenz kostete auf der Solo-Passquote mehr als die Qualität einbrachte — Zeit bis zum Ziel zählt genauso wie die Kante pro Trade. Ein Filter, der die Kante pro Trade verbessert, ist nicht automatisch ein besseres Bein.
+
+## #099 — Richtungsregeln gegen Orderflow-Delta getauscht: erster Buch-Beitrag über der Rauschschwelle (16.08.2026)
+
+Fortsetzung von #098. Max' Folgefrage: die 3 Richtungsbedingungen (Preis vs. VWAP, VWAP-Slope, 1h-Move) einzeln gegen ein Orderflow-Delta-Signal tauschen, plus prüfen wie viel positives Delta nötig ist. Delta-Definition wie `or_delta.py` (#077-079, etablierte Methode): `sign(Close-Open) × Volumen` je 1m-Bar, summiert über ein Fenster — Tick-Rule-Proxy für Orderflow-Imbalance aus reinen OHLCV-Daten.
+
+**Drei Tausch-Varianten** (`developer/vwap_delta_test.py`), je EINE Bedingung ersetzt, Bewertung über denselben isolierten Vorwärts-Trefferquote-Test wie #098:
+
+| Ersetzte Bedingung | Long-Trefferquote (IS/OOS) | Long-Drift OOS |
+|---|---|---|
+| keine (Original, #098) | 53,6% / 53,7% | +0,081 ATR |
+| **R1 Preis>VWAP → Delta seit Session-Open** | **54,7% / 55,4%** | **+0,171 ATR** |
+| R2 VWAP-Slope → Delta letzte 15min | 53,5% / 53,7% | +0,110 ATR (kein Effekt) |
+| R3 1h-Move → Delta-Ratio 1h (Schwellen-Sweep 0-0,30) | 54,0-55,7 %, steigt scheinbar mit Schwelle | Stichprobe schrumpft von n=66634 auf n=1966 OOS bei Schwelle 0,30 — bei 51,3% Trefferquote und +0,42 ATR Drift ist das Rauschen, kein Fund |
+
+**Nur Variante A (R1 ersetzt) ist echt.** Der OOS-Drift verdoppelt sich fast, bei stabiler Stichprobengröße (nicht durch Schwellen-Tuning erkauft — eine strukturelle 1:1-Ersetzung ist weniger overfitting-anfällig als ein Parameter-Sweep). Short bleibt in JEDER Delta-Variante unter Münzwurf, bestätigt #098: die Richtungsregel ist strukturell long-only.
+
+**v7 gebaut: v6 (Long-only + Distanz-Filter) mit R1 ersetzt, R2/R3 und der Distanz-Filter unverändert.**
+
+| | v5 | v6 | **v7** |
+|---|---|---|---|
+| Win% / expR / PF | 59,4% / +0,028 / 1,12 | 61,1% / +0,031 / 1,15 | **62,3% / +0,041 / 1,20** |
+| Sharpe | 0,94 | 1,14 | **1,48** |
+| OOS expR / PF | +0,0085 / 1,029 | +0,0113 / 1,043 | **+0,0183 / 1,071** |
+| Solo-Pass (intraday) | 46% | 43% | **49%** |
+| ⭐ Buch-Beitrag | neutral (+0,00pp) | neutral (+1,60pp, genau auf der Schwelle 1,60) | **BESSER (+1,80pp, über Schwelle 1,60)** |
+
+**v7 ist die erste Version der ganzen VWAP-Runde, die den Buch-Beitrags-Schwellentest tatsächlich überschreitet** (score 1,80 > Schwelle 1,60, 5-Seed-Rauschen 0,8) — nicht nur "schadet nicht mehr", sondern eine echte, wenn auch kleine, Verbesserung für P(funded). Alle Metriken ziehen konsistent mit: bester Sharpe, beste OOS-Kante, beste Solo-Passquote der ganzen Familie (37% → 46% → 43% → 49%). Solo weiterhin nicht käfigtauglich (49% < 60%). E8-Inaktivitätsregel warnt (längste Lücke 21 Tage bei 3,2 Trades/Woche) — rein operativ, braucht einen Keep-Alive-Trade in handelsarmen Wochen, kein Kanten-Problem.
+
+**Einordnung, warum das plausibel ist statt Zufall:** kumulatives Session-Delta misst tatsächliche Kauf-/Verkaufsaktivität (gewichtet nach Volumen), während Preis-vs-VWAP nur den *Preis-Level* relativ zum volumengewichteten Durchschnitt zeigt — zwei Bars können denselben Preis über/unter VWAP haben, aber sehr unterschiedliches Orderflow-Vorzeichen. Delta ist damit eine direktere Messung von "wer gerade die Kontrolle hat" als ein reiner Preisvergleich, was zur Continuation-Mechanik (Gao/Han/Li/Zhou, #097) besser passt als der Preis-Proxy.
+
+### Lehre
+68. **Ein struktureller Tausch (eine Bedingung durch eine andere ersetzen) ist robuster zu bewerten als ein Parameter-Sweep, weil er nicht auf einem kontinuierlichen Schwellenwert optimiert.** Der Delta-Schwellen-Sweep (Variante C) zeigte scheinbar steigende Trefferquote mit steigender Schwelle — aber nur weil die Stichprobe dabei auf ein Zehntel schrumpfte. Der sauberste Fund der Runde (Variante A) war keine Schwellenwahl, sondern ein einfacher Ja/Nein-Tausch derselben Bedingung — weniger Freiheitsgrade, weniger Overfitting-Risiko.
+69. **Orderflow-Delta (Tick-Rule-Proxy aus OHLCV) kann eine Preis-Bedingung schlagen, wenn beide dieselbe Information ausdrücken sollen.** Preis-vs-VWAP ist ein Level-Vergleich, Delta ist eine direkte Aktivitätsmessung — bei ansonsten identischer Bedeutung ("wer hat die Kontrolle") war die direktere Messung hier die bessere. Bei künftigen Richtungs-/Filterregeln lohnt sich der Vergleich Preis-Proxy vs. Delta-Proxy als Standard-Test, nicht nur als Sonderfall.
+
+## #100 — Delta auf dem Pullback-Trigger selbst: sauberes Negativergebnis (16.08.2026)
+
+Max' Folgefrage zu #099: traegt das Orderflow-Delta INNERHALB der Trigger-Kerze (1m-Basis, kleiner als die 5m-Kerze) zusaetzliche Information? Bisher wurde Delta nur auf Fenster-/Session-Ebene fuer die Richtungsbedingungen getestet (#099), nicht fuer den Trigger selbst. Der Trigger ist rein preisbasiert ("erste rote Kerze") -- zwei Kerzen mit identischem Open/Close koennen voellig unterschiedliches Orderflow-Muster haben.
+
+Getestet an v7's echten Signalen (`developer/vwap_trigger_delta_test.py`, 1768 Trades): 4 Delta-Merkmale der Trigger-Kerze (Gesamt-Delta normiert, Delta letzte 1m-Bar, Delta letzte 2 Bars, Delta zweite Haelfte) plus die klassische Order-Flow-These "Absorption" (Verkauf am Anfang, Kaeufer uebernehmen zum Schluss, waehrend der Preis noch rot schliesst).
+
+**Kein einziges Merkmal haelt IS und OOS gleichgerichtet:**
+
+| Merkmal | Korr. IS | Korr. OOS |
+|---|---|---|
+| Gesamt-Delta (normiert) | −0,058 | +0,069 — Vorzeichen kippt |
+| Delta letzte 1m-Bar | +0,022 | +0,038 |
+| Delta letzte 2 Bars | −0,008 | +0,008 |
+| Delta zweite Haelfte | +0,004 | −0,004 |
+
+**Die Absorptions-These war sogar falsch herum:** Trigger-Kerzen MIT Absorptionsmuster performten in IS UND OOS schlechter als ohne (OOS expR mit Absorption **−0,0053**, ohne Absorption +0,0269) -- Kaeufer, die schon waehrend der roten Kerze aktiv werden, sind offenbar eher ein Zeichen von Unentschlossenheit als von einem starken Reversal.
+
+**Keine v8 gebaut.** Bei einem so klaren Vorzeichenwechsel zwischen IS und OOS waere jede darauf aufgesetzte Version reines Rauschen-Fitting. v7 bleibt aktiv und die beste Version der Familie.
+
+### Lehre
+70. **Nicht jede Delta-Idee traegt -- die Ebene entscheidet.** Delta auf Session-/Fenster-Ebene (R1, #099) trug echte Information; Delta auf der einzelnen Trigger-Kerze (1m-Basis) nicht. Beide klingen a priori plausibel ("Orderflow ist informativer als Preis"), aber nur eine haelt der IS/OOS-Probe stand. Der Test selbst war billig (eine Diagnostik auf bestehenden Trades, keine neue Version noetig) -- bei jeder neuen "wo koennte noch Delta helfen"-Idee lohnt sich dieselbe schnelle Vorabpruefung, bevor eine Version gebaut wird.
+
+## #101 — R:R-Sweep: erste Grade-A-Version der VWAP-Familie (16.08.2026)
+
+Max' Frage: wie verändert sich alles, wenn man das R:R von sehr gering bis sehr hoch durchvariiert? SL fest bei 80 Punkten (validierter Risiko-Anker, #097), TP von 20 bis 240 Punkten (RR 0,25 bis 3,0), sonst v7's exakte Signal-Logik unverändert (`developer/vwap_rr_sweep.py`).
+
+**Erste Erkenntnis: eine klare Falle am unteren Ende.** Bei RR=0,25 (TP=20) sieht die Winrate mit 75,4% spektakulär aus — die OOS-Erwartung ist trotzdem **negativ** (−0,0033). Das Ziel ist so klein, dass Kosten und die wenigen Verlierer (SL 80) den hohen Trefferanteil komplett auffressen. Eine hohe Winrate allein sagt nichts ohne das R:R.
+
+**Kein scharfes Optimum, sondern ein breites Plateau.** Ab RR≈0,5 bis RR=3,0 ist der Buch-Beitrag durchgehend "besser" (+1,6 bis +2,0pp), die Unterschiede zwischen den Werten liegen im Rauschbereich (Streuung ~0,8pp). RR=1,5 (TP=120) lag im Schnelltest leicht vorn.
+
+**v8 gebaut (v7 mit TP 40→120) und mit der vollen Pipeline bestätigt — kein Sweep-Artefakt:**
+
+| | v6 | v7 | **v8** |
+|---|---|---|---|
+| Grade | C (58) | C (58) | **A (85)** |
+| OOS Win% / expR | 62,0% / +0,0113 | 62,7% / +0,0183 | 51,9% / **+0,0250** |
+| Sharpe | 1,14 | 1,48 | 1,48 |
+| Solo-Pass | 43% | 49% | **50%** |
+| ⭐ Buch-Beitrag | neutral (+1,60pp) | besser (+1,80pp) | **besser (+2,00pp)** |
+
+Schnelltest hatte 2,01pp/50% vorausgesagt, Vollrechnung liefert 2,00pp/50% — nahezu deckungsgleich, das ist der Beleg dass der Fund robust ist, nicht ein zufälliger Sweep-Peak. Klassischer RR-Tradeoff: v8 gewinnt seltener (52% statt 63%), aber wenn, dann deutlich mehr — netto die beste Erwartung der ganzen Familie. Solo weiterhin nicht käfigtauglich (50% < 60%), E8-Inaktivitätsregel warnt weiter (Trades/Woche sinkt mit steigendem TP, längste Lücke 21 Tage — operativ, kein Kanten-Problem).
+
+**v8 ist die erste Grade-A-Version der gesamten VWAP-Runde** (#096-#101), nachdem v1 mit Grade F startete.
+
+### Lehre
+71. **Eine hohe Winrate ohne das R:R zu kennen ist bedeutungslos.** RR=0,25 zeigte die höchste Winrate im ganzen Sweep (75,4%) bei gleichzeitig negativer Erwartung — der klassische Fehler, Trefferquote mit Qualität zu verwechseln (vgl. Lehre 56: erst das R:R prüfen, dann die Signal-Logik).
+72. **Ein breites Plateau ist ein stärkerer Beleg als ein scharfer Peak.** Dass Buch-Beitrag und Solo-Passquote über einen weiten RR-Bereich (0,5 bis 3,0) stabil "besser" bleiben, statt an einem einzelnen Punkt zu spitzen, spricht gegen Zufallsfund — ein einzelner Ausreisser inmitten überwiegend neutraler Nachbarn waere Grund zur Vorsicht gewesen (vgl. Lehre 68).
+
+## #102 — v8 ins Buch: Port, Verifikation, Frac-Neuprüfung, Distanz-Nachtest (16.08.2026)
+
+Max: „bau ihn in mein Portfolio ein, mit der passenden Cushion-Frac". v8 (RR 1:1,5, Delta-seit-Open, Distanz-Filter 2,5 ATR, Long-only, #096-#101) läuft im Developer nur über eine eigene `trades()`-Funktion — Buch-Beine brauchen einen echten `qbt.run_strategy`-Mode.
+
+**Port:** `engine/vwap_pullback.py` neu (Modul-Vertrag wie `or_delta.py`), Dispatch in `qbt.py` unter `mode="vwap_pullback"` registriert, Parameter per `p.get("vwap_*", default)` mit v8s Werten als Default. **Verifiziert wie beim NoiseORB-NinjaScript-Port (#084): 1257 von 1257 Trades identisch** (r, date, tmin_entry) zwischen Developer-`trades()` und `qbt.run_strategy({"mode":"vwap_pullback"})`.
+
+**Als 6. Bein eingetragen** (`NQ_VWAP-Pullback`, Family Trend Following) in `book_state.json`.
+
+**Cushion-Frac neu geprüft** (Lehre 55: jede Buch-Änderung zieht das nach) statt blind übernommen: Sweep von frac 0,14 bis 0,34 für Konto A unter dem vollen 6-Bein-Buch zeigt ein breites Plateau 0,20-0,30, Maximum bei 0,24 (70,4 % 3M) nur +0,2pp vor dem aktuellen 0,22 (70,2 %) — klar innerhalb des üblichen Seed-Rauschens (~0,6-0,9pp). **0,22 bleibt gültig, keine Anpassung.**
+
+`funded_finalize.py` gelaufen: P(funded) Buch 3M 68,6 % → **70,2 %**, 6M 91,0 % → **92,8 %** — deckt sich mit dem vorher gemessenen Buch-Beitrag (+2,00pp, Ø 3M/6M). Portfolio-Tab ist aktuell.
+
+### Nachtrag: VWAP-Distanz-Varianten nachgetestet (Max' Folgefrage)
+„Wie wirken sich verschieden hohe VWAP-Varianten aus?" — Distanz-Schwelle (die 2,5-ATR-Regel aus #097) von 0 bis 6 ATR durchvariiert, auf v8's fertiger Basis (RR 1:1,5).
+
+**Methodische Falle selbst gefangen:** der erste Durchlauf verglich gegen das Buch, das v8 SELBST schon enthielt (seit dem Porting-Schritt oben) — jede Variante wurde also gegen eine Baseline getestet, die einen nahezu identischen Zwilling schon enthielt (Korrelation drückt den Grenznutzen). Korrigiert durch Vergleich gegen das ORIGINALE 5-Bein-Buch (ohne v8):
+
+| Distanz | Buch-Delta (ggü. Original-5-Bein-Buch) |
+|---|---|
+| 0,0 (kein Filter) | +1,95pp besser |
+| 1,0-1,5 | +1,4 bis +1,5pp neutral |
+| **2,0** | **+2,25pp besser (Spitze)** |
+| **2,5 (= v8)** | **+2,01pp besser** |
+| 3,0-5,0 | fallend, +1,1 bis +0,4pp |
+
+**Neuer Befund:** mit dem größeren RR (1:1,5 statt 1:0,5) ist jetzt sogar der UNGEFILTERTE Fall "besser" fürs Buch — unter dem alten RR (#097) war er klar "schlechter". Der größere Take-Profit übernimmt einen Teil der Funktion, die vorher nur der Distanz-Filter leistete. Spitze bei 2,0 ATR, aber 2,0 und 2,5 sind bei üblichem Rauschen nicht unterscheidbar — **v8's Wahl (2,5) bleibt bestätigt, keine Änderung.**
+
+### Lehre
+73. **Sobald eine Strategie schon im Buch steckt, misst ein „Variante X hinzufügen"-Test automatisch etwas anderes: den Grenznutzen einer ZWEITEN, korrelierten Kopie — nicht mehr, ob X die richtige Wahl fürs EINE Bein war.** Für die zweite Frage muss die Baseline explizit auf den Zustand VOR der Aufnahme zurückgesetzt werden. Bei jedem Nachtest einer bereits eingebuchten Strategie zuerst fragen: vergleiche ich gegen das Buch mit oder ohne sie selbst?
+74. **R:R und Signal-Filter sind nicht unabhängig voneinander zu optimieren.** Der Distanz-Filter war unter RR 1:0,5 unverzichtbar (#097: ungefiltert klar „schlechter"), unter RR 1:1,5 ist selbst der ungefilterte Fall „besser". Ein Filter, der unter einer Parametrisierung entscheidend war, kann unter einer anderen redundant werden — nach jeder größeren Parameteränderung lohnt sich ein Rück-Test der vorher als kritisch geltenden Filter.
+
+## #103 — Betriebspunkt fürs Solo-Zwischenfenster: B/C erst in ~15 Tagen (16.08.2026)
+
+Max kauft die 2x25k-Konten (B/C) erst in ca. 15 Tagen (Zielraum ab ca. 31.08.2026). Bis dahin läuft nur Konto A (50k, gekauft, aktiv) — der 3-Konten-Betriebspunkt aus #095/#101 (frac A = 0,22) ist für den **rollenden Plan mit B/C** optimiert, nicht für die aktuelle Solo-Zwischenzeit. Genau der Fall aus Lehre 44 (#089): „Kauft Max die 2x25k nicht, ist der richtige Wert wieder niedriger."
+
+**Umbau:** `book_state.json` — B/C aus `plan.accounts` in ein neues `plan.accounts_pending` verschoben (Definitionen/Notizen bleiben vollständig erhalten, nur zum Zurückschieben in 15 Tagen). Konto A frac 0,22 → **0,14**.
+
+**Solo-Rolling-Sweep** (1 Konto, 2-Evals/Monat-Deckel auf denselben Kontotyp, aktuelles 6-Bein-Buch inkl. NQ_VWAP-Pullback), bewertet nach der Buch-üblichen Ø(3M,6M)-Methode (wie #095):
+
+| frac | 1M | 3M | 6M | 12M | Ø(3M+6M) |
+|---|---|---|---|---|---|
+| 0,10 | 6,2% | 30,2% | 46,0% | 48,4% | 38,1 |
+| **0,14** | 16,3% | 36,0% | 42,9% | 43,6% | **39,45** ← gewählt |
+| 0,16 | 19,2% | 36,8% | 40,5% | 40,8% | 38,65 |
+| 0,18 | 20,8% | 36,5% | 38,9% | 39,1% | 37,7 |
+| 0,22 (alt, Joint-Plan-Wert) | 25,5% | 34,1% | 34,8% | 34,8% | 34,45 |
+
+0,14 gewinnt auf der 3M/6M-Sicht klar; 0,22 ist nur bei reiner 1-Monats-Betrachtung vorn (25,5% vs 16,3%) — aber genau die Sicht zählt hier nicht, weil ohne Nachkauf die Solo-Passquote über die Zeit entscheidet, nicht die Kaufrate.
+
+`funded_finalize.py` bestätigt: P(funded) solo A **1M 16,3% · 3M 36,0% · 6M 42,9% · 12M 43,6%**, Median 42 Tage.
+
+**Bewusst getrennt gehalten: Planungsebene vs. Live-Ebene.** `book_state.json`/Portfolio-Tab ist umgestellt (reine Backtest-/Planungsarbeit). Der Live-`CushionFrac` in `MaxRiskGuard.cs` auf der Box läuft weiter mit 0,22, bis Max den Box-Deploy explizit freigibt — das laufende Live-Konto wird nicht ohne Ansage angefasst.
+
+**Rückbau vorgemerkt:** sobald B/C gekauft sind, B/C zurück nach `accounts`, frac A neu Richtung Joint-Plan-Wert prüfen (nicht blind auf 0,22 zurücksetzen — das Buch hat sich seit #095 durch NQ_VWAP-Pullback verändert, siehe #101).
+
+### Lehre
+75. **Der Betriebspunkt eines bereits laufenden Kontos muss neu geprüft werden, sobald sich seine Kaufpolitik ändert — nicht nur wenn sich das Buch ändert (Lehre 55 erweitert).** „B/C kommen erst in 15 Tagen" ist keine Buch-Änderung, aber ändert trotzdem den relevanten Betriebspunkt fundamental (Solo-Rolling statt Joint-Plan). Jede Änderung an WANN oder OB nachgekauft wird, ist eine Kaufpolitik-Änderung im Sinne von Lehre 44 und verlangt dieselbe Neu-Prüfung wie eine Buch-Änderung.
+76. **Planungs-Layer-Updates (book_state.json) und Live-Deploy (Box/NinjaScript) sind getrennte Freigabe-Ebenen.** Ein Betriebspunkt-Wechsel lässt sich sofort und risikofrei in der Planung nachziehen; das Scharfschalten auf dem laufenden Live-Konto ist ein separater, expliziter Schritt. Diese Trennung verhindert, dass eine Backtest-Umrechnung versehentlich echtes Kapital-Risiko verändert.
+
+## #104 — Pass/Blow an der echten Historie statt nur MC-Resampling (16.08.2026)
+
+Max' Frage: nicht „wie hätte das Buch auf einem Live-Account performt", sondern **wie oft hätten wir mit unserem Betriebspunkt tatsächlich gepasst / geblowed**. Bisher gab es das nur als Bootstrap-MC (`passmc`, `passmc_vec`, `eval_plan.evaluate`), das i.i.d. Tage zieht. Neu: `eval_plan.rolling_real()` — jeder echte Handelstag ist ein Eval-Start, der die **tatsächlich gelaufene** Zukunft weiterspielt, gleiches Cushion-Sizing, gleicher Käfig, Intraday-Bust. Zählt Pass / Bust / offen (Horizont erreicht) / Datenende.
+
+**Wo es jetzt steht:** Standard-Lab-Report (neue Sektion „Eval Pass/Blow" direkt nach dem Verdict, `copilot.eval_pass_blow` + `report._eval_pass_blow`), Developer-Tab (Solo-Frontier hat Echt-Spalten, Buch-Beitrag zeigt Echt 3m/6m neben MC), `developer_run.py`. `daily_cells`/`combine_cells` sind dabei aus `developer_run.py` nach `eval_plan.py` gewandert (eine Quelle für Developer UND Report).
+
+**Selbst-Korrektur, die im Log bleiben soll:** erste Version verglich Echt bei **50** Tagen Horizont gegen MC bei **365** Tagen — sah aus wie „echt 10 % vs MC 49 %" und ich hätte fast „Clustering" als Ursache verkauft. Auf gleichem Horizont geprüft (Scratch-Test, VWAP-Pullback v8 und 6-Bein-Buch, frac 0.10/0.14/0.22/0.30, Horizonte 50/120/365):
+
+| | MC pass / bust | Echt pass / bust | Echt Pass unter Entschiedenen |
+|---|---|---|---|
+| Strategie v8, frac 0.14, 1 J. | 49 % / 42 % | 34,5 % / 34,7 % | 50 % (MC 54 %) |
+| Buch, frac 0.14, 1 J. | 45 % / 55 % | **51 % / 37 %** | **58 %** (MC 45 %) |
+| Buch, frac 0.14, 120 T. | 41 % / 52 % | 31 % / 25 % | 55 % (MC 44 %) |
+
+**Was wirklich bleibt:** (a) die echte Reihenfolge **entscheidet langsamer** als i.i.d.-Bootstrap — deutlich mehr „offen" bei jedem Horizont, in beiden Fällen (Bootstrap mischt jede Marktphase in jeden Pfad, echt bleiben ruhige/wilde Phasen am Stück). (b) Beim Buch ist echt auf 1 Jahr **besser** als MC (weniger Busts), bei kurzen Horizonten niedriger auf Pass UND Bust. (c) Bei der Einzelstrategie ist echt etwas schlechter als MC. Kein Grund, das MC-Kriterium zu kippen — aber ab jetzt steht die Echt-Zahl daneben, mit Horizont-Beschriftung.
+
+**Vorbehalt:** Echt-Fenster überlappen massiv (2 456 Starts ≈ ~10 unabhängige Jahre); und das Buch wurde auf genau dieser Historie selektiert — die Echt-Zahl ist genauso in-sample wie MC.
+
+### Lehre
+77. **Zwei Methoden nur auf identischem Horizont vergleichen.** Pass-Quoten sind Horizont-Funktionen; 50 gegen 365 Tage ist kein Befund, sondern ein Artefakt. Jede neue Kennzahl bekommt den Horizont ins Label.
+78. **Bootstrap-MC unterschätzt systematisch die „offen"-Quote** (i.i.d. zerhackt Phasen). Wer P(funded) pro Zeit optimiert (#089), sollte die Echt-Historie als Gegenprobe daneben haben — MC allein macht Evals tendenziell schneller entschieden, als sie es sind.
+
+## #105 — News-Fade-Hypothese (Max): Retrace auf Pre-News-Level ist Random-Walk-Basisrate (16.08.2026)
+- **Anstoß: Max' Idee** — nach starker News fällt der Preis „im Normalfall" wieder aufs Pre-News-Niveau (oder retraced deutlich). Geprüft mit research-scout (Literatur), quant-mathematician (Struktur + Null-Rechnung) und quant-statistician (eigene 1m-Daten NQ/ES 2016-2026, **316 Events** FOMC/CPI/NFP, 24h-Bars aus `exported_data/`, weil `qbt.load_rth` 08:30-Releases abschneidet).
+- **Verdict: ✗ kein Alpha, weder Fade noch Continuation.** Retrace-Quote aufs Pre-News-Level bis Close **66 % (NQ) / 57 % (ES)** — Random-Walk-Null (Reflexionsprinzip `P = 2·Φ(−a/(σ√T))`) sagt **58 %**. Die Beobachtung „kommt meistens zurück" stimmt, ist aber reine Vola-Mathematik. Gegen Placebo (gleich große Nicht-News-Moves, gleiche Uhrzeit) retracen News-Jumps in den ersten 30-60 Min sogar **10-13 pp seltener** (CI ohne Null) — News-Moves halten besser, nicht schlechter.
+- **Handelbarer Fade** (Entry T+5, Stop 0,75×ATR20, Exit Close, Kosten): NQ +0,12R [+0,05; +0,20], ES −0,01R, **gepoolt +0,04R (t=0,91)**; NQ/ES-Trades r=0,80 korreliert → ein Test, nicht zwei. DSR bei n_trials≈40 = 0,50, Nachweisgrenze bei n=138 ist 0,15R → unter Power. Split-Half instabil. Starke Jumps (>0,35 %) drehen den Fade negativ (expR −0,19, Mathematiker) — genau dort, wo die Hypothese ihn behauptet.
+- **CAL_fomcpost_ES (#034) relativiert:** roher Richtungs-Drift 14:15→Close über 83 FOMCs = −3,6 bp (Null); PF 1,71 kommt aus dem Stop, der den linken Tail abschneidet, nicht aus einer Richtungsprognose. Und n=43 heißt Nachweisgrenze PF ~1,60 — kein „starker Beweis" für Continuation.
+- **Literatur:** kein akademischer Beleg für Makro-News-Fade in Index-Futures auf Minuten/Stunden; Sekunden-Overshoot (ABDV 2003) ist HFT-Domäne; Pre-FOMC-Drift „disappearing"; Straddle/OCO um Release nur Folklore. Details im [[Research-Cache]] (neuer Abschnitt).
+- **Buch-Relevanz:** ~13-32 Events/Jahr → selbst optimistisch 0,5R/Jahr, weit unter MC-Seed-Rauschen. Kategorie wie #034/#049: nicht fürs Buch. Skripte im Session-Scratchpad (Wegwerf), keine Engine-Datei angefasst.
+- **Offen, falls Max weitermachen will:** (a) konditionierter Fade (nur wenn Jump gegen Vortrend/Positionierung, Why vorab), (b) Vorzeichenkurve `sign(J)·r` über 0-1/1-5/5-15/15-30/30-60/60-Close pro Event-Typ, (c) Post-News-Vola-Burst (3-8× normal) als Regime-Filter für bestehende Momentum-Beine statt als eigenes Bein.
+
+### Lehre
+79. **„Kommt meistens zurück" ist bei Vola-Bursts die Basisrate, keine Edge.** Bei jeder Retrace-/Touch-Statistik zuerst die Random-Walk-Null (Reflexionsprinzip) und eine Placebo-Kontrolle gleicher Uhrzeit danebenlegen — sonst misst man σ√T und nennt es Mean Reversion.
+80. **Fade und Momentum auf demselben Fenster sind ein Nullsummenspiel minus 2× Kosten.** Sehen beide positiv aus, ist mindestens eins Rauschen (n klein) oder es gibt einen echten Vorzeichenwechsel, der dann sauber über Event-Typen nachweisbar sein muss.
+
+## #106 — Zielfunktion v2: „möglichst viele Evals bestehen" statt „möglichst schnell funded" — Käfig-Policy-Sweep, Pool-Neuaufbau, Tier-Vergleich (16.08.2026)
+
+**Anstoß (Max):** „Wie treffe ich das Profit-Target, ohne den max. Drawdown zu reißen?" Bisher wurde dafür genau EIN Skalar optimiert (Cushion-frac in `eval_plan.py`), Zielfunktion war P(funded) in 3/6 Monaten unter rollendem Nachkauf (#089). Neu gebaut: `cage_policy_lib.py` + `cage_policy_sweep.py` (Sizing-Policy und Buch-Zusammensetzung als Parameter, MC-Kern 1:1 aus `eval_plan.py`), fünf Hebel einzeln gemessen, dann quant-mathematician / quant-statistician / strategy-auditor drauf.
+
+**Phase 1, alte Zielfunktion (Zeit-Score) — was gefunden wurde:**
+- **Cushion-Sizing läuft verkehrt herum.** Heute: 2 Kontrakte am Anfang, 3 kurz vor dem Ziel (bei +2800 fehlen 200 $, riskiert werden 1282 $ an einem q90-Tag). HJB (Mathematiker): optimale Größe *fällt* in der Restdistanz. Endspurt-Deckel `sz ≤ (target−bal)·k/risk` dreht das Profil um; bei k≈0,2 ist der Cushion-Term komplett redundant. Einziger Hebel, der in beiden OOS-Folds und beiden Zeitfenstern hält.
+- **Bein-Auswahl transferiert negativ.** Sieger „nur LastHour+VWAP-Pullback, frac 0,30" = +14,6pp Score, davon +12,6pp reiner frac-Sprung (gegen falsche Basis verbucht) und +2,0pp Auswahl; nested OOS: **−2,95pp**, letzte 2 Jahre −14pp. Auditor: 2022-Strohfeuer (LastHour 2024 −1,6k, 2026 −2,1k). **Verworfen.**
+- **Quantil-Anker ist kein Hebel** (`sz = cushion·frac/anker`, nur das Verhältnis zählt — Umparametrisierung).
+- **Block-Bootstrap** (Vola-Clustering, acf|dc| ≈ 0,2 über 5 Lags): P(funded)-Zahlen fallen ~7pp (die Tab-Zahlen waren zu optimistisch), Solo-Passquote *steigt* (P konvex in σ, Jensen auf Eval-Ebene). Rangfolge unverändert. Seit heute Standard.
+- **Nulldrift-Test (Statistiker):** 88 % des Zeit-Score-Siegers entstehen bei Edge = 0. Der Zeit-Score ist zur Hälfte eine Lotterie-Kennzahl (Nachkauf gratis, Neustarts unabhängig). Solo-Passquote ist die edge-sensitivere Größe.
+
+**Max' Umkehr (Kern dieses Eintrags):** „Ich will nicht möglichst schnell funded, ich will bei möglichst vielen Evals das Target treffen und möglichst selten blowen." → **Zielfunktion v2 = Passquote je Eval bzw. $ pro funded Konto (= Preis ÷ Passquote), Zeit nur noch Kontext.** Mathematik dazu: reine Passquote ist streng monoton fallend in der Größe (kein inneres Optimum, Kelly wäre 0,51 Kontrakte), also **Min-Size 1 Kontrakt je Bein**; damit ist frac raus und **die Kontogröße wird zum Sizing-Hebel**.
+
+**Phase 2, v2 (alles Min-Size, Block-Bootstrap Ø10, 5 Seeds, `cage_v2_*.py`):**
+| Tier | Preis | Passquote | $/funded | Median | letzte 3 J |
+|---|---|---|---|---|---|
+| 25k | 100 | 37,9 % | 264 | 28 d | 36,5 % |
+| **50k** | 150 | 59 % | **255** | 98 d | 53 % |
+| 100k DD 4 % | 260 | 80 % | 326 | 272 d | 79 % |
+| 100k DD 3 % | 260 | 69 % | 378 | 251 d | 66 % |
+| **150k DD 4 %** | 390 | **86 %** | 454 | 450 d | **93 %** |
+- Nulldrift-Kontrolle überall ~20 % → der Rest ist Edge, keine Geometrie. Heutiges frac 0,14 auf 50k: 47,5 % / 316 $ — schlechter als schlicht 1 Kontrakt.
+- **Korrektur AP99 (16.08.2026, spät):** der 3%-vs-4%-DD-Streit bei 100k/150k ist aufgelöst — E8 Help Center Futures (Primärquelle, vom Support-Chat selbst verlinkt) bestätigt **3%**, nicht 4%. Die DD4-Zeilen oben sind damit falsch, `cage_v2_tiers.json`/`cage_v2_tiers.py` korrigiert und neu gerechnet: **100k 68,8 % / 378 $/funded (med 254 d) · 150k 80,4 % / 485 $/funded (med 438 d)**. Der Käfig-Vorteil der großen Tiers ist damit kleiner als in Phase 2 angenommen; 50k bleibt bei $/funded ungeschlagen, 150k bleibt bei reiner Passquote vorn. Siehe [[E8-Support-Anfrage (100k-150k Drawdown + Signature-Status)]].
+- **Pool-Neuaufbau (22 Kandidaten** = Buch + Live-Bank + 13 je getestete Alt-Strategien, Walk-Forward 2016-22 ↔ 2023-26, Marginal-Test Buch+1 nur OOS): **kein einziges Bein verbessert das Buch OOS**, beide Walk-Forward-Auswahlen sind auf der Testperiode klar schlechter als das Buch (41,9/37,1 % vs 56,3/61,8 %). Grund: bei Min-Size ist „Bein dazu" = „mehr Position"; ein Bein hilft nur, wenn seine Drift/Risiko über der des Buchs liegt — hat keins. Alt-Strategien (Gap-cont, Overnight, RV_mom, FLIP, PIV): alle −4 bis −15pp.
+- **Gewichte im Buch (Leave-one-out, Split 2016-22 / 2023-26 / 2025-26):** **ohne NQ_Momentum +10,4 / +4,4 / +3,9pp** auf 50k, +3,5 / +5,1 / +5,2 auf 100k, Inaktivität ok (7 d) — einziger Buch-Befund, der in jedem Fenster und Tier gleich zeigt. → **In #108 (AP98) widerlegt: die Zahlen stimmen, „in jedem Fenster und Tier" nicht.** Die drei Fenster sind ineinandergeschachtelt; disjunkte 2-Jahres-Fenster ergeben +1,0 ± 7,8pp mit zwei stark negativen. Die 100k-Spalte rechnete zudem mit dem inzwischen gestrichenen `dd4`-Käfig. **Entscheidung: Momentum bleibt drin.** Ohne LastHour nur im neuen Regime besser (+17), reißt die 7-Tage-Inaktivitätsregel (11 d) und bricht 2016-22 auf 100k ein → nein. Momentum x2 / LastHour x2: −12 bis −15pp.
+- Tagesstopp bei Min-Size: 50k +1pp (nichts), 100k +4pp (Stopp 120 $/Kt), 150k +4pp (250 $).
+- Parallele Evals auf demselben Buch mit gleichem Start sind *eine* Eval (P(≥1) = P(1)); Staffelung um 2 Monate: 4 Konten → 88,7 %; $/funded bleibt gleich.
+
+**Umgesetzt:** `eval_plan.evaluate_v2` + `funded_finalize.py` (`plan.v2` in `portfolio.json`), Portfolio-Tab Kopfzahl = Passquote je Eval + $/funded je Tier (Zeit-Kaufplan als Kontext-Block), `book_state.json` Plan-Block (`objective`, A frac 0,01 = Min-Size, B/C 25k **gestrichen**), `cage_v2_tiers.json`. **Offen / Max' Entscheidung:** (1) ~~NQ_Momentum aus dem Buch nehmen (Empfehlung: ja, mit Statistiker-Gegenlesen vor dem Deploy)~~ → **erledigt in #108: nein, bleibt drin** (Gegenlesen hat den Befund gekippt), (2) Ersatz für B/C: weitere 50k (billigster $/funded) oder 100k/150k (höchste Passquote, DD-Regel 3/4 % vorher schriftlich klären; „Signature" evtl. Auslaufprodukt), (3) Live-Umstellung CushionFrac auf der Box = separater Deploy.
+
+**Vorbehalt (Statistiker):** Buch-Drift 1. Hälfte 5,8 $/Tag, 2. Hälfte 45 $/Tag — Vollperiodenzahlen mischen zwei Märkte, deshalb steht die Letzte-3-Jahre-Spalte jetzt überall daneben. Und: 25 $ Drift gegen 317 $ Tagesvola bleibt ein Münzwurf mit Übergewicht; Policy holt Prozentpunkte, neues Alpha die Größenordnung.
+
+### Lehre
+81. **Zielfunktion vor Hebel.** „P(funded) pro Zeit" belohnt Größe und Nachkauf-Lotterie, „Passquote je Eval" belohnt Min-Size — dieselben Daten, entgegengesetzte Empfehlung. Erst festlegen, was optimiert wird, dann rechnen; Nulldrift-Test als Pflichtkontrolle, ob eine Kennzahl Edge misst oder Geometrie.
+82. **Bei Min-Size ist Diversifikation nicht gratis.** Ein Bein mit 1 Kontrakt lässt sich nicht kleiner machen; „mehr Beine" heißt „mehr Exposure" und senkt die Passquote, sofern das Bein nicht mehr Drift pro Risiko bringt als das Buch. Kontogröße ist dann der Sizing-Hebel, nicht frac.
+83. **Bein-Selektion braucht nested OOS, nicht Split-Half der Bewertung.** Wer auf der ganzen Historie auswählt und dann halbiert, testet nur die Bewertung; die Selektion selbst transferierte hier negativ. Marginal-Test „Buch + 1, nur OOS" ist die ehrliche Frage.
+84. **Zwei Reviews vor der Empfehlung, wenn selektiert wurde** (Statistiker: Multiple Testing/OOS, Auditor: Regime/Praxis/Regeln). Beide haben heute je einen Fund gekippt, den der Sweep als Sieger führte (2-Bein-Buch, 3-Bein-„Sicher"-Buch mit Inaktivitätsbruch).
+
+## #107 — Rückkehr zum NY-Open (Max) + Delta als Filter: Trennung real, Geometrie frisst sie auf (16.08.2026)
+- **Anstoß: Max' Idee** — nach 09:30 läuft der Preis im ersten Leg weg vom Open und wird „oft wieder zum Open gehandelt". Danach Nachfrage: **lässt sich per Delta filtern, wann er zurückkommt und wann nicht?** Geprüft mit eigener Messung (NQ 1m RTH, **2612 Tage 2016-01 bis 2026-07**) + quant-statistician; Skripte `open_reversion_probe.py` / `open_reversion_delta.py` (neu, keine bestehende Engine-Datei angefasst).
+- **Verdict Fade: ✗ NO-GO, und zwar zum zweiten Mal.** Der Statistiker hat die Alt-Last gefunden: **#008 (06.07.2026) hat genau das schon gemessen** (`mode="ts_reversal"`, `rev_side="fade"`, `rev_base="open"`, inkl. `rev_exit="open"`) → edge −6 %, PF < 1. Zusammen mit `archiv/gen_reversal_study.py` (23 Varianten) und `archiv/overnight_lab.py` (16) trägt die Idee eine **Alt-Last von ~40 Trials**, bevor der erste neue Backtest läuft.
+- **Nullmodell (neu, schärfer als #008):** Vorzeichen-Flip der Minuten-Returns — `|r_t|` bleibt Bar für Bar erhalten, also **exakt dieselbe Intraday-Vola-Kurve** (die am Open am höchsten ist), Bar-Spannen gespiegelt, nur Autokorrelation/Drift zerstört. Ergebnis: Touch-Rate real **48,1 %** vs. Null **52,7 %** (z = −2,96) nach 0,5σ-Ausschlag in 5 Min; Varianzratio erste 30 Min = **1,019**. Der Preis kommt also **seltener** zum Open zurück als ein driftloser Pfad gleicher Vola — die ersten 30 Min sind minimal trendig. Fade-PnL −0,16 R (n=1840, t = −4,89), Pullback-Einstieg in Richtung des Legs ebenfalls negativ (−0,064 R, t = −1,99).
+- **Delta-Frage (echtes Aggressor-Delta aus dem Trade-Tape, `orderflow2`, 2016-2026):** Trennung ist **real, aber klein**. Sauberstes Feature `pts_per_kdelta` (Punkte Preisbewegung je 1000 Netto-Kontrakte = „wie dünn ist der Move gelaufen"): Touch-Rate **56,1 % → 64,5 %** über die Terzile, monoton (+0,91), stationär (ρ mit Zeit −0,01), IS/OOS gleich (AUC 0,553/0,547), überlebt die Kontrolle auf künftige Vola (z = +2,58). `delta_norm`/`delta_last2` zeigen dieselbe Richtung schwächer: **viel gleichgerichtetes Delta → seltener Rückkehr** (Aggressor hält), wenig/gegenläufig → häufiger.
+- **Aber: reicht nicht für Geld.** Fade nur im besten Delta-Terzil: **meanR −0,0013 (t = −0,03)**, Win 45,9 % gegen **Geometrie-Baseline 43,5 %** — also **+2,4 pp über der Nullerwartung**, und das deckt gerade die Kosten. Ohne Filter −0,074 R, in allen anderen Terzilen −0,11 bis −0,17 R. Der Filter hebt die Strategie von „verliert" auf „verliert nichts mehr", nicht auf „verdient". Statistiker-Gate 1 (≥ 3 pp über `p_triv = s/(s+d)`) **nicht bestanden** → Abbruch vor Gate 2-8.
+- **Zwei Mess-Artefakte unterwegs entlarvt** (wichtiger als der Fund selbst, gilt für jede künftige Orderflow-Arbeit):
+  1. **`avg_trade_size` und `vol_per_pt` sind nicht stationär** (ρ mit Zeit −0,83 bzw. −0,67; Mediane 2,35 → 1,35 bzw. 0,184 → 0,020 über 2016-2026, Marktstruktur). Global gebildete Quantile darauf sind faktisch ein **Jahres-Indikator**: Q1 = späte Jahre, Q5 = frühe. `avg_trade_size` sah mit z = −4,29 wie das stärkste Signal aus und war ein Regime-Effekt. Verräterisches Symptom: **kein einziger Jahresblock enthielt beide Extremquantile.**
+  2. **Anlaufbereich rollierender Ränge:** mit `min_periods` < Fenster bekamen 10 % aller Werte einen Rang von exakt 0,0; das unterste Dezil bestand zu **89 % aus 2016/2017** (n=80 statt 242) und zeigte eine scheinbare Delta-Wirkung. Fix: volles Fenster verlangen + Bins **rangbasiert** statt über Quantilgrenzen (`digitize` erzeugte sonst Dezile mit n=80 neben n=390).
+- **Was offen bleibt (Max' Entscheidung, nicht eigenmächtig weitergefittet):** die Trennung zeigt in die **Gegenrichtung** nutzbar — niedriger `pts_per_kdelta` / viel stützendes Delta = **keine** Rückkehr = Fortsetzung. Das ist der Zustand, den `NQ_Momentum` (Bein im Buch, aus #008) handelt. Ob das als Filter dort P(funded) hebt, ist eine eigene Frage mit eigenem Marginal-Test (Buch + Filter, nur OOS, 5 Seeds) — und `NQ_Momentum` steht in #106 ohnehin zur Disposition.
+
+### Lehre
+85. **Lehre 79 gilt auch ohne News.** „Kommt oft zum Anker zurück" ist am NY-Open genauso Basisrate wie nach News (#105) — hier sogar **unter** der Basisrate. Vorzeichen-Flip der Minuten-Returns ist dafür die schärfste Null: erhält die Vola-Kurve exakt und testet nur die behauptete Pfad-Eigenschaft.
+86. **Orderflow-Rohgrößen vor jeder Quantil-Analyse auf Stationarität prüfen** (ρ mit Zeit). Marktstruktur driftet über 10 Jahre stark; ein nicht-stationäres Feature global zu quanteln misst das Jahr, nicht den Flow. Kontrollfrage, die es sofort auffliegen lässt: enthält jeder Zeitblock beide Extremquantile?
+87. **Ein Filter, der die Trefferquote hebt, hebt nicht automatisch den Erwartungswert.** Immer `p_triv = s/(s+d)` danebenlegen: +8 pp Touch-Rate wurden hier vollständig von der Payoff-Geometrie aufgefressen (Endstand exakt 0,000 R). Trefferquote ohne Geometrie-Baseline ist eine Verkaufszahl, keine Kennzahl.
+
+## #108 — AP98 entschieden: NQ_Momentum bleibt drin. Der „+4 bis +10pp in jedem Fenster"-Befund war eine Fensterwahl (16.08.2026)
+
+**Frage:** Das einzige Buch-Ergebnis aus #106, das nach einer klaren Empfehlung aussah — NQ_Momentum aus dem Buch nehmen, +10,4 / +4,4 / +3,9pp Passquote auf 50k über 2016-22 / 2023-26 / 2025-26. Mathematiker und Statistiker parallel drauf, dazu ein eigener Schiedsrichter-Lauf, weil sie sich in einem Punkt direkt widersprachen.
+
+### Die Mechanik (Mathematiker): das Kriterium passt in eine Zeile
+Alles hängt am Skalenparameter der First-Passage-Lösung, `theta = 2·mu/sigma²`. Ein Bein trägt im **fixen** Käfig genau dann, wenn
+
+```
+mu_i / mu_rest  >  (sigma_i² + 2·cov(i,rest)) / sigma_rest²
+```
+
+| | mu/Tag | sd/Tag | SR ann | Anteil Drift | Anteil Varianz |
+|---|---|---|---|---|---|
+| Buch (6 Beine) | 25,45 | 317,2 | 1,23 | | |
+| ohne Momentum | 18,24 | 222,8 | **1,25** | | |
+| Momentum solo | 7,21 | 176,5 | 0,62 | 28,3 % | 40,8 % |
+
+Break-even-Drift 18,72 $/Tag, geliefert 7,21 ± 3,13. Geschlossene Zweiphasen-Formel (Trailing bis Peak = DD, danach Gambler's Ruin) gegen MC: 45,7 → 55,8 % Formel vs. 58,9 → 66,4 % Engine, Abweichung vollständig durch Tages-Sprünge, Schiefe und Intraday-Check erklärt. Rangfolge in jeder Modellstufe gleich. **Kein Edge-Argument, ein Positionsgrößen-Argument** — Buch-Sharpe ändert sich nicht (1,23 → 1,25).
+
+Wichtiger Nebenbefund gegen die naive Lesart: skaliert man das **Rest-Buch** auf dieselbe Vola hoch (λ = 1,42), kommt es auf 52,7 % — das Buch *mit* Momentum auf 59,3 %. Momentum ist die bessere Art, Exposure zu tragen; es ist nur zu viel Exposure für einen 2000-$-Käfig.
+
+### Warum es trotzdem nicht reicht (Statistiker)
+1. **Die drei Fensterzahlen sind reproduzierbar** (62,50→72,76 / 57,03→61,08 / 53,87→57,98) — aber `cage_v2_weights.py` zeigt für „letzte 3 Jahre" nur +0,12pp, und das ist **kein Bug und kein Seed-Rauschen, sondern die Fenstergrenze**: Zeile 30 startet bei 01.07.2023, das Ticket-Fenster bei 01.01.2023. Die 120 Handelstage H1-2023 drehen das Delta von **+4,05 auf +0,22**. Beide Werte sauber reproduziert, Seed-sd nur 0,4-0,8pp.
+2. **Nulldrift-Kontrolle im aktuellen Regime:** gemessenes Delta l3 = +0,22pp, reine Geometrie = **+2,17pp**. Der Edge-Anteil des Streichens ist heute **negativ**.
+3. **Disjunkte 2-Jahres-Fenster** (der ehrliche nested-OOS-Blick auf eine fixe Hypothese): −7,2 · **−22,0** · +9,5 · +18,5 · +6,3 → Mittel **+1,0 ± 7,8pp**, 2 von 5 stark negativ. „In jedem Fenster" hält nicht; der Vollperiodenwert +6,8 wird komplett von 2020-2023 getragen.
+4. **Power:** Bootstrap-sd des Deltas 4,5pp (voll) / 6,7pp (l3). Um 3pp von 0 zu trennen, bräuchte man ~45 Jahre Historie. Die Frage ist mit vorhandenen Daten **nicht entscheidbar**.
+5. Das Bein selbst ist sauber: n = 1284, mean R +0,1247, Block-Bootstrap-CI [+0,061; +0,190], PF 1,21, DSR 0,86/0,67/0,51 bei n_trials 12/50/150. Und es ist 2024-26 mit 11,7k $ der größte Einzelbeitrag im Buch.
+
+### Der Widerspruch zwischen den beiden — und wie er ausging
+Auf 150k sagte der Mathematiker +8,69pp, der Statistiker **−2,06pp**, beide mit denselben korrigierten AP99-Tiers. Eigener Schiedsrichter-Lauf (`scratchpad/ap98_horizon.py`):
+
+| Käfig | Horizont 36 M | Horizont 120 M |
+|---|---|---|
+| 50k | +6,69 | +6,69 |
+| 100k | +8,47 | +9,56 |
+| 150k | **−1,69** | **+8,93** |
+
+**Reine Zensur.** Ohne Momentum ist das Buch langsamer (Median 98 → 152 Tage auf 50k, ~450 Tage auf 150k); ein 36-Monats-Horizont bewertet auf 150k nicht mehr, er schneidet ab. Auf 50k — dem Käfig, der real läuft — ist der Horizont egal. Das Vorzeichen-Argument fällt damit weg, die Punkte 2 und 3 nicht.
+
+### Entscheidung: nein, Momentum bleibt drin
+Nach Max' eigener Messlatte (#106, Lehre 83): Nulldrift-Kontrolle im aktuellen Regime **nicht bestanden**, nested OOS **nicht bestanden**. Positive Edge ist notwendig, nicht hinreichend — und hier trägt nicht einmal der Befund selbst. `book_state.json` unverändert, kein `funded_finalize.py`-Lauf, kein Box-Deploy. Deckt sich mit #095, wo dieselbe Frage schon einmal mit „drin lassen" beantwortet wurde.
+
+Was der Befund richtig benennt, bleibt aber offen und geht als **AP101** weiter: Momentums Vola senken, ohne seine Drift wegzuwerfen — `MOMSEL_NQ_er0.3_s0.75` (#057, einziger Kandidat mit echter Train→Test-Bestätigung) als Replace, `rev_stop_mult 0.30` nur als In-Sample-Hinweis. Und der Größenhebel liegt sowieso eine Größenordnung höher im Käfig selbst (50k 59,4 % → 100k 68,8 % → 150k 80,4 %) — das ist AP99.
+
+### Lehre
+88. **Ein Fenster ist eine Entscheidung, keine Beobachtung.** Zwei Fensterstarts sechs Monate auseinander (01/2023 vs 07/2023) drehen dasselbe Delta von +4,05 auf +0,22 — mehr als jedes Seed-Rauschen und mehr als jede Modellstufe. Wer Fenster nennt, muss die Grenze mitnennen; wer „in jedem Fenster" schreibt, muss disjunkte Fenster zeigen, nicht ineinandergeschachtelte.
+89. **Zensur sieht aus wie ein Vorzeichenwechsel.** Ein fixer MC-Horizont bestraft das langsamere Buch doppelt, und je größer der Käfig, desto stärker. Tier-Vergleiche brauchen einen Horizont, der die Median-Dauer klar überdeckt, sonst misst man die Uhr statt die Strategie (AP102).
+90. **Wenn Mathematik und Statistik dasselbe Vorzeichen für unterschiedliche Zeiträume liefern, ist die Frage nicht „wer hat recht", sondern „welcher Zeitraum handelt".** Beide Agents kamen unabhängig auf dieselbe Kennzahl (Break-even-Drift 25,94 vs. geliefert 18,51 im aktuellen Regime = 1,0 se) und leiteten daraus entgegengesetzte Empfehlungen ab. Der Unterschied war reine Gewichtung von Vollhistorie gegen Jetzt-Regime — das gehört explizit entschieden, nicht implizit über die Wahl des Rechenlaufs.
+
+## #108 — VWAP-Cross am NY-Open ist eine Wegmessung, kein Signal (16.08.2026)
+- **Anstoß: Max' Folgeidee zu #107** — nach dem Ausschlag vom 09:30-Open liegt der Preis auf einer Seite des Session-VWAP; Signal = **Cross zurück durch den VWAP** Richtung Open, spiegelbildlich je Seite (oben + Cross runter = Short, unten + Cross hoch = Long), mit oder ohne Delta. Nachfrage Max: **verschiedene VWAP-Arten und Zeitbasen**. Geprüft mit eigener Messung (`open_vwap_cross.py`, `open_vwap_variants.py`) + quant-statistician (unabhängig, eigene Skripte, 4 Märkte).
+- **Verdict: ✗ tot, und der Trigger war schon da.** `mode="vwap_trend"` in `qbt.py:883-935` ist genau dieser Cross (Zarattini Holy Grail), zweimal **Grade F** (`archiv/gen_holygrail.py`: 19.053 Trades, expR −0,026; `archiv/refine.py` MOVES: expR +0,0008, PF 1,004). **Alt-Last ~120 Trials** inkl. #107 und der v1-v8-VWAP-Familie.
+- **Der Grund, analytisch:** Der anchored VWAP **startet auf dem Open** und löst sich nur langsam davon — |VWAP − Open| im Median **0,20σ bei t=5, 0,29σ bei t=15, 0,37σ bei t=30, 0,48σ bei t=60**. Bei Trigger 0,5σ liegt der VWAP damit per Konstruktion bei ~60 % des Wegs zurück zum Open. „Cross" ist im Opening-Fenster ein Synonym für **„mehr als die Hälfte retraced"**. Gemessen: Median-Retracement beim Cross **0,62**.
+- **Zahlen (NQ 2612 Tage 2016-2026, Target = Open):** Cross meanR **−0,053**, Win 66,5 % gegen **Geometrie-Baseline 71,1 %**. Statistiker gepoolt NQ/ES/YM/RTY: Lift über `s/(s+d)` = **−0,92 pp, 90 %-CI [−2,53; +0,70], n_eff 2355** → Gate 1 (+3 pp) nicht knapp verfehlt, sondern **oberhalb des CI ausgeschlossen**. Auf `p_triv`-Bins gematchtes Placebo: −0,33 pp. Alle 6 Zweijahresblöcke negativ.
+- **8 VWAP-Arten × 2 Exits, keine schlägt das Placebo:** `sess_930` −0,053 · `globex` (ab 18:00 ET Vortag) −0,036 · `on_frozen` (Overnight-VWAP als festes Level) −0,042 · `roll30` −0,069 · `roll60` −0,054 · `sess_5m` −0,048 · `sess_15m` −0,055 · `tvwap` (echter Trade-VWAP aus dem Tape) −0,049. Bester Abstand zum Placebo +0,011 (globex) bei 2/5 positiven Blöcken. **Auch die nicht am Open verankerten Varianten helfen nicht** — sie lösen zwar den Konstruktions-Confounder, liefern aber keine eigene Information.
+- **Delta-Bestätigung hilft nicht:** Delta stützt die Umkehr (Vorzeichen) → bestes Ergebnis −0,015 R (t = −0,64, statistisch Null); Schwelle 0,10 → n bricht 1548 → 132 und wird **schlechter** (−0,082). Muster wie Lehre 68.
+- **Long/Short:** beide negativ (−0,084 / −0,058). Statistiker: die Asymmetrie **dreht sich gegenüber #098/#099 um** (dort Long tragend, hier Short) und keine Zelle erreicht |z| > 2 → Seiten-Asymmetrie ist hier Stichprobenrauschen, kein Struktureffekt.
+- **Power-Befund für künftige Runden:** es sind **0,46 Cross-Ereignisse/Tag**, nicht ~1. NQ allein: MDE 3,87 pp bei 80 % Power — ein 3-pp-Effekt würde nur in 58 % der Fälle gefunden. **Ein NQ-only-Lauf wäre kein Negativergebnis, sondern ein Nicht-Ergebnis.** Tages-Residuen-Korrelation der 4 Märkte ρ = 0,32 → gepoolt n_eff 2355 (nicht 4631), MDE 2,75 pp.
+- **Eigener Testfehler, gefunden und korrigiert:** in der ersten Fassung wurden auch Signale gehandelt, bei denen der Preis das Open **schon durchlaufen** hatte — dann liegt das Target hinter dem Einstieg und der Trade ist rechnerisch ein garantierter Verlust. Betraf 12 % (`sess_930`) bis **67 %** (`on_frozen`) der Cross-Fälle und ließ die nicht am Open verankerten Varianten künstlich katastrophal aussehen (Win 24 % gegen Geometrie 81 %). Fix in `open_vwap_cross.py`; die oben genannten Zahlen sind die korrigierten.
+- **Placebo-Konstruktionsfehler (Statistiker):** ein fixes Retracement-q trifft die Zielfraktion nicht, weil der Einstieg überschießt (q=0,548 → realisiert 0,607), die Roh-Trefferquote springt dadurch auf 69,5 %. Richtig ist Matching auf **(`p_triv`, Zeit)**-Bins, nicht auf q — Cross-Events kommen im Median bei t=18 min, Fraktions-Events bei t=22 min, und die Touch-Rate hängt an der Restzeit.
+
+- **Fixes RR gegen Open-Level als Ziel (Max' Nachfrage, `open_vwap_rr_sweep.py`, 18 Kombis):** **alle negativ**, bestes Ergebnis RR 0,5 nach Placebo −0,021 (t = −1,42). Ein festes RR ist zwar durchweg besser als das Open-Level (faire Geometrie statt „Target rückt beim Warten näher, Stop klebt am Extrem"), aber es dreht nichts ins Positive. Zusatz-Kontrolle **„sofort einsteigen statt auf ein Signal warten"**: durchweg am schlechtesten (−0,098 bis −0,190) — das Warten hilft also, aber der **VWAP-Cross schlägt dabei nie das Retrace-Placebo** (RR 0,5: Cross −0,046 vs. Placebo −0,021).
+- **⚠️ Methodenfalle bei hohem RR mit Zeit-Notausgang:** bei RR 3,0 nach Cross steht Win 37,3 % gegen Geometrie-Baseline 25,0 % — scheinbar **+12 pp Edge**, tatsächlich meanR −0,064. Auflösung über die Exit-Verteilung: Stop 52 %, **Target nur 7 %**, Zeit-Exit 41 %. Die „Gewinner" sind überwiegend Zeit-Exits mit kleinem positivem R, die als Win zählen, aber nie die vollen 3R zahlen. **`p_triv = s/(s+d)` gilt nur ohne Zeitlimit** — mit Zeit-Notausgang ist der Vergleich Win-Rate vs. Geometrie-Baseline irreführend und muss durch die Exit-Verteilung (Stop/Target/Zeit) ergänzt werden.
+
+### Lehre
+88. **Vor jedem „neuen" Ereignis-Trigger prüfen, ob er nur eine Umparametrisierung der schon kontrollierten Geometrie ist.** Der VWAP-Cross misst im Opening-Fenster den Retracement-Anteil, und der steckt per Definition bereits in `p_triv = s/(s+d)`. Ein Signal, das mit der Kontrollvariable zusammenfällt, kann nichts dazugewinnen.
+89. **Bei einem Level-Target prüfen, ob das Target zum Signalzeitpunkt noch VOR dem Einstieg liegt.** Sonst entstehen mechanische Verlust-Trades, die wie ein Markt-Befund aussehen — hier bis zu 67 % der Fälle bei einem nicht am Open verankerten Anker.
+90. **Power vor Gate.** Ein Gate von +3 pp ist wertlos, wenn die MDE des Designs bei 3,9 pp liegt: dann ist „nichts gefunden" kein Ergebnis. Vor der Runde Ereignisrate × effektives n (Cluster-korrigiert) gegen die Gate-Schwelle rechnen, nicht danach.
+91. **Ein Level-Target und ein festes RR sind zwei verschiedene Wetten, nicht zwei Exits derselben Strategie.** Beim Level-Target (hier: Open-Preis) verschlechtert jedes Warten auf Bestätigung die Geometrie automatisch, weil das Ziel näher rückt während der Stop am Extrem bleibt. Bei festem RR ist die Geometrie vom Wartezeitpunkt unabhängig. Wer einen Bestätigungs-Trigger testet, muss ihn deshalb mit festem RR testen — sonst misst er den Geometrie-Verfall statt den Trigger.
+92. **Trefferquote immer zusammen mit der Exit-Verteilung lesen.** Sobald ein Zeit-Notausgang existiert, sind „Wins" teils Zeit-Exits mit Kleinstgewinn; die Win-Rate steigt dann über die Geometrie-Baseline, während der Erwartungswert fällt. Stop/Target/Zeit-Anteile gehören in jede Ergebniszeile.
+
+## #109 — News-Kerzen-Level (Open/High/Low) tragen nichts, und News-Level halten schlechter als beliebige Level (16.08.2026)
+- **Anstoß: Max' Folgeidee zu #107/#108** — dieselbe Anker-Logik auf die 1-Min-Kerze, in der eine News rauskommt: Open (= Pre-News), High und Low als spätere Level, jeweils auch mit VWAP-Gedanken. Geprüft mit eigener Messung (`news_level_probe.py`) + quant-statistician (unabhängiger Pilot, 319 Events NQ / 323 ES).
+- **Verdict: ✗ tot.** Nach Lehre 88 wurde nicht „wird das Level getestet" gefragt (das ist entartet), sondern **was am Level passiert**, gegen ein distanzgematchtes Placebo.
+- **Gate 0 sofort gerissen — die Barriere ist entartet:** Median-Abstand vom Messpunkt T+5 zum News-Kerzen-Extrem = **−0,2 Punkte**. Der Preis steht fünf Minuten nach dem Release faktisch **auf** dem Level. Touch-Quote bis Close **95,6 %**. Genau der VWAP-Mechanismus aus #108, nur ohne Umweg: ein Level, das per Auswahl dort liegt wo der Preis gerade ist, wird fast sicher berührt. (Präzedenz stand schon in #051: „89 % Touch-Quote ist near-tautologisch".)
+- **Eigene Messung (543 News-Kerzen, Range UND Volumen ≥3× Median derselben Minute, 2016-2026, Auflösung C = konservativste):** Touch-Raten Open 79,2 % / High 86,4 % / Low 77,2 % gegen **Placebo (beliebiger Preis in gleicher Entfernung) 81,0 / 83,4 / 83,2 %** — das Level wird nicht öfter berührt als irgendein Preis derselben Distanz. **Break UND Bounce beide negativ** bei allen drei Leveln und bei RR 1,0 wie RR 2,0 (−0,05 bis −0,17 R); bester Wert Low-Bounce −0,045 (t = −0,66, 4/11 Jahre). Beide Richtungen negativ = kein Signal, nur Kosten (Lehre 80).
+- **Statistiker-Pilot bestätigt das Vorzeichen und schärft es:** symmetrisches Bracket (±q, Payoff 1:1, Null exakt 50 % — damit ist die Payoff-Geometrie konstruktiv ausgeschaltet). News-Kerzen-Extrem **55,8 % [51,5; 60,2]** gegen distanzgematchtes Placebo-Level **58,7 % [55,7; 61,7]**, gepaarte Differenz **−12,1 pp [−18,5; −5,4]**. Gegen die nackte 50-%-Null sieht das News-Level positiv aus, **gegen ein beliebiges Level am selben Tag ist es schlechter.** Passt exakt zum #105-Placebo (News-Moves retracen 10-13 pp seltener): hinter News-Leveln steht echter Informationsfluss, sie halten deshalb schlechter.
+- **⚠️ Der größte Fund der Runde — die Auflösung der Touch-Bar entscheidet mehr als jede Edge:** dieselben Daten, dasselbe Level, nur andere Verbuchung der Fill-Bar → **A 59,5 % · B 54,8 % (qbt-Standard) · C 44,1 %**. Diese Spanne ist größer als jede Edge, die hier je gefunden werden könnte. Das ist die News-Level-Fassung der `orb_exec="book"`-Falle (#066/#067). Unsere Messung lief auf **C** (Entry am Open der Bar NACH dem Touch), also der konservativsten.
+- **Alt-Last ~130 Trials, Trigger existiert zweimal im Bestand:** `orb_exec="retest"` (`qbt.py:428-450`, ruhende Limit AM Level nach Close-Confirm) ist genau der benötigte Trigger; `orb_retest_068.py` = **36 von 36 Varianten OOS negativ** (#068, „zweite ehrliche Falsifikation"); `pivot.py`/`pivot_discovery.py` (#051) = 52 Configs, 47 sterben IS. Plus #105 (~40, identischer Eventsatz). Mit dem Anker-Komplex (#107 ~40, #108 ~120) sind es **~290**.
+- **Gegenseite der News-Kerze gestrichen statt getestet:** sie liegt im Median **16-18 % weiter weg** als das Pre-News-Niveau (Touch 72,1 % vs. 79,9 %) — also #105 mit härterer Barriere, strikt schlechter als das, was dort schon scheiterte.
+- **Ökonomie ist die bindende Schranke, nicht Power:** bei 28 Events/Jahr, Min-Size und q = 0,5×Range bringt selbst eine Trefferquote von 60 % nur **+0,69 pp** Passquote, die `book_contribution()`-Hürde liegt bei ~1,2 pp (2× Seed-Streuung). Nötig wären **65,8 %** (q = 0,5) bzw. 58,8 % (q = 1,0) — der Zielkorridor liegt **komplett oberhalb aller bisherigen Messungen dieser Familie** (55,8 %, gegen Placebo negativ). Statistische Nachweisgrenze bei n≈260: 57,7 %.
+- **Praxis-Einwand (unbewertet, aber notiert):** 08:30 ET liegt eine Stunde vor RTH, die News-Kerze hat im Median **41,8 NQ-Punkte** Range gegen 6,2 an normalen Tagen. Slippage auf einer ruhenden Limit-Order an einem Level, das in einer 6,7-fach erweiterten Kerze definiert wurde, ist im Backtest nicht abgebildet.
+- **Literatur (research-scout):** keine dedizierte Quelle zu News-Kerzen-Leveln. Aber **Osler 2000 (FRBNY) / Osler 2003 (J. Finance)** liefern den Why-Rahmen: Support/Resistance wirken in FX nur, wenn sie **echte Order-Cluster** (Stop-/Take-Profit-Häufungen) abbilden, nicht bloße Chart-Geometrie — ohne Order-Cluster ist ein Level nur eine Distanzangabe, genau was unser Placebo zeigt. Einschränkung: FX-Dealer-Markt mit Kundenorderdaten, nicht 1:1 auf zentralisierte Futures übertragbar.
+- **Umgesetzt:** `news_calendar.py` (neu) sichert die Eventliste dauerhaft — #105 und #109 hatten sie je im Session-Scratchpad rekonstruiert, das aufgeräumt wird. Modi `core` (FOMC+NFP+CPI, 338 Events, 30,7/Jahr) und `wide` (FOMC + alle 08:30-Kerzen mit volratio ≥3, 591 Events, 53,7/Jahr; Zusatztage clustern auf Donnerstag und Monatstag 14-15/26-28 = Claims, PPI, Retail Sales, PCE — dieselbe Hypothesenklasse, keine Verwässerung). **Nicht `calendar_fx.FOMC` für Event-Studien nehmen**, die Liste beginnt erst 2021.
+
+### Lehre
+93. **Ein Level, das per Auswahl dort liegt wo der Preis gerade war, ist keine Barriere, sondern eine Definition.** Median-Abstand ≈ 0 und Touch-Quote 95,6 % heißen: „wird es getestet" ist beantwortet, bevor man misst. Die einzige sinnvolle Frage ist, ob AM Level etwas anderes passiert als an einem beliebigen Preis derselben Distanz — und das braucht ein distanzgematchtes Placebo, kein Zeitreihen-Placebo.
+94. **Die Verbuchung der Fill-Bar vorab festlegen und mitschreiben.** Touch-Bar zählt / zählt mit Gleichstand als Bruch / Rennen erst ab Folgebar spannen hier 44 bis 60 % auf, ohne dass sich an den Daten etwas ändert. Wer das nachträglich wählt, wählt sein Ergebnis.
+95. **Ein symmetrisches Bracket (±q, Payoff 1:1) ist die sauberste Testform für „passiert hier etwas".** Die Null ist exakt 50 %, damit kann keine Payoff-Geometrie eine Trefferquote auffressen (Lehre 87 konstruktiv ausgeschaltet) und kein Zeit-Exit sie aufblähen (Lehre 92).
+96. **Vor der Power-Rechnung die Ökonomie rechnen.** Hier war nicht die Statistik die Schranke, sondern der Käfig: bei 28 Events/Jahr und Min-Size ist die nötige Trefferquote für einen messbaren Buch-Beitrag höher als die statistisch nachweisbare. Wenn „beweisbar" und „relevant" sich nicht überlappen, ist die Runde vor dem ersten Backtest entschieden.
+
+## #110 — GEX-Datenquelle validiert: der freie SqueezeMetrics-Wert misst etwas Reales (16.08.2026)
+- **Anstoß:** Nach fünf toten Anker-Ideen (#105/#107/#108/#109) die Frage von Max, welche Signale außer Delta und VWAP überhaupt eine belastbare Datengrundlage haben. research-scout: von 6 Kandidaten überlebt **einer** — Dealer-Gamma. Direkte Prädiktor-Literatur: **Barbon/Buraschi „Gamma Fragility"** ([SSRN 3725454](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3725454), Panel-Regression von lagged Dealer-Gamma auf Intraday-Vola/Spreads/Autokorrelation, 5-60-Min-Frequenzen) und **Baltussen/Da/Lammers/Martens** (JFE 142(1) 2021, 60+ Futures 1974-2020).
+- **Das Problem, das den Test nötig machte:** beide Papers rechnen Gamma aus **Options-Chains mit Open Interest je Strike**. Max' freie SqueezeMetrics-CSV (SPX-Tagesschluss, naive Annahme Dealer long Calls / short Puts) ist eine **andere, unabhängig unverifizierte Konstruktion**. Die Literatur belegt das Konzept, nicht die Datenquelle. Deshalb erst Datenvalidierung, dann Strategie — genau der Schritt, der in #105-#109 fünfmal gefehlt hat.
+- **Verdict: ✓ die freie CSV misst etwas Reales.** `gex_validate.py`, NQ+ES 2016-2026, 2634/2635 Tage. Prädiktoren vom **Vortages-Close** (kein Look-ahead), t-Werte **Newey-West** (Lag 5, sonst wären sie bei autokorrelierter Vola deutlich zu groß).
+
+| Vorhersage der Literatur | ES (SPX-Future) | NQ |
+|---|---|---|
+| **V1** hohes Gamma → niedrigere Vola(t), roh | β −0,959 (t −18,2) | β −0,921 (t −18,6) |
+| V1 kontrolliert für Vola(t−1) | β −0,272 (t −5,5) | β −0,142 (t −6,2) |
+| **V1 kontrolliert für Vola(t−1) + VIX(t−1)** | **β −0,235 (t −6,9)** | **β −0,129 (t −5,5)** |
+| **V2** hohes Gamma → Varianzratio kleiner (mehr MR), kontrolliert | β −0,039 (t −2,7) | β −0,030 (t −2,1) |
+
+- **⭐ Die Falsifikationsprüfung besteht (K3):** der GEX ist **SPX**-basiert, also muss der Effekt auf **ES stärker sein als auf NQ** — genau so ist es (−0,235 vs. −0,129, also fast doppelt). Wäre NQ stärker gewesen, wäre die Datenquelle verdächtig. Das ist der Test, der den Befund von einer bloßen Korrelation unterscheidet.
+- **Der Effekt überlebt die härteste Kontrolle:** GEX ist teilweise ein VIX-Proxy (Terzil-Mediane VIX 21,0 / 16,4 / 13,9), und Vola ist stark autokorreliert. Nach Kontrolle für **beides** bleibt der GEX-Koeffizient signifikant — er trägt Information über VIX und die Vortagesvola **hinaus**. Terzile ES: realisierte Vola 0,0087 → 0,0044, Varianzratio 0,932 → 0,874 (mehr Mean Reversion bei hohem Gamma, wie vorhergesagt).
+- **Stationarität geprüft (Lehre 86 angewandt):** GEX-Rohwert ρ(Zeit) = **+0,40**, Median 1,84e9 (2012) → 5,35e9 (2026) — nicht stationär, roh gequantelt wäre er ein Jahres-Indikator. Gerechnet wurde deshalb auf dem **rollierenden 250-Tage-Perzentilrang**.
+- **DIX bestätigt den scout-Negativbefund:** NQ β +0,003 (t +0,14), ES t +2,82 mit für die These falschem Vorzeichen. Zhu (RFS 2014) und Comerton-Forde/Putniņš (JFE 2015) sind echte Primärquellen zum Dark-Trading, **keiner testet den Dark-Anteil als Return-Prädiktor**. DIX bleibt ohne externe Validierung.
+- **⚠️ Was das NICHT heißt:** Der GEX sagt **Volatilität** voraus, nicht **Richtung**. Vola-Prognose ist ein bekannt leichtes Problem (Vola clustert, Returns nicht) und ist noch keine Edge. Der Schritt von „sagt Vola voraus" zu „hebt die Passquote" ist offen und der eigentliche Test. Offen bleibt auch, ob der VIX-Zusammenhang nichtlinear ist — kontrolliert wurde linear.
+- **Daten:** `exported_data/DIX_GEX_daily.csv` von Max frisch gezogen, jetzt 2011-05-02 bis **2026-08-14**, 3845 Zeilen; Überlappung mit dem 11.08.-Stand bitgleich (max. Abweichung 0 auf 3841 Tagen, keine Revisionen). Quelle `https://squeezemetrics.com/monitor/static/DIX.csv`, freier Direktdownload — **Link kann sterben**, für Live-Einsatz täglicher Pull auf der Box plus Fehler-Alarm nötig.
+- **Nächster Schritt (offen, Max entscheidet):** GEX-Rang als **Regime-Gate über bestehende Beine** (kein neues Bein — Lehre 82), Marginal-Test „Buch + Gate, nur OOS", 5 Seeds, Intraday-Bust, Min-Size. Erst dort entscheidet sich, ob aus dem validierten Prädiktor Passquote wird. Erst wenn das trägt, lohnt die Frage nach echten Options-Chains (Theta Data ~40-80 $/Monat, CBOE DataShop) für **NDX**-Gamma statt SPX-Proxy.
+
+### Lehre
+97. **Datenquelle vor Idee validieren.** Wenn Literatur ein Konzept belegt, die eigene Datenquelle aber eine andere Konstruktion ist als die der Papers, ist die erste Messung nicht die Strategie, sondern: reproduziert meine Quelle den publizierten Zusammenhang? Das kostet keine Trials, hat keine Freiheitsgrade und beantwortet dauerhaft, ob sich alles Weitere lohnt.
+98. **Ein instrumentenspezifischer Prädiktor muss dort am stärksten wirken, wo er herkommt.** SPX-GEX muss auf ES stärker sein als auf NQ. Solche eingebauten Falsifikationsprüfungen sind wertvoller als jeder zusätzliche Signifikanztest — sie können nur bestehen, wenn das Signal echt ist.
+
+## #111 — NQ_LastHour: Literatur-Filter durchgetestet (Schwelle, VIX, Volumen, Makro-Tage, Zarattini-Band) — v2-Bein macht das Buch schlechter, Filter machen es harmlos, keiner ist bewiesen (17.08.2026)
+- **Anlass (Max):** Research-Scout auf SSRN/Scholar (neu im [[Research-Cache]]: Rosa 2022 JFM, Li/Sakkas/Urquhart 2022 JFM, Jin/Kearney 2020, Zarattini/Aziz/Barbon 2024, Heston/Korajczyk/Sadka, Mesfin 2026 arXiv, Quantitativo-NQ-Test), danach alle Parameter des Developer-Beins `nq-lasthour v2` (long-only, ref 240, thr 0,2 %, Stop 0,4×Range) darauf abklopfen.
+- **Werkzeug:** `lh_filter_study_111.py` (Tages-Tabelle mit allen Features + Trade-Ergebnis je Stop-Mult → jede Variante ist nur eine Maske; Bewertung in **Dollar** und R, IS/OOS ab 2023-05-12, nested Walk-Forward jährlich, Letzte-3-Jahre-Spalte). ~150 Varianten in 5 Familien. Ergebnis `lh_filter_study_111.json`, Features `lh_filter_study_111_days.parquet`.
+- **Familie A (Schwelle/Stop/Kontinuum):** thr 0,2 %/Stop 0,4 bleibt der beste $/yr-Punkt (1371). Stop 0,25 hat kleineren DD (-1337 statt -2263), kostet aber 27 % $/yr. Schwelle relativ zur Vola (morn/ATR20) ≤ Basis, kein Gewinn. Rollierendes Perzentil ≥0,7 sieht gut aus (OOS avg 21 $), Nachbarn 0,6/0,8 und die ATR-Variante fallen ab → Spike, verworfen. **Rosas „Schwelle schlägt Always-Active" bestätigt (thr 0 → avg 9,2 $ statt 13,1), mehr nicht.**
+- **Familie B (VIX/RV-Regime):** Oktil-Profil sieht nach Stufe bei VIX ≈ 19 aus (darunter ~0 $/Trade, darüber +23..34 $). VIX ≥ 18: n 525, avg 24,7 (IS 24,3 / OOS 26,3 / L3y 26,8), PF 1,51 — **aber $/yr 1235 < 1371, Sharpe 0,97 = Basis**: halbiert Trades, verdoppelt Erwartung, kein Geld mehr pro Jahr. Statistiker: kein Bin mit |t| > 2, isotone R² 2,2 %, Sprungstelle im Bootstrap nicht identifiziert (90 %-Band 11,5-19,1), Jahre 2020/2024 negativ, Solo-Lücke bis 454 Tage (E8-Wochenregel). **Als Kontext richtig, als Filter nein.**
+- **Familie C (Volumen, 4 Fenster × 11 Schwellen):** kein „mehr Volumen = stärker" (Jin/Kearney) — VolFirst30 ≥ 1,0 kippt OOS negativ. Einziges stabiles Muster: „Tag ist nicht tot" (Opening-Volumen ≥ 0,8× 20d-Median), avg 16,1 / OOS 16,9 / $/yr 1443. Statistiker: t 1,70, p_FWER 0,96, Plateau schmal → **Rauschen mit Schwelle**.
+- **Familie D (Makro-Tage, `news_calendar` core):** an FOMC/NFP/CPI-Tagen n 129, avg -10,6 (IS -0,6 / OOS -31,4); ohne sie n 967, avg 16,3, $/yr 1501, DD -1871, Sharpe 1,12 — einziger Filter, der $/yr UND avg$ UND DD hebt und 88 % der Trades behält. **Widerspricht Gao/Han** (News-Tage stärker). Statistiker: Δ +3,2 $ [1,0; 5,4], p einzeln 0,013, p_FWER 0,51; 44 % des Effekts hängen an 5 Tagen; News-Tage selbst nicht nachweisbar negativ (t -1,03) → „entfernt Rauschen, keine belegte Verlustquelle". Geschrumpft +2,4 $/Trade, $/yr 1433.
+- **Familie E (Zarattini-Noise-Band auf NQ, long-only):** band 0,75/Check 60 min: n 1336, avg 10,5, $/yr 1342, PF 1,21, DD -3088, OOS avg 17,6 — funktioniert wie LastHour, ist dieselbe Mechanik (Intraday-Momentum ins Close) mit mehr DD; kein zweites Bein.
+- **Greedy-Stapelung** (VIXrel + VolMorn + VolFirst30 + News + Close-in-Range) → n 372, avg 32 $, aber $/yr 1141 < Basis. Nested WF über die ganze Suche: **Δ +0,9 $/Trade [−2,1; +5,9], P(Δ≤0) = 0,39** — das ist der ehrliche Erwartungswert der Filter-Suche.
+- **Developer-Versionen (Buch = aktuelles Buch ohne LastHour, Passquote v2 = 77,1 %):** v2 → 75,2 % (**−1,9, schlechter**), v3 „ohne Makro-Tage" → 77,9 % (+0,8, neutral), v4 v3+Opening-Vol → 78,0 % (+0,8, neutral), v5 v3+VIX≥18 → 79,2 % (+2,1). Solo 50k: 51 / 58 / 56 / 45 %. Mathematiker (Lundberg-θ, Block-8-MC): C (v4) > D (v3) > B (v5) > A (v2) in jeder Sicht, Buch +2,9 / +1,9 / +2,3 pp — **aber „gefiltertes LastHour drin" vs. „LastHour raus" kippt mit dem Resampling** (Block: drin besser, iid: raus besser). Robust ist nur: **v2 ist überall das Schlusslicht.**
+- **Größter Befund am Rande:** die Basis hängt an 2022 (46 % des P&L, ohne 2022 nur 7,9 $/Trade), Top-5-Trades = 36 %, kurt 28,7 — jede Passquoten-Rechnung mit 13 $/Trade wettet auf ein 2022 im Eval-Fenster.
+- **Entscheidung (Empfehlung Claude, Max entscheidet):** LastHour auf **v3 (ohne Makro-Tage)** stellen — billig, vorab formulierbar, 88 % Frequenz, kein Verlust in irgendeiner Metrik; keine +10 pp erwarten, sondern +0 bis +3. v4/v5 nicht ins Buch (Statistik trägt sie nicht). Kandidat für den Kick: „LastHour ganz raus" ist im Buch gleichauf mit v3 (76,6 vs 77,9 Block-8) — Marginal-Test „Buch + 1, nur OOS" steht noch aus.
+- **Offen:** (1) Statistiker-Vorschlag, billig: News-Filter **vorab spezifiziert** auf NQ_Momentum / VWAP-Pullback / ES anwenden — muss familienweit auftauchen, sonst ist er auch hier tot. (2) `evaluate_v2` mit `horizon_months=36` verzerrt Solo-Vergleiche niedrigfrequenter Beine (E8 hat kein Zeitlimit) → für Solo ≥120 nehmen. (3) `book_contribution()` misst weiter gegen „Buch ohne das Bein" — passt hier, weil `replaces_leg` gesetzt ist.
+
+### Lehre
+99. **Vor-Sortierung von Filtern/Beinen unter Min-Size: Lundberg-Exponent θ (E[e^{−θX}] = 1, ≈ 2μ/σ² pro Trade), nicht Sharpe und nicht $/Jahr.** P(pass) hängt nur von θ·D und θ·U ab; die Trade-Zahl steckt nur in der Dauer. Sharpe kürzt das $-Niveau weg und rankt Frequenz, $/Jahr ist nur der Zähler. Placebo-Ausdünnung: Trades zufällig um die Hälfte kürzen kostet 1,7 pp Passquote — Frequenz ist unter v2 fast neutral.
+100. **Ein Filter, der OOS-Werte als Auswahlkriterium benutzt hat, hat keinen OOS-Wert mehr.** Der Greedy in #111 verlangte „OOS avg > Basis" — die +13 $ OOS von F1+F2 sind In-Sample. Nur der IS-Δ (+3) und der nested WF (+0,9) sind unkontaminiert, und die liegen genau bei der Shrinkage-Schätzung.
+101. **Multiple Testing bei Filter-Sweeps: die Null-Verteilung des BESTEN aus ~100 Varianten liegt bei t ≈ 2,4.** Ein Fund mit t 2,7 ist damit Erwartungswert unter reiner Null. Bevor ein Filter ins Buch geht, muss er entweder t ≥ 3,1 oder eine vorab formulierte, anderswo prüfbare Hypothese haben (Lehre 97/98).
+
+## #112 — Auction Market Theory (Value Area/POC/Initial Balance) systematisch getestet: Friedhof, wie IB-Extension #056 (17.08.2026)
+
+- **Anlass (Max):** nach der Research-Scout-Recherche (AMT akademisch praktisch unbelegt, siehe [[Research-Cache]]) selbst nachprüfen — VAH/VAL-Rejection, POC-Magnet vs. Beschleunigung, Value-Area-Breakout (Retest-zum-POC vs. Momentum-weg, mit Volumen), Balance-vs-Trend-Regime, Initial-Balance-Breakout-Failure (mit Volumen), alles zusätzlich mit Order-Flow kombiniert, auf NQ **und** ES, mit viel Zeit und ausführlich.
+- **Werkzeug (neu):** `engine/amt_profile.py` — Vortags-Volume-Profile aus 1m-OHLCV (Bar-Volumen gleichmäßig auf die H-L-Range verteilt, Bin 5 Ticks), POC/VAH/VAL bei 70 % Value-Area, Initial Balance (erste 60 Min), Balance-vs-Trend-Klassifikation (Tagesrange ≥ 2× IB-Breite = Trend Day). Alle Level sind Vortageswerte (look-ahead-frei), IB ist die heutige eigene, ab Minute 60 verwendet. Tagestabellen gecacht: `developer/amt_daily_{NQ,ES}.parquet`, 2709/2707 Tage (2016-2026).
+- **Stufe 1 (reine Signalmessung, kein Backtest, wie `vwap_direction_test.py`/`orderflow_power.py`):** `developer/amt_diag_1_levels.py` (Cross-Events durch VAH/VAL/POC, Value-Area-Breakout, IB-Breakout-Failure, Forward-Return in ATR20-Einheiten, Splits nach Volumen-Tertil und Vortags-Regime) + `developer/amt_diag_2_orderflow_regime.py` (Order-Flow-Bestätigung mit echten Aggressor-Daten aus `D:/trading-data/orderflow/v2`, Regime-Persistenz-Autokorrelation).
+
+### Rohbefund
+- **VAH/VAL-Rejection und POC-Magnet: kein robustes Vorzeichen.** avgR@30min überall 0,0007–0,02 R, zwischen NQ und ES oft gegenläufig (z. B. POC-Cross-nach-oben: NQ +0,006, ES −0,0069). „Beyond-Rate" (Level hält nach 30 Min noch) liegt bei 52–58 % statt 50 % — sieht nach leichtem Continuation-Bias aus, ist aber laut Mathematiker **reiner Random-Walk-Overshoot**: die beobachtete 1/√h-Abnahme (62 %→56 %→57 % über h=5/15/30/60) reproduziert exakt das Φ(δ/σ√h)-Modell ohne jede Information.
+- **Value-Area-Breakout (Retest-POC vs. Momentum-weg):** NQ/ES uneinheitlich auf der Oberseite, auf der Unterseite beide positiv (NQ +0,0116R, ES +0,0159R) — aber kleine Stichprobe (n≈650-700) und laut Statistiker tail-getrieben.
+- **Initial-Balance-Breakout-Failure:** Failure-Rate 42–49 % (knapp unter Coinflip, leichter Continuation-Bias). Einziger über beide Symbole konsistenter Fund: High-Volumen-Tertil zeigt mehr Fortsetzung als Low/Mid (NQ +0,014R, ES +0,016R vs. ~0R).
+- **Balance-vs-Trend-Regime-Persistenz: tot.** Autokorrelation 0,01–0,02, Split-Half kippt sogar das Vorzeichen (NQ H1 −0,0065/H2 +0,0327, ES H1 +0,0419/H2 −0,0015). Gestriges Regime sagt heutiges nicht voraus.
+- **Order-Flow-Bestätigung (echte Aggressor-Daten):** uneinheitlich, Vorzeichen kippt zwischen Symbolen (z. B. IB-Breakout-oben: bei NQ ist „Delta stimmt überein" sogar *schlechter* als „stimmt nicht überein"). Kein #099-Analogon.
+
+### Quant-Team-Befund (Mathematiker + Statistiker, unabhängig, parallel)
+- **Kosten schon in der Größenordnung des Effekts:** NQ Round-Turn-Kosten ≈ 0,0031–0,0051 R, ES ≈ 0,0133–0,0177 R — auf ES sind die reinen Kosten **größer** als die meisten gemessenen Rohsignale.
+- **Der einzige cross-symbol-konsistente Fund (IB-Hochvolumen-Continuation) zerfällt komplett:** brutto gepoolt t=2,64 — aber die beiden Serien sind am selben Tag korreliert (corr(fwd30)=0,58), das echte kombinierte t liegt bei ≈2,0. Nach Kosten (Tag-Block-Bootstrap, NQ+ES gleicher Tag = ein Cluster): **netto +0,0020 R, 90 %-CI [−0,0086; +0,0133], t=0,36.** ES netto sogar −0,0027 R.
+- **Kein Trefferquoten-Shift:** P(fwd30>0) ist über die Volumen-Tertile praktisch identisch (0,530–0,535) — der ganze „Effekt" kommt aus den Tails (Top-5-von-546-Events = 55–66 % der Summe, 20 %-getrimmter Mittelwert NQ isoliert ≈ 0,0001). Ein echter informierter-Orderflow-Mechanismus müsste die Trefferquote verschieben, nicht nur die Tails.
+- **Multiple Testing:** 160 getestete Zellen (Haupttabelle + Volumen-Tertile + Regime + Orderflow), Null-Erwartung für das Maximum liegt bei t≈2,8–3,1 — der beste Fund (t=2,64 brutto, 2,0 netto korrigiert) liegt **unter** dem Zufalls-Maximum.
+- **Power-Rechnung:** um die gemessene Effektgröße mit t=2 abzusichern, braucht es ~816 Events; vorhanden sind 546 bei ~52/Jahr/Seite → **~16 Jahre bis zu einer echten OOS-Bestätigung.** Ein Effekt, der sich innerhalb des Anlagehorizonts prinzipiell nicht verifizieren lässt, ist kein Eval-Kandidat.
+- **Bezug zu #056:** strukturell derselbe Mechanismus wie das damals mit 0/72 Survivors beerdigte IB-Extension — das High-Volumen-Tertil hier *ist* das späte Ausbruch-Cluster (Minute ~145 statt ~92 bei Low). Ein Volumen-Filter obendrauf macht daraus keinen neuen Mechanismus, und ein bereits beerdigter Fund braucht bei Wiederaufnahme stärkere Evidenz, nicht schwächere.
+
+### Gesamtverdikt
+**Auction-Market-Theory-Level (Value Area, POC, Initial Balance) tragen auf NQ/ES keine tradeable Kante — Friedhof, wie IB-Extension #056.** Kein Developer-Build, kein neues Bein. Deckt sich mit dem Research-Scout-Befund (AMT ist auch akademisch praktisch unbelegt) und mit den bereits bekannten Mustern dieses Buchs: reine Mean-Reversion an einem "Fair-Value"-Level ist tot (VWAP #002-005, jetzt auch POC/VA), einziger real belegter Nahbereichs-Effekt bleibt Continuation mit Distanz-Filter (#097-101).
+
+### Lehre
+102. **Bei binären Schwellenwert-Metriken ("hält der Level", Beyond-Rate) immer zuerst gegen das Random-Walk-Overshoot-Modell prüfen** (P ≈ Φ(Distanz-beim-Cross / (σ·√Horizont))) **bevor sie als Signal gelesen werden.** Hier reproduzierte das Modell den beobachteten 1/√h-Abfall exakt — die scheinbare Kante war reiner Overshoot am Schwellenwert, keine Information.
+103. **Cross-Symbol-Bestätigung (NQ und ES zeigen dasselbe Vorzeichen) ist keine unabhängige Evidenz, wenn beide Serien am selben Tag korreliert sind.** Hier lag corr(fwd30, NQ vs. ES) bei 0,58 — das naive Aufaddieren der t-Statistiken beider Symbole täuschte t=2,64 vor, korrekt kombiniert waren es nur ≈2,0. Vor jeder "zwei Märkte bestätigen sich"-Aussage die Tages-Korrelation zwischen den Symbolen prüfen.
+104. **Ein bereits beerdigter Mechanismus (hier: IB-Extension, #056) braucht bei Wiederaufnahme STÄRKERE Evidenz als beim Erstversuch, nicht schwächere.** Ein zusätzlicher Volumen-Filter ist kein neuer Mechanismus, wenn er strukturell dieselbe Sub-Population (hier: späte Ausbrüche) selektiert, die beim Erstversuch schon durchgefallen ist.
+
+## #113 — Session-VAH/VAL (Asia/London/NY, developing statt Vortag): Reversal-Rate war ein Barrieren-Artefakt, kein Signal (17.08.2026)
+
+- **Auftrag Max:** Schritt-für-Schritt-Vertiefung von #112, nur VAH/VAL — aber jetzt developing (nicht Vortag) über alle 3 Sessions (Asia 19:00-03:00, London 03:00-09:30, NY 09:30-16:00 ET) und 3 Anker (Globex-Tagesanfang, Session-Anfang, letzte Stunde), Frage: wie viel Volumen/Order-Flow braucht es, einen Trend an der VAH/VAL umzukehren, und welche Session/welches Instrument neigt eher zu Breakout vs. Mean-Reversion.
+- **Vorab-Recherche (Research-Scout):** keine akademische Quelle testet, wann eine Range "fertig" ist — die 60-Min-Initial-Balance ist CBOT/Dalton-Konvention, nicht statistisch hergeleitet, und Rekord-Statistik von Random Walks (Majumdar/Ziff, PRL 2008) zeigt: unter reinem Zufall gibt es keinen natürlichen Fertig-Zeitpunkt. Deshalb bewusst **developing** statt fixer Cutoff gebaut (`amt_profile.developing_profile_expanding/_rolling`, look-ahead-frei, Recompute alle 5 Min).
+- **Werkzeug:** `developer/amt_session_vaval.py`, Test-Event = Preis läuft in ein Band um VAH/VAL, Decision-Window (Volumen/Delta messen) getrennt vom Outcome-Window (Auflösung: "broke" vs. "reversed").
+
+### Drei Selbst-Korrekturen unterwegs (der eigentliche Wert dieser Runde)
+1. **Tautologie:** Erstversion maß Volumen/Delta im selben Fenster, das auch das Outcome definierte — `tick_delta` ist direkt aus der Preisrichtung gebaut, die auch "broke"/"reversed" bestimmt. Delta-AUC kam auf 0,83–0,90. Fix: Decision-Window (10 Bars) strikt getrennt vom Outcome-Window (30 Bars danach, keine Überlappung).
+2. **Degenerierte Order-Flow-Daten:** echte Aggressor-Daten (buy_vol/sell_vol) sind 2016 zu 100 % und 2017 zu ~39 % exakt 0 (Platzhalter). Fix: Order-Flow-Messung auf 2018+ beschränkt.
+3. **NaN-Propagation im AUC-Code:** `sum()` über Ränge mit eingemischten NaN (Events ohne Order-Flow-Abdeckung) ergab NaN statt eines Werts. Fix: `dropna()` vor der Rangberechnung.
+
+### Der eigentliche Befund kam vom Quant-Team, nicht von mir
+Nach allen drei Fixes sah es immer noch nach etwas aus: Reversal-Rate Asia 82–84 %, London 76–78 %, NY 63–65 % (konsistent NQ+ES, alle 3 Anker fast gleich), Volumen-/Delta-AUC 0,57–0,70. Mathematiker und Statistiker haben unabhängig voneinander denselben, vierten Fehler gefunden:
+
+- **Asymmetrische Barrieren.** Das Test-Event triggert bei Preis ≈ `level − margin`. Die Auflösung sucht "broke" bei `level + 2·margin` (Abstand **3·margin** vom Einstieg) und "reversed" bei `level − 2·margin` (Abstand **1·margin**). Reines Gambler's-Ruin ohne jede Information ergibt daraus `P(reversed) = 3/(3+1) = 75 %` — nicht 50 %. Statistikers Null-Simulation (driftloser Random Walk, echte Session-Geometrie) reproduziert Asia 80 %/London 69 %/NY 58 % (beobachtet 83/78/64) — **die echten Werte liegen sogar UNTER dem Zufallsniveau**, nicht darüber.
+- **Placebo-Beweis (Mathematiker):** derselbe Code mit dem Level künstlich um ±0,25×Range verschoben (kein VAH/VAL mehr, ein beliebiger Preis) liefert praktisch dieselben Reversal-Raten (Asia 84,1 % real vs. 73,9–72,3 % Placebo, London/NY noch näher beieinander). **Das Level selbst trägt keine Information** — jeder beliebige Preis in der Nähe hätte dieselbe Zahl geliefert.
+- **Session-Unterschied ist reine Vola-Geometrie, kein AMT-Effekt:** `margin` war an die Tages-ATR gekoppelt (fix über alle Sessions), aber Asia-Bar-Vola ist nur ~1/2,7 der NY-Bar-Vola → dieselbe Barriere ist in Asia relativ viel weiter weg → fast nur die nahe Barriere ("reversed") wird je erreicht. Die Rangfolge Asia > London > NY ist exakt das, was die Barrieren-Geometrie allein vorhersagt.
+- **AUC 0,57–0,70 ebenfalls Artefakt:** `vol`/`delta` gehen nur als `abs()` (Aktivitätsmaß, richtungslos) ein. Bei 3:1-Barrieren ist Volatilität die einzige Größe, die die ferne Barriere überhaupt erreichbar macht — Volumen ist ihr Proxy, die AUC > 0,5 ist mechanisch erzwungen. Beweis: am Placebo-Level war die AUC sogar noch höher (0,65–0,80) als am echten VAH/VAL (0,60).
+- **Bonus-Fund (Mathematiker):** `margin` wurde aus `max(h)-min(l)` **des ganzen Tages** berechnet — am Vormittag ist die Tagesrange aber noch gar nicht bekannt. Ein zusätzlicher, unabhängiger Look-ahead-Fehler, der die Handelbarkeit selbst bei positivem Befund kaputt gemacht hätte.
+
+### Gesamtverdikt
+**Kein Signal, reines Konstruktionsartefakt — landet im selben Friedhof wie #112.** Ökonomisch zusätzlich tödlich: das implizite R:R der 3:1-Barriere braucht **75 % Trefferquote allein für Break-even**, NY (64 %) ist damit vor Kosten bereits klar negativ (~−175 $/Trade), Asia (84 %) liegt zwar über 75 %, aber unter seinem eigenen Zufalls-Nullwert. Kein Developer-Build, kein Buch-Beitrag.
+
+**Falls die Frage trotzdem sauber zu Ende gemessen werden soll** (Mathematiker-Vorschlag, 3 kleine Code-Änderungen): (1) symmetrische Barrieren ±2×margin ab dem tatsächlichen Einstiegspreis statt ab dem Level, (2) `margin` aus rollierender Vortages-ATR statt Tages-Range desselben Tages (Look-ahead raus) plus Session-Vola-Normierung, (3) eine Placebo-Spalte (Level ± 0,25×ATR) fest als Nullbaseline mitlaufen lassen, (4) signiertes statt betragsmäßiges Delta für die Volumen-/Order-Flow-Frage — bisher nie sauber gemessen, weil `abs()` jede Richtungsinformation wegwirft. Ohne konkreten Anlass nicht von selbst weiterverfolgen, da zwei unabhängige Methoden (Simulation + Placebo) bereits übereinstimmend auf Null zeigen.
+
+### Lehre
+105. **Bei First-Passage-/Barrieren-Tests (Preis trifft Level X, löst sich A oder B auf) IMMER die Abstände vom tatsächlichen Einstiegspreis zu beiden Auflösungs-Schwellen ausrechnen, bevor man die Trefferquote interpretiert.** Ein 3:1-Abstandsverhältnis erzeugt unter reinem Zufall bereits 75 % "Erfolg" für die nähere Schwelle — eine beobachtete Rate von 60-85 % kann allein aus der Test-Geometrie kommen, ganz ohne Marktinformation. Symmetrische Abstände ab dem Einstiegspreis (nicht ab einem Referenz-Level) sind die Voraussetzung dafür, dass 50 % die richtige Nullhypothese ist.
+106. **Ein Placebo-Level (zufälliger Preis statt des echten Signal-Levels), durch denselben Code gejagt, ist der schnellste Weg, ein First-Passage-Konstruktionsartefakt von einem echten Level-Effekt zu trennen.** Liefert der Placebo dieselbe Zahl wie das echte VAH/VAL, trägt das Level nichts — unabhängig davon, wie plausibel die Geschichte dahinter klingt.
+107. **Eine Test-Schwelle (hier: `margin`), die an eine über mehrere Sessions/Regime hinweg unterschiedlich volatile Referenzgröße gekoppelt ist (Tages-ATR angewandt auf Asia UND NY gleichermaßen), erzeugt allein durch die Vola-Differenz einen scheinbaren "Session-Unterschied".** Vor jedem Cross-Session-Vergleich prüfen, ob die Test-Schwelle auf die jeweils EIGENE Vola der Gruppe normiert ist — sonst misst man die Normierung, nicht das Phänomen.
+
 ## Nächste Kandidaten (noch offen)
-- ~~Replace-Test: NQ_Momentum → MOMSEL_NQ_er0.3_s0.75~~ → in #080 ehrlich neu gerechnet: nur bei frac ≈0.10 sinnvoll, Entscheidung an AP53 gekoppelt
+- ~~Replace-Test: NQ_Momentum → MOMSEL_NQ_er0.3_s0.75~~ → in #080 ehrlich neu gerechnet: nur bei frac ≈0.10 sinnvoll; in #095 endgültig erledigt (Momentum ist im Leave-one-out neutral, bleibt drin) — **in #108 unter v2/Min-Size wieder aufgemacht als AP101** (nicht mehr als Buch-Frage, sondern als Vola-Senkung bei erhaltener Drift)
 - ~~Momentum selektiver~~ → in #057 getestet, NQ 8/8 robust (siehe oben)
 - ~~Intraday Time Series Reversal auf Index (SSRN 5807282)~~ → in #056 als on_rev/min30-Variante mitgetestet (eod-Variante war stärker)
 - Overnight-Intraday Reversal (SSRN 2730304)

@@ -21,24 +21,40 @@
             "id": "13ab61c971d0fa4a",
             "type": "leaf",
             "state": {
-              "type": "graph",
-              "state": {},
-              "icon": "lucide-git-fork",
-              "title": "Graph-Ansicht"
+              "type": "bases",
+              "state": {
+                "file": "Unbenannt 1.base",
+                "viewName": "Tabelle"
+              },
+              "icon": "lucide-table",
+              "title": "Unbenannt 1"
             }
           },
           {
             "id": "e74ce95808d35592",
             "type": "leaf",
             "state": {
-              "type": "graph",
-              "state": {},
-              "icon": "lucide-git-fork",
-              "title": "Graph-Ansicht"
+              "type": "markdown",
+              "state": {
+                "file": "Kontext/Schreibstil.md",
+                "mode": "source",
+                "source": false,
+                "backlinks": true,
+                "backlinkOpts": {
+                  "collapseAll": false,
+                  "extraContext": false,
+                  "sortOrder": "alphabetical",
+                  "showSearch": false,
+                  "searchQuery": "",
+                  "backlinkCollapsed": false,
+                  "unlinkedCollapsed": true
+                }
+              },
+              "icon": "lucide-file",
+              "title": "Schreibstil"
             }
           }
-        ],
-        "currentTab": 2
+        ]
       }
     ],
     "direction": "vertical"
@@ -72,7 +88,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "QuantPad Brief",
+                "query": "",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -93,8 +109,7 @@
               "title": "Lesezeichen"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "horizontal",
@@ -198,7 +213,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 246.5
+    "width": 200,
+    "collapsed": true
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -214,22 +230,30 @@
       "realclaudian:Open Claudian": false
     }
   },
-  "active": "e74ce95808d35592",
+  "active": "7045f1e3b88fa380",
   "lastOpenFiles": [
+    "Daily Notes/2026-08-17.md",
+    "Bereiche/Strategie-Logbuch.md.tmp.8560.51fb210c1beb",
+    "CLAUDE.md.tmp.12060.42e55823bd5e",
+    "Kontext/Schreibstil.md",
+    "Unbenannt 1.base",
+    "Ressourcen/Research-Cache.md.tmp.15656.d1a386100442",
+    "Bereiche/Strategie-Logbuch.md.tmp.10648.ed4e06f49067",
+    "Ressourcen/E8-Support-Anfrage (100k-150k Drawdown + Signature-Status).md",
+    "Ressourcen/E8-Support-Anfrage (100k-150k Drawdown + Signature-Status).md.tmp.10188.3a552e0cdc54",
+    "CLAUDE.md.tmp.19828.efb2fcc55943",
+    "Bereiche/Strategie-Logbuch.md.tmp.16124.68d93d12e5f1",
+    "Daily Notes/2026-08-16.md",
+    "Bereiche/Strategie-Logbuch.md.tmp.2584.1aa823bb0dac",
+    "Projekte/Backtest-Engine.md",
+    "Bereiche/Strategie-Logbuch.md.tmp.15540.025685959119",
+    "Daily Notes/2026-08-15.md",
+    "Daily Notes/2026-08-14.md",
+    "Ressourcen/E8-Support-Anfrage (Eval-Zeitlimit + Mindest-Handelstage).md",
     "Ressourcen/Loop-Bauplan (Prompt für Claude).md",
     "Bereiche/Strategie-Logbuch.md",
     "Ressourcen/QuantPad Brief - Engine Verification.md",
-    "Daily Notes/2026-08-10.md.tmp.8976.25c052779620",
-    "Projekte/Backtest-Engine.md.tmp.8976.c43312caa990",
     "Projekte/Ticket-Epics.md",
-    "Bereiche/Strategie-Logbuch.md.tmp.17796.971db3a27c26",
-    "Quantpad Data/fixed/or_delta_bias_overlap.py",
-    "Quantpad Data/fixed/or_delta_bias_deepcheck.py",
-    "Quantpad Data/fixed/or_delta_bias_lab.py",
-    "Ressourcen/Research-Cache.md.tmp.13124.8deecbed3a8f",
-    "Quantpad Data/fixed/ivb_overlap_check.py",
-    "Quantpad Data/fixed/ivb_overlap_check.py.tmp.13124.6b5e65fdce73",
-    "Quantpad Data/fixed/ivb_candidate_check.py",
     "Daily Notes/2026-08-10.md",
     "Ressourcen/ORB-Runde 070 (Hypothesen vorab).md",
     "Daily Notes/2026-08-09.md",
@@ -247,14 +271,6 @@
     "2026-07-30.md",
     "Unbenannt 1.canvas",
     "Ressourcen/Aufgaben-Guide (Modell & Skill Wahl).md",
-    "Daily Notes/2026-07-29.md",
-    "Ressourcen/Paper-Analysen/TSI Mean Reversion (Requejo 4708400).md",
-    "Archiv/Strategie-Logbuch Archiv (001-025).md",
-    "Ressourcen/VPS-Einrichtung Schritt für Schritt.md",
-    "Ressourcen/Agent-Architektur Token-Optimierung.md",
-    "Ressourcen/Research-Cache.md",
-    "Bereiche/Live-Setup (Algo auf Prop).md",
-    "Bereiche/Idee-Generierung (wie Institutionen).md",
     "Unbenannt 2.canvas",
     "Unbenannt.canvas"
   ]

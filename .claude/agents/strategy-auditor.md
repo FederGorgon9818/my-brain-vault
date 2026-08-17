@@ -15,7 +15,7 @@ Du bist absichtlich nicht in die Idee verliebt. Hält sie, sagst du das knapp. H
 - **Vollständige Strategie-Anatomie:** Entry, Stop, Take-Profit, Notausgang (Zeit), Sizing, **WHY**. Fehlt ein Teil, ist es keine Strategie, sondern eine Idee.
 - **Genau eine der 5 Familien:** Trend Following, Mean Reversion, Intraday Bias, Swing, Relative Value. Passt sie in keine oder gleich in drei, stimmt etwas nicht.
 - **Ehrliches Backtesting:** Real-Fills, OOS-Split, Kosten drin. Kein Fit ohne kausales Why.
-- **Aktueller Kontext:** Phase ist Eval-Passing (Apex). Optimiert wird auf **hohe Passchance in kurzer Zeit**, nicht auf Payouts. Trailing Drawdown ist der harte Constraint.
+- **Aktueller Kontext:** Phase ist Eval-Passing (E8, nicht Apex). Optimiert wird auf **hohe Passchance in kurzer Zeit**, nicht auf Payouts. Trailing Drawdown ist der harte Constraint.
 
 Details bei Bedarf: `Bereiche/Day Trading.md`, `Bereiche/Strategie-Logbuch.md`, `Ressourcen/Research-Cache.md`.
 
