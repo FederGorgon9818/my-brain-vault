@@ -52,6 +52,17 @@ Der Text unterstellt eine "Farm" aus 10 EAs auf vermutlich 10 einzelnen Prop-Kon
 ### ⏸️ Niedrige Prio bis Konto-Anzahl wächst
 - [ ] ESPA/Terms gezielt auf Multi-Account-/Haushalts-IP-Regeln lesen, sobald ein zweites E8-Konto oder ein zweiter Versuch parallel zum ersten läuft.
 
+
+## 🏛️ Gewerbeanmeldung — Fakten für Ottenhofen (recherchiert 21.08.2026)
+
+- **Zuständig ist NICHT Stadt/Landratsamt Erding**, sondern das **Gewerbeamt der Verwaltungsgemeinschaft Oberneuching** (Ottenhofen + Neuching bilden die VG). Das Landratsamt macht nur erlaubnispflichtige Gewerbe.
+- Adresse: St.-Martin-Str. 9, 85467 Neuching · Tel. 08123 9326-60 · info@vg-oberneuching.de · Mo–Fr 8–12, Mi 14–18 Uhr.
+- **Gemeindekennzahl Ottenhofen: 09177134** (Landkreis Erding = 09177).
+- Formular: bundeseinheitliches **GewA 1** (das Erdinger PDF ist dasselbe Formular). **Beiblatt nur nötig** bei weiteren gesetzlichen Vertretern, Erlaubnispflicht, Handwerksrolle oder Aufenthaltstitel → für Max entfällt es.
+- Abgabe in Textform reicht (§ 14 Abs. 4 GewO): unterschriebenes PDF + Ausweiskopie per Mail/Post, oder persönlich mit Ausweis.
+- Tätigkeitsbeschreibung (final, deckungsgleich mit HR-Anzeige): *„Entwicklung und Betrieb automatisierter Software zur Analyse von Finanzmarktdaten und zur Erstellung von Handelsstrategien; Bereitstellung der daraus gewonnenen Daten und damit verbundene Dienstleistungen für ausländische Auftraggeber; Softwareentwicklung und IT-Dienstleistungen"* — Schwerpunkt = erster Halbsatz. Bewusst ohne „Anlageberatung/Vermögensverwaltung/Handel für Dritte" (KWG/WpIG-Erlaubnis).
+- Ankreuzen: Nebenerwerb ja · Sonstiges · keine Beschäftigten · Hauptniederlassung · Neugründung · Erlaubnis nein.
+
 ## 📝 HR-Anzeige Nebentätigkeit — Formulierung fürs REX-Portal (Stand 09.08.2026)
 
 **Vertragslage (§8 Arbeitsvertrag, per Foto geprüft 09.08.2026):**

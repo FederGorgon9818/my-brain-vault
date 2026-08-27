@@ -11,10 +11,24 @@
             "id": "7045f1e3b88fa380",
             "type": "leaf",
             "state": {
-              "type": "graph",
-              "state": {},
-              "icon": "lucide-git-fork",
-              "title": "Graph-Ansicht"
+              "type": "markdown",
+              "state": {
+                "file": "Bereiche/Strategie-Logbuch.md",
+                "mode": "source",
+                "source": false,
+                "backlinks": true,
+                "backlinkOpts": {
+                  "collapseAll": false,
+                  "extraContext": false,
+                  "sortOrder": "alphabetical",
+                  "showSearch": false,
+                  "searchQuery": "",
+                  "backlinkCollapsed": false,
+                  "unlinkedCollapsed": true
+                }
+              },
+              "icon": "lucide-file",
+              "title": "Strategie-Logbuch"
             }
           },
           {
@@ -213,8 +227,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 200,
-    "collapsed": true
+    "width": 692.5
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -232,6 +245,11 @@
   },
   "active": "7045f1e3b88fa380",
   "lastOpenFiles": [
+    "Bereiche/Hypothesen-Bank (Volumen & Flows).md",
+    "Ressourcen/Momentum-Theorie (Futures).md",
+    "Ressourcen/Institutionelle Order-Execution (Theorie).md",
+    "Daily Notes/2026-08-21.md",
+    "CLAUDE.md.tmp.2744.6c4aaf1a3a81",
     "Daily Notes/2026-08-17.md",
     "Bereiche/Strategie-Logbuch.md.tmp.8560.51fb210c1beb",
     "CLAUDE.md.tmp.12060.42e55823bd5e",
@@ -246,7 +264,6 @@
     "Daily Notes/2026-08-16.md",
     "Bereiche/Strategie-Logbuch.md.tmp.2584.1aa823bb0dac",
     "Projekte/Backtest-Engine.md",
-    "Bereiche/Strategie-Logbuch.md.tmp.15540.025685959119",
     "Daily Notes/2026-08-15.md",
     "Daily Notes/2026-08-14.md",
     "Ressourcen/E8-Support-Anfrage (Eval-Zeitlimit + Mindest-Handelstage).md",
@@ -266,11 +283,7 @@
     "Bereiche/Wochenreport 2026-W31 (27.07-31.07).md",
     "Daily Notes/2026-07-31.md",
     "Ressourcen/Paper-Analysen/Strategie-Familien.md",
-    "Bereiche/Discovery-Prozess (wie wir Alpha finden).md",
-    "Daily Notes/2026-07-30.md",
-    "2026-07-30.md",
     "Unbenannt 1.canvas",
-    "Ressourcen/Aufgaben-Guide (Modell & Skill Wahl).md",
     "Unbenannt 2.canvas",
     "Unbenannt.canvas"
   ]

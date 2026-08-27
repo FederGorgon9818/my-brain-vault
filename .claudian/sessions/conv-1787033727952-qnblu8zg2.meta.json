@@ -1,0 +1,24 @@
+{
+  "id": "conv-1787033727952-qnblu8zg2",
+  "providerId": "claude",
+  "title": "Claude-Fehler lokalisieren",
+  "titleGenerationStatus": "success",
+  "createdAt": 1787033727955,
+  "updatedAt": 1787033808399,
+  "lastResponseAt": 1787033808399,
+  "sessionId": "947b678c-dcb9-4cb5-bdd4-4d91768a4e9e",
+  "selectedModel": "sonnet",
+  "providerState": {
+    "providerSessionId": "947b678c-dcb9-4cb5-bdd4-4d91768a4e9e"
+  },
+  "usage": {
+    "model": "sonnet",
+    "inputTokens": 2,
+    "cacheCreationInputTokens": 2627,
+    "cacheReadInputTokens": 54182,
+    "contextWindow": 1000000,
+    "contextWindowIsAuthoritative": true,
+    "contextTokens": 56811,
+    "percentage": 6
+  }
+}

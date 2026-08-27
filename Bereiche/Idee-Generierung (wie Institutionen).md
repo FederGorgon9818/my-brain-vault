@@ -6,7 +6,7 @@ erstellt: 2026-07-15
 ---
 # 💡 Idee-Generierung — wie Institutionen es wirklich machen
 
-⬅️ [[Alpha-Suche]] · [[Strategie-Familien]] · [[Simplex beats Komplex]]
+⬅️ [[Alpha-Suche]] · [[Strategie-Familien]] · [[Simplex beats Komplex]] · [[Institutionelle Order-Execution (Theorie)]]
 
 > [!important] Kern
 > Institutionen (Renaissance, Two Sigma, Citadel, WorldQuant, D.E. Shaw) suchen NICHT „irgendwas in Papers". Sie haben einen **Prozess**: **Hypothese zuerst (mit Why), dann Test.** Reines Data-Mining ohne Why scheitert live, weil es Zufalls-Artefakte findet. Ideen kommen aus einer **Landkarte von Edge-Quellen**, nicht aus dem Nichts.

@@ -1819,6 +1819,554 @@ Nach allen drei Fixes sah es immer noch nach etwas aus: Reversal-Rate Asia 82–
 106. **Ein Placebo-Level (zufälliger Preis statt des echten Signal-Levels), durch denselben Code gejagt, ist der schnellste Weg, ein First-Passage-Konstruktionsartefakt von einem echten Level-Effekt zu trennen.** Liefert der Placebo dieselbe Zahl wie das echte VAH/VAL, trägt das Level nichts — unabhängig davon, wie plausibel die Geschichte dahinter klingt.
 107. **Eine Test-Schwelle (hier: `margin`), die an eine über mehrere Sessions/Regime hinweg unterschiedlich volatile Referenzgröße gekoppelt ist (Tages-ATR angewandt auf Asia UND NY gleichermaßen), erzeugt allein durch die Vola-Differenz einen scheinbaren "Session-Unterschied".** Vor jedem Cross-Session-Vergleich prüfen, ob die Test-Schwelle auf die jeweils EIGENE Vola der Gruppe normiert ist — sonst misst man die Normierung, nicht das Phänomen.
 
+## #114 — Wann ist das NY-Profil "geformt"? VAH/VAL-Bounce sauber negativ, POC-Rückkehr war ein vierter Artefakt (17.08.2026)
+
+- **Auftrag Max:** noch enger fokussiert — nur NQ, nur NY-Session, und die konkrete Frage aus #113 nachgezogen: WANN (nach wie viel Zeit/Volumen/Breite) ist das Profil so weit geformt, dass VAH/VAL als Bounce-Level und POC als Rückkehr-Ziel am besten funktionieren?
+- **Werkzeug (neu):** `developer/amt_ny_formation.py`, diesmal mit allen #113-Lehren von Anfang an eingebaut: symmetrische Barrieren ab dem tatsächlichen Einstiegspreis (Lehre 105), feste Placebo-Spalte (Lehre 106), fester Tick-Margin ohne Tages-ATR-Look-ahead. 15 Formations-Kriterien: Zeit seit 09:30 (7 Werte), Anteil am rollierenden 20-Tage-Volumenschnitt (4 Werte), Value-Area-Breite in Ticks (4 Werte). An jedem Formations-Punkt wird das Profil eingefroren (POC/VAH/VAL fix für den Rest der Session).
+
+### Test 1 (VAH/VAL-Bounce): sauber negativ, Methodik hält
+Reversal-Rate real vs. Placebo bei **allen 15 Varianten praktisch identisch** (Gap −0,015 bis +0,006, beide nahe 50 %). Diesmal die korrekte Null, kein Barrieren-Artefakt mehr — und trotzdem kein Unterschied zum Placebo. Bestätigt #113 nochmal, jetzt mit sauberer Methodik: **VAH/VAL selbst tragen nichts, unabhängig vom Formations-Zeitpunkt.**
+
+### Test 2 (POC-Rückkehr nach Bounce): sah vielversprechend aus, war aber Fund Nummer vier
+14 von 15 Varianten zeigten reale POC-Rückkehr-Rate klar über der Placebo(Mittelpunkt)-Rate, Gap wachsend von +0,03 (früher Formations-Zeitpunkt) bis +0,21 (später) — sah aus wie ein echter, wachsender "Reife-Effekt". Eigener Gegen-Check (POC im Schnitt näher am Bounce-Punkt als der Mittelpunkt?) widerlegte den naheliegendsten Verdacht: POC war im Mittel sogar **weiter** weg (20,2 vs. 19,5 Punkte). Mathematiker und Statistiker haben trotzdem unabhängig den eigentlichen Fehler gefunden:
+
+- **Placebo-Events ≠ reale Events.** `poc_return_real` lief über die Bounces am ECHTEN Level, `poc_return_placebo` über die Bounces am PLACEBO-Level (Level ± 0,25×Value-Area-Breite) — zwei verschiedene Ereignis-Mengen mit unterschiedlichem Startpunkt, nicht derselbe Bounce mit zwei verglichenen Zielen. Der Placebo-Bounce liegt systematisch weiter draußen und hat einen ~1,5× weiteren Weg zu seinem Ziel (Mittelpunkt) als der reale Bounce zu POC.
+- **Und dieser Distanz-Unterschied wächst mit der Value-Area-Breite** (die mit späterem Formations-Zeitpunkt zunimmt) — der wachsende Gap kam exakt daher, nicht von einem Reife-Effekt. Statistiker: `corr(Gap, Distanzdifferenz) = 0,96`, `corr(Gap, VA-Breite) = 0,98`.
+- **Fairer Test (dieselben Bounce-Events, POC vs. Mittelpunkt als Ziel verglichen), Block-Bootstrap über Handelstage:** Gap schrumpft von +0,209 auf **+0,029** (time_180, CI90 [+0,009; +0,049]) bzw. dreht bei den meisten Varianten ins Negative/Nicht-Signifikante. Der einzige Überlebende (time_180) hält Bonferroni bei ~4 effektiven unabhängigen Tests nur knapp, und dreht laut Mathematiker unter Distanz-Kontrolle (Random-Walk-Reflexionsprinzip als Nullmodell) selbst ins Negative.
+- **Zusätzlicher Konstruktionsfehler:** `poc_return_after_bounce` misst "irgendwann berührt", nicht "dreht dort" — eine reine Geometrie-/Exkursions-Größe, kein Magnetismus-Beweis, selbst wenn sie sauber gemessen wäre.
+
+### Gesamtverdikt
+**Dritter Grabstein in derselben Reihe (#112/#113/#114).** Test 1 war diesmal methodisch sauber und zeigt konsistent: kein Signal. Test 2 sah vielversprechend aus, war aber ein Placebo-Distanz-Fehler — nach Korrektur bleibt nichts Robustes übrig. Kein Developer-Build, kein Buch-Beitrag. Für alle drei Runden gilt: die AMT-Level selbst (egal ob Vortag, developing, oder frisch eingefroren) tragen auf NQ/ES keine messbare Kante — bestätigt den Research-Scout-Befund vom 17.08. (AMT ist auch akademisch unbelegt) jetzt dreifach mit eigenen Daten.
+
+**Falls Max die Frage trotzdem zu Ende bringen will** (Statistiker-Vorschlag, aufsteigender Aufwand): (a) Placebo immer auf DENSELBEN Events mit distanz-gematchtem Ziel (im Kern schon gerechnet: Ergebnis Null), (b) Outcome von "berührt" auf "dreht dort" umstellen (echte Reversal-Definition, keine Durchlauf-Verzerrung), (c) POC-Nähe als stetigen Regressor statt Ja/Nein-Test. Ohne konkreten Anlass nicht von selbst weitermachen — drei unabhängige Bestätigungen (2 Runden, je 2 Agents) zeigen bereits übereinstimmend Null.
+
+### Lehre
+108. **Ein Placebo/Kontroll-Level muss auf DENSELBEN Ereignissen laufen wie der echte Test, nicht auf einer eigenen, durch den Placebo-Level erzeugten Ereignis-Menge.** Sobald der Placebo-Level selbst die Startpunkte verschiebt (hier: weiter draußen, wegen des Offsets vom echten Level), ändert sich die gemessene Distanz zum Ziel mit — und der ganze "Gap" kann allein aus der Distanz-Differenz kommen, nicht aus einem echten Level-Effekt. Sauberer Aufbau: EIN Satz Ereignisse, mehrere Ziele/Level vergleichen, nie mehrere Ereignis-Mengen gegeneinander.
+109. **"Preis berührt Ziel X irgendwann binnen Fenster W" ist eine Distanz-/Exkursions-Größe, kein Beweis für Anziehung.** Diese Metrik ist unter einem driftfreien Random Walk vollständig durch die Distanzverteilung zum Ziel bestimmt (Reflexionsprinzip). Ein Level "gewinnt" diesen Test automatisch, wenn es im Schnitt näher liegt oder eine güns­tigere (rechtsschiefe) Distanzverteilung hat — unabhängig davon, ob es irgendeine besondere Marktbedeutung hat. Für einen echten Magnetismus-Test braucht es entweder eine Random-Walk-Null zur Normierung oder eine "dreht dort um"-Definition statt "berührt".
+
+## #115 — Adaptive Value-Area-Segmentierung (Profil je Balance, Reset am Breakout): sauberste Runde der Serie, und trotzdem Friedhof (17.08.2026)
+
+- **Auftrag Max (mit Chart-Vorlagen):** vor jedem Strategie-Test erst die Frage klären, WIE man eine Value Area überhaupt richtig zeichnet. Sein Einwand an #112-#114: ein Profil, das über einen Breakout hinweg weiterläuft, **vermischt zwei verschiedene Balances**. Richtig wäre ein Profil je Balance — Start am NY-Open, Profil wächst mit, ab einem Formations-Kriterium sind VAH/POC/VAL gültig, ein Breakout schneidet ab und startet ein neues Profil am Breakout-Punkt. Nachtrag Max: Delta und Volumen als Breakout-/Reversal-Kriterien mittesten, und "wie viel Volumen HORIZONTAL braucht es für eine valide Value Area".
+- **Werkzeug:** `developer/amt_segments.py` (NQ RTH ab 2018, 2191 Tage), 17 Formations- × 10 Breakout-Kriterien, 47 ausgewertete Varianten in zwei Stufen. Formation: Zeit, Volumen-Anteil am 20d-Schnitt, VA-Breite, Stabilität der Grenzen, **horizontale Volumen-Konzentration im POC-Bin** (Max' Nachtrag, zwei Varianten). Breakout: Distanz als Anteil der VA-Breite × Akzeptanz-Bars × **Volumen-Bestätigung** × **echtes Aggressor-Delta**. Dazu `amt_momentum_control.py` (momentum-gematchte Baseline + erweiterter Grid).
+
+### Was diesmal methodisch richtig war
+Die Segmentierung selbst funktioniert: 1-4 Balances je Session, Segmente 19-385 Bars, entspricht Max' Charts. Beim Bauen ein eigener Fund: die erste Breakout-Definition (feste Tick-Distanz) zerhackte die Session in ~20 Mini-Segmente, weil eine frisch geformte VA noch schmal ist — Umstellung auf **Akzeptanz** (Distanz relativ zur VA-Breite, mehrere Bars außerhalb) hat das behoben. Die POC-Kernmetrik war diesmal von Anfang an sauber (Spiegelpunkt in gleicher Distanz auf denselben Events, Lehre 108).
+
+### Befunde
+- **POC-Magnetismus: null.** −0,019 bis +0,009 über alle 47 Varianten, mit methodisch einwandfreier Null. Endgültig erledigt.
+- **Delta trägt nichts** (Max' Frage direkt beantwortet): POC-Erreichungsrate nach Terzil des Anlauf-Deltas ist flach bis auf 1 Prozentpunkt (0,48/0,48/0,49). Delta als Breakout-Bestätigung macht die Ergebnisse leicht **schlechter**. Volumen-Terzile: kein monotones Muster. Horizontale Volumen-Konzentration (`pocfrac`/`pocabs`): ebenfalls nichts.
+- **Der Fade (Kauf VAL / Verkauf VAH, die klassische AMT-Rotation) verliert in ALLEN 47 Varianten**, netto −0,59 bis −2,13 Punkte. Das ist der klarste Einzelbefund der ganzen Serie: die Lehrbuch-Rotation ist auf NQ nicht neutral, sondern negativ.
+- **Scheinbarer Fund und wie er fiel:** die Gegenrichtung (Continuation an der VA-Kante) war netto positiv in 35/47 Varianten, beste +1,03 Punkte. Meine eigene momentum-gematchte Kontrolle zeigte sogar einen Überschuss von +1,2 bis +1,7 — **sie war aber zu schwach gebaut**: gematcht wurde nur global auf die Momentum-Stärke, nicht innerhalb desselben Tages. Der Statistiker hat die scharfe Version gerechnet (gleicher Tag + gleicher Momentum-Bucket + gleiche Richtung): Kontrolle **+1,33**, VA-Kante **+1,10** → **Differenz −0,23, CI90 [−1,11; +0,67]**. Die Value-Area-Kante ist ein leicht **unterdurchschnittlicher** Momentum-Trigger. 88,6 % der Events haben die 5-Bar-Bewegung ohnehin schon in Handelsrichtung — das Setup ist per Konstruktion ein Momentum-Entry.
+- **Multiple Testing:** Tages-Sharpe 0,043 gegen E[max] unter Null von 0,058 bei 47 Trials — der gemessene Wert liegt **unter** der Zufallsdecke. DSR 0,38 (0,29 wenn man die Richtungsumkehr als zweiten Test je Variante zählt).
+- **Regime:** 2022 liefert 52 % des Gesamtgewinns. Ohne 2022 t=0,99, OOS 2023-26 t=0,36, 2026 negativ.
+- **Die adaptive Segmentierung trägt NEGATIV bei.** Sortiert man nach Segment-Länge: dort wo die Segmentierung wirklich greift (19-38 Bars, 18k-26k Events), ist die Gegenrichtung −0,02 bis −0,51. Die positiven Zahlen kommen ausschließlich aus der `volume=0.3`-Familie, und die selektiert schlicht **spätere Events** (p10 des Event-Zeitpunkts wandert von Minute 27 auf 74/100) — also genau das Nachmittags-Momentum, das über NQ_LastHour längst im Buch ist.
+- **Käfig-Sicht (Mathematiker):** als Solo-Bein bei Min-Size P(pass) 0,41 ohne Zeitlimit, praktisch 0 mit; Tages-Schiefe −2,09, Kurtosis 36,7, schlechtester Tag −1179 Punkte, Top-5-Tage 31 % des Gewinns. Selbst bei echter Edge unbrauchbar.
+
+### Gesamtverdikt
+**Vierter Grabstein, und der methodisch sauberste — genau deshalb zählt er.** Max' Segmentierungs-Idee war strukturell besser begründet als alles davor und wurde fair getestet; sie verbessert nichts, sie verschlechtert sogar. Damit ist die AMT-Familie auf NQ/ES über vier unabhängige Runden und acht Agent-Gutachten erschöpfend geprüft: **Value Area, POC, Initial Balance und Balance/Trend-Regime tragen keine handelbare Kante, in keiner Anker-Variante, mit keinem Formations-Kriterium, mit und ohne Volumen- und Order-Flow-Bestätigung.** Kein Developer-Build, kein Buch-Beitrag. Ohne grundlegend neue Idee (nicht: neuer Parameter) hier nicht weitermachen.
+
+### Lehre
+110. **Ein momentum-gematchter Kontrollarm muss INNERHALB desselben Tages matchen, nicht global über alle Tage.** Meine erste Version matchte nur auf die Momentum-Stärke über den gesamten Datensatz und zeigte einen Überschuss von +1,2 bis +1,7 Punkten; dieselbe Kontrolle mit Tages-Bedingung drehte auf −0,23. Grund: Signal-Events clustern auf bewegten Tagen, und eine global gepoolte Baseline mittelt die ruhigen Tage mit ein — der "Überschuss" ist dann nur die Tages-Komposition. Gilt für jede künftige Kontrollgruppe: erst auf den Tag konditionieren, dann auf die Signalgröße.
+111. **Wenn der Trigger eines Level-Setups per Definition mit der jüngsten Preisbewegung korreliert ist, misst der Test Momentum, nicht das Level.** Ein "Touch von innen" an einer Kante heißt zwangsläufig, dass der Preis dorthin gelaufen ist (hier: 88,6 % der Events hatten den 5-Bar-Move schon in Handelsrichtung). Die einzige aussagekräftige Kontrolle ist "gleiche Bewegung, kein Level" — nicht "kein Trade". Vor jedem Level-Test einmal ausrechnen, welcher Anteil der Events das Vorzeichen des Signals schon aus der Trigger-Definition mitbringt.
+112. **Wenn ein Parameter-Sweep ausgerechnet dort gewinnt, wo der getestete Mechanismus sich selbst abschaltet, ist das eine Falsifikation, keine Optimierung.** Hier siegten die Varianten mit den längsten Segmenten — Grenzfall 385 Bars = ganze Session = gar keine Segmentierung — während die Varianten mit echter Segmentierung negativ waren. Bei jedem Sweep prüfen, ob der Sieger den Mechanismus überhaupt noch anwendet, bevor man ihn als bestätigten Parameter liest.
+
+## #116 — NQ_ORB-fade komplett durchgesweept (224 ehrliche Varianten): kein Hebel trägt, das Buch-Bein ist eine Regime-Wette (18.08.2026)
+Max' Auftrag (Ticket **AP104**): das schwächste Buch-Bein verbessern. Angesagt war ein sehr breiter Sweep — OR-Länge 5/10/15/20/30/45/60, "ruhiger Tag"-Filter über NR-N (2/3/5/10) und Punkt-Schwellen, zwei selbst zu findende Zusatzfilter, Entry am Level vs. Rückkehr in die OR (1m/5m-Bestätigung), Order-Flow-Delta mit und ohne Volumen-Regime, dazu das volle Stop/Target-Gitter. Vier Stufen, Skripte `developer/ap104_sweep_stage{A,B,C,D}.py`, Rohdaten in den gleichnamigen `.json`.
+
+### Ergebnis in einer Zeile
+**224 ehrlich gerechnete Varianten, 0 bestehen den Robustheits-Katalog.** Der beste gefundene Tages-Sharpe (2,635) liegt **unter** der Zufallsdecke E[max Sharpe | Null] = 3,26 schon bei nur 30 Trials (bei 224 Trials: 4,41). Wir haben breit gesucht und weniger gefunden, als reiner Zufall bei dieser Suchbreite hergeben würde.
+
+### Die vier Stufen
+| Stufe | Was | Varianten | robust |
+|---|---|---|---|
+| A | OR-Länge × Tagesfilter (NR-N, Range-%, OR-Rel, OR-Rotation) | 50 | 0 |
+| B | Entry-Stil (Level / Bar-Close / Rückkehr in die OR, 1m+5m) | 22 | 0 |
+| C | Order-Flow-Delta × Volumen-Regime | 92 | **komplett verworfen, siehe unten** |
+| D | Stop/Target-Vollgitter (9 × 8) + Zeit-Cap | 152 | 0 |
+
+Scheiter-Statistik über die 224 verwertbaren: **90 % scheitern an IS/OOS**, 93 % an der Jahres-Konsistenz, 70 % am Plateau, 32 % am Jackknife. Die Trade-Zahl war nie das Problem (0 % Ausfall).
+
+### Die Prämisse war falsch — und zwar messbar
+Der quant-mathematician hat die Grundannahme direkt getestet, statt sie zu parametrisieren. Zielgröße: P(Kurs kehrt nach dem Ausbruch in die OR zurück), Basisrate 0,485 bei n=2644.
+
+| Filter | P(back) aktiv | inaktiv |
+|---|---|---|
+| **NR7 (der Filter im Buch!)** | **0,455** | 0,491 |
+| ATR-Kontraktion | 0,480 | 0,491 |
+| kleiner Overnight-Gap | 0,500 | 0,470 |
+| Vortages-Range niedrig | 0,490 | 0,480 |
+
+**NR7 zeigt das umgekehrte Vorzeichen**: nach ruhigen Vortagen setzen sich Ausbrüche eher durch, statt zu scheitern. Der Filter, der laut #070 den kompletten Fade-Edge trägt, arbeitet gegen seine eigene Begründung. Vola-Persistenz existiert zwar (AR(1) auf ln Range = 0,78, Halbwertszeit 2,75 Tage), sagt aber nichts über Ausbruchs-Fehlschlag: corr(Vortages-Kompression, ln(Tagesrange/OR)) = |0,01-0,04|.
+
+Die beiden vom Mathematiker vorgeschlagenen Ersatzfilter messen den **Ausbruchstag selbst** statt den Vortag (Auktionslogik: Balance vs. Initiative) und zeigen wenigstens das richtige Vorzeichen — `or_rel` = OR-Größe / ATR20 der Tagesrange (0,507 vs 0,464) und `or_rotation` = Vorzeichenwechsel von (Close − OR-Mitte) innerhalb der OR (0,506 vs 0,468). Beide je ~1,5σ, im Sweep dann ohne Bestand.
+
+### 🚨 Eigener Look-ahead-Bug gebaut und gefunden (Stage C, alle 92 Zeilen verworfen)
+Der neue Delta-Filter `orb_delta_min` mass das Fenster **nach** der Ausbruchs-Bar — der Fill passiert aber **in** dieser Bar. Der Filter kannte beim Entry-Entscheid also 5-30 Minuten Zukunft, was fast das gesamte Trade-Fenster ist. Zwei Diagnosen, beide eindeutig:
+- **Monotonie:** expR steigt mit der Fenstergröße von +0,22R (win=5) auf **+1,66R** (win=30). Je mehr Zukunft, desto "besser".
+- **Gegenprobe (Lehre #070-3):** Filter in Trade-Richtung PF 2,4-3,2 vs. invertiert PF ~0,10 bei 3 % Trefferquote — eine **fast perfekte Spiegelung**. Eine echte schwache Kante erzeugt so etwas nie.
+
+**75 von 92 Varianten hätten formal "robust" bestanden.** Ohne die Pflicht-Gegenprobe wäre das als Fund durchgegangen. Fix in `qbt.py` eingebaut: das Fenster endet jetzt an der letzten beim Fill nachweislich abgeschlossenen Bar (`i0` bei `close`-Entry, sonst `i0-1`), dazu die dimensionslose Variante `orb_delta_ratio` (Delta / Fenstervolumen), weil das NQ-Volumen über 10 Jahre stark gewachsen ist. Nach dem Fix schwankt der Filter um Null (+0,08 / −0,08 / −0,02 / −0,04 über die Fenstergrößen) — kein Signal, aber ehrlich.
+
+### AP75 bestätigt und schlimmer als gedacht (Stage D)
+Der bekannte Fake-Target-Hit-Bug bei Fade+Target: von 126 Target-Zeilen haben **16 eine Fake-Hit-Quote über 50 %**. Die drei besten Target-Kandidaten hingen praktisch vollständig daran:
+
+| Variante | roh | Fake-Hits | bereinigt |
+|---|---|---|---|
+| stop 0,3 / target 0,5 | +0,068R | 69 % | **−0,30R** |
+| stop 0,4 / target 0,25 | +0,060R | 88 % | **−0,34R** (n 422 → 81) |
+| stop 0,6 / target 0,25 | +0,055R | 64 % | **−0,12R** |
+
+Ohne das Ticket-Wissen wären das drei "Gewinner" gewesen, die live sofort Geld verbrannt hätten.
+
+### Was der Exit-Hebel strukturell sagt
+**Kein Target schlägt "kein Target".** Mittleres expR über das ganze Stop-Gitter: bei `target_mult=None` +0,004R (book) bzw. +0,046R (return), bei **jedem** gesetzten Target von 0,25R bis 3,0R durchgehend negativ (−0,08 bis −0,17R book, −0,02 bis −0,05R return). Sehr enge Stops (0,1 × OR) sind auf beiden Basen die schlechteste Zone. Der aktuelle Buch-Aufbau ist damit bereits das Optimum seiner Familie — in dieser Dimension ist nichts zu holen.
+
+### Der beste Kandidat und warum er trotzdem fällt
+`or_min=10, exec=return (win 10 / bar 5), stop_frac=0.6, kein Target`: n=1640, expR +0,075R, PF 1,11, IS +0,080 / OOS +0,062 (OOS besteht!), 8/11 Jahre positiv, max_year_share 0,26, Plateau intakt. Scheitert einzig am **Top-1%-Jackknife: Retain 0,25** — die profitabelsten ~16 von 1640 Trades tragen 75 % der Kante. Genau dasselbe Muster wie in #070 (Top-10 = 127 % des Netto) und beim NQ_Momentum-Delta-Trigger.
+
+### Literatur (research-scout, Cache-Block 18.08.2026)
+Gezielte Ergänzungssuche nach 2023-2026-Arbeiten, weil Grant/Wolf/Yu 2005 ein Sample bis 2002 hat. Ergebnis: **kein Ersatz gefunden.** Einzige neuere positive Quelle ist Ladia (SSRN 7124578, 2026) — Opening-Range-Reversal auf **DJIA**, 2023-2026 +0,196R, aber vor 2023 unter Break-even, Single-Author-Preprint, und die 0DTE-Kausalgeschichte passt zu DJI schlecht (0DTE-Volumen sitzt auf SPX/QQQ). Die einzige nennenswerte NQ/MNQ-Forschungslinie 2024-26 (Mesfin-Serie, arXiv 2605.04004 + 2605.11423 + 2605.17724) findet weder bei Breakout-Fortsetzung noch bei Fade/Liquidity-Grab noch per LSTM/Gradient-Boosting etwas, das Kosten übersteht (OOS-Accuracy ~50 %, Permutations-p 0,14/0,52). VWAP-Distanz als Reversion-Anker: weiterhin keine akademische Primärquelle.
+
+### Gesamtverdikt
+**Vier unabhängige Wege — altes Logbuch (#070), Prämissen-Messung, 224-Varianten-Sweep, Literatur — landen beim selben Ergebnis.** NQ_ORB-fade hat keine robuste Kante; die positive Buch-Zahl (+0,063R) wird komplett von einem Filter getragen, dessen Wirkrichtung falsifiziert ist, und stammt inhaltlich aus dem Fenster 2024-26. Ohne NR7 ist `or_min=15` bei **−0,074R**. Kein Developer-v2, keine Parameter-Übernahme. Die offene Frage ist nicht mehr "wie verbessern", sondern **"raus aus dem Buch, ersetzen oder als Regime-Wette bewusst behalten"** — das ist die nie final entschiedene Frage aus `buch-entscheidung-070`, jetzt mit deutlich besserer Datenlage. Entscheidung liegt bei Max.
+
+### Lehren
+113. **Die Prämisse einer Strategie gehört direkt gemessen, bevor man sie parametrisiert.** Der komplette Stage-A-Sweep (50 Varianten) hätte entfallen können: eine einzige Zeile — P(Rückkehr in die OR | NR7 aktiv) vs. inaktiv — zeigt in Sekunden, dass der Filter das falsche Vorzeichen hat. Ab jetzt vor jedem Filter-Sweep die Trefferquoten-Tafel des unterstellten Mechanismus rechnen, nicht den Parameterraum absuchen.
+114. **Ein Filterfenster, das nach dem Fill liegt, ist Look-ahead — auch wenn die Formel aus einem etablierten, korrekten Modul stammt.** `or_delta.py` misst dasselbe Delta völlig sauber, weil dort der Entry NACH dem Fenster liegt. Übernommen in den ORB-Zweig mit Fill IM Fenster wird aus derselben Formel ein Phantom mit +1,66R. Beim Kopieren einer Signalformel immer die Zeitachse mitprüfen: *wann steht der Wert fest, wann wird gefüllt?*
+115. **Zwei Selbsttests entlarven Look-ahead schneller als jeder Robustheits-Katalog: Monotonie und Spiegelung.** Wenn die Kennzahl mit der Fenstergröße monoton wächst, misst man Zukunft. Wenn die invertierte Gegenprobe fast exakt spiegelverkehrt herauskommt (PF 3,0 vs. 0,10), war die Auswahl bereits die Antwort. Der Katalog hätte hier 75 von 92 Varianten durchgewunken.
+116. **Wenn der beste Fund unter der Zufallsdecke liegt, ist die Suche beendet — nicht der Suchraum zu klein.** Max' Instinkt "such breiter" ist bei einer echten, versteckten Kante richtig; bei E[max Sharpe|Null] = 3,26 gegen einen besten Fund von 2,64 heißt breiteres Suchen nur, dass man irgendwann eine Variante findet, die die Zufallsdecke *scheinbar* überspringt. Ab jetzt gehört die Zufallsdecke VOR den Sweep, als Abbruchkriterium.
+
+## #117 — Die Funded-Phase zum ersten Mal durchgerechnet: die Sizing-Frage ist beantwortet, aber die eigentliche Frage ist eine andere (18.08.2026)
+Auslöser: Max' Einwand gegen die v2-Zielfunktion — *"irgendwann haben wir 90 % Passquote, aber erst in 10 Jahren. Bei 150 Tagen bis zum Pass kommt der erste Payout erst in einem Jahr, das ist viel zu lange."* Daraus wurde die erste vollständige Rechnung über die Kette **Eval → funded → Auszahlung**. Skripte: `ap104_leave_one_out.py`, `ap105_vwap_forensik.py`, `ap106_funded_sizing.py` + `_lib.py`, `ap106_funded_leg_metrics.py`.
+
+### 🚨 Die Kopfzahl: das Konto ist unter ehrlicher Drift nicht sicher positiv
+| Tages-Drift µ | E[Gesamtauszahlung] | Median | P(Bust vor 1. Payout) | **Wert je $150-Kauf** |
+|---|---|---|---|---|
+| $27,34 (In-Sample) | $6.384 | $9.006 | 22,4 % | **+$325** |
+| $20,5 (×0,75) | $5.069 | $5.248 | 34,3 % | +$97 |
+| **$17 (×0,62)** | ~$4.100 | $0 | 43 % | **≈ 0 (Break-even)** |
+| $13,7 (×0,50) | $3.250 | $0 | 50,5 % | −$76 |
+| $0 (Nulldrift-Kontrolle) | $475 | $0 | 79,5 % | −$280 |
+
+**Break-even liegt bei µ ≈ $17/Tag = 62 % des In-Sample-Werts. Der ehrlich geschrumpfte Punktschätzer liegt bei $7–12/Tag.** Bei n_trials ≥ 1000 (über die `*results*.json` sind ~4000 Konfigurationen dokumentiert, das ist nicht diskutabel) bleibt nach Haircut µ_rest $8,7; bei 4000 Trials $6,6. Die Nulldrift-Kontrolle besteht sauber (E[ges] −93 %, P(alle 5) 63 % → 1,1 %) — das Modell ist nicht kaputt, die Zahl ist echt.
+
+### Die Regime-Zerlegung ist die eigentliche Nachricht
+| Fenster | µ/Tag | Wert je Kauf |
+|---|---|---|
+| 2016–2021 | $6,59 [−2,4; 14,9] | **−$138** |
+| 2021–2026 | $48,09 | +$1.107 |
+| letzte 3 Jahre | $37,90 [19,0; 57,6] | +$527 |
+
+Die jüngere Periode ist **nicht** schwächer — die ältere ist tot (2016–20: $2,69/Tag, 2020 negativ). Das ist also kein Recency-Problem, sondern eine **Wette auf die Persistenz des Post-2021-Regimes**. Und der entscheidende Satz des Statistikers dazu: *genau dieses Regime hat die Beine hervorgebracht — Shrinkage und Regime sind hier dieselbe Unsicherheit, nicht zwei.*
+
+### Sizing: die Frage ist beantwortet, die Antwort ist "nichts ändern"
+Die Auszahlungen sind in **Dollar** gedeckelt (50k: 1250/1250/2250/2250/3250, max $10.250, danach endet der Konto-Zyklus). Eine größere Position holt dieselben Caps **schneller, nicht mehr** — kein Kelly-Wachstumsproblem, sondern ein Wettlauf Zeitgewinn gegen Ruin.
+
+| k je Bein | E[ges] | Median | P(Bust<P1) | E[Payouts] | P(alle 5) |
+|---|---|---|---|---|---|
+| **1** | **$6.367** | **$9.027** | **22 %** | 3,45 | 63 % |
+| 2 | $4.185 | $685 | 49 % | 2,12 | 39 % |
+| 3 | $2.952 | **$0** | 64 % | 1,49 | 28 % |
+| 40 (Cap) | $272 | $0 | 97 % | 0,14 | 3 % |
+
+Barwert fällt **streng monoton in k**, kein Knick, Rand-Optimum. **Kelly-Gegenprobe:** κ = σ²/µ = 247,49²/27,34 = **$2.241 Polster je Kontrakt und Bein**. Zu Beginn der Funded-Phase ist das Polster genau der DD-Betrag → 50k = 0,89 κ, 25k = 0,45 κ. **Ein Kontrakt je Bein ist auf 50k bereits 1,1× Voll-Kelly, auf 25k 2,2×.** Es gibt keine zulässige Größe darunter. Cushion-proportionales Sizing wurde mitgetestet (κ 1200–6000, kmax 2/4/8) und ist exakt gleich k=1: das Polster wird wegen Buffer + Caps nie groß genug.
+**Auszahlungspolitik** (kleiner Hebel, gratis): abrufen sobald verfügbarer Gewinn ≥ 0,5 × Cap (50k: $781), dann vollen Cap nehmen, nichts extra stehen lassen — +3,5 % gegen naiv-sofort. Mehr Polster halten ist messbar schlechter.
+**Tier: 50k**, klar — $6.367 gegen $2.297 beim 25k, also 2,8× Ertrag für $50 mehr Gebühr bei halber Bust-Rate.
+
+### E8-Regeln erstmals primärquellenbestätigt (Support-Chat 18.08., zwei Runden)
+- **Kein Profit-Target** in der Performance-Phase (die 6 % gelten nur für die Challenge)
+- **Maximal 5 Auszahlungen pro Konto**, Caps steigend (25k: 1000/1000/1250/1250/1500 = max $6.000 · 50k: 1250/1250/2250/2250/3250 = max $10.250). Danach endet der Zyklus, es gibt eine Gratis-Challenge derselben Größe. **Ein funded Konto ist ein endliches Gut, kein Einkommensstrom.**
+- **Keine 14-Tage-Mindestfrist** (entgegen allen Sekundärquellen), **die 5-Tage-Regel gilt nicht für die erste Auszahlung**, erster Payout praktisch nach ~3 Handelstagen
+- **Buffer bestätigt**: $1.000/$2.000 dauerhaft im Konto, nicht auszahlbar
+- Split 80 %, steigt nicht; Mindestauszahlung $100 (= $125 anrechenbarer Gewinn)
+- **GEKLÄRT am selben Tag (dritte Support-Runde, 18.08. 12:25):** der Floor **rastet ein** — Variante (a), die gute. E8 wörtlich: *"the Loss Level cannot trail above $50,000. Once it reaches the initial balance, it locks there permanently."* E8 korrigiert dabei mein Rechenbeispiel selbst: ab $52.000 EOD-Balance steht der Loss Level fix auf $50.000 und bleibt dort — auch bei $53.000 ist er **nicht** $51.000. Damit gilt die gute Zahl: **E[Gesamtauszahlung] $6.367 statt $1.317**, und eine Auszahlung ist kein Risiko-Ereignis. Die Buffer-Vermutung hat sich bestätigt (der Buffer ergibt nur bei einrastendem Floor Sinn).
+- **Zwei Details aus derselben Antwort, die das Modell schärfen:** (1) Der **Buffer liegt oben drauf**, nicht innerhalb — auszahlbar ist erst, was über *Startbilanz + Buffer* liegt; für den vollen ersten 50k-Cap von $1.250 braucht es $53.250 Balance. (2) Die **Caps sind Brutto-Abrufbeträge**, ausgezahlt werden davon 80 % (E8s eigenes Beispiel: $125 anrechenbarer Gewinn → $100 erhalten). Maximal erhalten: **50k ~$8.200, 25k ~$4.800**. Der Mathematiker hatte beide Lesarten gerechnet (netto $946 / brutto $827 diskontiert) — es gilt die Brutto-Lesart.
+
+### Der VWAP-"Widerspruch" war kein Fehler, sondern ein Zielkonflikt
+Am 16.08. kam NQ_VWAP-Pullback mit Score +2,00pp ins Buch, der Leave-one-out vom 18.08. zeigte −4,65pp. Forensik (`ap105_vwap_forensik.py`) schließt alle technischen Ursachen aus: Zellen bitgleich (max |Δ| = 0,0 über alle 6 Beine), Developer-v8 identisch zum Buch-Bein (1139/1139 Tage), Cache gültig, beide Seed-Sätze liefern −4,55/−4,65pp. **Die Erklärung liefert die Funded-Messung:** VWAP-Pullback ist das *beste* Funded-Bein (glatteste Kurve, Top-5-Tage nur 20 %, 56,4 % grüne Tage) und deshalb das *schlechteste* Eval-Bein. Beide Messungen waren korrekt, sie messen Verschiedenes.
+
+### 🚨 Zwei eigene Fehlschlüsse, die im selben Lauf gefallen sind
+1. **"25k ist dreimal schneller als 50k" war falsch.** Das war der *bedingte* Median (Tage bis Pass, gegeben dass bestanden wird) — zwischen Tiers unvergleichbar, weil die Zensierung völlig verschieden ist (25k: 49,4 % bestehen nie, 150k: 13 %). Zensierungsfrei ist **E[Tage je funded] = E[Tage/Versuch] / P(pass)**: 25k **1134 d**, 50k **512 d**, 100k 564 d, 150k 724 d. **50k ist mehr als doppelt so schnell, nicht langsamer.** Und die 87 % beim 150k sind ein **Horizont-Artefakt** (hm=24 → 67,3 %, hm=36 → 86,8 %, hm=60 → 91,8 %).
+2. **Die Korrelation Eval↔Funded (r = −0,40) ist Rauschen.** CI90 [−0,78; +0,19], Permutations-p 0,26; ohne den Ausreißer NOISE_ORB r = −0,21, p = 0,59. Bei n=10 ist alles unter |r| = 0,55 nicht von Null trennbar; für |r| = 0,4 bräuchte es n ≈ 46 Beine. **Eine Zwei-Bücher-Strategie darauf zu stützen wäre Fitting an einen Ausreißer** — ich hatte sie eine Stunde vorher als "Hypothese bestätigt" präsentiert.
+
+### Nebenbefunde
+- **Buch-Sharpe ist 1,48 annualisiert, nicht 1,84** — die 1,84 rechnen mit 252 Tagen statt der echten apy = 178.
+- **τ² ≈ 0 über die 10 Kandidaten-Beine** (Var_obs 0,00375 < E[Var_noise] 0,00450): die Beine sind untereinander statistisch ununterscheidbar. **Bein-Selektion innerhalb dieses Pools ist Rauschen** — das trifft rückwirkend auch die LOO-Deltas aus AP104.
+- Die LOO-Basis-sd von 0,2–1,0pp misst nur MC-Rauschen und **unterschätzt die echte Unsicherheit um Faktor 7–10** (Outer-Block-Bootstrap: 5,1pp auf 25k, 7,2pp auf 50k). Gepaart überleben nur zwei Deltas (ohne LastHour +6,1, ohne VWAP +5,2, beide nur auf 25k); **ORB-fade ist mit +0,6 [−3,1; +4,1] nicht von Null trennbar.**
+- Die 25k-LOO-Deltas summieren sich auf +18,5pp, sind also stark nicht-additiv — sie messen "weniger Kontrakte gegen $1.000 Trailing-DD" (Lehre 82), nicht Bein-Qualität. Das erklärt den Vorzeichenwechsel auf 100k/150k.
+- **64-Teilmengen-Suche gestrichen, weil gemessen:** IS-Sieger schlägt das Buch um +23,6pp, verliert −35,0pp ins Out-of-Bag und landet dort **12,4pp unter dem Buch**; 13 verschiedene Sieger in 25 Wiederholungen, PBO-Anteil 1,00.
+- **Bug gefunden:** `eval_marginal` mischt LOO- und Add-one-Vorzeichen (ohne Korrektur kommt r = −0,14 statt −0,40).
+
+### Gesamtverdikt
+Die Sizing-Frage ist sauber beantwortet und die Antwort lautet **nichts ändern** — Min-Size ist in allen vier Kombinationen (2 Tiers × 2 Floor-Varianten) und über alle Drift-Szenarien optimal. Aber sie war nie die entscheidende Frage. **Die entscheidende Frage ist, ob das Post-2021-Regime hält**: bei In-Sample-Drift ist ein Kauf +$325 wert, im 2016-21-Regime −$138. Kein Sizing-Hebel und keine Bein-Auswahl ändert daran etwas — der Wert je Kauf fällt in k in *jedem* Szenario, und die Beine sind untereinander ununterscheidbar.
+
+### Lehren
+117. **Ein bedingter Median ist zwischen zwei Optionen mit unterschiedlicher Ausfallquote wertlos.** "50 % bestehen in 49 Tagen" und "87 % bestehen in 539 Tagen" lassen sich nicht vergleichen, weil die erste Zahl die 49,4 % Nie-Besteher wegdefiniert. Die vergleichbare Größe ist **E[Zeit je Erfolg] = E[Zeit je Versuch] / P(Erfolg)**. Ich habe darauf eine Tier-Empfehlung gestützt, die sich exakt umgekehrt hat. Ab jetzt bei jeder Zeit-Aussage prüfen, ob sie auf Erfolg konditioniert ist.
+118. **Eine Kennzahl, die mit dem Rechenhorizont wächst, ist eine Eigenschaft des Horizonts.** Die 87 % Passquote auf 150k sind bei 24 Monaten 67 %, bei 60 Monaten 92 %. Bei jeder Passquote den Horizont mitnennen — oder eine horizontfreie Größe verwenden.
+119. **Bei n ≈ 10 Kandidaten ist eine Korrelation um 0,4 nicht von Null zu trennen, egal wie gut die Geschichte dazu passt.** Ich hatte r = −0,40 als "Hypothese bestätigt" verkauft, weil die kausale Story (Eval belohnt Sprünge, Funded bestraft sie) so überzeugend war. Die Story kann trotzdem stimmen — belegt ist sie damit nicht. Vor jeder Korrelations-Aussage: welches n, und was ist die Trennschärfe bei diesem n?
+120. **Wenn die Edge nur in der zweiten Hälfte der Historie existiert und die Beine in genau dieser Hälfte gefunden wurden, sind Shrinkage und Regime-Risiko dieselbe Unsicherheit — nicht zwei getrennte Abschläge.** Man darf sie nicht nacheinander abziehen (doppelt bestraft) und nicht gegeneinander ausspielen ("das Regime hält ja, also brauche ich keinen Shrinkage"). Die ehrlichere Basis ist, den Käfig direkt auf dem jüngeren Pool zu rechnen, statt einen µ-Faktor zu wählen.
+121. **Wenn eine Auszahlung gedeckelt ist, ist Positionsgröße kein Wachstumshebel mehr.** Der ganze Kelly-/Sizing-Instinkt setzt voraus, dass mehr Einsatz mehr Ertrag bringen kann. Bei einem Dollar-Cap holt die größere Position denselben Betrag nur schneller und zahlt dafür mit Ruinrisiko — das Optimum liegt zwangsläufig am unteren Rand. Vor jeder Sizing-Optimierung prüfen, ob der Ertrag überhaupt in der Größe skaliert.
+
+## #118 — Discovery-Runner v2: die Suche wird ein Dauerprozess mit Gedächtnis (18.08.2026)
+- **Anstoß (Max):** „Die Discovery-Batches haben noch nie was gebracht — wie kann ich dich durchgehend suchen lassen?" Diagnose (siehe [[Discovery-Prozess (wie wir Alpha finden)]]): abgegraster Suchraum, Filter zu grob und das Buch-Kriterium erst am Ende, kein globales Gedächtnis (~20 Einzelskripte). Antwort: **Rechnen macht die Maschine, entscheiden macht Claude** — [[Discovery-Runner v2]].
+- **Gebaut (`engine/discovery/`):** Daemon mit Queue, drei Stufen (Prämisse nach Lehre 113 → Grid mit Gates IS/OOS-fix, Top-5 ≤ 60 %, letzte 3 J ≥ 0, Block-Bootstrap P(>0) ≥ 0,85, **Plateau** über Grid-Nachbarn, PBO/DSR/Reality-Check → **Buch-Marginal** über `developer_run.book_contribution`, bei Exit-Sweeps gegen das Original-Bein), Trial-**Register** (Backfill **1390 Alt-Trials** aus 22 Ergebnisdateien → Zufallsdecke E[max SR | Null] ≈ 1,5 bei n≈1460, gerechnet mit theoretischer SR-Streuung 1/√Jahre statt der gemessenen — Exit-Varianten sind korreliert, gemessen wäre eine Scheindecke), Inbox + Morgen-Check (`inbox_tool.py`), job-freier Start per WMI, STOP/Lock/Heartbeat, Box-Provisionierungsskript (nicht ausgeführt, Live-Box). Der Runner schreibt nie ins Buch.
+- **Smoke-Test:** 4 Configs, alle Stufen grün. **Nebenbefund:** NQ_Momentum als Bein macht das aktuelle 6er-Buch um **−1,8 pp schlechter** (Basis ohne 77,0 % → mit 75,2 %, Rauschen 0,7) — deckt sich mit AP104 Leave-one-out; gehört in die Next-Week-Entscheidung (Ticket AP109).
+- **Erster Nachtlauf:** Exit-Sweep über 5 Buch-Beine (336 Configs; ORB-fade bewusst nicht: fliegt per Next-Week raus, `orb_exec`-Falle). Erster Job (NQ_Momentum, 72 Configs): 19 Survivors, Selektion „ok", Job-Decke 1,1 / global 1,53. Auswertung morgen früh mit Quant-Team + Auditor — Kandidaten aus 8 Buch-Marginal-Picks sind selbst wieder Multiple Testing, „vs Original +2 pp" ist noch kein Beweis.
+- **Ehrliche Grenze:** der Runner macht die Suche sauber und billig, aber neue Mechanismen kommen nur mit neuen Inputs (Tick/L2, Optionen-Positionierung, Breadth). Nächste Job-Typen: Regime-Conditioning bestehender Beine, Event-Bein.
+
+## #119 — NOISE_ORB_NQ als Zusatz-Bein verworfen: kein Qualitäts-, sondern ein Größenproblem (20.08.2026)
+**Anstoß:** Max fragte im Rahmen von AP104 nach, warum Ticket AP58 NOISE_ORB_NQ noch als Gewinn (+2,0pp, Logbuch #095) führt, während der Tausch-Test vom 18.08. (#116/AP104) −7,5pp (25k) / −11,7pp (50k) zeigt. Berechtigter Widerspruch.
+
+**Auflösung:** Die +2,0pp aus #095 (15.08.) wurden unter dem seit #106 (16.08.) verworfenen Zeit-Score-Kriterium (P(funded) pro Zeit, rollender Nachkauf) gerechnet. Dasselbe #095 zeigt im selben Atemzug, dass sogar ein bestätigt totes Bein (RV_leadlag, PF 0,91) dort +4,6pp brachte, rein weil mehr Handelstage das Konto schneller durchrechnen. Kein Edge-Effekt, ein Artefakt des alten Kriteriums.
+
+**Fehlender Test nachgeholt:** unter der aktuell gültigen v2-Methodik (Min-Size, Intraday-Bust, Block-Bootstrap, 5 Seeds, Skript `ap104b_add_noiseorb.py`) NOISE_ORB als reines **Zusatz-Bein** zum 5-Bein-Next-Week-Buch gerechnet (nicht Tausch, echte Addition):
+
+| Tier | Basis (5 Beine) | +NOISE_ORB (6 Beine) | Delta |
+|---|---|---|---|
+| 25k | 59,7 % | 47,9 % | **−11,8pp** |
+| 50k (gekauft) | 85,8 % | 70,4 % | **−15,4pp** |
+| 100k | 90,1 % | 84,0 % | −6,0pp |
+| 150k | 86,0 % | 93,0 % | +6,9pp |
+
+**Quant-Team-Gegenprobe (beide bestätigen, kein Rechenfehler):**
+- **Statistiker:** selbst wenn die reale Streuung wie in #117 um Faktor 7-10 größer ist als die 5-Seed-sd (0,58-0,69pp hier), bleibt das Delta auf 25k/50k einseitig bei p ≈ 0,02-0,013 von Null trennbar. Drei unabhängige Stützen: Replikation über den Tausch-Test (gleiches Vorzeichen, gleiche Größenordnung), ein geordneter Dosis-Gradient über die vier Käfig-Größen, und mechanistische Kohärenz (Median-Dauer halbiert sich, APY steigt, Passquote fällt — exakt das RV_leadlag-Muster aus #095, jetzt korrekt bestraft statt belohnt).
+- **Mathematiker:** First-Passage-Formel (Taylor 1975, P ∝ exp(−T·θ/(exp(θD)−1)), θ = 2µ/σ²) reproduziert alle vier Tiers mit einem einzigen Parameter (rmse 0,8pp). θ fällt um 29 %, weil NOISE_ORB bei Min-Size (1 Kontrakt durchgehend) **~52 % der gesamten Buch-Varianz** trägt — „ein Bein mehr" ist hier faktisch „Buch-Größe verdoppeln". Der 150k-Umschlag ins Positive ist ein reiner **Uhr-Effekt** (Zeitlimit bindet dort: Basis-Median 633 Tage, das Bein halbiert die Dauer und gewinnt so 10,3pp zurück), der zugrunde liegende Risiko-Effekt bleibt auch bei 150k negativ (−3,4pp). Eigene diskrete MC-Gegenrechnung bestätigt Vorzeichen und Größenordnung.
+
+**Verdikt:** NOISE_ORB_NQ ist keine schlechte Strategie (Solo weiterhin sauber: expR +0,094, IS=OOS, 9/11 Jahre positiv), aber bei 1-Kontrakt-Sizing für die gekauften Käfige (25k/50k) **zu groß** — Größen-, kein Qualitätsproblem. Weder Tausch noch Zusatz-Aufnahme verbessert das Buch an den relevanten Tiers.
+
+**Entscheidung Max:** NOISE_ORB_NQ bleibt draußen (weder Tausch für ORB-fade noch Zusatz-Bein), solange 25k/50k die Betriebs-Tiers sind. Next-Week-Buch bleibt bei 5 Beinen. **Ticket AP58 geschlossen** (Grundlage war die überholte #095-Zahl).
+
+**Offene Idee, kein Ticket:** die Formel sagt, dass θ bei halbierter Bein-Größe (MNQ statt NQ, oder Teil-Size/engerer Stop) wieder steigen könnte — NOISE_ORB wäre dann evtl. doch aufnehmbar. Nicht verfolgt, nur vermerkt, falls Max das später prüfen will.
+
+### Lehre
+122. **Ein Bein mit sauberer Solo-Kante kann das Buch trotzdem schädigen, wenn es bei Min-Size einen unverhältnismäßig großen Anteil der Buch-Varianz trägt.** Das ist kein Qualitäts-, sondern ein Größenproblem gegen den fixen Dollar-Trailing-DD (θ = 2µ/σ² fällt, wenn σ² überproportional wächst). Vor jeder „Bein dazu"-Entscheidung am Min-Size-Betriebspunkt den Varianz-Anteil des Kandidaten am Gesamtbuch schätzen, nicht nur seine Solo-Kennzahlen.
+
+## #120 — Baseline-Diskrepanz cage_v2 geklärt: 73,79 %/203$ ist die aktuell gültige 50k-Zahl, nicht 59 % (#106) oder 75,5 % (18.08.) (20.08.2026)
+
+**Anstoß:** offenes Ticket seit AP102 (18.08.): `cage_v2_weights.py` zeigte 75,55 % / 199$ (50k, volle Historie), Logbuch #106 dokumentiert 59,44 % / 255$ — beide sollen denselben Käfig auf demselben Buch messen. Vor der nächsten Käfig-/Bein-Entscheidung (hier: AP69 Portfolio-Gewichtung) musste geklärt werden, welche Zahl gilt.
+
+**Auflösung, per backtest-runner frisch nachgerechnet — zwei getrennte Ursachen, kein Config- oder Cache-Bug:**
+1. **59,44 % (16.08., #106) → 75,55 % (18.08. Nachmittag):** komplett durch die Engine-Fixes AP74/75 (qbt.py, Slippage-Split + Fake-Target-Hit-Fix) erklärt, gleiches 6-Bein-Buch.
+2. **75,55 % (18.08. Nachmittag) → 73,79 % (heute):** `book_state.json` bekam erst um 23:20 Uhr am 18.08. das 7. Bein `NQ_Momentum_d260818` dazu — Stunden NACH dem `cage_v2_weights.py`-Lauf (17:24–17:27 Uhr). Die 75,55 %-Zahl galt also nur für ein kurzlebiges 6-Bein-Zwischenstadium, nicht für das aktuelle Buch. Das 7. Bein drückt die v2-Passquote real (kein Rauschen, Delta > 2×sd) um ~1,8pp / +5$ pro funded.
+
+**Aktuell gültige Baseline (50k, 7 Beine, fixe Engine, Stand 20.08., 5 Seeds):** **73,79 % ± 0,73 sd Pass, 203$/funded.** Diese Zahl gilt ab jetzt als Referenz, bis sich Buch oder Engine wieder ändern.
+
+**Nebenbefund für AP69:** ob `NQ_Momentum_d260818` die richtige Ergänzung war, wurde nie explizit gegen das 6-Bein-Buch marginal getestet (`cage_v2_weights_results.json` enthält es in keiner Zeile) — offener Punkt für die laufende Gewichtungs-Analyse.
+
+### Lehre
+123. **Ein Skript-Ergebnis ist nur so aktuell wie der `book_state.json`-Stand zum Zeitpunkt des Laufs — bei parallelen Änderungen am selben Tag (hier: Engine-Fix UND neues Bein binnen Stunden) reicht ein Blick auf "wurde heute gelaufen" nicht, sondern nur ein Abgleich der `legs`-Liste im Ergebnis-JSON gegen den aktuellen `book_state.json`-Stand.
+
+## #121 — AP69 beantwortet: Gewichtung gibt es unter Min-Size nicht, dafür ein LIVE-Buch-Bug gefunden (NQ_Momentum-Duplikat) (20.08.2026)
+
+**Auftrag:** AP69, Befund #074: die Tages-Sharpes der Beine unterscheiden sich stark, das Buch läuft aber stillschweigend gleichgewichtet (alle 1 Kontrakt) — sollten Beine mit besserem Sharpe stärker gewichtet werden (w ∝ Σ⁻¹μ)? Quant-Team (Mathematiker + Statistiker) parallel gerechnet, danach `strategy-auditor` gegengelesen.
+
+### Kernbefund: die Prämisse war falsch, strukturell begründet
+
+Unter dem aktuellen Min-Size-Betriebspunkt (#106: frac so klein, dass effektiv 1 Kontrakt = die gehandelte Einheit) ist die First-Passage-Formel `P(pass) ∝ f(θ)`, `θ = 2·w'μ/(w'Σw)` **skalendegeneriert**: der Fixpunkt von `w ∝ Σ⁻¹μ` will die Gesamtgröße gegen null schicken, nicht auf einen endlichen optimalen Wert. Praktisch heißt das: **jedes Gewicht über 1x macht das Buch schlechter**, egal wie die Verteilung aussieht (2x LastHour: −11,0pp; 2x LastHour+VWAP: −17,5pp). Der Statistiker bestätigt das empirisch von der anderen Seite: kein paarweiser Bein-Sharpe-Unterschied ist signifikant (CIs überlappen fast komplett), die Bein-Rangfolge dreht sich zwischen erster und zweiter Hälfte der Historie fast komplett um (Spearman −0,75), und ein aus einer Hälfte gefitteter Gewichtsvektor crasht out-of-sample (71,8 %→39,3 %). Eine Σ⁻¹μ-Gewichtung ist auf dieser Datenlage nicht robust umsetzbar.
+
+**Der einzig wirksame Hebel im Min-Size-Regime ist binär (Bein-Selektion, keine Gewichtung):** vollständiger MC-Scan über alle 127 Teilmengen des 7-Bein-Buchs zeigt `NQ_Momentum` in 0 von 20 Top-Kandidaten, `NQ_Momentum_d260818` in 18 von 20.
+
+### 🚨 Nebenfund, wichtiger als die eigentliche Frage: LIVE-Buch-Bug
+
+`NQ_Momentum` und `NQ_Momentum_d260818` korrelieren mit r=0,64 bei identischen 798 Handelstagen — kein Zufall: Params-Diff zeigt **identischen Mechanismus** (`ts_reversal`/`momentum`), nur der Exit-Raum unterscheidet sich (`rev_stop_mult` 0,4→0,3). Im Discovery-Register ist der Job explizit als `"replaces_leg": "NQ_Momentum"` markiert — als 1:1-Ersatz gedacht, keine Ergänzung. `book_state_next.json` hat den Tausch am 17.08. korrekt vollzogen (nur `d260818` drin). **`book_state.json` (LIVE) enthält aber BEIDE Beine gleichzeitig**, mtime exakt 4 Minuten nach dem Next-Buch-Promote-Event (18.08. 23:20) — Runner-Bug oder eine Session hat versehentlich ins Live- statt Next-Buch geschrieben. Das Buch handelt seit mindestens 2 Tagen mit echtem Geld die doppelte Exposure auf denselben Momentum-Mechanismus.
+
+**Einzel-Drop-Test (Momentum raus, Rest bei 1x, E8 50k, volle Historie, 5 Seeds):** 73,79 %→81,08 % (+7,3pp, sd 0,53 — klar über dem Rauschband), $203→$185/funded, Inaktivitäts-Lücken unverändert bei 4. **Regime-Split-Gegenprobe (Auditor):** H1 (<2021) neutral −0,36pp (Rauschen), H2 (≥2021) klar positiv +8,23pp — **kein Vorzeichenwechsel**, anders als bei OR_DELTA_BIAS (#079) oder NOISE_ORB (#119). Kausal plausibel: deckt sich mit AP101 (Momentum-Crowding/Decay, 28 % Drift-Rückgang bei +42 % Vola in der jüngeren Hälfte).
+
+**Ticket angelegt** (`live-momentum-duplikat`, rot, sofort): `NQ_Momentum` aus `book_state.json` entfernen, `funded_finalize.py`/`live_finalize.py` nachziehen, NT8-Strategie-Instanz deaktivieren — braucht Max' O.K. vor dem Deploy, da echtes Geld betroffen.
+
+### Gesamtverdikt
+AP69 als Gewichtungs-Ticket ist **negativ beantwortet und geschlossen**: keine Sharpe-Gewichtung umsetzen, alle Beine bleiben bei 1x. Der eigentliche Hebel war die Bein-Selektion, und die eigentliche Aktion ist ein Bugfix am Live-Buch, kein neues Next-Week-Experiment.
+
+### Lehre
+124. **"Bein-Gewichtung erhöhen" und "Bein-Selektion" sind unter Min-Size zwei verschiedene Fragen mit entgegengesetzter Antwort.** Gewichte >1x schaden strukturell (Skalendegeneration der First-Passage-Zielfunktion), während 0/1-Auswahl der einzige echte Hebel ist. Eine „Gewichtungs"-Anfrage sollte deshalb zuerst prüfen, ob der Betriebspunkt Min-Size ist — dann ist die Antwort fast immer „nicht hochgewichten, sondern selektieren".
+125. **Ein Parent/Child-Ersatz im Next-Week-Buch ist erst abgeschlossen, wenn auch das Live-Buch nachgezogen hat.** `book_state_next.json` korrekt zu haben reicht nicht als Beleg, dass `book_state.json` denselben Stand hat — ein Abgleich beider Dateien gehört zur Routine-Prüfung vor jeder Buch-Entscheidung, nicht nur bei explizitem Verdacht.
+
+## #122 — Max' Tempo-These durchgerechnet: Geld-über-Zeit ist die richtige Zielfunktion, aber Size ist der falsche Hebel (20.08.2026)
+
+**Auftrag (Max):** Die Passquoten-Optimierung dauert zu lange (gefühlt „89 % in 180 Tagen", dann nochmal Monate bis zum ersten Payout). These: größere Size → schneller passen → früher funded → Payouts 50 % reinvestieren (bis 5 parallel) → summiert sich trotz niedrigerer Passquote zu mehr Geld. Quant-Team parallel: Mathematiker (Renewal-Reward-Modell der kompletten Pipeline Eval→Funded→Payout→Reinvest) + Statistiker (Unsicherheit, Shrinkage, Lotterie-Test). Voller Rechenstand: `engine\_scratch_money_model\` und `engine\_scratch_money_stats\`.
+
+### Kernbefunde
+
+1. **„89 %/180 Tage" existiert als Paar nicht** — 89,7 % ist der 100k-Tier (Median dort 419 Tage), ~186 Tage ist der 50k-Tier (Passquote dort 85–86 %). Beides 36-Monats-Horizonte; auf 12 Monate hat 50k nur **76 %**, Outer-Bootstrap-CI90 [64; 94] (Seed-Rauschen ±0,2 pp ist irrelevant dagegen).
+2. **Die Geld-Zielfunktion ist sauber** (anders als der beerdigte Zeit-Score #106): bei Edge 0 und −0,02R ist jede Tempo-Variante in allen 64 getesteten Zellen strikt negativer und monoton schlechter in k. Geld-EV darf als Zielfunktion verwendet werden.
+3. **Max' Zeitgefühl stimmt:** erster Euro auf 50k im Median nach ~14 Monaten (k=1), ~7,6 (k=2), ~5,5 (k=3). Der Tempo-Gewinn ist real — Faktor 2–2,5 auf „erstes Geld".
+4. **Aber der EV-Vorsprung von Tempo ist kurzlebig und tail-getragen:** k=2 führt auf 50k im Mittel nur bei 6–12M; Crossover bei ~18–24M, bei 60M liegt Min-Size +50 % vorn (32,6k vs. 21,8k $). Im **Median** gewinnt Min-Size ab Monat 12 durchgehend (24M: +4.250 $ vs. −350 $). P(im Minus @24M): 30 % vs. 53 % vs. 71 % (k=1/2/3). Der frühe Mittelwertvorsprung ist die Nachkauf-Lotterie in schwächerer Form.
+5. **Mechanik dahinter (Kassen-Effekt, kein Zeit-Effekt):** Geld-Multiple je gekaufter Eval fällt 35× (k=1) → 16× (k=2) → 9× (k=3); je eingesetztem Dollar gewinnt Min-Size in **jedem** Szenario. Der Reinvest-Motor — Herz der These — läuft in den ersten 12 Monaten praktisch nicht an (Reinvest 0 % vs. 100 % ändert <0,1 %); bindend sind Slots und früher Cashflow, nicht die Size.
+6. **Kipppunkt und Unentscheidbarkeit:** Tempo (k=2 auf 50k) lohnt ab wahrer Drift µ* ≈ 19–20 $/Handelstag. In-Sample sind es 25,8, ehrlich geschrumpft (n_trials=1730, James-Stein λ=0,736 bzw. DSR) **9–19**. µ* liegt mitten im Unsicherheitsintervall; Auflösung bräuchte ~33 Jahre Vorwärtsdaten. Minimax spricht für Min-Size (Verlustseite von Tempo größer und wahrscheinlicher).
+7. **Semi-analytisch (Mathematiker):** Renewal-Reward-Rate je Slot mit Tempo-Optimum **k\* = max(1, round(1,7·DD·µ/σ²))** (~1,7× Voll-Kelly aufs Startpolster, weil Payouts gedeckelt sind; trifft 10/12 gemessene Rate-Maxima). Mit geschrumpfter Drift auf 50k: k\* = 1. Die Rate-Kurve ist am Optimum flach (±12 %), der Rand (k≥3) klar schlecht.
+8. **Die echten Tempo-Hebel, die nichts kosten:** (a) **Start-Staffelung** der Evals um ~2 Monate statt gleichzeitig: P(≥1 von 5 besteht) 75,9 → 83,2 % — gleichzeitige Evals auf demselben Buch sind perfekt korreliert, Parallelität ist keine Diversifikation; (b) **Kaufrate/Budget in den ersten Monaten erhöhen** (300→600 $/M hebt 12M-EV um ~50–80 %); (c) **Käfiggröße statt Size**: 100k@k=2 / 150k@k=2–3 schlagen 50k@k=1 im Mittel um 20–60 % — steht und fällt aber mit den **unbestätigten** 100k/150k-Payout-Caps (extrapoliert als 2×/3× der 50k-Caps; erst schriftlich bei E8 bestätigen lassen, Ticket angelegt).
+9. Funded-Annahmen (Konsistenz-Regel, Gewinntage, Payout-Politik) verschieben nur das Niveau, nie die k-Rangfolge — einzige Ausnahme Floor-Lock (ist primärquellenbestätigt, 18.08.). Die Betriebspunkt-Entscheidung hängt allein an µ.
+
+### Verdikt
+**Betriebspunkt bleibt Min-Size auf 50k** (#106 bestätigt, jetzt auch unter der Geld-über-Zeit-Brille). Tempo nicht über Kontraktzahl kaufen — das ist eine Wette auf µ>19 mit P≈0,15–0,5 und dickem linken Tail. Stattdessen: Start-Staffelung einführen, frühe Kaufrate prüfen, E8-Caps für 100k/150k schriftlich klären und dann die Käfig-Frage (nicht die Size-Frage) neu aufmachen. Optionaler Engine-Patch (v3-Geldrate + k\*-Kontext neben v2, nie als Ersatz) liegt als Vorschlag im Mathematiker-Report.
+
+### Lehre
+126. **„Schneller reich durch mehr Size" scheitert nicht an der Passquote, sondern an der Kasse:** das Geld-Multiple je Eval fällt schneller als die Zykluszeit — der Reinvest-Motor, der die These tragen soll, wird durch Size ausgehungert. Tempo-Hebel, die bei Edge 0 nicht bestraft werden (Staffelung, frühe Kaufrate, Käfigwahl), immer zuerst ausschöpfen.
+127. **Mittelwert-Vorsprünge auf kurzen Horizonten immer gegen den Median stellen:** der 12M-EV-Vorteil von k=2 war tail-getragen (Median negativ) — dieselbe Selbstbetrugs-Stelle wie beim Zeit-Score (#106), nur subtiler.
+
+## #123 — E8 vs. FundedNext: volle Pipeline-Simulation, Regelwerk-Arbitrage-Runde (21.08.2026)
+
+**Auftrag:** Nach der Firmen-Recherche vom 20.08. (9 Support-Mails, [[Research-Cache]]) bleiben zwei für unser Setup taugliche Firmen: E8 (bisherige, dreirundig bestätigt) und FundedNext Flex (neu, eine ausführliche Support-Mail). Max: "rechne E8 vs FundedNext mit den 50k-Zahlen durch" → Quant-Team parallel (Mathematiker: volle Eval→Funded→Payout→Reinvest-Pipeline + Kombi-Szenario; Statistiker: Beweislage/Unsicherheit). Basis beider Rechnungen: aktuelles Live-Buch (6 Beine, Min-Size), `eval_plan.evaluate_v2`-Mechanik, ehrliche Zahlen aus [[Strategie-Logbuch]] #122 wiederverwendet.
+
+### Eval-Seite: FundedNext-Vorteil ist statistisch robust, aber winzig
+FN ist bei $/funded 33-45% günstiger als E8 (100% von 200 gepaarten Block-Bootstrap-Resamples, drift-invariant 0-38$/Tag, vola-invariant 0,5-3x, regime-invariant in 5/5 Fenstern — Statistiker). **Aber:** der Vorteil ist $75-91 je funded Konto, während die Payout-Decke $2.200 (netto) auseinanderliegt — 1:24 im Verhältnis. Die Eval-Seite darf die Firmenwahl nicht tragen.
+
+### Payout-Seite: E8 gewinnt langfristig, FN gewinnt kurzfristig
+Volle Pipeline (5 Slots, Min-Size, 50% Reinvest, IS-Drift 27,79$/Tag): **12M-Median E8 −750$ vs. FN +2.400$** (FN 4x schneller zum ersten Geld). **Crossover im Mittel ~65 Monate, im Median zwischen 24-60 Monaten** — danach zieht E8 klar vorn (60M-Median 34.317$ vs. 30.065$, 120M-Median 77.694$ vs. 66.685$). Kapitaleffizienz (Geld je Eval-Dollar) gehört E8 in jedem Szenario (50,0 vs. 12,7 bei IS-Drift) — E8s Gratis-Reset nach 5 Payouts ist strukturell mehr wert als FNs halber Preis.
+
+**Warum FN langfristig verliert — nicht die Caps, sondern die "Überlebensleiter":** FN erlaubt nur 50% des akkumulierten Profits auszuzahlen (Rest bleibt Polster), E8s Floor rastet komplett bei der Startbilanz ein (fixes Polster $2.000). Das macht E8s Weg zum 2.-5. Payout deutlich robuster (Survival-Wahrscheinlichkeit je Zyklus s≈0,87-0,93 bei E8 vs. ≈0,66-0,76 bei FN) — nicht die Cap-Höhe ist bindend, sondern ob man überhaupt bis dahin überlebt.
+
+### Nulldrift-Kontrolle: ein Warnsignal bei FundedNext
+E8 sauber bestraft bei Edge 0 (m60 −578$, Hausvorteil-Ratio p·R_f/Preis = 0,53 — plausibles Geschäftsmodell). **FN liegt bei Edge 0 im Mittel nur bei −15$, Ratio 1,03** — mathematisch heißt das: ein Könner mit Edge NULL würde im Mittel Geld von FundedNext bekommen. Das ist entweder ein Fehler in der (single-source) FN-Regelauslegung, oder ein Produkt, das so nicht überlebensfähig wäre. **Folge: bei FN nie über den Mittelwert urteilen, nur über den Median** (der bleibt bei −880$ sauber negativ).
+
+### Kombi-Szenario: kein Diversifikationsgewinn, aber ein Slot-Hebel
+Mathematisch bewiesen: bei getrennten Kassen ist E[Geld] exakt linear in der Firmen-Mischung (0,08% Krümmung = Rauschen) — **Diversifikation über Firmen bringt am Mittelwert nichts**. Was sie bringt: (1) die gemeinsame Kasse profitiert leicht von den billigen FN-Käufen als Cashflow-Beschleuniger (E1F4/E2F3 optimal, +1.300$ auf 60M, −7pp P(Verlust)); (2) das 5-Konten-Limit gilt **je Firma** — beide zusammen verdoppeln die Slot-Decke, was bei IS-Drift alles verdoppelt, aber bei unsicherer Drift (µ=19) den Median kippt (245$ → −830$) — dieselbe Falle wie Size-Skalierung in #122 (Lehre 127).
+
+### Der eine ungeklärte Punkt, der alles kippen kann
+FN-Support sagt "Max-Loss ist EOD-basiert, nicht intraday". Wenn wörtlich gemeint (kein Intraday-Check überhaupt), schlägt FN E8 auf **allen** Horizonten (Rate 172 vs. 158 $/Monat/Slot). Wenn wie bei E8 gemeint (Floor rastet EOD ein, aber laufende Positionsverluste zählen kontinuierlich gegen den Floor), bleibt die Basis-Rechnung gültig (E8 langfristig vorn). Der Nulldrift-Test stützt die vorsichtige Lesart (wörtlich wäre EV-Ratio 1,67 — kein Anbieter würde das verkaufen).
+
+### Verdikt
+- **Eine Firma, lange gedacht → E8.** Höhere Rate je Slot bei jeder Drift, 4x bessere Kapitaleffizienz, sauberer Nulldrift-Test, dreifach gegengeprüftes Regelwerk.
+- **Eine Firma, kurzer Horizont/schneller Cashflow → FundedNext.**
+- **Empfehlung Quant-Team:** E8 als Basis behalten, 1-2 FN-Slots als Tempo-/Cashflow-Beschleuniger UND als billiger Regelverifikations-Test (80$ Einsatz) dazu — nicht 5 FN-Slots und nicht 10 Slots gleichzeitig, solange die Drift zwischen 9-28$/Tag unentschieden ist und die EOD/Intraday-Frage offen ist.
+- **Vor jedem größeren FN-Einsatz:** die EOD/Intraday-Frage schriftlich klären (konkretes Rechenbeispiel wie beim E8-Cap-Widerspruch #073-090), Payout-Buffer erfragen, Praktiker-/Trustpilot-Recherche zu FN nachholen (im Vault noch komplett offen).
+
+### Lehre
+128. **Bei einem Firmenvergleich ist die Eval-Seite (Passquote/$-pro-funded) nur die Vorrunde — die Payout-Struktur (Split, Cap-Leiter, vor allem die "Überlebensleiter" zwischen den Auszahlungen) entscheidet das Rennen, meist mit 10-25x größerem Hebel.** Nicht am Eval-Vergleich stehenbleiben, wenn eine neue Firma auf den Prüfstand kommt.
+129. **Der Nulldrift-Test ist auch ein Plausibilitätsfilter für Firmenregeln:** ergibt eine Regelauslegung bei Edge 0 einen positiven Erwartungswert für den Trader (EV-Ratio p·R_f/Preis > 1), ist entweder die Regel falsch gelesen oder das Produkt nicht so gemeint — beides ein Signal, genauer nachzufragen statt zu rechnen.
+
+## #124 — HF-Serie Runde 2: leicht verdorrt, zwei „neue" Mechanismus-Ideen waren schon Grabsteine (21.08.2026)
+
+**Kontext:** Runde 1 der HF-Discovery (#122, 20.08.) fand nur beim NQ-Momentum ein echtes Frequenz-Signal. Am 21.08. lief eine zweite Runde (9 Jobs: `hf_combo_Mom_d260818`, `hf_volbrk_NQ`, `hf_orb_scalp_close_NQ`, `hf_gap_fade_ES/YM`, `hf_lasthour_thr_NQ`, `hf_asian_thr_NQ`, `hf_revfade_RTY/YM`) plus ein `hf_combo_Mom_d260818`-Job, der niedrige Schwelle **mit** dem next-week Exit-Profil (d260818) kombiniert.
+
+**Ergebnis: fast alles tot.** Kombo-Job 0 Kandidaten (schlägt selbst mit besserem Exit nicht die aktuelle Next-Week-Baseline, Selektion „dünn"). Vol-Breakout, LastHour-Schwelle, Asian-Schwelle: Selektion „kaputt" (PBO 46-47% im Zufallsband — reines Rauschen gewählt). ORB-Scalp, Gap-Fade ES/YM, Reversal-Fade RTY/YM: alle an der Prämisse gescheitert (Edge klar negativ), billig gestorben wie geplant.
+
+**Vor Runde 3 kurz gegen den Friedhof geprüft** (`qbt.py`-Modi `pivot`, `vwap_trend`/„continuation"), bevor neue Jobs geschrieben wurden: beide bereits tot — `pivot` in #051 (52 Configs, 47 sterben IS, 2 Survivors = Multiple-Testing-Bodensatz), `vwap_trend`/Zarattini-Cross zweimal Grade F. Keine neuen Jobs daraus gebaut.
+
+**Einordnung:** Nach 2 Runden (14 Jobs) auf den 4 bestehenden Instrumenten (NQ/RTY/ES/YM) und den bekannten Engine-Modi ist der leicht erreichbare Frequenz-Raum ziemlich ausgeschöpft — bestätigt die Grid-zuerst-vs-Mechanismus-zuerst-Lehre (#122): Parameter-Variationen bekannter Mechanismen liefern kaum noch etwas Neues. Queue ist leer, Runner wartet auf neue Job-Ideen.
+
+### Lehre
+130. **Vor jedem neuen „frischen" Mechanismus-Job kurz gegen den Friedhof prüfen** (Logbuch-Grep auf Modul-/Modus-Namen), bevor ein Job geschrieben wird — spart Rechenzeit auf Ideen, die schon mit Grab-Stein dastehen (hier: `pivot`, `vwap_trend`).
+
+## #125 — HF-Fundament: Kosten-Stress-Gate gebaut, `volshock` vor dem Bau falsifiziert, VWAP-Re-Arm unnötig (21.08.2026)
+
+**Auftrag (Max):** die drei übergreifenden Lücken der HF-Serie „alle drei testen": (1) Kosten-Stress-Gate, (2) Multi-Entry-Module (Re-Arm im VWAP-Pullback, `volshock`), (3) Wochenend-Ticket `next-week-2026-33` (d260818/d260821, LastHour_v3, ORB-fade, Asia_d260821) — (3) läuft mit Quant-Team + Auditor, Ergebnis in #126.
+
+### (1) Kosten-Stress-Gate — gebaut, scharf
+- `discovery_lib.stress_costs(tr, ticks)`: rechnet `r_net` analytisch auf `ticks` Slippage je Seite um (gleiche Ordertyp-Logik wie AP74: Limit-Entry bei ORB book/stop_honest und Target-Exit zahlen keinen Spread), kein zweiter Backtest. Neues Gate `cost_stress_ticks=2.0` in `DEFAULT_GATES`: expR gesamt **und** OOS-expR/OOS-USD müssen bei 2 Ticks positiv bleiben, sonst `fails=["cost2t"]`. Kandidaten-Einträge in der Inbox zeigen die Stress-Zahl mit.
+- **Test auf 12 Configs** (`engine/_scratch_volshock/stress_test.txt`): alle 6 Live-Buch-Beine stabil (Momentum 0,293→0,274 @2t, LastHour 0,089→0,075, Asia 0,217→0,198, VWAP 0,064→0,058); volbrk-Survivors stabil (0,142→0,119 @2t, 0,095 @3t); Momentum_hf 0,314→0,286. **Einziger Wackelkandidat: `NQ_Momentum_d260821` aus dem Next-Buch** — expR 0,102 @1t, 0,048 @2t, **−0,005 @3t** (201 tpy, Schwelle 0,15 %). Die Frequenz-Variante kauft Trades mit dünner Edge, und ein Tick mehr Slippage frisst davon die Hälfte. VWAP dist 1,5 (185 tpy) fällt ohnehin an OOS.
+- Engine per `-SyncOnly` auf die Box, Runner neu gestartet → alle weiteren Jobs laufen mit dem Gate.
+
+### (2a) VWAP-Pullback Re-Arm — nicht nötig, Register hat die Antwort
+- Der Tages-Cap `vwap_max_trades_day` 4/6/8 liefert **identische** Zahlen (greift nie), Re-Entry nach Exit ist im Modul schon drin. Der einzige Frequenz-Hebel ist `vwap_dist_min_atr`, und der verdünnt monoton: 2,5 ATR → 120 tpy / expR 0,064 / SR 1,48; 2,0 → 144 / 0,054; 1,5 → 185 / 0,042 (und 180 tpy-Variante OOS negativ). Exit-Sweep bis 250 tpy bei expR ≈ 0. **Mehr Trades aus diesem Mechanismus = proportional weniger Edge je Trade**, ein Re-Arm-Modul würde dieselbe Kurve abfahren. Bein bleibt bei 120 tpy.
+
+### (2b) `volshock` (Scout-Spec A) — Vorab-Falsifikation, Modul NICHT gebaut
+- Raster wie #112-#115 (`engine/_scratch_volshock/falsify.py`, NQ 15- und 30-min-Buckets, 52k/26k Buckets 2016-2026): RVOL = Bucket-Volumen / 20-Tage-Median desselben Buckets (nur Vortage), Move in ATR20, Forward 30/60 min ab Open der Folgebar, signiert mit der Bucket-Richtung, Terzile + Placebo (gleiche |Move|-Klasse, RVOL < 1).
+- **Kein Trefferquoten-Shift.** Trefferquote High-RVOL-Terzil liegt **1 bis 3 pp unter** dem Low-Terzil in jeder |Move|-Klasse (15 min: −1,0 bis −2,6 pp; 30 min: −0,8 bis −3,4 pp). Mittelwert-Differenzen < 1 Punkt bei 1,5 Punkt Kostenhürde, t < 1,6. Echte Schocks (RVOL ≥ 2/3, |Move| ≥ 0,10 ATR): Hit 48,8-50,7 % vs Placebo 49,9-51,5 %.
+- Einzige positive Zelle: OOS ≥ 2023-09 mit n=396 (15 min) bzw. 153 (30 min), mean +17/+24 Punkte, t 3,2/2,7 — IS davor negativ bzw. null. Das ist der Tail-Effekt aus #112, kein Mechanismus. Nicht bauen; falls der 2023+-Effekt in einem Jahr noch steht, Thema neu öffnen.
+- Konsequenz für den HF-Fokus: von den 4 Scout-Modul-Specs ist der einzige Multi-Entry-Kandidat tot. Mehr Trades/Jahr im Buch kommen damit weiterhin nur über **neue Beine**, nicht über mehr Entries eines Beins.
+
+### Lehre
+131. **Frequenz-Hebel immer erst im Register ablesen, bevor man ein Modul baut:** beim VWAP-Pullback stand die Antwort (Cap greift nie, Distanz verdünnt monoton) schon in 36 gerechneten Trials.
+132. **Kosten-Stress gehört zu jedem HF-Kandidaten als Gate, nicht als Nachfrage:** ein Bein mit 200 tpy und expR 0,10 ist bei 2 Ticks ein halbes Bein und bei 3 Ticks keins mehr — das hätte ohne Gate erst im Live-Vergleich auffallen können.
+
+## #126 — Box rechnete drei Tage gegen das falsche Buch: Kontamination, zwei Runner-Bugs, Wochenend-Ticket neu bewertet (21.08.2026)
+
+**Auslöser:** Quant-Team + `strategy-auditor` über das Wochenend-Ticket `next-week-2026-33` (Teil 3 von #125). Der Auditor fand zuerst, Statistiker und Mathematiker bestätigten unabhängig.
+
+### Kontamination
+- **Alle Box-Buch-Marginals vom 18.08. bis 21.08. 21:16 tragen `book_fingerprint 43d7dafe`** = `book_state.json.bak-20260820-fix-momentum-doppel`, das 7-Bein-Buch mit dem Momentum-Duplikat. Zwei Ursachen: (a) der Fix vom 20.08. (Duplikat raus) wurde am PC gemacht, aber **nie auf die Box gepusht** — die Box rechnete mit der alten Kopie weiter; (b) `discovery_lib.load_book()` cachte das Buch im Prozess ohne Reload, selbst ein Push hätte erst beim Neustart gewirkt. Alle vier Auto-Promotionen (d260818, d260820, beide d260821) sind davon betroffen; die Runner-Zahlen (80,85 / 80,33 / 69,98 / 74,03) reproduzieren mit dem 7-Bein-Buch auf die zweite Nachkommastelle.
+- **Fix:** `load_book()` prüft jetzt die mtime von `book_state.json` und lädt neu; CLAUDE.md-Regel: jede Änderung an `book_state.json` → sofort `inbox_tool.py --push-next`. Box neu gestartet (21:26 und 21:42), Inbox-Warnung auf der Box geschrieben.
+
+### Zwei Runner-Bugs (Statistiker, Mathematiker unabhängig)
+1. **Vergleichslatte „Original-Bein" war `prem_rows[0]`** (erste Prämissen-Config des Jobs), nicht das Buch-Bein. Bei Generator-Jobs ist das die Vorlagen-Basis (Momentum: n=2110 vs Buch-Bein n=798, Tages-PnL-Korrelation 0,26). „vs Original +10,2 pp" bei d260821 hieß wörtlich: *einem Buch, das schon Momentum hat, ein zweites hinzuzufügen schadet mit d260821 um 10 pp weniger als mit der Vorlagen-Basis*. Fix: Latte = echtes Bein aus `book_state.json` (eigener Backtest, `orig_book.source`).
+2. **Ersatz-Kandidat brauchte nur `vs_original == besser`**, das absolute Buch-Urteil wurde ignoriert — so wurde „Buch neutral −0,5 pp" promotet. Fix: Kandidat nur bei absolut „besser" **und** vs Original „besser"; `promote_next.py` gleichgezogen (vorher reichte „neutral").
+
+### Nachrechnung gegen das echte 6-Bein-Buch (PC, 50k, Basis 75,41 %)
+| Kandidat | Buch-Marginal | vs Original | Statistiker (12 gepaarte Seeds) |
+|---|---|---|---|
+| NQ_Momentum Original | **−1,9 pp** (Buch ohne Momentum 77,3 > mit 75,4) | Anker | — |
+| Momentum_d260818 (stop 0,3 + BE 0,5) | besser +3,6 pp → 80,85 | +5,5 | +5,0 [+4,8; +5,3], DSR 0,44, kostenstabil bis 3 Ticks |
+| Momentum_d260821 (201 tpy) | neutral +1,4 pp | +3,3 | +2,9, aber SR 0,75 < Decke 1,08, DSR 0,07, geschrumpft negativ |
+| Asia-Dir Original | neutral +1,6 pp | Anker | — |
+| Asia_d260820 (thr 0,8 + Target 2R) | besser +3,4 pp | +1,8 (knapp) | — |
+| Asia_d260821 (thr 0,725 + Target 2R) | besser +2,5 pp | **+0,9 = neutral** | +0,3 [−0,1; +0,6], White-RC p 0,13 |
+| volbrk als 7. Bein | **−14,2 pp** | — | Lehre 82 |
+
+### Verdikte (alle drei Agents einig)
+1. **LastHour_v3: übernehmen** (+1,9/+2,0 pp, 7/7 Seed-Paare positiv, κ 7,0→8,4). Filter selbst nicht bewiesen (n=129, p_FWER ≈ 1), aber billig. **Voraussetzung AP113:** FOMC-Liste in `news_calendar.py` endet 17.06.2026, live würde der Filter ab sofort nichts mehr ausschließen; `MaxLastHourNQ.cs` auf Kalender prüfen.
+2. **ORB-fade raus: übernehmen** (Quote +0,3 bis +0,6 pp, DSR 0,008, top5 = 207 % des Nettos). Einzige Änderung ohne methodischen Vorbehalt.
+3. **Momentum_d260821: verwerfen.** Kauft Frequenz mit dünner Kante (Jahres-Drift 711 $ vs 1277 Original vs 952 d260818; κ 6,3 vs 7,0), Kosten-Cliff aus #125; im Buch 80,9 % @1 Tick → 79,3 @2 → 77,5 @3, **ab 2 Ticks unter dem Buch ohne Momentum (80,5 %)**. d260818 bleibt bei 84,3/83,7/83,2. → **d260818 zurück ins Next-Buch.** Offen: nested-OOS-Marginaltest + Shrinkage (12er-Sweep), Why muss BE als Vola-Regler führen.
+4. **Asia_d260821: verwerfen.** Schwellensenkung 0,8→0,725 ist der schädliche Teil (κ 6,1→4,5), Target 2R der gute (Mittel +6 %, sd −15 %, Exit-Mix 32 % Target; nach dem Impuls ist die Rest-Drift bis EOD ~0, Stoppen bei 2R ist gratis). → **d260820 zurück ins Next-Buch, beobachten.**
+
+**Mathematiker-Modell:** log P ≈ −T/D_eff + T·κ mit κ = μ/σ² — bei Min-Size ist der Geometrie-Term praktisch konstant (D_eff 1864-1904), das Buch ist am 50k **κ-limitiert**, nicht pfad-limitiert. Spearman(Drift-Term, MC) 0,87 über 25 Buchvarianten. **BE-Overlay ist ein reiner Varianz-Transfer:** auf den Entries Gewinner −39,4k $, Verlierer +39,8k $, sd 129→95, κ 2,8→5,4; #046 hat expR gemessen (und BE kappt Gewinner), v2 misst κ — kein Widerspruch, aber das Why muss es so sagen. BE und Stop 0,3 sind additiv (2×2: 78,6 / 81,7 / 83,1 / 84,3 %).
+
+**Empfohlenes Buch:** d260818 + LastHour_v3 + RTY_Gap + Asia_d260820 + VWAP, ohne ORB = **85,8 % / $175 / Median 190 d** (Live 75,7 % / $198; Next-Buch wie es heute steht 80,9 % / $185). Nebenbefund für AP107: Buch am 50k überbesetzt (LOO ohne VWAP 88,9 %, ohne LastHour 87,6 %, bestes 3-Bein-Buch 90,0 % bei Median 372 d) — v2-Eigenschaft, nicht hier entscheiden.
+
+**Rauschmaß-Bug (AP112):** `book_contribution()` bildet `hypot(sd_base, sd_plus)` über unabhängige Seeds, der gemeinsame MC-Anteil fällt nicht heraus → Rauschen 3-5× überschätzt. Auf gepaarte Seed-Differenzen umstellen.
+
+### Next-Buch umgebaut (23.08. 15:50, Max' Auftrag)
+`book_state_next.json` = Momentum_d260818 + LastHour_v3 + RTY_Gap-fade + Asia_d260820 + VWAP-Pullback (ORB raus), `funded_finalize --next` + `live_finalize --next`, `--push-next`. **Ergebnis 50k: 85,9 % / $175 / Median 188 d** (Live 75,4 % / $199 / 144 d); 25k 59,6 % / $168 (Live 50,7 % / $197); 100k 90,1 %; 150k 86,1 % (−1,1 pp, einziger Tier mit Minus). Rollend: P(funded) 12M 74,3 % (Live 66,8 %), aber 3M 13,1 % (Live 21,1 %) und Median 174 statt 126 Tage — das Buch ist **besser, aber langsamer** (weniger Trades, BE kappt Pfade). Alle 5 Beine bestehen alle Gates inkl. Kosten-Stress (RTY_Gap top5 0,64 wie gehabt). Höchste Paar-Korrelation LastHour_v3 ↔ VWAP 0,40, Rest < 0,12. Jahres-PnL (1 Micro je Bein): 2016-20 dünn (2020 −422 $), 2021-22 Ausreißer (7,5k / 16,9k), 2023-26 stabil ~5k. Schlechtester Tag −886 $ (12.03.2020), kein Tag unter −1000 $.
+**Falle erlebt:** 16 Minuten nach dem Edit hat `auto_check.py --pull` den Box-Stand (d260821) über die PC-Datei gespiegelt — `live_finalize --next` lief damit falsch. Regel bleibt hart: Next-Buch-Edit → **sofort** `--push-next`, vor jedem Finalize.
+
+### Lehren
+133. **Buch-Fingerprint gehört in jede Entscheidung:** ein Buch-Marginal ohne Abgleich des `book_fingerprint` gegen das aktuelle `book_state.json` ist keine Zahl. Drei Tage, vier Promotionen, niemand hat hingeschaut.
+134. **Die Vergleichslatte ist Teil des Tests:** „vs Original" gegen eine Job-Prämisse statt gegen das Buch-Bein macht aus einem schlechteren Kandidaten einen Sieger. Latte immer aus derselben Quelle wie das Buch.
+135. **Ersatz braucht zwei Ja:** absolut besser als ohne das Bein **und** besser als mit dem alten Bein. Ein „neutral" im ersten Test ist ein Nein, egal wie groß das zweite Delta ist.
+
+## #127 — Hypothesen-Apparat: ein Weg statt zwanzig Skripte, Fallen als Vorbedingung (23.08.2026)
+
+**Auftrag Max:** alle Hypothesen der Momentum-Bank auf der Box testen, je Hypothese mindestens zehn Implementierungen (Volumen / Delta / EMA12 / EMA20 / Stop / Exit), tagelang, PC darf aus sein — und alles, was uns bisher umgebracht hat, soll als Vorbedingung mitlaufen, damit ein Fund direkt einbaubar ist.
+
+### Gebaut
+- **`sigcore.py`** — gemeinsame Signal-/Ausführungsschicht: Bars und Zeitrahmen als DURCHGEHENDE Serie, Averages (sma/ema/wma/hull/dema/tema/median/trimmed), RVOL gegen den Uhrzeit-Median der Vortage, Delta-Proxy aus OHLCV, Tageskontext (ATR/Sigma/Gap/Overnight/Panik — alles um einen Tag verschoben), ehrliche Trade-Simulation, ALLE Gates an einer Stelle.
+- **`tsmom.py`** (`mode="tsmom"`) — verallgemeinertes TSM: Fenster frei, Signaltyp ret/zscore/rank/rangepos/signratio/accel/jerk/wins, Basis open/prev_close/prev_rth/overnight, Schwelle in % oder σ. **Reproduziert `ts_reversal` exakt** (798 Trades, expR 0,293, 100 % gleiche Tage) — die Verallgemeinerung bringt kein neues Backtest-Gerüst mit.
+- **`maband.py`** (`mode="maband"`) — Averages, Crossover, Geschwindigkeiten, Bollinger/Keltner/Donchian, Anker-VWAP. Teilt sich Ausführung und Gates mit tsmom, damit ein Vergleich der Familien ein Vergleich der SIGNALE ist.
+- **`discovery/controls.py`** — die Lehren als automatische Batterie je Kandidat: Look-ahead-Delay (#066/#067), Long-Bias (#108), Nulldrift mit gewürfelter Richtung, Multi-Markt (#051), Epochen-Split 2016-19 vs. 2022-26 (#057), Zufallslevel bei Level-Strategien, Buch-Korrelation ≤ 0,70 (#079). Ergebnis ist ein `deploy_ready`-Verdikt; `promote_next.py` promotet nur noch das automatisch.
+- **`discovery/hypothesis_bank.py`** — Hypothese → Job. Erzwingt per `assert`: Why vorhanden, **≥ 10 Implementierungen**, ≤ 400 Configs. Gates härter als der Hausdefault (top5 ≤ 0,50 statt 0,60, Bootstrap-P ≥ 0,90 statt 0,85).
+
+### Auf der Box
+126 Jobs, 5.400 Configs, im Schnitt 44 Implementierungen je Hypothese. Priorität 95 zuerst: die Kontrollen, die über ganze Blöcke entscheiden (TS-01/AK-01 Filter-Äquivalenz, TV-01 Buy-and-Hold-Latte, TK-01 Long-Bias, AB-12/AW-14 Zufallslevel, AR-04/AR-14 Gate-Kontrollen).
+
+### Zwei Funde noch vor dem ersten Job
+1. **Bollinger-Break gegen Zufallslevel gleicher Distanz: expR +0,007 gegen +0,007.** Das Level trägt nichts, die Distanz alles. AB-12 hat damit schon vor dem Sweep geliefert.
+2. **`qbt.run_strategy` fiel bei unbekanntem `mode` still auf die Default-Strategie zurück.** Der Box-Runner lief seit dem Morgen und hatte `qbt` importiert, bevor tsmom/maband im Dispatch standen — die ersten maband-Jobs rechneten deshalb `continuation` und meldeten 142.742 statt 2.460 Trades. Betroffene Jobs zurückgesetzt, 17 Register-Einträge entfernt, Runner neu gestartet. **`KNOWN_MODES` wirft jetzt einen harten Fehler.**
+
+### Lehren
+136. **Ein stiller Fallback ist schlimmer als ein Absturz.** Ein unbekannter Modus, ein Tippfehler, ein veralteter Prozess — alles landete im `else`-Zweig und rechnete eine fremde Strategie, die brav ins Register wanderte. Jeder Dispatch braucht eine Whitelist mit hartem Fehler.
+137. **Ein laufender Prozess kennt neuen Code nicht.** Modul-Dateien auf die Box zu kopieren reicht nicht, wenn der Daemon das betroffene Modul schon importiert hat. Nach jeder Engine-Änderung: Runner neu starten, nicht nur syncen.
+138. **Die Warmup-Phase gehört zur Ehrlichkeit.** Ein EMA(20) auf 5m-Bars, je Session neu gestartet, ist bis 11:10 undefiniert — die erste Version lieferte 0 Trades statt eines Signals. Averages laufen über die durchgehende Serie, nicht pro Tag.
+
+## #128 — Buch KW34 ins Live-Buch übernommen, NT8-Deploy vorbereitet: der News-Filter lässt sich live nicht 1:1 nachbauen (23.08.2026)
+
+**Auftrag Max:** Next-Week-Buch ins aktuelle Buch übernehmen und bereit machen, es am selben Abend live zu deployen.
+
+**Abweichung von der Regel, bewusst:** das Next-Week-Buch war erst seit 15:50 desselben Tages im Staging, die vorgesehene Sim-Woche (Ticket `next-week-2026-33`) entfällt damit. Max' Entscheidung, hier festgehalten, damit die Herkunft später nachvollziehbar bleibt. Die Zahlen selbst sind aus #126 gegengelesen (Quant-Team + Auditor), nur die Beobachtungszeit fehlt.
+
+### Übernommen
+- `book_state.json` = **Momentum_d260818 + LastHour_v3 + RTY_Gap-fade + Asia_d260820 + VWAP-Pullback**, ORB-fade raus. Fingerprint `ca73aecf`, 5 Beine, Plan-Block unverändert. Backups beider Bücher unter `book_state*.json.bak-20260823-1759-promote`.
+- `funded_finalize.py` + `live_finalize.py` frisch gerechnet: **50k 85,9 % Passquote / $175 pro funded / Median 188 d** (25k 59,6 % / $168, 100k 90,1 % / $288, 150k 86,1 % / $453). Buch 338 Trades/Jahr, PF 1,38, Sharpe 1,83, |corr| 0,09. Live-Buch 8 Beine (5 Buch + 3 Bank), 371/yr, PF 1,40, Sharpe 1,95.
+- Next-Buch auf den neuen Stand zurückgesetzt (`changes: []`, `base_fingerprint ca73aecf`), PC und Box verifiziert synchron.
+
+### Der eigentliche Befund: der Makro-Filter ist live ein anderer Filter
+`NQ_LastHour_v3` handelt an FOMC/NFP/CPI-Tagen nicht. Im Backtest kommen diese Tage aus `news_calendar.build_calendar`, und das leitet **NFP und CPI aus dem 08:30-Volumenspike der Kursdaten ab** — ein Proxy, der den Tag erst im Nachhinein kennt. Live muss der Tag vor dem Handel feststehen, also ist der Proxy dort grundsätzlich nicht nachbaubar.
+- Gemessen, wie regelmäßig der Proxy überhaupt ist: **NFP trifft nur in 101 von 127 Fällen den ersten Freitag** (25× den zweiten, 1× einen anderen Tag); CPI verteilt sich über die Monatstage 8–16 und alle fünf Wochentage. Eine einfache Kalenderregel bildet ihn also nicht ab.
+- Konsequenz für NT8: hartkodierte Liste der **echten** Fed-/BLS-Termine (FOMC aus `news_calendar.py`, NFP + CPI aus dem Research-Cache-Eintrag von heute, AP113). Beide Mengen zielen auf dieselben ~29 Tage/Jahr, decken sich aber nicht tagesgenau — der Proxy wählte z.B. den 10.08.2026 als CPI-Tag, der echte Release war der 12.08.
+- **Das ist eine Abweichung zwischen Backtest und Live, keine Übersetzung.** Der Filter trägt im Buch-Marginal +1,9 bis +2,0 pp und ist laut Statistiker ohnehin nicht bewiesen (n=129, p_FWER ≈ 1), nur billig. Deshalb bewusst in Kauf genommen und im Code dokumentiert, statt eine Deckungsgleichheit zu behaupten, die es nicht gibt.
+- **Wiedervorlage:** die Liste endet am 10.12.2026, für 2027 hat BLS noch keinen Kalender. Läuft sie ab, handelt die Strategie wie ohne Filter weiter und schreibt täglich eine Warnung ins NT8-Log — bewusst so herum, weil blindes Aussetzen der teurere Fehler wäre.
+
+### Für den Deploy gebaut (drei NinjaScript-Änderungen, Pre-Flight sauber)
+- **`MaxMomentumNQ.cs`**: Stop 0.4 → 0.30 und neues Break-Even-Overlay (`BeTriggerR = 0.5`, Offset 0), 1:1-Port von `qbt._trail_stop`. Das günstige Extrem wird nur aus abgeschlossenen Bars gebildet, der nachgezogene Stop wirkt frühestens ab der Folge-Bar — dieselbe Look-ahead-Freiheit wie im Backtest.
+- **`MaxPowerHourNQ.cs`**: `ExcludeNewsDays` mit dem Kalender oben.
+- **`MaxAsiaDirNQ.cs`**: `TargetRMult = 2.0`, also Target = 2 × Stopabstand = 1,0 × Asien-Range. Bekannter Restunterschied: trifft eine Bar Stop und Target, zählt der Backtest konservativ den Stop, live entscheidet die Marktreihenfolge.
+- Pre-Flight-Compile des kompletten Zielzustands (8 Dateien) auf der Box: **COMPILE OK**. Staging enthält genau diese drei Dateien; die sechs Leichen vom 20.08. lagen noch drin, waren byte-identisch zum installierten Stand und liegen jetzt im Archiv.
+
+### Zwei Fallen, wieder dieselbe Familie
+1. **`auto_check.py` hat den Next-Buch-Reset erneut überschrieben** (gleiche Falle wie heute Mittag, Daily Note): der PC-Spiegel zog den alten Box-Stand zurück, während `funded_finalize` lief. `inbox_tool.py --push-next` pusht nur und pullt nicht — der Reset musste danach ein zweites Mal geschrieben und sofort gepusht werden. **Regel bleibt: Buch-Edit → sofort pushen, erst dann etwas anderes starten.**
+2. **Scheinbar abweichender Fingerprint zwischen PC und Box** (`ca73aecf` vs. `e6e33c74`) war ein Lesefehler: Python auf der Box öffnet ohne `encoding=` in cp1252, und die Bein-Namen enthalten `·` (U+00B7). Mit `encoding='utf-8'` gelesen stimmen beide überein. Beim nächsten Buch-Vergleich über SSH also immer explizit utf-8 lesen, sonst jagt man eine Kontamination, die es nicht gibt.
+
+### Deployt am selben Abend, 22:23 (Ticket `nt8-deploy-buch-kw34` / AP114)
+- Vorher kontrolliert: keine offene Position (letzter Fill 21.08., glatt zu), NT8-Tageslog ohne Trade-Zeilen, Sonntag also Markt zu. Dann NT8 beendet, `box_deploy.ps1`: Backup `deploy-20260823-2222`, drei Dateien installiert, Pre-Flight + `dotnet build` sauber (0 Errors), DLL gesetzt 22:23:09, `obj`/`bin` wieder entfernt. Installierter Stand per SHA256 gegen die Referenz verifiziert, alle drei byte-identisch.
+- **Nicht automatisch startbar:** NT8 braucht die interaktive Session (AP86), der Start aus der Session heraus wurde zusätzlich vom Sicherheitsfilter geblockt. Ist ohnehin die bessere Reihenfolge, weil die Handarbeit direkt danach kommt.
+- **Offen, in NT8 von Hand:** `StopRangeMult` 0.4 → 0.30 bei MaxMomentumNQ. Das ist der einzige Wert, der wirklich muss: NT8 hat ihn in der Instanz gespeichert, ein neuer Code-Default zieht nur bei Properties, die es vorher nicht gab (BeTriggerR, ExcludeNewsDays, TargetRMult kommen also von allein). Dazu ORB-fade-Instanz deaktivieren und RiskGuard-Telegram nachtragen (`riskguard-telegram-20260820`).
+- **Lab-Falle nebenbei gefunden:** `portfolio_next.json` trug noch die **verworfenen d260821-Beine** — ein altes Box-Artefakt vom 21.08., das `auto_check.py` brav zurückgespiegelt hatte, während `book_state_next.json` längst korrekt war. Der Next-Week-Reiter zeigte also ein Buch, das es nicht mehr gab. Nach `funded_finalize --next` + `live_finalize --next` tragen alle vier Portfolio-Dateien dasselbe Buch. **Lehre: nach einer Übernahme nicht nur die Bücher abgleichen, sondern auch die daraus gerechneten Portfolio-Dateien** — die Bücher waren synchron, die Auswertung nicht.
+
+
+## #129 — „0 Kandidaten" war ein kaputter Filter, nicht leere Suche: corr_book-Ersatz-Bug, Buch-Drift Nr. 3, und warum korrelierte Beine mathematisch nie „dazu" dürfen (24.08.2026)
+
+**Anlass:** Max' berechtigter Einwand — 190+ Hypothesen-Jobs, 865 Survivors, exakt 0 Kandidaten „kann nicht sein". Stimmte. Drei unabhängige Fehler stapelten sich; keiner davon war in der Inbox sichtbar.
+
+### Fehler 1: `ctl_corr_book` disqualifizierte jeden Ersatz-Kandidaten an sich selbst
+Die Kontroll-Batterie (#127) rechnete die Buch-Korrelation gegen **alle** Beine aus `book_state.json` — auch gegen das Bein, das der Kandidat per `replaces_leg` ersetzen soll. Ein besserer Exit auf demselben Signal (corr 0,9+ zum Original, logisch zwingend) konnte die Kontrolle **prinzipiell nie** bestehen. 10 Funde (TE-02/TE-04/TE-15, nominell +2,5 bis +4,9 pp Buch-Marginal) lagen deshalb zwei Tage stumm in `results/`. **Fix:** `run_controls(..., replaces_leg=...)` nimmt das abgelöste Bein aus dem Vergleich; der Runner reicht es durch.
+
+### Fehler 2: Geblockte Buch-Verbesserer waren unsichtbar
+Die Inbox kannte nur „Kandidat" oder Schweigen. Ein Fund, der das Buch verbessert und an genau einer Kontrolle scheitert, ist aber die wertvollste Information des Laufs — dort muss ein Mensch entscheiden, nicht der Filter. **Fix:** neuer Inbox-Kind **`blocked`** (Runner schreibt ihn, `inbox_tool`/`inbox.md` rendern ihn, Hub-Discovery-Tab zeigt Warnbanner + eigene Tabelle; `discovery_api.py` liefert `blocked_neu`/`blocked_ungelesen`, Hub neu gebaut). Die 10 Alt-Funde per Backfill nachgetragen.
+
+### Fehler 3: Buch-Drift Nr. 3 (nach #126 und 23.08.) — diesmal 24 h lang
+Das Wochenend-Buch-Update vom 23.08. **17:59** wurde nie per `--push-next` gepusht; um **18:01** starteten die TE-Jobs. Alle Buch-Marginals vom 23.08. 18:00 bis 24.08. 18:40 (Sync) liefen gegen das alte Buch (Fingerprint `f042e838`, noch mit `NQ_ORB-fade`, ohne `_v3`/`_d26...`-Beine). Obendrein: die Hypothesen-Jobs sagen `replaces_leg: "NQ_Momentum"`, das Bein heißt aber `NQ_Momentum_d260818` — im aktuellen Buch hätte der „Ersatz"-Test still nichts ersetzt. **Fixes:** (a) Namens-Auflösung im Runner (exakter Treffer, sonst eindeutiger Präfix, sonst laute Warnung), (b) **Buch-Drift-Wächter** in `inbox_tool.py --pull` (vergleicht Legs-Fingerprint PC vs. Box bei jedem Pull und schreit). Die „schlechter"-Verdicts der Nacht 23./24.08. sind gegen das falsche Buch gerechnet — für Verdicts zählt ab jetzt nur der Stand nach 24.08. 18:40; die PBO/Selektions-Urteile bleiben gültig (buchunabhängig).
+
+### Die eigentliche Antwort auf Max' Portfolio-Frage (Quant-Mathematiker, MC-verifiziert)
+Frage: mehrere hochkorrelierte Momentum-Beine **gleichzeitig** statt Ersatz? Antwort: **nein, nie auf diesem Käfig.**
+- Bei Min-Size ist „korreliertes Bein dazu" exakt Positions-Skalierung k>1, und es gilt die Skalen-Invarianz **P_k(T,D) = P_1(T/k,D/k)** — größer werden = Käfig schrumpfen. P(pass) ist bei positiver Drift **streng monoton fallend in k** (Lundberg: θ_k = θ/k, exakt auch bei Fat Tails). Das 50k-Buch steht schon **rechts** vom Optimum (k=0,75 wäre besser, ist aber nicht handelbar).
+- Add-Kriterium in Zahlen: Bein dazu hilft ⟺ **μ_c > (θ_b/2)·(σ_c² + 2ρ·σ_b·σ_c)**. Bei ρ≈0,9 liegt die Latte bei ~2,8× θ_Buch — praktisch unerreichbar. Das ist der formale Kern von Lehre 82.
+- Konkret TE-02 (beste Config, gegen das **aktuelle** Buch, 5 Seeds): Nur-Original 85,8 % · **Beides drin 83,7 % (−2,2 pp, echt schlechter)** · Ersatz 86,2 % (+0,4 pp = neutral, unter Schwelle). Die nominellen „+4,9 pp" aus dem Lauf waren Drift-Artefakt (altes Buch + Basis „Buch mit Loch"). ρ(Kandidat, NQ_Momentum) echt gemessen: 0,665, nicht 0,97; ρ zum Restbuch 0,35.
+- **Entscheidung: Buch bleibt wie es ist.** Kein Next-Week-Eintrag aus dieser Runde. TE-02-Ersatz nur wieder anfassen, wenn ein OOS-only-Marginal gegen den aktuellen Fingerprint die 1,5-pp-Schwelle nimmt.
+
+### Offene Patch-Vorschläge des Mathematikers (bewusst NICHT nebenbei umgesetzt)
+1. `theta_gate()` als billiger Vorfilter vor dem 5-Seed-MC in `eval_plan.py` (Lundberg-Schwelle; hätte hier ~90 % der Marginal-Läufe gespart — TE-02 „füllt" nur 49 % der nötigen Drift).
+2. Ersatz-Basis-Semantik: `bm.verdict` misst bei `replaces_leg` „besser als ein Loch" — die tragende Zahl ist `vs_original`, sauberer wäre base = Buch-wie-es-ist vs. Buch-mit-Swap.
+3. `evaluate_v2` `horizon_months=36` zensiert 100k/150k (E8 hat kein Zeitlimit) und kann die Tier-Rangfolge kippen — Entscheidung für Max, kein stiller Fix.
+
+**Meta-Lehre (die wichtigste):** „0 Kandidaten" bei 865 Survivors ist kein Ergebnis, sondern ein Alarmsignal. Token-Disziplin („nur Inbox lesen") gilt für den Alltag — bei einem statistisch unplausiblen Muster ist der Blick in die `results/` Pflicht, nicht Kür. Und: **jede** Buch-Änderung am PC heißt im selben Atemzug `--push-next`, der Wächter erinnert jetzt automatisch.
+
+
+## #130 — Payout-Plan-Nacht: Ziel „erster Payout + 10k€" komplett durchgerechnet, drei Tempo-Mythen beerdigt, RTY_Gap-fade zum Abschuss freigegeben (24.08.2026, Loop-Session)
+
+**Auftrag Max (abends, dann abwesend):** Tempo = einzelnes Konto schneller durchbringen; 50 % jedes Payouts reinvestieren; auch andere Prop-Firms prüfen; kooperativ mit Agents das Ziel verfolgen, ohne Overfitting. Ergebnis-Notiz: [[Payout-Plan (Erster Payout + 10k)]]. Gerechnet haben quant-mathematician (Kaskaden-MC, Firmen-Käfige), quant-statistician (Unsicherheit, Purged-WF, DSR/PBO), strategy-auditor (operative Machbarkeit, Gegenlese), Pool-Agent (2.643 Kombinationen).
+
+### Die Kernzahlen
+- E8 50k, aktuelles Buch, k=1: Median erster Netto-Payout **Monat ~15**, reine Driftstrecke 14,6 Monate (3.000 Eval + 2.625 Funded-Schwelle bei 25,8 $/Tag). 12-Monats-Median der Entnahme: **0 $ in allen Szenarien** (Mittelwert 721 $) — das Einkommen ist ein Klumpen, kein Strom (>90 % Null-Monate).
+- **Purged-Walk-Forward (neu):** ehrliche Forward-Drift **10-14 $/Tag** statt 25,8. Fit-Prämie kippt von −31 % (2016-19) auf +61 % (2022-26) — die Params sind ins junge Regime gefittet. Vier unabhängige Methoden (DSR, Vor-Discovery-Epoche, WF+Restdeflation, Forward-Folds 24-26) konvergieren auf ~10.
+- **Firmen-Vergleich (FundedNext Flex 50k, Support-Mails primärquellen-fest im [[Research-Cache]]):** „EOD"-DD ist bei offenen Positionen in Wahrheit **Floating-Equity-Breach** (bestätigt, Antwort „(a)"), Käfig effektiv 1.500 $ intraday → Buch-Passquote dort 76,1 %. ABER Payout ab 500 $ Zyklusprofit + 5 Benchmark-Tagen: **Ziel 1 Median 318 statt 461 Tage (µ=13: 546 statt 918)**. Langfristig gewinnt E8 (Gratis-Challenge-Recycling). Plan: E8 behalten, FN als schnellen ersten Slot (~80 $). Tradeify raus: „exclusive to Tradeify"-Klausel + Wohnsitz-Login nach jedem VPS-Neustart.
+
+### Drei Tempo-Mythen beerdigt (jeweils doppelt: Statistik + Operativ)
+1. **k_eval=3 („Tempo-Slot"):** halbiert zwar die Zeit auf dem Papier (15,2→9,4 M), aber P(µ>19-Kipppunkt) nur **12-16 %**, UND E8s 4-Mini-Kombicap würde an **47 % der Tage** gerissen, UND RiskGuard kennt kein Per-Leg-Sizing (eine `liveQty` für alle Beine aus `maxlab_size_*.txt`), UND `DailyLossLimit=900` ist nie für 3× Size kalibriert. Verdikt Auditor: **Papierrechnung**.
+2. **„Nach Floor-Lock rausquetschen" (Max' Hypothese):** falsifiziert — auszahlbar ist nur was über Start+Buffer liegt, das Polster ist nach jedem Abruf strukturell ~2.000-3.250 $ = bereits 1,16× Voll-Kelly bei k=1. k>1 in der Funded-Phase ist monoton schlechter, auch polsterabhängige Regeln finden nichts.
+3. **Portfolio-Neubau unter Tempo-Ziel:** 2.643 Kombis aus dem 21er-Pool, Selektion auf 70 %, Endbewertung auf 30 %: **keine schlägt das Buch OOS**. IS→OOS-Rangkorrelation **−0,18** (11k-Ziel: −0,65), PBO **71 %** — die Selektion ist kontraproduktiv. Der IS-Sieger (VWAP-Pullback ×3) bricht OOS auf Rang 87/121; das aktuelle Buch: Rang 10/121. Einziger Überlebender „Asia-Dir ×2" starb in der Gegenlese: doppelter Fit (Params #126 + post-hoc-7er-Referenzmenge), 85 OOS-Tage unterbestimmt (Nachweisgrenze 64 $/Tag), 31 % des Gewinns auch bei Edge null, kostet −3,7 pp auf der v2-Zielgröße. Merksatz des Statistikers: **dieselbe Tempo-Metrik gibt dem toten RTY-Bein t=−7,3 — Tempo-Metriken allein sind kein Beweisinstrument.**
+
+### Was TATSÄCHLICH bleibt (die drei robusten Hebel)
+1. **FN-Flex-Slot** für Ziel 1 (Details oben; vor Kauf 2 Klärfragen: Floor-Lock-Zeitpunkt, Parallelbetrieb zu E8).
+2. **Auszahlungs-Politik „sofort ab Minimum"**: 1-2 Monate früheres erstes Geld für ~10 % auf 24 M, Ziel 2 unberührt. Nach Payout 1 auf halben Cap.
+3. **Kaskaden-Disziplin: nie bei null Konten stehen** — größter Einzelhebel überhaupt (wörtliches „nur Reinvest" endet in 35-53 % der Pfade bei 0 $ für immer).
+
+### RTY_Gap-fade: zum Abschuss freigegeben
+Auditor-Gegenlese nach dem PWF-Fund: Buch-Config besteht das eigene Top5-Gate nicht (0,638), 2/3 Epochen negativ, ATR-Band ohne dokumentiertes Why, schlechter als die eigenen Grid-Nachbarn; kanonischer Mechanismus in ALLEN Epochen signifikant negativ. **Umsetzung über den regulären Kanal:** Entfernung in `book_state_next.json` (4-Bein-Buch: 86,1 % / 174 $ / 195 d — praktisch identisch zum 5-Bein-Buch), Ticket `next-week-2026-35-gapfade`, Retune-Job `gapfade_retune_RTY_260824` lief noch am Abend auf der Box: Selektion sauber (PBO 3 %), aber **0 Kandidaten** — auch die Nachbar-Fläche verdient keinen Ersatz, Original gegen das aktuelle Buch −0,1 pp (neutral). Wochenend-Entscheidung läuft auf „raus ohne Ersatz" zu.
+
+### Für die Werkzeuge vorgemerkt (Entscheidungen Max, kein Auto-Fix)
+- `contracts`-Feld je Bein in `book_state.json` + Ein-Zeilen-Übersetzung in `funded_finalize`/`eval_plan` (`dc = C@w`) — falls je wieder ein Gewichtsvektor geprüft wird.
+- Pool-Suche-Maschinerie behalten, aber Zielspalte auf `pass_pct`/$-pro-funded, Nulldrift-Spalte fest in jede Variantenprüfung.
+- `theta_gate()`-Vorfilter (Lundberg) vor teuren Marginal-MCs; `horizon_months=36`-Zensur; Historien-Bootstrap ins `book_contribution`-Rauschmaß (Faktor ~25 unterschätzt).
+- Echte Vorwärtszeit läuft seit 20.08. — erst nach ~12 Monaten Live trennt sie 10 von 19 $/Tag (Power-Grenze, kein Ungeduldsproblem).
+
+
+## #131 — FA-01 Fast-Alpha-Overlay in die Pipeline + Sync-Vorfall: Box rechnete mit Code vom Vortag, Skript meldete trotzdem „fertig" (25.08.2026)
+
+**Anlass:** Paper Zarattini/Pagani „Improving Performance with Fast Alphas" (Concretum QuanTips #2, Feb 2026; Research-Cache-Abschnitt vom 25.08.). Kernidee: standalone tote Kurzhorizont-Mean-Reversion als Execution-Overlay — Trend-Entry erst nach 1 abgeschlossener Gegen-Bar ausführen.
+
+**Was gebaut wurde (der EINE Weg, #127):**
+- Engine: `sigcore.pullback_entry()` (Entry-Verzögerung, Fill am Open der Folge-1m-Bar, Timeout enter/skip), `sigcore._pb_exit()` (Stop als Alarm — von FA-01 bewusst NICHT benutzt), `simulate_trade(stop_px=…)` (Anker-Stop bleibt beim Basis-Entry, sonst kippt die R-Definition; Guard: Anker schon gerissen → kein Entry). `tsmom`: `tm_pb_entry/tm_pb_maxwait/tm_pb_timeout(+exit)`. `overfit.paired_delta_report()` (gepaarter Trade-Join, Block-Bootstrap auf der Differenzreihe, Tages-Blöcke, sd_d/mde_80/flip_rate).
+- Hypothese FA-01 in `hypothesis_bank.py`: NQ+ES, 72 Configs je Symbol, `kein_overlay`-Kontrolle im Grid, `pb10_w45` als erwartete Totzone (Plateau-Kontrolle). Deckt TE-11 aus der Coverage-Karte ab.
+
+**Quant-Team-Befunde vorab (beide Agents, 25.08.):**
+1. **Entry-Overlay hat auf NQ-Breakouts echten Platz:** Post-Signal-Drift von ORB-30-Signalen ist die ersten 15–20 Min NEGATIV (−0,76 Pkt bei 15 min), erst danach läuft der Trend — Mechanismus: der Ausbruchs-Impuls wird von Stop-Runs getragen, wer am Break-Close kauft, zahlt die Stop-Run-Prämie. Gepaart gemessen +0,85 Pkt/Trade (P>0=0,97), nach Shrinkage eher +0,4–0,6.
+2. **Auf tsmom-Zeitfenster-Momentum ist dasselbe Overlay klar negativ** (lokal −0,02..−0,05 R, boot_p<0,05) — Drift-Identität Delta = −d·E[τ]: das Overlay gewinnt NUR, wo der Preis nach dem Signal erst gegen die Richtung läuft. Vor jedem Einbau den Drift des konkreten Beins messen, nie annehmen.
+3. **Exit-Overlay tot für Evals:** E[PnL]≈0, aber −13..−20 Pkt Zusatz-MAE je Stop-Touch, Skew −1,0, 1%-Tail −133 Pkt = 10% des 50k-Puffers in einem Ereignis. Der Käfig bestraft Pfad-Varianz, nicht Erwartungswert.
+4. **Skip-Timeout tot:** wirft genau die Runner weg, sd(d) explodiert (Faktor 10–17 mehr Stichprobe nötig). Overlay verzögert Entries, lässt nie welche aus.
+5. **Gepaart auswerten ist Pflicht:** zwei getrennte Equity-Kurven verschenken 90–99 % der Power. Ticket `fa01-paired-eval-runner` (Runner-Integration + `ctl_placebo_overlay`).
+
+**Der Vorfall (Lehre, #126-Klasse — diesmal Code statt Buch):** `box_provision_discovery.ps1 -SyncOnly` meldete „fertig", aber der scp-Aufruf mit Backslash-Glob (`"$tmp\*"`) schlug still fehl — die Box rechnete den ersten FA-01-Job mit dem Engine-Stand vom Vortag, der `tm_pb_entry` gar nicht kannte. `qbt` validiert nur den `mode` und ignoriert unbekannte Params still: 72 „verschiedene" Configs, alle identische Baseline-Trades, Schein-Plateau inklusive. Gefunden vom neuen **`pipeline-auditor`**-Agent (erster Einsatz, per SSH-mtime-Vergleich). Fix: Teillauf verworfen, Sync repariert (Verzeichnis-Inhalt statt Glob, harter Exit-Code-Check, Zeitstempel-Marker wird zurückgelesen), Runner neu gestartet. **Lehren:** (1) Ein Sync-Skript, das den Exit-Code seiner Kopier-Befehle nicht prüft, ist kein Sync-Skript. (2) Unbekannte Params müssten laut werden — Kandidat für ein Gate: Job-Params gegen Modul-DEFAULTS validieren. (3) Der Pipeline-Auditor gehört ab jetzt VOR jeden neuen Job-Typ (steht so in CLAUDE.md).
+
+**Stand:** FA-01 (NQ+ES, 144 Configs) liegt mit Prio 88 auf der Box, Runner läuft mit verifiziertem Code. Auswertung beim Rücklauf NICHT über Einzelzellen-Ranking, sondern `paired_delta_report` je pb_profile gegen `kein_overlay` (Runner kann das noch nicht — Ticket). MultiCharts-Port `FastAlpha_ATR_Breakout.txt` für Max' Handtest liegt in `Projects/trading-data/multicharts/`.
+
+## #132 — ES-Offensive: GEX-Buch-Gate ehrlich beerdigt, drei ES-Flow-Jobs in die Queue, zwei stille Pipeline-Löcher gestopft (25.08.2026)
+
+**Auftrag Max:** ES fehlt im Buch — Mechanismen finden, die dort laufen können, alle Kandidaten durch die Queue schicken, plus: welche anderen Futures wären attraktiv.
+
+**1. Warum ES bisher leer ausging (Scout-Kernbefund):** MES zahlt pro Einheit Bewegung das **3,6-fache** von MNQ (Round-Trip 0,90 % der Median-Tagesrange vs. 0,25 %; im 2-Tick-Stress 1,54 %). Die 823 ES-Register-Trials sind an Mechanik gestorben, nicht an Ideenmangel. Konsequenz: auf ES zählt **$/Trade statt Frequenz** — die besten ES-Survivors sind Event-Trades (EVENT_ES ~47 $/Trade), gescheitert nur an ~11 Trades/Jahr. Bewusste Ausnahme vom HF-Fokus, nur für ES.
+
+**2. GEX-Buch-Gate ist tot.** Der vergessene Lauf vom 16.08. (Quintil +2,67 pp „besser") wurde gegen das aktuelle 5-Bein-Buch neu gerechnet: Quintil nur noch **+1,21 pp bei Schwelle ±1,30 = neutral**, Vorzeichen-Gate schlechter, GEX-Residuum-nach-VIX neutral (+0,11). Der 16.08.-Effekt war buchabhängiges Rauschen. Die heute gebauten Engine-Gates (`tm_gex_min/max`, `tm_vix_min/max`, `tm_vix_rank_min/max` in `sigcore.gates_pass`, Daten `DIX_GEX_daily.csv`/`VIXCLS.csv`, 250d-Rang, t−1) bleiben als Werkzeug für Discovery-Jobs. Alt-Ergebnis gesichert als `gex_gate_results_260816.json`.
+
+**3. Drei ES-Jobs eingereiht** (alpha-scout, Audit „sauber mit Auflagen"): `wexp_charm_ES` (Charm-Unwind an ALLEN Freitagen statt nur Monats-OpEx, tsmom + `tm_dow`, Mo-Do-Kontrollzelle, Prio 68) · `eusession_break_ES` (Europa-Fenster 03:00-09:25 als Breakout-Range, asian-Modus, Prio 64; Prämisse stirbt vermutlich ehrlich — Basis-expR lokal −0,05) · `vixrev_ES_wide` (VRP nach Angst-Spike, vix_bias, mit Momentum-Kontrollzelle, Prio 60). FA-01-Stand: ES 0 Survivors (Basis scheitert einheitlich an top5+cost2t — kein Filter-Bug), **NQ 30 Survivors / 0 Kandidaten**; die eigentliche Overlay-Frage klärt die gepaarte Auswertung am Wochenende (Ticket).
+
+**4. Zwei stille Pipeline-Löcher (pipeline-auditor, zweiter Einsatz, wieder Volltreffer):**
+- **B1 Stale-Cache:** `qbt.load_rth`/`asian.load_full` nutzten `engine/cache/*.parquet` ohne mtime-Check — ALLE Backtests endeten still am 06.07., obwohl Daten bis 10.08. da sind; der Cache wurde auch noch auf die Box gesynct (PC und Box rechneten auf verschiedenen Samples ins selbe Register). Fix: mtime-Check in beiden Loadern, `cache` aus dem Box-Sync raus, Box-Cache gelöscht.
+- **B2 deploy_ready-Loch:** `controls.py` übersprang Delay-/Nulldrift-Kontrolle für Modi ohne Schalter (`asian`, `vix_bias`, …) mit `ok=None` — und `run_controls` zählte nur `ok=False` als Fehlschlag → **deploy_ready ohne je einen Look-ahead-Test**, und `promote_next` promotet auf genau dieses Flag. Fix: Pflichtkontrollen (delay, null), übersprungen = nicht deploy_ready. Folge-Arbeit: Delay-Schalter für asian/vix_bias nachrüsten, sonst bleiben deren Funde dauerhaft (korrekt) gesperrt.
+- Dazu **B3**: Kontrollzellen (Label „*kontrolle*" bzw. `control_labels`) sind jetzt vom Survivor-Ranking/Kandidatur ausgeschlossen — ein Falsifikations-Zwilling darf das Why widerlegen, aber nie selbst promotet werden. Und ein Zombie-`running`-Status (hyp_FA01_NQ) auf der Box bereinigt.
+
+**5. Andere Futures (research-scout):** Ranking MCL (EIA-Inventory-Flows) > MNG (EIA Storage) > MGC (London PM Fix, peer-reviewed) > Micro-Yield 10Y (Auktions-Flows) > M6E > MBT (Weekend-Gap seit CME-24/7 am 30.05.2026 strukturell TOT). **Aber: für keinen einzigen ist die E8-Handelbarkeit primärquellen-belegt** (Terms/ESPA enthalten keine Instrumentenliste), für keinen liegt 1m-Historie vor, und der Datenexport-Weg ist undokumentiert. Tickets: `e8-instrumente-anfrage`, `futures-datenexport-doku`, `cal-macro-post-modul` (CPI/NFP-Event-Modul = aussichtsreichster ES-Buch-Weg, braucht harte BLS-Datumslisten statt Volumen-Spike-Erkennung), `spx-csv-refresh`.
+
+**Lehren:** (1) Ein Regime-Gate, das nur auf einem bestimmten Buchstand „besser" ist, ist kein Gate, sondern Rauschen — Buch-Gates immer gegen den aktuellen Stand rechnen, bevor irgendwas gebaut wird. (2) Caches ohne Quell-mtime-Check sind Zeitbomben (dritte Stale-State-Klasse nach Buch #126 und Code heute Mittag — jetzt alle drei mit Automatik geschlossen). (3) Eine übersprungene Pflichtkontrolle ist ein Fehlschlag, kein „n/a".
+
 ## Nächste Kandidaten (noch offen)
 - ~~Replace-Test: NQ_Momentum → MOMSEL_NQ_er0.3_s0.75~~ → in #080 ehrlich neu gerechnet: nur bei frac ≈0.10 sinnvoll; in #095 endgültig erledigt (Momentum ist im Leave-one-out neutral, bleibt drin) — **in #108 unter v2/Min-Size wieder aufgemacht als AP101** (nicht mehr als Buch-Frage, sondern als Vola-Senkung bei erhaltener Drift)
 - ~~Momentum selektiver~~ → in #057 getestet, NQ 8/8 robust (siehe oben)

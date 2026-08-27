@@ -35,3 +35,18 @@ Priorisiert nach Machbarkeit:
 4. Order-Flow nur wenn wir Tick/L2-Daten beschaffen.
 
 *Alles gegen das Eval-Objektiv (P(pass) schnell), nicht gegen Sharpe.*
+
+## Offene Fäden (Max, 21.08.2026)
+
+### Volumen als eigenständiges Signal (horizontal + vertikal, einseitig)
+- **Idee (Max):** Volumen nicht nur als Filter (RVOL, `vol_filter`), sondern als **einseitiges Signal** für einzelne Strategien denken — in zwei Achsen: **vertikal** (Volumen pro Zeit: wann kommt Beteiligung, wann fehlt sie) und **horizontal** (Volumen pro Preis: Volume Profile, POC/Value Area, wo wurde Position aufgebaut).
+- **Was schon gilt:** Minuten-Delta/CVD ist tot ([[Strategie-Logbuch]] #021, [[Alpha-Konzepte]] Punkt 6) — das war Richtungs-Orderflow mit Look-ahead. Roh-Volumen (unsigniert) pro Zeit und pro Preis ist davon **nicht** abgedeckt und wurde bisher nur als ORB-Filter genutzt.
+- **Vorarbeit vor jedem Test:** zuerst das Why — wie bringen Institutionen große Positionen in den Future-Markt und welche Volumen-Spur hinterlässt das. Recherche-Ergebnis: [[Institutionelle Order-Execution (Theorie)]]. Erst wenn der Mechanismus steht, Hypothesen im Idee-Engine-Format ([[Idee-Generierung (wie Institutionen)]] Abschnitt 6) formulieren, dann Discovery-Jobs.
+- **Stand 21.08.2026:** 478 Hypothesen in 8 Blöcken abgelegt in [[Hypothesen-Bank (Volumen & Flows)]] (192 davon ohne neuen Code als Discovery-Job formulierbar). Nächster Schritt: Kontroll-/Nullhypothesen zuerst, dann Jobs in die Queue.
+- **Stand 23.08.2026 (Pairs):** 100 Hypothesen zu Pairs Trading / Relative Value in [[Hypothesen-Bank (Pairs Trading & Relative Value)]] — alle kaefigtauglich gefiltert (intraday only, nur ES/NQ/RTY/YM, doppelte Kosten), 40 davon Ein-Bein. Einstieg laut Rangfolge: SM-01 (Messung), LL-01 (leadlag sauber nachtesten), KO-02/03 (Limit-Entry).
+- **Stand 23.08.2026:** 200 Hypothesen zu Time-Series-Momentum und Averages in [[Hypothesen-Bank (Momentum & Averages)]], dazu 100 Hypothesen zu TWAP in [[Hypothesen-Bank (TWAP)]] (Preis um die TWAP-Linie plus Algo-Fingerabdruck). Beide noch ungetestet. Reihenfolge laut Max: erst der Momentum-Schub in die Queue, danach TWAP.
+
+### Momentum in allen Richtungen (TSM, Cross-Section, Way of Dumb)
+- **Idee (Max, 21.08.):** Momentum nicht nur als Breakout über den Ort, sondern in allen Richtungen des Futures-Markts denken: Time-Series-Momentum (Preis, Vola, Volumen/Hedging-Demand, Carry, Cross-Asset, Acceleration, Residual, Overnight-vs-Intraday), Cross-Sectional Momentum (Rank über Instrumente) und „Way of Dumb" (Zwangsflows großer Institutionen ausnutzen).
+- **Stand:** Teil 1 (TSM-Theorie) recherchiert und verdichtet in [[Momentum-Theorie (Futures)]] mit 7 ungetesteten Hypothesen-Kandidaten (Vol-Targeting-Overlay, Acceleration, idiosynkratisches NQ-Momentum, Tug-of-War-Filter, Multi-Speed-Konsens, Bond-Gate, Basis-Momentum). Teil 2 und 3 als Backlog-Karten in der Idee-Engine (`ideas.json`).
+- **Nächster Schritt:** Kandidaten 1 bis 5 als Discovery-Jobs formulieren (Why vorab, Register prüfen), Quant-Team vor dem Vol-Targeting-Overlay.

@@ -81,7 +81,8 @@ Damit du weißt, wo du suchen und ablegen musst (spart Tokens):
 1. **Inbox prüfen:** Schau in `Inbox/` (v.a. [[Brain Dump]]) nach neuen Notizen.
 2. Wenn etwas drin liegt: kurz zusammenfassen und **anbieten, es einzusortieren** (ins passende Projekt / Bereich / Ressource).
 3. **PC-Loops übernehmen (Regel Max, 17.08.2026):** Prüfe `C:\Users\maxlk\Projects\trading-data\engine\.claude_loop_heartbeat.json`. Ist die Datei jünger als 50 Minuten, läuft der Buch-Sync-Watchdog + Discovery-Batch-Loop schon in einer anderen Session — nichts starten, höchstens kurz erwähnen. Fehlt sie oder ist sie älter: diese Session startet den Loop selbst per `/loop` (kombinierter Tick alle ~35 Min: `book_state.json` vs. `portfolio.json` vergleichen und bei Bedarf `funded_finalize.py` nachziehen, plus Discovery-Batch-Kadenz-Check gegen [[Strategie-Logbuch]] und FIREFIGHT-Status) und schreibt bei jedem Tick den aktuellen Zeitstempel in die Heartbeat-Datei. Grund: Max hat oft mehrere Sessions parallel offen, ohne die Sperre würde jede eigene Kopie des Loops starten und sich beim Schreiben von `book_state.json`/`portfolio.json`/`tasks.json` in die Quere kommen (der nicht-versionierte `trading-data`-Ordner verzeiht das nicht, siehe `session-guard`).
-4. Erst danach mit der eigentlichen Aufgabe weitermachen.
+4. **Discovery-Inbox lesen (Regel Max, 18.08.2026):** `cd C:\Users\maxlk\Projects\trading-data\engine && python discovery/inbox_tool.py --pull` (holt den Stand von der **Box** — dort läuft der Runner seit 18.08. 23:06 dauerhaft, der lokale Ordner ist nur Spiegel — und zeigt Status + ungelesene Kandidaten kompakt). Gibt es Kandidaten mit „besser" (bzw. bei Exit-Sweeps „vs Original besser"): Quant-Team + `strategy-auditor` drüberschauen lassen, dann Next-Week-Buch + Ticket, danach `inbox_tool.py --seen-all` (schreibt die seen-Flags auf die Box zurück). Steht der Runner auf der Box (Heartbeat > 30 min alt; seit 20.08. gibt es keine Pause mehr, 24/7) und die Queue hat `pending`-Jobs: per SSH neu starten (WMI-Zeile in `box_provision_discovery.ps1`). Details [[Discovery-Runner v2]].
+5. Erst danach mit der eigentlichen Aufgabe weitermachen.
 
 ---
 
@@ -125,7 +126,7 @@ Nicht nur Beine rein/raus. **Jede** dieser Änderungen zieht denselben Zug nach 
 | Andere Kaufpolitik (Evals pro Monat, Preis) | `book_state.json` → `plan.buys_per_month` / `price_per_eval_usd` |
 | Umstellung des Bust-Checks (eod ↔ intraday) | `book_state.json` → `plan.dd_mode` |
 
-Danach **immer** `funded_finalize.py` laufen lassen, im selben Zug, nicht „später". Der Portfolio-Tab zeigt dann automatisch: Kaufplan (beide Konten mit Frac, Solo-Quote, Median-Dauer), P(funded) rollend über 1/2/3/6/12 Monate, erwartete Eval-Anzahl und Kosten, sowie die Frontier in **beiden** Bust-Modi (EOD-Kopfzahl + ehrliche Intraday-Zahl nach #077).
+Danach **immer** `funded_finalize.py` laufen lassen, im selben Zug, nicht „später". **Und im selben Zug `python discovery/inbox_tool.py --push-next`** (pusht `book_state.json` + `book_state_next.json` auf die Box) — gilt für JEDE Änderung an `book_state.json`, nicht nur am Next-Buch. Vorfall 21.08.2026 ([[Strategie-Logbuch]] #126): der Momentum-Duplikat-Fix vom 20.08. wurde nie gepusht, die Box rechnete drei Tage lang alle Buch-Marginals (inkl. drei Auto-Promotionen) gegen das alte 7-Bein-Buch. Der Portfolio-Tab zeigt dann automatisch: Kaufplan (beide Konten mit Frac, Solo-Quote, Median-Dauer), P(funded) rollend über 1/2/3/6/12 Monate, erwartete Eval-Anzahl und Kosten, sowie die Frontier in **beiden** Bust-Modi (EOD-Kopfzahl + ehrliche Intraday-Zahl nach #077).
 
 **Betriebspunkt seit 16.08.2026 = Min-Size** ([[Strategie-Logbuch]] #106): unter der v2-Zielfunktion (Passquote je Eval / $ pro funded) ist die Passquote streng monoton fallend in der Größe, also 1 Kontrakt je Bein, frac ist ausgereizt und **die Kontogröße ist der Sizing-Hebel** (25k schlechtester Käfig, 50k billigster $/funded, 100k/150k höchste Passquote). Der frühere Paar-Betriebspunkt (#089, „P(funded) pro Zeit") gilt nur noch, wenn Max ausdrücklich wieder auf Tempo optimieren will — dann zuerst klären: einzelnes Konto oder Kauf-Rate?
 
@@ -195,6 +196,48 @@ Dazu Developer-spezifisch: OOS-Fenster in der Equity blau hinterlegt, Perzentil-
 
 ---
 
+## 🤖 Discovery-Runner v2 (Regel Max, 18.08.2026)
+
+**Rechnen macht die Maschine, entscheiden macht Claude.** Alpha-Suche läuft als lokaler Dauerprozess `engine/discovery/discovery_runner.py` (Queue → Prämisse → Grid+Gates → Buch-Marginal → Inbox), Doku in [[Discovery-Runner v2]].
+
+- **Neue Suchidee = Job in der Queue**, kein neues Einzelskript mehr: Job-JSON (Mechanismus, Familie, **Why vorab**, `base`, `grid` ≤ ~100 Configs, `premise.configs`, ggf. `replaces_leg`) → `python discovery/inbox_tool.py --add-job job.json`. Braucht die Idee ein neues Engine-Modul (neuer `mode`), erst das Modul, dann der Job.
+- **⭐ Neue Edge / Vorteil gegenüber dem alten Portfolio → NIE ins Live-Buch, IMMER sofort ins Next-Week-Buch (Regel Max, 18.08.2026).** `discovery/promote_next.py` macht das automatisch: läuft auf der Box alle 30 Min (`--box-mode`, Scheduler-Task „MaxLab Discovery Promote"; deckt „sofort" und den 15-Uhr-Punkt ab), nimmt je Bein den besten Kandidaten mit belegtem Vorteil (Ersatz: „vs Original besser"; neues Bein: „besser" + über der Zufallsdecke), schreibt ihn in `book_state_next.json` (neuer Bein-Name `<Bein>_d<YYMMDD>`, Backup vorher, `next_week.changes` mit `auto`-Block), rechnet `funded_finalize --next` + `live_finalize --next` und merkt das Next-Week-Ticket vor. **`book_state.json` (Live) wird davon nie angefasst** — die Übernahme ins Live-Buch bleibt die Wochenend-Entscheidung über das Ticket (Quant-Team + Auditor). Konflikte (Bein im Next-Buch schon manuell geändert, z.B. `NQ_LastHour_v3`) werden NICHT automatisch aufgelöst, sondern in der Inbox gemeldet. Der Runner selbst schreibt nie in `book_state*.json`, `tasks.json`, `developer/state.json`.
+- **PC darf aus sein:** Runner + Auto-Promotion laufen komplett auf der Box. Ist der PC an, spiegelt `auto_check.py` (alle 30 Min) bzw. `inbox_tool.py --pull` den Box-Stand (Inbox, Register, `book_state_next.json`, `portfolio_next.json`, Reports, vorgemerkte Tickets → `tasks.json`). **Manuelle Änderung am Next-Buch am PC → sofort `python discovery/inbox_tool.py --push-next`**, sonst promotet die Box in einen alten Stand.
+- **Register ist Pflicht:** jeder Trial zählt (auch Backfill 1390 Alt-Trials); Zufallsdecke immer gegen `n_global`. Wer außerhalb des Runners sweept, trägt die Ergebnisse per `backfill_registry.py`-Muster nach.
+- **Läuft auf der Box** (seit 18.08.2026 23:06, Max' Okay): `C:\Users\maxlk\Projects\trading-data\engine\discovery\` auf `VMD202078` (gleicher Pfad wie am PC, weil die Engine absolute Pfade hat), Python 3.11 unter `C:\Program Files\Python311`, **seit 20.08.2026 24/7 (`pause_hours []`, Max' Ansage — BELOW_NORMAL schützt NT8; bei Auffälligkeiten im Live-Handel wieder `[[15,22]]`)**. Eine Instanz je Maschine (`runner.lock`), Stopp über `STOP`-Datei (`box_provision_discovery.ps1 -Stop`). **Engine-Änderung am PC → vor dem nächsten Nachtlauf `box_provision_discovery.ps1 -SyncOnly`**, sonst rechnet die Box mit altem Code. Neue Jobs immer über `inbox_tool.py --add-job` (macht pull → append → push auf die Box). Lokal starten (`start_discovery.ps1`) nur, wenn die Box nicht erreichbar ist — nie beide gleichzeitig auf derselben Queue.
+- **⭐ Die Queue darf nie leerlaufen (Regel Max, 21.08.2026 — Fulltime-Suche, Fokus aktuell HF/mehr Trades pro Jahr).** Seit 21.08. 16:50 füllt der Runner die Queue **selbst** nach: `discovery/job_generator.py` (im Daemon-Loop, `min_pending` 3) erzeugt erst Folge-Jobs zu fertigen Jobs mit Survivors (Verfeinerung um den besten Survivor, HF-Rangfolge; Exit-Profil-Sweep), dann Abdeckungs-Jobs aus 11 Vorlagen × 4 Märkten (nur Modi mit dokumentierten Params, `orb` immer `orb_exec=close`), bis Tiefe 3; Register-Pruning gegen Doppelarbeit, max. 120 Jobs/Tag. Handgebaute Jobs (`--add-job`) laufen mit Vorrang (höhere `priority`). Schreibt der Runner trotzdem `queue_empty` in die Inbox, ist die Vorlagen-Welt ausgereizt → Claude muss **neue Mechanismen** (Engine-Modul + Vorlage in `TEMPLATES`) liefern, nicht mehr Grid. Mehr Grid auf altem Mechanismus bringt nichts (#494), die Zufallsdecke wächst mit jedem Job mit. **Dafür gibt es seit 21.08.2026 den Subagent `alpha-scout`** (`.claude/agents/alpha-scout.md`, Background starten): bei `queue_empty`, bei „was testen wir als nächstes?" und wenn Max eine Idee in einen Job übersetzt haben will. Er macht erst Inventar (Register, Queue-Ausgänge, Friedhof in `ideas.json`/Logbuch, Engine-Modi, Datenbestand), rotiert durch die 4 Edge-Quellen, rankt und schreibt queue-fertige Jobs nach `discovery/jobs_proposed/` + Report nach `discovery/scout_reports/` (Modul-Specs für Ideen ohne `mode`). Er baut keine Vorlagen-Grids nach und schreibt nie in `queue.json`: die Hauptsession prüft kurz und reiht mit `inbox_tool.py --add-job` ein.
+- **Nie** `runner.log` oder volle `results/*.json` einlesen — `inbox_tool.py` bzw. `summarize_results.py` reichen.
+
+---
+
+## 🔬 Der EINE Weg für jede Strategie-Idee (Regel Max, 23.08.2026 — verbindlich)
+
+**Es gibt ab jetzt genau einen Weg, wie eine Idee getestet wird. Nicht mehrere Arten, sondern eine Art, die dafür sehr intensiv läuft.** Gilt für jede neue Strategie, jede Hypothese, jeden Discovery-Job, jede Developer-Version. Wer davon abweicht, braucht einen ausdrücklichen Grund von Max.
+
+**Die vier Schritte, immer in dieser Reihenfolge:**
+
+1. **WHY zuerst.** Kein Test ohne Mechanismus im Klartext: wer muss handeln, warum, und warum bleibt das Geld liegen. Ohne Why kein Job — das Feld ist Pflicht und wird beim Job-Bau geprüft (`assert` in `hypothesis_bank.py`).
+2. **Dann die ARTEN.** Eine Hypothese wird **nie als eine Strategie** getestet, sondern als **mindestens zehn Implementierungen desselben Mechanismus**: andere Fensterlänge, anderer Signaltyp, andere Bestätigung (**Volumen / Delta / EMA12 / EMA20 / VWAP-Seite**), anderer Stop (Range/Sigma/ATR), anderer Exit (EOD/Zeit/RR). Der Baustein dafür ist `AX_CONFIRM` / `AX_RISK` / `AX_EXITS` in `hypothesis_bank.py`. Weniger als zehn Varianten lässt der Job-Bau nicht zu.
+3. **Dann die bekannten FALLEN — als Vorbedingung, nicht als Nachgedanke.** Alles, was uns bisher umgebracht hat, läuft automatisch mit. Zwei Ebenen:
+   - **`GATES_HARD`** (in `discovery/hypothesis_bank.py`) für jede Grid-Zelle: min. Trades/OOS-Trades/Trades pro Jahr, Top-5-Konzentration ≤ 50 % (#038), Block-Bootstrap P ≥ 0,90, Plateau statt Spitze, letzte 3 Jahre nicht negativ (#057), Kosten-Stress 2 Ticks je Seite.
+   - **`discovery/controls.py`** für jeden Kandidaten, der das Buch-Marginal besteht: Look-ahead-Delay (#066/#067), Long-Bias (Goyal/Jegadeesh, #108), Nulldrift mit gewürfelter Richtung, Multi-Markt (#051), Epochen-Split 2016-2019 vs. 2022-2026 (#057), Zufallslevel bei Level-Strategien, Tages-Korrelation zum Bestandsbuch ≤ 0,70 (#079, Lehre 82).
+   Erst wenn alles davon steht, ist ein Fund **`deploy_ready`**. `promote_next.py` promotet seit 23.08. **nur noch deploy_ready-Kandidaten** automatisch ins Next-Week-Buch.
+4. **Dann rechnen, lange und breit.** Auf der **Box**, nicht im Chat, damit Max' PC aus sein kann. Jobs kommen aus `python discovery/hypothesis_bank.py --enqueue --push`.
+
+**Die Werkzeuge dafür stehen und werden benutzt, statt neue Einzelskripte zu bauen:**
+
+| Datei | Rolle |
+|---|---|
+| `engine/sigcore.py` | gemeinsame Signal-/Ausführungsschicht: Bars, Averages, RVOL, Delta-Proxy, Tageskontext (immer um einen Tag verschoben), ehrliche Trade-Simulation, alle Gates an EINEM Ort |
+| `engine/tsmom.py` (`mode="tsmom"`) | verallgemeinertes Time-Series-Momentum: Fenster, Signaltyp (ret/zscore/rank/rangepos/signratio/accel/jerk/wins), Basis (open/prev_close/prev_rth/overnight), Schwelle in % oder σ |
+| `engine/maband.py` (`mode="maband"`) | Averages, Crossover, Geschwindigkeiten, Bänder, Kanäle, Anker-VWAP — teilt sich Ausführung und Gates mit `tsmom` |
+| `discovery/hypothesis_bank.py` | Hypothese → Job mit ≥ 10 Implementierungen, Why, harten Gates |
+| `discovery/controls.py` | die Lehren aus den Fehlschlägen als automatische Batterie |
+
+**Neue Idee heißt: neue Zeile in `hypothesis_bank.py`** (und bei einem wirklich neuen Mechanismus ein neuer `mb_kind`/`tm_signal` in den bestehenden Modulen) — **nicht** ein neues Skript daneben. Der Grund: nur so zählt das Register jeden Trial mit, nur so gilt dieselbe Zufallsdecke, und nur so ist der Look-ahead-Check an einer Stelle statt an dreißig. Hypothesen-Vorrat: [[Hypothesen-Bank (Momentum & Averages)]] und [[Hypothesen-Bank (Volumen & Flows)]].
+
+---
+
 ## 🧮 Quant-Team: Mathematiker + Statistiker (Regel Max, 16.08.2026)
 
 Zwei Subagents in `.claude/agents/`, die sich **automatisch und ohne Rückfrage** einschalten, sobald es um neues Alpha oder darum geht, es für die Eval zu optimieren:
@@ -212,6 +255,14 @@ Beide laufen auf `opus` (Formeln/Statistik lohnen das Modell; Max kann die `mode
 
 ---
 
+## 🔍 Pipeline-Auditor (Regel Max, 25.08.2026)
+
+Subagent `pipeline-auditor` (`.claude/agents/pipeline-auditor.md`): der Meta-Prüfer über den **Prozess** — nicht die einzelne Strategie (das bleibt `strategy-auditor`), sondern ob wir methodisch sauber rechnen, messen und entscheiden, ob wir Fehler aus dem Logbuch wiederholen und wo die Pipeline selbst besser werden kann (neue Gates, neue Selbsttests, Automatiken).
+
+**Einschalten (automatisch, ohne Rückfrage):** bevor ein neuer Hypothesen-Job auf die Box geht, nach jeder Discovery-Batch-Auswertung, bei jeder Engine-Änderung an der Ausführungs-/Gate-Schicht (`sigcore.py`, `controls.py`, `hypothesis_bank.py`, `overfit.py`), wenn ein Ergebnis "zu gut" aussieht, und auf Zuruf. Er ändert nie selbst Dateien — Befunde und Verbesserungsvorschläge setzt die Hauptsession um. Prüfraster: Look-ahead, Multiple Testing/Register, Gate-Batterie aktiv, Rausch-Disziplin (Seeds), Stale-State (Box-Sync, push-next), v2-Kriterium, Null-Ergebnis-Verdacht.
+
+---
+
 ## 🖥️ Box-Fernzugriff (Regel Max, 11.08.2026 — WICHTIG, nie wieder vergessen)
 
 **Claude hat vollen SSH-Zugriff auf die Trading-Box und soll ihn immer selbst nutzen, statt zu behaupten, er habe keinen Zugriff oder Max müsse das manuell machen.**
@@ -223,6 +274,12 @@ Beide laufen auf `opus` (Formeln/Statistik lohnen das Modell; Max kann die `mode
 - **Lab-Server ist seit 15.08.2026 multi-threaded** (`ThreadingTCPServer` in `app_server.py`). Vorher blockierte ein laufender Backtest oder Chat jede andere Anfrage und die Oberfläche wirkte tot. Port ist per `MAXLAB_PORT` überschreibbar — wichtig zum Testen, weil Windows sonst eine zweite Instanz still auf denselben Port lässt und man gegen den alten Prozess testet.
 - Ticket-Tracker liegt in `C:\Users\maxlk\Projects\trading-data\engine\tasks.json` (Feld `ap_id` = die AP-Nummern, die Max nennt — bei unklaren AP-Nummern immer erst dort nachschauen statt zu raten).
 - **Geplant (Max, 11.08.26):** ein zentraler „Deployer" — eine Oberfläche/Skript, in dem Max nur noch die gewünschten Strategien + Parameter einträgt und der Rest (Staging, Pre-Flight, Build, Deploy, Restart) automatisch läuft. Noch nicht gebaut, aber das Zielbild für den Deploy-Workflow — künftige Deploy-Arbeit sollte darauf einzahlen statt Einzelskripte zu vermehren.
+
+### 🔔 RiskGuard neu anlegen → Telegram nicht vergessen (Regel Max, 20.08.2026)
+Wenn `MaxRiskGuard` neu an ein Konto gehängt wird (Kontowechsel, Reboot, Neuanlage der Strategie-Instanzen) startet es mit leeren `TelegramToken`/`TelegramChatId`-Feldern — der Code schweigt dann bei JEDER Meldung (Fills, Session-Start, Kill-Switch, Drawdown-Breach) komplett, ohne Fehler oder Log-Eintrag (`if (string.IsNullOrEmpty(...)) return;`). Ist schon mal wochenlang unbemerkt so gelaufen (20.08.: seit dem Kontowechsel auf `E61803453048` am 18.08. keine einzige Telegram-Nachricht mehr).
+
+- **Immer wenn Max ansagt, dass RiskGuard entfernt/neu hinzugefügt/eine neue Strategie-Instanz angelegt wird** (oder nach jedem Box-Reboot/Kontowechsel): aktiv daran erinnern, `TelegramToken` + `TelegramChatId` in den RiskGuard-Parametern neu einzutragen.
+- Die echten Werte liegen NICHT hier im Vault (bewusst kein Secret im Git-Repo), sondern auf der Box in `C:\Users\Administrator\maxlab_watchdog.json` (`{"TelegramToken":"...","TelegramChatId":"..."}`, Bot **maxbot** @maxbotalgobot). Beim Erinnern die Werte per SSH von dort holen und direkt mit ausgeben, damit Max sie nur noch in NT8 einfügen muss.
 
 ---
 
@@ -242,16 +299,37 @@ Eigene Desktop-App (`C:\Users\maxlk\Projects\hub\`, gebaut als `dist\Hub\Hub.exe
 
 ---
 
+## 🚫 Dauerläufer NIE als Kind einer Claude-Session starten (Regel Max, 18.08.2026 — hart)
+
+Claude Desktop ist ein MSIX-Paket und läuft in einem Job Object („Desktop AppX Container"). **Jeder Prozess, der aus einer Claude-Session heraus gestartet wird, landet in diesem Job** und vererbt ihn an seine eigenen Kinder weiter. Solange ein einziger Prozess darin lebt, hält er das Claude-Paket für Windows „in Benutzung": Claude lässt sich dann nicht mehr öffnen, wird beim Start sofort wieder geschlossen oder bringt den Dialog „Ein anderes Programm greift gerade auf diese Datei zu" (Fehler `0x80070020`, Ereignisanzeige `Microsoft-Windows-AppModel-Runtime` 208/215, dazu `AppXDeploymentServer` 658 „zurückgestellte Registrierung"). Max hat genau das seit dem Hub erlebt.
+
+**Betrifft alles, was Claude überlebt:** Hub, Lab-Server (`lab_app.py`/`app_server.py`), NT8-Deploy-Helfer, dauerhafte `ssh`-Verbindungen, Discovery-/Backtest-Läufe im Hintergrund.
+
+**Richtig starten** (gemessen 18.08.: `CREATE_BREAKAWAY_FROM_JOB` und `schtasks` bleiben im Job, WMI und `explorer.exe` kommen frei):
+
+```powershell
+Invoke-CimMethod -ClassName Win32_Process -MethodName Create -Arguments @{ CommandLine = '"<exe>" <args>'; CurrentDirectory = '<ordner>' }
+```
+
+Aus Python: `job_escape.spawn([...])` aus `C:\Users\maxlk\Projects\hub\job_escape.py`. Kurzläufer (Backtest im Vordergrund, Grep, Build) sind egal, die sterben mit der Session.
+
+**Der Hub schützt sich seit 18.08. selbst:** `hub_app.py` erkennt am Env-Marker `CLAUDECODE`, dass er in einer Claude-Session hängt, und startet sich per WMI job-frei neu (Protokoll `dist\Hub\hub_launch.log`). `build_exe.ps1 -Run` und `hub_server.ensure_app()` starten ebenfalls job-frei.
+
+**Wenn es doch klemmt:** `C:\Users\maxlk\Projects\hub\tools\Claude entsperren.cmd` doppelklicken (außerhalb von Claude) — listet die blockierenden Prozesse und räumt sie weg. Aus einer laufenden Session: `python tools/claude_unlock.py`.
+
+---
+
 ## 🎯 Aktueller Fokus
 
 - **Trading-Pipeline: Eval → Funded → Live.** Einstieg immer über [[Day Trading]].
-- **Aktuelle Phase: [[Eval-Passing]]** (Prop-Eval bestehen, **E8**, nicht Apex — Sim-Eval am 03.08.26 bestanden, echte Eval noch nicht gekauft). Optimiert wird NUR auf hohe Passchance in kurzer Zeit, nicht auf Funded/Payouts.
+- **Aktuelle Phase: [[Eval-Passing]]** (Prop-Eval bestehen, **E8**, nicht Apex — Sim-Eval am 03.08.26 bestanden). **⭐ Die erste ECHTE E8 50k Eval läuft bereits live** (Konto aktiv seit dem Kontowechsel auf `E61803453048` am 18.08.26, das Buch handelt sie unbeaufsichtigt von der Box; Stand 25.08.26: ~49.290 $, also leicht unter Start — normal, kein Grund für Kurswechsel). Nicht mehr behaupten, es sei noch keine echte Eval gekauft. Optimiert wird NUR auf hohe Passchance in kurzer Zeit, nicht auf Funded/Payouts.
 - **Plattform: NinjaTrader 8 / NinjaScript (C#)** auf Tradovate, nicht MultiCharts/PowerLanguage (siehe [[Tech-Stack]]).
 - Nächster Schwerpunkt: **[[Alpha-Suche]]** (First-Passage-Sizing + Cross-Asset-Signale).
 - Werkzeuge: [[Backtest-Engine]], [[Portfolio-Simulator]], [[Strategie-Logbuch]].
 
 ### 🧭 Stehende Trading-Prinzipien (für JEDE künftige Strategie)
 - **⭐ DAS einzige Entscheidungskriterium (Max, 10.08.26, präzisiert 16.08.26 / Logbuch #106):** Bei JEDER Empfehlung/Entscheidung (Bein rein/raus, Parameter, Firma, Kontogröße, Sizing) zuerst fragen: **verbessert oder verschlechtert es die Passquote je Eval bzw. die Kosten pro funded Konto (Preis ÷ Passquote)?** Nicht Einzel-Edge, nicht Sharpe, nicht Eleganz, und **nicht mehr „P(funded) pro Zeit"** — der Zeit-Score belohnt Größe und Nachkauf-Lotterie (Nulldrift-Test: 88 % davon entstehen bei Edge 0). Zeit läuft nur als Kontext mit. Die Rechnung muss auf der ehrlichen Basis stehen: aktuelles Buch, gefixte Engine, **Intraday-Bust-Check** (#077), **Min-Size 1 Kontrakt je Bein**, **Block-Bootstrap** (Vola-Clustering), Nulldrift-Kontrolle und Letzte-3-Jahre-Spalte daneben; bei Bein-Selektion **nested OOS / Marginal-Test „Buch + 1, nur OOS"**. Positive Edge ist notwendig, nicht hinreichend (Präzedenz: OR_DELTA_BIAS #079; bei Min-Size ist „Bein dazu" = „mehr Position", Lehre 82). Kernrechnung: `eval_plan.evaluate_v2` / `cage_policy_lib.evaluate_v2`, Tiers in `cage_v2_tiers.json`.
+- **⭐ Buch-Lücke immer mitnennen (Regel Max, 21.08.2026):** Sobald über eine Strategie/Variante/einen Discovery-Kandidaten gesprochen wird, IMMER dazusagen, **was konkret noch fehlt, damit sie ins Buch kommt** — je Strategie eine Zeile, entlang der Stufen: Prämisse → Survivors/Gates → PBO sauber → über Zufallsdecke → Buch-Marginal „besser" (≥ 1,5 pp und 2× Rauschen; Ersatz: „vs Original besser") → Next-Week-Buch + Ticket → Wochenend-Review (Quant-Team + Auditor) → NT8-Deploy. Nicht nur „0 Kandidaten" melden, sondern die Stufe benennen, an der es hängt, und was sie braucht (Zahl, Test oder Modul).
 - **Simplex beats Komplex:** immer so einfach wie möglich starten. Komplexität nur mit OOS-Beweis + Why, sonst raus (mehr Regeln = fragiler). Siehe [[Simplex beats Komplex]].
 - **Jede Strategie = vollständiges Skript:** Entry + Stop + Take-Profit + Notausgang(Zeit) + Sizing + **WHY**. Siehe [[Strategie-Anatomie (Framework)]].
 - **Jede Strategie gehört in genau eine der 5 [[Strategie-Familien]]:** Trend Following · Mean Reversion · Intraday Bias · Swing · Relative Value.
