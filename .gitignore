@@ -1,0 +1,13 @@
+# Python
+__pycache__/
+*.pyc
+
+# Secrets - never commit
+*.env
+.env*
+*_credentials.json
+*_token.json
+*.key
+*.pem
+id_rsa*
+id_ed25519*
