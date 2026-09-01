@@ -26,6 +26,18 @@ Volle Regeln in [[Schreibstil]]. Kurzfassung:
 
 ---
 
+## ❓ Offene Fragen zuerst (Regel Max, 27.08.2026 — verschärft 30.08.2026)
+
+**Immer zuerst fragen, wenn etwas unklar ist — bevor irgendetwas umgesetzt, geändert oder losgerechnet wird.** Das ist keine Kann-Regel, sondern die Standard-Reihenfolge: erst klären, dann handeln. Nicht raten, nicht die wahrscheinlichste Interpretation annehmen und einfach loslegen.
+
+**Wann das gilt:** Ziel unklar, mehrere sinnvolle Wege möglich, Scope nicht eindeutig, Formulierung mehrdeutig, oder eine Änderung greift in etwas Bestehendes ein (Buch, Code, Datei, Regel) ohne dass klar ist, was genau gewünscht ist. Im Zweifel gilt: lieber einmal zu oft nachfragen als eine Annahme treffen, die falsch sein könnte.
+
+**Ausnahme:** nur triviale, eindeutige Aufträge ohne Interpretationsspielraum brauchen keine Rückfrage (z.B. „lies Datei X", „was steht in Y").
+
+**Vorfall:** Max hat mehrfach angemerkt, zu oft nicht gefragt worden zu sein, bevor etwas geändert wurde — diese Regel existierte bereits, wurde aber nicht konsequent genug angewendet. Ab jetzt: **im Zweifelsfall immer fragen**, auch wenn es nach der zweiten Nachfrage in Folge aussieht.
+
+---
+
 ## 🤝 Trust my Work (Regel Max, 15.08.2026)
 
 Wenn etwas gebaut, getestet und für gut befunden wurde, gilt es als **fertig und vertrauenswürdig** — nicht bei jeder Folge-Session oder Folge-Frage erneut in Frage stellen oder nochmal durchtesten.
@@ -207,6 +219,7 @@ Dazu Developer-spezifisch: OOS-Fenster in der Equity blau hinterlegt, Perzentil-
 - **Läuft auf der Box** (seit 18.08.2026 23:06, Max' Okay): `C:\Users\maxlk\Projects\trading-data\engine\discovery\` auf `VMD202078` (gleicher Pfad wie am PC, weil die Engine absolute Pfade hat), Python 3.11 unter `C:\Program Files\Python311`, **seit 20.08.2026 24/7 (`pause_hours []`, Max' Ansage — BELOW_NORMAL schützt NT8; bei Auffälligkeiten im Live-Handel wieder `[[15,22]]`)**. Eine Instanz je Maschine (`runner.lock`), Stopp über `STOP`-Datei (`box_provision_discovery.ps1 -Stop`). **Engine-Änderung am PC → vor dem nächsten Nachtlauf `box_provision_discovery.ps1 -SyncOnly`**, sonst rechnet die Box mit altem Code. Neue Jobs immer über `inbox_tool.py --add-job` (macht pull → append → push auf die Box). Lokal starten (`start_discovery.ps1`) nur, wenn die Box nicht erreichbar ist — nie beide gleichzeitig auf derselben Queue.
 - **⭐ Die Queue darf nie leerlaufen (Regel Max, 21.08.2026 — Fulltime-Suche, Fokus aktuell HF/mehr Trades pro Jahr).** Seit 21.08. 16:50 füllt der Runner die Queue **selbst** nach: `discovery/job_generator.py` (im Daemon-Loop, `min_pending` 3) erzeugt erst Folge-Jobs zu fertigen Jobs mit Survivors (Verfeinerung um den besten Survivor, HF-Rangfolge; Exit-Profil-Sweep), dann Abdeckungs-Jobs aus 11 Vorlagen × 4 Märkten (nur Modi mit dokumentierten Params, `orb` immer `orb_exec=close`), bis Tiefe 3; Register-Pruning gegen Doppelarbeit, max. 120 Jobs/Tag. Handgebaute Jobs (`--add-job`) laufen mit Vorrang (höhere `priority`). Schreibt der Runner trotzdem `queue_empty` in die Inbox, ist die Vorlagen-Welt ausgereizt → Claude muss **neue Mechanismen** (Engine-Modul + Vorlage in `TEMPLATES`) liefern, nicht mehr Grid. Mehr Grid auf altem Mechanismus bringt nichts (#494), die Zufallsdecke wächst mit jedem Job mit. **Dafür gibt es seit 21.08.2026 den Subagent `alpha-scout`** (`.claude/agents/alpha-scout.md`, Background starten): bei `queue_empty`, bei „was testen wir als nächstes?" und wenn Max eine Idee in einen Job übersetzt haben will. Er macht erst Inventar (Register, Queue-Ausgänge, Friedhof in `ideas.json`/Logbuch, Engine-Modi, Datenbestand), rotiert durch die 4 Edge-Quellen, rankt und schreibt queue-fertige Jobs nach `discovery/jobs_proposed/` + Report nach `discovery/scout_reports/` (Modul-Specs für Ideen ohne `mode`). Er baut keine Vorlagen-Grids nach und schreibt nie in `queue.json`: die Hauptsession prüft kurz und reiht mit `inbox_tool.py --add-job` ein.
 - **Nie** `runner.log` oder volle `results/*.json` einlesen — `inbox_tool.py` bzw. `summarize_results.py` reichen.
+- **⭐ Claude reiht neue Funde selbst ein, ohne dass Max „tu es in die Queue" sagen muss (Regel Max, 28.08.2026).** Sobald eine neue Hypothese/Vorlage fertig gebaut und geprüft ist (Dry-Run + `pipeline-auditor`), gehört sie standardmäßig ans Ende der Queue — Einreihen ist der Normalfall, keine Ausnahme, die erst extra angesagt werden muss. Gilt genauso für `alpha-scout`-Vorschläge aus `jobs_proposed/`: kurz prüfen, dann einreihen, nicht liegen lassen. Nach jeder Engine-/`job_generator.py`-Änderung dazu **nicht vergessen: Runner muss neu gestartet werden** (Stop → Sync → Start), sonst läuft er mit dem alten Code weiter (Python cacht importierte Module, ein laufender Prozess lädt `job_generator.py`/`vix_bias.py` & Co. nie automatisch neu — Vorfall 28.08.2026, 5,5 Std. Leerlauf trotz bereits gebauter neuer Vorlagen). Ziel: wenn ein Job-Batch fertig ist, steht bereits der nächste bereit, damit die Box nie leerläuft, ohne dass Max jedes Mal explizit nachfragen muss.
 
 ---
 
@@ -217,7 +230,7 @@ Dazu Developer-spezifisch: OOS-Fenster in der Equity blau hinterlegt, Perzentil-
 **Die vier Schritte, immer in dieser Reihenfolge:**
 
 1. **WHY zuerst.** Kein Test ohne Mechanismus im Klartext: wer muss handeln, warum, und warum bleibt das Geld liegen. Ohne Why kein Job — das Feld ist Pflicht und wird beim Job-Bau geprüft (`assert` in `hypothesis_bank.py`).
-2. **Dann die ARTEN.** Eine Hypothese wird **nie als eine Strategie** getestet, sondern als **mindestens zehn Implementierungen desselben Mechanismus**: andere Fensterlänge, anderer Signaltyp, andere Bestätigung (**Volumen / Delta / EMA12 / EMA20 / VWAP-Seite**), anderer Stop (Range/Sigma/ATR), anderer Exit (EOD/Zeit/RR). Der Baustein dafür ist `AX_CONFIRM` / `AX_RISK` / `AX_EXITS` in `hypothesis_bank.py`. Weniger als zehn Varianten lässt der Job-Bau nicht zu.
+2. **Dann die ARTEN.** Eine Hypothese wird **nie als eine Strategie** getestet, sondern als **mindestens zehn Implementierungen desselben Mechanismus**: andere Fensterlänge, anderer Signaltyp, andere Bestätigung (**Volumen / Delta / EMA12 / EMA20 / VWAP-Seite**), anderer Stop (Range/Sigma/ATR), anderer Exit (EOD/Zeit/RR). Der Baustein dafür ist `AX_CONFIRM` / `AX_RISK` / `AX_EXITS` in `hypothesis_bank.py`. Weniger als zehn Varianten lässt der Job-Bau nicht zu. **Diesen Schritt übernimmt seit 01.09.2026 der Subagent `variant-scout`** (automatisch, sobald eine neue Hypothese vorliegt, bevor sie in eine Bank-Notiz oder einen Job geschrieben wird): er misst gegen die echten Engine-Achsen und die bestehende Bank, wie viele ECHTE Varianten es gibt, und warnt vor Doppelzählung mit bereits toten Verwandten. **Direkt danach, seit 01.09.2026: `strategy-auditor` im Batch-Vorprüfungs-Modus** — EIN Aufruf über die ganze Gruppe der von `variant-scout` als testbar eingestuften Hypothesen (nicht einzeln!), der nur die ökonomische Story gegenprüft (Why kausal? Look-ahead schon im Text erkennbar? Familie eindeutig? zu gut um wahr zu sein?), bevor überhaupt Box-Rechenzeit für die Configs verbrannt wird. Der bisherige Vollmodus-Trigger (adversarialer Gegenleser mit Backtest-Ergebnis, kurz vor Eval-Deploy) bleibt zusätzlich bestehen — die Batch-Vorprüfung ersetzt ihn nicht, sie fängt nur die billigen Fälle früher ab.
 3. **Dann die bekannten FALLEN — als Vorbedingung, nicht als Nachgedanke.** Alles, was uns bisher umgebracht hat, läuft automatisch mit. Zwei Ebenen:
    - **`GATES_HARD`** (in `discovery/hypothesis_bank.py`) für jede Grid-Zelle: min. Trades/OOS-Trades/Trades pro Jahr, Top-5-Konzentration ≤ 50 % (#038), Block-Bootstrap P ≥ 0,90, Plateau statt Spitze, letzte 3 Jahre nicht negativ (#057), Kosten-Stress 2 Ticks je Seite.
    - **`discovery/controls.py`** für jeden Kandidaten, der das Buch-Marginal besteht: Look-ahead-Delay (#066/#067), Long-Bias (Goyal/Jegadeesh, #108), Nulldrift mit gewürfelter Richtung, Multi-Markt (#051), Epochen-Split 2016-2019 vs. 2022-2026 (#057), Zufallslevel bei Level-Strategien, Tages-Korrelation zum Bestandsbuch ≤ 0,70 (#079, Lehre 82).
@@ -263,6 +276,27 @@ Subagent `pipeline-auditor` (`.claude/agents/pipeline-auditor.md`): der Meta-Pr�
 
 ---
 
+## 🆕 Neue Agents vom 27.08.2026 — automatisch einschalten, nicht nur dokumentiert liegen lassen
+
+Jeder Subagent hat seinen Trigger schon in der eigenen `description` (`.claude/agents/*.md`) — das reicht der Hauptsession technisch, um ihn zu sehen, aber die Erfahrung mit `pipeline-auditor`/Quant-Team zeigt: **ohne einen expliziten Satz hier in der CLAUDE.md wird ein Agent leicht vergessen**, weil er nicht im Reflex sitzt. Deshalb für jeden neuen Agent die Einschalt-Regel ausgeschrieben, keine Ausnahme:
+
+- **`engine-regression-tester`**: automatisch VOR jedem `box_provision_discovery.ps1 -SyncOnly` und nach jeder Änderung an `sigcore.py`, `controls.py`, `hypothesis_bank.py`, `overfit.py`, `qbt.py`, `tsmom.py`, `maband.py` — ohne Rückfrage einschalten, nicht erst wenn Max danach fragt. Meldet er "Sync STOPPEN", wird nicht gesynct, bis geklärt ist warum.
+- **`logbook-distiller`**: automatisch nach jedem neuen Vorfall/jeder neuen Lehre, die frisch ins Strategie-Logbuch geschrieben wird ("ist das jetzt auch als Gate codiert oder bleibt es nur Text?"). Wöchentlich zusätzlich per Automatik (siehe unten), aber das ersetzt nicht das sofortige Einschalten nach einem frischen Vorfall.
+- **`box-ops`**: läuft seit 27.08. bereits automatisiert stündlich als deterministisches Skript auf der Box (kein Subagent-Aufruf nötig für den Routine-Check) — der Subagent selbst kommt zusätzlich bei "läuft alles?"/"check die Box" zum Einsatz, wenn Max eine tiefere Einschätzung will als die reine Ampel-Zeile.
+- **`live-reconciler`**: soll täglich nach Handelsschluss automatisiert laufen, hängt aber am API-Guthaben-Blocker vom 27.08. (siehe Box-Fernzugriff-Abschnitt) — bis das geklärt ist, auf Zuruf einschalten ("passt das Konto noch?") oder wenn ein Live-Kontostand deutlich vom Erwartungsband abweicht.
+- **`retro-agent`**: soll wöchentlich Sonntag 12:00 automatisiert laufen, hängt am selben Blocker. Bis dahin: die Hauptsession fragt sich am Ende eines längeren Arbeitsblocks selbst "würde eine Retro hier etwas bringen?" und schlägt es Max proaktiv vor, statt nur zu warten bis die Automatik steht.
+
+- **`verdict-auditor`** (neu 30.08.2026, `model: opus`): der Gegenleser für das **Urteil selbst**. Automatisch einschalten, **bevor** ein Stempel draufkommt: (a) jedes Testergebnis, das mit "tot"/"gut"/"neutral"/"ins Buch" bewertet wird (Backtest, Discovery-Batch, Developer-Version, Hypothesen-Test), und (b) alles neu Gebaute (Engine-Modul, Gate, Vorlage, Skript, Automatik), das für "fertig" erklärt werden soll. Er prüft, ob die Beweislage das Urteil trägt, was ausgelassen wurde und welche max. 3 Nachtests sich rational lohnen — Regel "Hypothese vor Urteil" (tot nur nach vollem Test) ist sein Kern. Abgrenzung: `pipeline-auditor` = Prozess, `strategy-auditor` = Strategie vor Deploy, `verdict-auditor` = der Stempel danach. Er ändert nie Dateien; Trust-my-Work gilt (nur frische Urteile, alte nur auf Auftrag oder bei geänderten Fakten). Einmaliger Bestands-Durchlauf über alte Urteile: Ticket AP116.
+- **`design-guard`** (neu 30.08.2026, `model: sonnet`): automatisch bei **JEDER** Änderung an einer Oberfläche — Hub, Strategy Lab, Developer-Tab, Lab-Reports, jede künftige App. Neuer Button, neuer Tab, neues Panel, neues Fenster, neue Tabelle/Karte, geänderte Farbe/Abstand: `design-guard` läuft mit, ohne dass Max danach fragt. Er misst gegen [[Design-System (Hub & Apps)]] (Vault, `Ressourcen/`) — App-übergreifende Usability-Grundregeln plus die eigene Charta jeder App. **Jede App darf anders aussehen, aber jede App muss in sich gleich aussehen**: ein neuer Punkt im Lab sieht aus wie die Punkte, die dort schon stehen. Er ändert nie selbst Dateien, sondern liefert den fertigen Schnipsel; die Hauptsession setzt um und macht danach `.\hot_reload.ps1` (Hub) bzw. Lab-Server-Neustart. Steht eine Regel nicht in der Charta, entscheidet er nicht, sondern fragt — neue verbindliche Design-Regeln schreibt nur Max in die Design-System-Notiz.
+
+**Der Blocker (API-Guthaben) hebt die Regel nicht auf** — er verschiebt nur den Weg (automatisiert vs. auf Zuruf), nicht die Pflicht, den Agent zu nutzen, sobald sein Trigger eintritt.
+
+## 🆕 Neuer Agent vom 01.09.2026 — `variant-scout`
+
+**`variant-scout`** (`model: opus`): automatisch einschalten, **sobald eine neue Hypothese/ein neuer Mechanismus vorliegt** — egal ob aus Research (Paper, `research-scout`-Fund), aus einer Discovery-Auswertung oder aus Max' eigener Idee — und **bevor** sie als Zeile in eine Hypothesen-Bank-Notiz (`Bereiche/Hypothesen-Bank (*).md`) oder als `H()`-Job in `hypothesis_bank.py` geschrieben wird. Er beantwortet die Vorfrage zu Schritt 2 aus "Der EINE Weg" (⬆️): in wie vielen ECHTEN, sinnvollen Arten lässt sich der Mechanismus bauen (Fensterlänge, Signaltyp, Basis, Bestätigung, Stop, Exit, Markt), geprüft gegen die tatsächlichen Engine-Achsen (`AX_CONFIRM`/`AX_RISK`/`AX_EXITS` in `hypothesis_bank.py`, `mb_kind`/`tm_signal` in `maband.py`/`tsmom.py`) statt gegen eine optimistische Schätzung. Er flaggt außerdem Verwandtschaft mit bestehenden Bank-Zeilen (Doppelzählung gegen die Zufallsdecke vermeiden) und mit bereits toten Funden (Kontaminationswarnung, z.B. ein neuer λ-Proxy-Ableger nahe einem bereits per #138 widerlegten Verwandten). Er ändert nie selbst Dateien — die Achsen-Tabelle trägt die Hauptsession ein. Trigger sitzt bewusst VOR dem Bank-Eintrag, nicht danach, weil sich sonst dieselbe Falle wiederholt wie bei den anderen 27.08-Agents: ohne den Reflex hier in der CLAUDE.md wird der Schritt beim Tippen einer neuen Zeile leicht übersprungen.
+
+---
+
 ## 🖥️ Box-Fernzugriff (Regel Max, 11.08.2026 — WICHTIG, nie wieder vergessen)
 
 **Claude hat vollen SSH-Zugriff auf die Trading-Box und soll ihn immer selbst nutzen, statt zu behaupten, er habe keinen Zugriff oder Max müsse das manuell machen.**
@@ -296,6 +330,38 @@ Eigene Desktop-App (`C:\Users\maxlk\Projects\hub\`, gebaut als `dist\Hub\Hub.exe
 **UI-/Config-Änderung (JS/CSS/HTML/`hub_config.json`):** Datei in `static/` bzw. `hub_config.json` bearbeiten, dann `.\hot_reload.ps1` laufen lassen (synct nach `dist\Hub` per robocopy, triggert `/api/reload` → offenes Fenster macht `location.reload()`, Python-Prozess läuft durch). **Kein Rebuild, kein Neustart, kein Flackern der ganzen App.**
 
 **Rebuild + Neustart NUR bei echter Code-Änderung** an `hub_app.py`/`hub_server.py` selbst (Server-Logik, neue Endpunkte, Fenster-Verhalten): `.\build_exe.ps1`, dann `Hub.exe` neu starten.
+
+### 🗺️ Alles, was wir bauen, zieht automatisch in den Hub nach (Regel Max, 27.08.2026)
+
+Der Hub ist Max' zentrales Cockpit — **jeder neue Agent, jede neue Automatik/jeder neue Loop gehört dort sofort mit rein**, nicht erst wenn Max danach fragt. Sobald ein neuer Subagent unter `.claude/agents/` angelegt wird oder eine neue Automatisierung/ein neuer Scheduled Task entsteht: sofort **ohne Rückfrage** in `C:\Users\maxlk\Projects\hub\hub_config.json` eintragen (Roster `mock_agents` für Agents, `mock_loops` für Automatiken/Cron-Jobs — Name, Rolle/Task in einem Halbsatz, Modell-Tier, Zustand), danach `.\hot_reload.ps1` laufen lassen (Regel oben: kein Rebuild, kein Neustart nötig für eine reine JSON-Änderung).
+
+**Agent-Roster (Stand 27.08.2026, `mock_agents` in `hub_config.json`):**
+
+| Agent | Rolle | Modell |
+|---|---|---|
+| alpha-scout | Neue Alpha-Mechanismen suchen | opus |
+| pipeline-auditor | Meta-Check: rechnen/messen/entscheiden wir richtig | opus |
+| strategy-auditor | Adversarialer Gegenleser vor Eval-Deploy | opus |
+| quant-mathematician | Formeln/Optimierung für Alpha & Sizing | opus |
+| quant-statistician | Beweislage/Unsicherheit für Alpha | opus |
+| logbook-distiller | Lehren aus dem Logbuch → Code-Gates abgleichen | opus |
+| retro-agent | Wöchentliche Prozess-Retro (So 12:00) | opus |
+| backtest-runner | Backtest-/Discovery-Läufe ausführen | sonnet |
+| research-scout | Externe Recherche mit Cache-Pflicht | sonnet |
+| vault-librarian | Vault/Inbox aufräumen | sonnet |
+| ninja-coder | NinjaScript (NT8) | sonnet |
+| mc-coder | PowerLanguage (MultiCharts) | sonnet |
+| engine-regression-tester | Golden-Master-Check vor Box-Sync | sonnet |
+| live-reconciler | Backtest vs. echte NT8-Fills | sonnet |
+| box-ops | Infrastruktur-Watchdog Box | haiku |
+| session-guard | Parallel-Session-Konfliktcheck | haiku |
+| design-guard | UI/UX-Wächter für Hub & alle Apps | sonnet |
+| verdict-auditor | Gegenleser für Urteile (tot/gut/fertig) | opus |
+| variant-scout | Testarten-Vermesser pro Hypothese, vor dem Bank-Eintrag | opus |
+
+**Automatik-Roster (Stand 27.08.2026, `mock_loops` in `hub_config.json`):** Buch-Sync + Discovery-Loop (~35 Min, Claude-Session), Token-Tracker-Statusline (live), Beleg-Sortierer AP36 (täglich), NT8-Live-Strategien-Watchdog (Handelszeit), **box-ops-Watchdog (stündlich)**, **live-reconciler (täglich nach Handelsschluss)**, **logbook-distiller + retro-agent (wöchentlich, So 12:00)**.
+
+Diese beiden Tabellen sind der Stand zum Zeitpunkt des Schreibens — die Liste in `hub_config.json` ist die lebende Quelle, hier steht sie nur zur Orientierung, welche Kategorien es gibt und dass jede Ergänzung in BEIDEN Dateien passiert (Vault-Regel + Hub-JSON), nicht nur in einer.
 
 ---
 

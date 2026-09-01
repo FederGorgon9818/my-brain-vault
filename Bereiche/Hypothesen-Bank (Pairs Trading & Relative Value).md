@@ -10,7 +10,7 @@ status: offen (noch nichts getestet)
 # 🧪 Hypothesen-Bank: Pairs Trading & Relative Value
 
 ⬅️ [[Alpha-Suche]] · [[Strategie-Familien]] · [[Discovery-Runner v2]] · [[Strategie-Logbuch]] · [[Research-Cache]]
-Schwester-Banken: [[Hypothesen-Bank (Momentum & Averages)]] · [[Hypothesen-Bank (Volumen & Flows)]]
+Schwester-Banken: [[Hypothesen-Bank (Momentum & Averages)]] · [[Hypothesen-Bank (Volumen & Flows)]] · [[Hypothesen-Bank (PCA & Faktorstruktur)]] (SK-05/06 dort ausgearbeitet)
 
 > [!important] Was das ist
 > Max' Auftrag 23.08.2026: aus der Pairs-Trading-/Stat-Arb-Literatur (Journals, SSRN, arXiv, Scholar) **100 falsifizierbare Hypothesen** ableiten, **alle käfigtauglich** — also im Prop-Käfig (E8, intraday only, Min-Size) mit unseren Daten testbar. Nur gesammelt, **noch nichts davon getestet**. Relative Value ist die einzige der 5 [[Strategie-Familien]] ohne aktuell bestätigten Kandidaten (#090) — das hier ist der Vorrat, um das zu ändern.

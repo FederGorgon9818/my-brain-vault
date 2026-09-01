@@ -78,7 +78,7 @@ Politik: jeden Monat ~160 $ externes Budget (= 1× E8 ODER 2× FN Flex), dauerha
 **Drei Vorbehalte:** (1) ⚠️ Der E8-Funded-Cap „5" ist NICHT primärquellen-bestätigt (nur Help-Center-Snippet) und ist der bindende Faktor der ganzen Rechnung — vor größeren Käufen schriftlich klären, wie damals die Payout-Caps. (2) Bei ehrlicher Drift entscheidet die Politik über Monate, die Drift über das Ob (12-34 % Zensur in 5 Jahren). (3) Alle Konten handeln dasselbe Buch — Payouts kommen im Rudel, Durststrecken auch.
 
 ## Offene Entscheidungen für Max
-1. FN Flex 50k kaufen als ersten Slot? (~80 $; vorher 2 Klärfragen per Mail)
+1. ✅ **FN Flex 50k als Slot: entschieden (Max, 27.08.2026) und ins Next-Week-Buch eingebaut** — `book_state_next.json` hat jetzt den Tier `FN-Flex50k` (Target 2.500 / DD 1.500 intraday / 79,99 $) im `plan.tiers`-Override plus Konto `FN1` in `accounts_pending`; Ticket `next-week-2026-35-fnflex` (Wochenend-Review KW35). Rechnung mit dem 4-Bein-Next-Buch: **74,8 % Passquote, 107 $/funded, Median 143 d** (günstigster Tier; E8 50k: 82,8 %, 181 $, 189 d). **Der Kauf selbst bleibt offen**, bis die 2 Klärfragen per Mail beantwortet sind (Floor-Lock-Zeitpunkt, Parallelbetrieb zu E8).
 2. Zielfunktion offiziell auf „Zeit bis Payout" umstellen (betrifft Hebel 4 + künftige Discovery-Marginals)?
 3. Asia-Dir ×2 je nach Gegenprüfungs-Ergebnis ins Next-Week-Buch?
 4. `horizon_months=36`-Zensur in `evaluate_v2` (verzerrt 100k/150k-Tiers) — fixen?
