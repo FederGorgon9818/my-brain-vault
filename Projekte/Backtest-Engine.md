@@ -105,6 +105,9 @@ Klick auf ein Bein landete im rohen `Error code: 404 / Message: Not Found` statt
 
 **Regel ab jetzt:** jede Buch-Änderung → sofort `python funded_finalize.py`, damit der Tab nie ein altes Buch zeigt.
 
+## 📐 MFE/MAE in jedem Trade-Record (seit 03.09.2026)
+Jeder Trade-Record trägt neben `mae_r` jetzt auch **`mfe_r`** (Maximum Favorable Excursion in R), erzeugt in `qbt._mfe_r` (alle 8 qbt-Loops), `sigcore.simulate_trade`, `vwap_pullback.py`, `asian.py`, `rv.py`. Rein deskriptiv, fließt nirgends in Exit, Gates oder Sizing zurück. Zwei Vorbehalte beim Auswerten ([[Strategie-Logbuch]] #142): bei `stop`- und `time`-Exits zählt die Exit-Bar nicht (Untergrenze), bei `target`-Exits ist der Wert per Konstruktion ≈ Ziel (zensiert), `rv.py` misst auf Close-PnL statt intrabar. Sweeney-/E-Ratio-Tabellen deshalb nur über `eod`/`time`-Exits bilden und nie Trail-Trigger aus einer MFE-Verteilung über ein Grid ableiten. `vwap_pullback.py` kennt seit demselben Tag das opt-in BE/Trailing-Overlay (`be_trigger`/`trail_trigger`, Default aus, bitgleich).
+
 ## Nächste Schritte
 - [ ] Regime-Filter + Selektivität testen (weniger, bessere Trades statt 261/Woche)
 - [ ] Andere Signale aus [[Mean-Reversion Paper (High-Winrate Fokus)]] durchjagen
