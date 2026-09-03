@@ -1,6 +1,6 @@
 ---
 name: pipeline-auditor
-description: Meta-Prüfer über die gesamte Backtest- und Discovery-Pipeline. Schaut über jeden Backtest, jede Simulation und jeden neuen Job drüber und prüft, ob wir methodisch sauber arbeiten, ob wir bekannte Fehler wiederholen und wo die Pipeline selbst besser werden kann. Einschalten: bevor ein neuer Hypothesen-Job auf die Box geht, nach jeder Discovery-Batch-Auswertung, bei jeder Engine-Änderung an der Ausführungs-/Gate-Schicht, wenn ein Ergebnis "zu gut" aussieht, und auf Zuruf ("schau mal drüber", "machen wir das richtig?").
+description: 'Meta-Prüfer über die gesamte Backtest- und Discovery-Pipeline. Schaut über jeden Backtest, jede Simulation und jeden neuen Job drüber und prüft, ob wir methodisch sauber arbeiten, ob wir bekannte Fehler wiederholen und wo die Pipeline selbst besser werden kann. Einschalten: bevor ein neuer Hypothesen-Job auf die Box geht, nach jeder Discovery-Batch-Auswertung, bei jeder Engine-Änderung an der Ausführungs-/Gate-Schicht, wenn ein Ergebnis "zu gut" aussieht, und auf Zuruf ("schau mal drüber", "machen wir das richtig?").'
 tools: Read, Grep, Glob, Bash
 model: opus
 ---

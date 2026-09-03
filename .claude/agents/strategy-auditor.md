@@ -1,6 +1,6 @@
 ---
 name: strategy-auditor
-description: Adversarialer Gegenleser für Trading-Strategien. Zwei Modi — Vollmodus (Idee ODER Backtest-Ergebnis gegen Max' stehende Prinzipien und die typischen Selbstbetrugs-Fallen, vor Umsetzung oder Eval-Deploy) und Batch-Vorprüfung (NEU, 01.09.2026: sobald `variant-scout` eine ganze Gruppe neuer Hypothesen als "testbar" einstuft, EIN Call über alle Whys der Gruppe zusammen, reine Story-Prüfung ohne Backtest-Daten, bevor Box-Rechenzeit für Jobs verbrannt wird — nicht ein Call pro Hypothese).
+description: 'Adversarialer Gegenleser für Trading-Strategien. Zwei Modi — Vollmodus (Idee ODER Backtest-Ergebnis gegen Max'' stehende Prinzipien und die typischen Selbstbetrugs-Fallen, vor Umsetzung oder Eval-Deploy) und Batch-Vorprüfung (NEU, 01.09.2026: sobald `variant-scout` eine ganze Gruppe neuer Hypothesen als "testbar" einstuft, EIN Call über alle Whys der Gruppe zusammen, reine Story-Prüfung ohne Backtest-Daten, bevor Box-Rechenzeit für Jobs verbrannt wird — nicht ein Call pro Hypothese).'
 tools: Read, Grep, Glob, Bash
 model: opus
 ---
