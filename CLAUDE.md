@@ -4,6 +4,18 @@ Dies ist der persönliche Wissensspeicher (Obsidian Vault) von **Max**. Diese Da
 
 ---
 
+## 🏖️ Urlaub 04.09.–ca. 18.09.2026 — PC ist aus (diesen Abschnitt nach der Rückkehr wieder rausnehmen)
+
+Max ist ab 04.09.2026 zwei Wochen im Urlaub und arbeitet in dieser Zeit nur über seinen **Laptop**. Der Haupt-PC ist die ganze Zeit **aus**.
+
+- **Nicht erreichbar:** Hub, lokaler Lab-Server (`app_server.py`), NT8-lokale Instanz, PC-Discovery-Fallback, die PC-Loop-Heartbeat-Datei (`C:\Users\maxlk\Projects\trading-data\engine\.claude_loop_heartbeat.json`). Das ist erwartet — keine Störung, keine Eskalation nötig.
+- **Läuft normal weiter:** Live-Handel auf der Box (100.127.89.9, NT8 + RiskGuard) läuft unbeaufsichtigt weiter, Discovery-Runner läuft 24/7 auf der Box weiter (Auto-Promotion ins Next-Week-Buch inklusive). Beides braucht den PC nicht.
+- **Session-Start-Regel „PC-Loops übernehmen" pausiert** in diesem Zeitraum (Heartbeat-Datei liegt auf dem ausgeschalteten PC, nicht prüfbar). Stattdessen für den Status den `box-ops`-Agent nutzen.
+- **Zugriff läuft so:** Vault per Git (`git@github.com:mkmeboss/my-brain-vault.git`), Engine-/Buch-Arbeit per SSH auf die Box (100.127.89.9). Kein Zugriff auf Dateien, die nur lokal auf dem PC liegen (u.a. `book_state.json`/`portfolio.json` im nicht-versionierten `trading-data`-Ordner, falls die Box-Kopie mal abweicht — im Zweifel die Box-Kopie als Quelle der Wahrheit behandeln, solange der PC aus ist).
+- Größere Buch-/Portfolio-Entscheidungen (Next-Week-Buch übernehmen, neue Firma, Kontowechsel) über SSH auf der Box vorbereiten, aber wenn möglich bis zur Rückkehr als Ticket liegen lassen statt allein zu entscheiden — Max hat gesagt, er will vom Laptop aus weiterarbeiten können, nicht dass in seiner Abwesenheit unumkehrbare Entscheidungen ohne ihn fallen.
+
+---
+
 ## 👤 Wer ist der User
 
 - **Name:** Max (Ansprache gerne „Boss").
@@ -161,6 +173,12 @@ Der Developer-Tab bleibt der Ort, wo eine Strategie in Versionen entsteht; „in
 - **Falle, auf die schon einmal reingefallen:** ein alter Report kann durch spätere Engine-Fixes überholt sein, ohne dass ideas.json es merkt (bei RV_leadlag_NQES so passiert — Report vom 31.07. zeigte Grade A, mit dem seit 10.08. gefixten `rv.py` neu gerechnet PF 0.91/tot). `live_finalize.py` rechnet jedes Bein bei jedem Lauf frisch mit dem aktuellen Engine-Code — bei Abweichung vom alten Report-Stand zählt die frische Rechnung, nicht das `.meta.json`.
 - Kein Prop-Pass-Frontier und keine Kapital-/Sizing-Kurve im Live-Tab (Kapitalgröße & Risiko/Trade noch nicht festgelegt) — nur die ehrliche kombinierte Backtest-Sicht.
 
+### 🧬 Edge-Health-Monitor zieht Bein-Änderungen automatisch mit (Regel Max, 01.09.2026)
+
+Der Decay-Monitor unten im Lab-Tab (🧬 Edge-Health, Live-Trades je Bein gegen den Backtest-Erwartungs-Kegel, McLean/Pontiff + Lopez de Prado) baut seine Referenz (`edge_ref.json`) seit 01.09.2026 **automatisch neu**, sobald `book_state.json` neuer ist als `edge_ref.json` (Mtime-Check in `_edge_health()`, `app_server.py`) — kein manueller Lauf von `gen_edge_ref.py` mehr nötig. Die Zuordnung NinjaScript-Name → Bein läuft über Familien-Präfix (Endung `_d<Datum>`/`_v<N>` wird abgeschnitten), damit ein Discovery-Auto-Promote oder eine neue Developer-Version desselben Mechanismus (neuer Bein-Name, gleiche Familie) automatisch mitgezogen wird. Außerdem seit 01.09.2026 nur noch **das aktuell aktive Konto** (per letztem Fill ermittelt), nicht mehr alle historischen Konten vermischt.
+
+**Ein Fall bleibt manuell:** eine WIRKLICH neue Strategie-Familie (neue NinjaScript-Klasse, die noch nie im Buch war) braucht einmalig einen neuen Eintrag in `NS_MAP` (`gen_edge_ref.py`, NinjaScript-Klassenname → Bein-Familie-Präfix) — die Klasse kennt sonst niemand vorab. Bei jedem neuen NT8-Deploy einer neuen Strategie also kurz `NS_MAP` in `gen_edge_ref.py` ergänzen, danach läuft der Rest wieder automatisch. Vorfall, der zum Fix führte: `NQ_VWAP-Pullback` fehlte komplett in der alten, hartkodierten Zuordnung und wurde vom Decay-Monitor gar nicht erfasst — genau der Fall, den diese Regel künftig verhindert.
+
 ---
 
 ## 🛠️ Strategy Developer (neuer Tab im Strategy Lab, seit 14.08.2026)
@@ -302,6 +320,7 @@ Jeder Subagent hat seinen Trigger schon in der eigenen `description` (`.claude/a
 **Claude hat vollen SSH-Zugriff auf die Trading-Box und soll ihn immer selbst nutzen, statt zu behaupten, er habe keinen Zugriff oder Max müsse das manuell machen.**
 
 - Zugang: `ssh Administrator@100.127.89.9` (Tailscale, Key liegt lokal unter `C:\Users\maxlk\.ssh\id_ed25519`, kein Passwort nötig). Box-Hostname `vmd202078`, Zeitzone deutsche Zeit.
+- **Laptop ist seit 03.09.2026 als zweites, dauerhaftes Arbeitsgerät eingerichtet** (nicht nur für den Urlaub oben) — gleicher Weg wie vom PC: Vault per Git-Remote (`git@github.com:mkmeboss/my-brain-vault.git`), Engine-/Box-Arbeit per SSH mit demselben Tailscale-Key. Auf dem Laptop läuft kein eigener Discovery-Fallback und kein Hub/Lab-Server — die Box bleibt für beide Geräte die gemeinsame, dauerhaft laufende Instanz.
 - **F5/manuelles Kompilieren ist tot.** Deploy läuft extern über `box_deploy.ps1` auf der Box (NT8 beenden → Backup außerhalb des NT8-Baums → Staging rein → Pre-Flight-Compile → `dotnet build` → DLL setzen → `obj`/`bin` wieder entfernen). Details und bekannte Fallen: [[VPS-Einrichtung Schritt für Schritt]], [[Strategie-Logbuch]] #084.
 - Vor jedem Deploy: NT8-Log des Tages checken ob wirklich nichts Live läuft, danach den kompletten Zielzustand in einem Wegwerf-Ordner vorab kompilieren (`_check_compile.ps1 -SrcDir`), bevor NT8 überhaupt gestoppt wird. Das Leichen-Problem im `_staging` ist seit 11.08. (AP84) im Skript selbst entschärft: `box_deploy.ps1` sagt vor allem anderen die Deploy-Kandidaten an, warnt bei Dateien die es in `Strategies` noch nicht gibt (neues Bein oder Leiche?) und leert das Staging nach erfolgreichem Lauf. Die Ansage trotzdem immer lesen, bevor NT8 gestoppt wird.
 - **Wiederanlauf braucht aktuell eine angemeldete RDP-Session** (Autologon fehlt noch, AP86) — NT8 hängt sonst beim UI-Aufbau. Bis das gefixt ist, nach jedem Deploy kurz Bescheid geben, dass eine RDP-Anmeldung nötig ist.
