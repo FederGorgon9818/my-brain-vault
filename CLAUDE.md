@@ -27,7 +27,7 @@ for j in q['jobs']:
   if j.get('status')=='pending' and j.get('tag')=='vacation_variants_0906': j['status']='skipped'; n+=1
 json.dump(q,open('discovery/queue.json','w',encoding='utf-8'),ensure_ascii=False,indent=1);print(n)"` (nur `pending`, nie `running`), danach Runner NICHT neu starten (er liest die Queue je Job frisch). Der Generator füllt dann weiter Varianten nach — wer das dauerhaft stoppen will, entfernt die Suffixe aus `VARIANT_SPECS` und startet den Runner neu (Stop → Sync → Start). Handgebaute Jobs mit höherer `priority` (≥ 60) laufen ohnehin vor den Varianten.
 - **Nicht anfassen:** `registry.json` (append-only, AP122), laufende Jobs (`running`), `generator_state.json`.
-- **Runner-Code auf der Box:** seit 06.09. 23:07 mit Varianten-Generator und `registry_write_every_configs: 200` (Register nur alle 200 Configs, Audit B2). Null-Schalter für ts_reversal/last_hour/asian/vwap_pullback und die Kalender-/DIX-Gates: Stand siehe Ticket **AP137** (Übergabe-Ticket dieser Session) und Daily Note 06.09.
+- **Runner-Code auf der Box:** seit 06.09. 23:07 mit Varianten-Generator und `registry_write_every_configs: 200` (Register nur alle 200 Configs, Audit B2). Null-Schalter für ts_reversal/last_hour/asian/vwap_pullback und die Kalender-/DIX-Gates liegen seit 07.09. 00:10 **nur auf dem Laptop, nicht auf der Box** (Deploy offen, Max macht den Rest selbst): Stand siehe Ticket **AP137** (Übergabe-Ticket dieser Session) und Daily Note 06.09.
 
 ---
 
