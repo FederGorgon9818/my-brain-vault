@@ -2636,6 +2636,33 @@ Präzedenzfall **#046 (29.07.2026, NO-GO)**: 0 von 8 alten Beinen überlebte OOS
 
 Belege: Scratchpad 31.08.-01.09. (`AR18_summary.json`, `AR18_wb_sweep.json`, `AR18_pl_sweep.json`, `AR19_stage1_*.json`, `AR20_ergebnis.json`, `GEWINN_*.json`); Hypothesen: [[Hypothesen-Bank (Momentum & Averages)]] AR-18/19/20.
 
+## #142 — AP107 entschieden: Regime-Wette wird eingegangen, Quant-Team-Nachrechnung findet zweite versteckte Ermessensfrage (Diskontrate) (06.09.2026)
+
+**Anlass:** AP107 (18.08.2026, #117) stand seit drei Wochen offen: ist der Eval-Kauf eine Wette auf das Post-2021-Regime? Vor der Entscheidung liefen Statistiker und Mathematiker parallel im Hintergrund nach, wie im Ticket-Guide vorgemerkt (Käfig-Rechnung auf Letzte-3-Jahre-Basis, Sizing-Beweis).
+
+**Statistiker — L3Y-Basis bestätigt die Struktur, verschiebt nichts zugunsten des Kaufs:** Käfig-Rechnung neu auf dem 4-Bein-Live-Buch (µ=25,72 $/Tag, σ=217, 1836 Tage). 50k-Passquote fällt von 82,6 % (volle Historie) auf **71,7 % auf Letzte-3-Jahre-Basis** (CI [44,1; 87,3] — die Seed-Streuung allein unterschätzt die Unsicherheit um Faktor 12-25). DSR bricht auf L3Y auf **0,046** ein (Register ist seit 18.08. von ~4.000 auf **17.639 Trials** gewachsen — geschrumpfter Wert je Kauf jetzt −205 $ statt −161 $, Lehre 116 jetzt quantifiziert: breiter suchen hat den Kauf teurer gemacht, nicht sicherer). Kernbefund: **L3Y ist nicht die gute OOS-Basis, sondern genau das Selektionsfenster der aktuellen Beine** (`_d260818`, `_d260820`) — maximal in-sample. L3Y hat zudem 49,6 % des Gewinns in 5 Tagen, exakt auf der GATES_HARD-Konzentrationsgrenze (#038), die jeder Discovery-Kandidat einhalten müsste.
+
+**Mathematiker — Sizing-Beweis, mit Einschränkung + unerwartetem Fund:** k=1 ist jetzt geschlossen (Zweiphasen-First-Passage-Formel, nicht nur simuliert) für jedes µ > 0 optimal in der Passquote. Unter der undiskontierten Kette ebenfalls immer monoton. **Einschränkung:** unter der diskontierten NPV-Kette gibt es einen inneren k=2/3-Buckel, aber nur wenn µ > σ²/D = 23,5 $/Tag (Kelly-Diagnose k\* = µD/σ², aktuell 1,09) — das ändert die AP107-Entscheidung nicht, weil dort ohnehin "kaufen" die Antwort wäre. Der Ticket-Satz "Wert je Kauf fällt in k in JEDEM Szenario" war damit wörtlich zu stark, in der Sache aber richtig für den strittigen Bereich. Bein-Austauschbarkeit erneut und schärfer bestätigt: **τ² = 0 exakt** (Q=0,16, df=3, DerSimonian-Laird auf theta der vier Beine), **0 von 15 möglichen Bein-Teilmengen** retten das tote 2016-21-Regime bei irgendeinem k. **Der ungeplante Fund:** der Break-even ($17,43/Tag) hängt genauso stark an der bislang nie bewusst gewählten Diskontrate der AP106-Kette (Halbwertszeit 6 Monate = 300 %/Jahr effektiv) wie am Regime — bei 12 Monaten fällt er auf 9,37 $ (Münzwurf-Zone, genau wo der ehrlich geschrumpfte Schätzer 7-12 $/Tag liegt), bei 24 Monaten auf 5,51 $.
+
+**Entscheidung (Max, 06.09.2026):** Regime-Wette wird eingegangen. Die Diskontrate wurde dabei bewusst dokumentiert (Kommentar + `RHO_HALFLIFE_DAYS`-Konstante in `ap106_funded_sizing_lib.py`), aber nicht separat neu verhandelt — bleibt bei 6 Monaten.
+
+**Direkte Konsequenzen (alle 06.09.2026 umgesetzt):**
+- AP107 geschlossen mit Widerlegungsregeln statt offener Diskussion: 1 Bust = Varianz, 2 in Folge = `live-reconciler` gegenchecken, 3 in Folge oder ein negatives Live-Vorzeichen (40-60 Handelstage) oder rollierende 3J-Drift unter Break-even = Wette neu aufmachen.
+- AP91 (2x25k-Split-Plan) und AP97 (Konto-C-Frac-Erhöhung) archiviert — waren beide schon vor AP107 durch v2/Min-Size (#106) inhaltlich tot, Min-Size macht Sizing-Splits auf einem Konto folgenlos.
+- AP64 präzisiert: unter Min-Size bleibt von "Sizing-Split vs. sequenziell" nur noch **sequenziell/zeitversetzt** übrig.
+- Zwei neue Tickets: **AP121** (Regime-Wächter im Portfolio-Tab — rollierende 3J-Drift vs. Break-even + k*-Kelly-Check, damit #117/#142 nicht wieder unbemerkt veralten) und **AP122** (CushionFrac-Check Konto A, blockiert durch AP86 — seit 16.08. offen, ob der Min-Size-Deploy auf der Box je gemacht wurde).
+- **Erster Kauf unter der Wette:** 2x FundedNext Flex 50k (Kaufplan C, September = ungerader Monat), Konten FN1/FN2 in `book_state.json` unter `plan.accounts` eingetragen, `funded_finalize.py` nachgezogen. NT8-Einbindung durch Max am Abend des 06.09.2026.
+
+**Lehren:**
+1. **Ein Break-even ist nie nur eine Edge-Aussage.** Er hängt an jedem Parameter der Kette, die ihn erzeugt — hier war es die Diskontrate, die niemand bewusst gesetzt hatte, obwohl sie den Break-even um Faktor 3 verschieben kann. Vor jeder künftigen NPV-artigen Kaufentscheidung: alle stillen Modellparameter einmal explizit auflisten, nicht nur die Edge-Schätzung selbst.
+2. **Ein begründeteres Datenfenster (L3Y) ist nicht automatisch ein besseres.** Es kann gleichzeitig die relevantere UND die schwächere Beweisbasis sein (DSR 0,888 → 0,046), wenn es zufällig auch das Selektionsfenster der bewerteten Objekte ist. Regime-Fragen sauber trennen von Beweiskraft-Fragen.
+3. **Ein wachsendes Trial-Register macht eine bestehende Kaufentscheidung nicht sicherer, sondern über die Zeit teurer** (n_trials 4.000 → 17.639 zwischen #117 und #142) — Lehre 116 gilt für jede laufende Rechnung, nicht nur für neue Kandidaten.
+4. **Wenn eine Grundsatzentscheidung ansteht, lohnt sich eine explizite Widerlegungsregel im selben Zug** — verhindert, dass jeder einzelne Bust die Entscheidung neu aufrollt.
+
+**Register:** keine neuen Trials (reine Nachrechnung auf bestehenden Daten, kein neuer Backtest).
+
+Belege: Statistiker-/Mathematiker-Berichte 06.09.2026 (Agent-Transkripte, Scratchpad `ap107_base.py`, `ap107_v2.py`, `ap107_boot.py`, `ap107_k.py`, `ap107_chain.py`, `ap107_shrunk.py`, `qm_closed.py`, `qm_ap107.py`, `qm_legs.py`, `qm_check2-4.py`); Tickets [[Tickets|AP107]]/AP91/AP97/AP64/AP121/AP122 in `tasks.json`; `ap106_funded_sizing_lib.py` (RHO_HALFLIFE_DAYS-Dokumentation); `book_state.json` plan.accounts (FN1/FN2).
+
 ## Nächste Kandidaten (noch offen)
 - ~~Replace-Test: NQ_Momentum → MOMSEL_NQ_er0.3_s0.75~~ → in #080 ehrlich neu gerechnet: nur bei frac ≈0.10 sinnvoll; in #095 endgültig erledigt (Momentum ist im Leave-one-out neutral, bleibt drin) — **in #108 unter v2/Min-Size wieder aufgemacht als AP101** (nicht mehr als Buch-Frage, sondern als Vola-Senkung bei erhaltener Drift)
 - ~~Momentum selektiver~~ → in #057 getestet, NQ 8/8 robust (siehe oben)

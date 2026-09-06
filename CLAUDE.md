@@ -315,6 +315,29 @@ Jeder Subagent hat seinen Trigger schon in der eigenen `description` (`.claude/a
 
 ---
 
+## 🪝 Hooks: Reflex-Regeln laufen im Harness, nicht im Kopf (Max, 04.09.2026)
+
+Seit 04.09.2026 setzt Claude Code selbst einige der „Claude muss dran denken"-Regeln durch — deterministisch, per Hook in `.claude/settings.json` (versioniert, gilt auf PC und Laptop), Skripte in `.claude/hooks/`, Marker-Dateien in `<engine>/.claude_hooks/` (nicht versioniert). Anlass: die Agentic-OS-Recherche vom 04.09. (Guardrails gehören in den Harness) plus die Vorfälle 21.08. (Buch drei Tage ungepusht) und 28.08. (Runner 5,5 h mit altem Code).
+
+| Hook | Was er tut |
+|---|---|
+| `guard_bash.py` (PreToolUse Bash) | **Blockt** `box_provision_discovery.ps1 -Sync*`, solange kein `regression_ok`-Marker jünger als die Engine-Kern-Dateien ist (engine-regression-tester setzt ihn bei „Sync frei"). **Blockt** `hypothesis_bank.py --enqueue`, solange kein `pipeline_ok`-Marker jünger als `hypothesis_bank.py` ist (pipeline-auditor setzt ihn bei „sauber"). **Blockt** Dauerläufer als Session-Kind (Hub.exe, app_server/lab_app/hub_app/discovery_runner, Start-Process, start_discovery.ps1) ohne `Invoke-CimMethod`/`job_escape`. **Blockt** volles Einlesen von `runner.log`, `results/*.json`, Session-Transkripten. Merkt sich `--push-next` und `funded_finalize`-Läufe als Marker. |
+| `guard_read.py` (PreToolUse Read) | Dieselbe Lese-Sperre für das Read-Tool. |
+| `after_change.py` (PostToolUse Edit/Write/Bash) | Sagt die Folgepflicht an: `book_state*.json` neuer als letzter Push → finalize + push-next; Engine-Kern → Regressionstest vor Sync; Discovery-Code → Runner-Neustart; Hypothesen-Bank → variant-scout/strategy-auditor/pipeline-auditor; Hub/Lab/Report-Oberfläche → design-guard; neuer Agent/Automatik → Hub-Roster; Logbuch → logbook-distiller; neue `.cs`-Strategie → `NS_MAP`. |
+| `on_stop.py` (Stop) | **Lässt die Session nicht enden**, solange `book_state*.json` neuer ist als der letzte `--push-next` (einmal blocken, dann nur noch erinnern). Bewusst kein Push nötig: `python .claude/hooks/mark.py push_next_at`. |
+| `session_start.py` (SessionStart) | Inbox-Inhalt + Stale-State (ungepushtes Buch, Kern ohne Regressions-OK) direkt in den Kontext. |
+
+- **Marker von Hand:** `python .claude/hooks/mark.py <regression_ok|pipeline_ok|push_next_at>` aus dem Vault-Root. Der Marker ist der bewusste Unlock — nie setzen, um einen Block „wegzumachen", ohne dass der Agent gelaufen ist.
+- **Engine-Pfad:** die Hooks schauen auf `C:\Users\maxlk\Projects\trading-data\engine` (per `MAXLAB_ENGINE` überschreibbar). Der Laptop hat dort eine Kopie vom 03.09.2026, also greifen die Buch-/Sync-Wächter auch dort; die Box bleibt die Quelle der Wahrheit für das Buch. Ohne Engine-Ordner sind nur die Kommando-Wächter aktiv.
+- **Ein Hook darf nie die Arbeit blockieren, weil er selbst kaputt ist:** jedes Skript fängt eigene Fehler ab und lässt still durch (`<engine>/.claude_hooks/hook_errors.log`). Hook-Änderungen greifen erst nach `/hooks` bzw. Neustart der Session. Neue Reflex-Regel in der CLAUDE.md → zuerst fragen, ob sie als Hook abbildbar ist (Dateipfad, Kommando-Muster, Dateizeit); Text bleibt für das, was der Harness nicht sehen kann.
+- **Noch offen (PC ist aus):** die Hooks als Automatik in `hub_config.json` (`mock_loops`) eintragen, sobald der PC wieder an ist.
+
+### 🔁 Workflow `ein-weg` = Schritt 2 des EINEN Wegs als Skript (Max, 04.09.2026)
+
+`.claude/workflows/ein-weg.js` (Aufruf: Workflow-Tool mit `name: "ein-weg"`, `args: {hypotheses: [{id, title, mechanism, why, market?, family?, source?}]}`). Ablauf deterministisch statt Prompt-Kette: ohne Why harter Stopp → `variant-scout` je Hypothese parallel (mit Strukturausgabe **plus** vollem Report-Text, damit nichts gegenüber dem Handbetrieb verloren geht) → nur die als Testbar/Grenzwertig eingestuften gehen in **einen** `strategy-auditor`-Batch-Call → Entscheidungstabelle je Hypothese (in Bank + H()-Zeile / nachbessern / nicht bauen, mit Grund). Schritt 3/4 bleiben bei der Hauptsession: H()-Zeilen eintragen, `pipeline-auditor` (setzt `pipeline_ok`), `--enqueue --push`. Der Workflow schreibt nie Dateien. Noch nicht mit echten Hypothesen gelaufen (04.09., PC aus) — beim ersten Echtlauf Ergebnis gegen den Handbetrieb gegenlesen.
+
+---
+
 ## 🖥️ Box-Fernzugriff (Regel Max, 11.08.2026 — WICHTIG, nie wieder vergessen)
 
 **Claude hat vollen SSH-Zugriff auf die Trading-Box und soll ihn immer selbst nutzen, statt zu behaupten, er habe keinen Zugriff oder Max müsse das manuell machen.**

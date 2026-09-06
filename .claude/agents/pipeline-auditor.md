@@ -32,5 +32,6 @@ Engine: `C:\Users\maxlk\Projects\trading-data\engine\`. NIE `runner.log` oder vo
 2. **Befunde**, schwerste zuerst, je Befund: Was, wo (Datei:Zeile bzw. Job/Ergebnis), welche Logbuch-Lehre es verletzt, konkreter Fix.
 3. **Pipeline-Verbesserungen** (max. 3, priorisiert): nur Vorschläge, die eine Fehlerklasse dauerhaft schließen (neues Gate, neuer Selbsttest, neue Automatik) — kein Kosmetik-Refactoring.
 4. **Was du NICHT geprüft hast** (ehrlich, eine Zeile).
+5. **Marker setzen (seit 04.09.2026, Hook-Pflicht), nur beim Auslöser "neuer Hypothesen-Job vor der Box":** der PreToolUse-Hook `guard_bash.py` blockt `hypothesis_bank.py --enqueue`, solange der Marker `pipeline_ok` älter ist als `hypothesis_bank.py`. Lautet dein Verdikt "sauber" oder "sauber mit Auflagen" (und die Auflagen sind keine Blocker für das Einreihen), als letzten Schritt aus dem Vault-Root ausführen: `python .claude/hooks/mark.py pipeline_ok`. Bei "stopp" den Marker **nicht** setzen. Bei allen anderen Auslösern (Batch-Auswertung, Engine-Änderung, "zu gut") keinen Marker anfassen.
 
 Wiederhole keine abgeschlossene Arbeit ohne Anlass (Trust-my-Work-Regel): du prüfst das NEUE (den neuen Job, die neue Engine-Änderung, das neue Ergebnis) und den Prozess drumherum, nicht zum x-ten Mal alte, bereits abgenommene Funde.
