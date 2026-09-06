@@ -2710,8 +2710,38 @@ Asia-Dir ist damit das dritte Bein, auf dem jedes Overlay schadet (0 von 10 Zell
 
 Belege: Statistiker-/Mathematiker-Berichte 06.09.2026 (Agent-Transkripte, Scratchpad `ap107_base.py`, `ap107_v2.py`, `ap107_boot.py`, `ap107_k.py`, `ap107_chain.py`, `ap107_shrunk.py`, `qm_closed.py`, `qm_ap107.py`, `qm_legs.py`, `qm_check2-4.py`); Tickets [[Tickets|AP107]]/AP91/AP97/AP64/AP125/AP126 in `tasks.json`; `ap106_funded_sizing_lib.py` (RHO_HALFLIFE_DAYS-Dokumentation); `book_state.json` plan.accounts (FN1/FN2).
 
+## #145 — Queue-Diagnose vor dem Urlaub: 9 % Auslastung, Vorlagen-Welt leer, nur 2 von 22 Modi deploy-fähig; Varianten-Generator + Null-Schalter für die Buch-Modi gebaut (06.09.2026)
+
+**Befund (Box, n=17.639 Trials):** 556 Jobs seit 18.08., aber nur 43 h Rechenzeit in 20 Tagen (~9 % Auslastung); Job-Median 2,3 min, 9,4 s je Config; 35 Kandidaten, alle bis 21.08., seit 24.08. null. Queue seit 03.09. 22:00 leer: alle 130 Vorlage×Markt-Schlüssel des Generators vergeben, `hypothesis_bank.py` (131 Zeilen, 209 Jobs, 0 Kandidaten) restlos eingereiht, `jobs_proposed/` abgearbeitet. Runner ist Single-Process auf 6 Kernen. `ctl_null` gab es nur für tsmom/maband, deshalb konnten 20 von 22 Modi — darunter **alle vier Buch-Modi** — nie `deploy_ready` werden; ein Ersatz-Kandidat für ein Buch-Bein war damit strukturell unmöglich, obwohl Ersatz/Exit-Sweep der einzige Weg ist, aus dem je Kandidaten kamen (#139 B3: 577 „neues Bein"-Evals, 0 Treffer, Spearman(Buch-Score, Trades/Jahr) = −0,81).
+
+**Gebaut:** (1) Varianten-Vorlagen im Generator (22 tsmom/maband-Vorlagen × Achsen, die im Register nachweislich leer sind: `mb_max_trades`, kurzes Signalfenster, `mb_bar_min`, `tm_bar_min` nur mit Pfadform-Signalen, Gegenseite, später Start; 174k Configs ≈ 22 Box-Tage, HF-Prio). (2) Generischer Null-Schalter `qbt._null_direction` (Richtung je Tag gewürfelt, nach den Richtungsfiltern, gleiche Trade-Menge) in ts_reversal, last_hour, asian us_dir und vwap_pullback (dort Exit-Schleife richtungsparametrisiert); `ctl_delay` für asian (tr_start +1 min). Sanity: NQ_Momentum_d260818 expR +0,215 vs. Zufallsrichtung +0,01, NQ_LastHour_v3 +0,103 vs. −0,01/−0,05, Asia-Dir +0,171 vs. −0,05/+0,11 — die Kontrolle misst also wirklich Drift statt Signal. (3) Kalender-Flags (`mend_off`, `opex_week`, `roll_week`, `dto_opex`) und DIX-Gate in `sigcore` als neue Gate-Achsen, Ersatz-Vorlage `vwap_pullback_leg`. (4) Register-Dump nur noch alle 200 Configs (Audit: bei 190k Trials sonst ~4 TB Schreiblast).
+
+**Lehren:** 148 — Eine Achse ist erst dann eine Achse, wenn sie im konkreten Signaltyp wirkt: `tm_bar_min` ist bei `ret` aggregationsinvariant (Audit B1), 45k Configs wären Duplikate unter neuem Register-Key gewesen. 149 — „Die Queue läuft" heißt nichts, wenn der Raum nicht deploy-fähig ist: Pflichtkontrollen ohne Schalter machen Rechenzeit wertlos; jeder neue Modus braucht Delay- UND Null-Schalter, bevor er in eine Vorlage darf. 150 — Nachschub ohne Session ist die Voraussetzung, aber die Kandidaten-Chance entscheidet sich an Ersatz-Slot und Zielfunktion, nicht am Config-Volumen (Zufallsdecke +11-15 % ist der Preis jeder Kartierung).
+
 ## Nächste Kandidaten (noch offen)
 - ~~Replace-Test: NQ_Momentum → MOMSEL_NQ_er0.3_s0.75~~ → in #080 ehrlich neu gerechnet: nur bei frac ≈0.10 sinnvoll; in #095 endgültig erledigt (Momentum ist im Leave-one-out neutral, bleibt drin) — **in #108 unter v2/Min-Size wieder aufgemacht als AP101** (nicht mehr als Buch-Frage, sondern als Vola-Senkung bei erhaltener Drift)
 - ~~Momentum selektiver~~ → in #057 getestet, NQ 8/8 robust (siehe oben)
 - ~~Intraday Time Series Reversal auf Index (SSRN 5807282)~~ → in #056 als on_rev/min30-Variante mitgetestet (eod-Variante war stärker)
 - Overnight-Intraday Reversal (SSRN 2730304)
+
+## #144 — Sizing-Trichter nach dem matfinog-Reel: bei E8 streiten Eval- und Funded-Ziel nicht, die versteckte dritte Achse ist Zeit (06.09.2026)
+
+**Anstoß (Max):** Instagram-Reel von @matfinog („How an institutional trader would trade prop firms") zeigt „The sizing funnel": über der Buchgröße in MNQ steigt die Eval-Passquote bis ~10 MNQ auf ein Plateau um 40 %, während E[total extracted] bei 3 MNQ (~5.400 $) spitzt und danach fällt — „the two objectives disagree about size". Auftrag: dasselbe Bild für unser Buch bauen und schauen, was wir lernen.
+
+**Gebaut:** `sizing_funnel.py` (Engine, PC + Box) auf den AP106-Modellen (`ap106_funded_sizing_lib.run_eval` / `run_funded` / `chain`), 4-Bein-Buch vom 06.09. (Momentum_d260818, LastHour_v3, Asia-Dir-USopen_d260820, VWAP-Pullback), 1 MNQ je Bein, 1.836 Handelstage, µ 25,7 / σ 217 $ je Tag, Block-Bootstrap Ø10, Intraday-Bust-Check, 3 Seeds × 6.000 Pfade, k = 1…10 je Bein (4…40 MNQ, Cap 40). Passquote bei k = 1 deckt sich mit `portfolio.json` v2 (82,8 %). Seite: Artifact „Sizing-Trichter E8 50k".
+
+| k je Bein | MNQ | Pass 36 M | Pass 12 M | Pass µ=0 | E[Auszahlung] | Median | P(Bust < 1. Payout) | 1. Payout (Median) | X je Kauf, disk. 6 M |
+|---|---|---|---|---|---|---|---|---|---|
+| **1** | 4 | **82,8 %** | 72,8 % | 23,5 % | **5.959 $** | 7.877 $ | 17,8 % | 216 d | +188 $ |
+| 2 | 8 | 59,3 % | 59,3 % | 18,9 % | 3.988 $ | 1.214 $ | 43,4 % | 115 d | **+393 $** |
+| 3 | 12 | 46,5 % | 46,5 % | 17,5 % | 2.835 $ | 0 $ | 58,4 % | 83 d | +329 $ |
+| 5 | 20 | 36,0 % | 36,0 % | 15,9 % | 1.767 $ | 0 $ | 73,8 % | 62 d | −27 $ |
+| 10 | 40 | 26,8 % | 26,8 % | 13,9 % | 901 $ | 0 $ | 86,4 % | 48 d | −1.152 $ |
+
+**Befund:**
+- **Beide Kurven fallen streng in der Größe**, kein innerer Buckel — bestätigt #106 (Passquote monoton) und #117 (Lehre 121, Dollar-Caps) auf dem heutigen Buch. Kelly k* = µ·DD/σ² = 1,09: ein Kontrakt je Bein ist bereits Voll-Kelly (κ = 1.831 $).
+- **Warum das Reel anders aussieht:** (1) Passquote steigt dort mit der Größe, weil kleine Größe das Ziel im **Zeitlimit** nicht erreicht — E8 hat keins; mit 12-M-Horizont fällt unser k = 1 auf 72,8 %, ab k = 2 ist der Horizont egal (Entscheidung in 72 Tagen). Mit 3 Monaten würde auch unsere Kurve zum Buckel. (2) Auszahlung spitzt dort bei 3 MNQ, weil sie **mit der Größe skaliert**, bis Ruin überwiegt (klassisches Kelly-Optimum) — bei E8 sind 5 Auszahlungen in Dollar gedeckelt, mehr Größe holt dieselben Caps nur schneller. Der „Streit der Ziele" ist bei uns ein Streit **Größe gegen Zeit**, genau die Achse, die v2 aus der Zielfunktion genommen hat (Lehre 81/118).
+- **Die eine Stelle, an der Größe gewinnt:** die diskontierte AP106-Kette (Halbwertszeit 6 Monate, seit #143 bewusst dokumentiert) hat ihr Optimum bei k = 2 (+393 $ gegen +188 $ je 150-$-Kauf), weil der erste Payout im Median 115 statt 216 Tage dauert — der innere Buckel, den der Mathematiker in #143 für µ > σ²/D vorhergesagt hat (aktuell 25,7 > 23,5 $/Tag, knapp). Undiskontiert verliert k = 2 mehr als die Hälfte (2.216 $ gegen 4.786 $ je Kauf). Getrennt gesized (k_eval, k_funded) ist undiskontiert (1, 1) das beste Paar.
+- **Nulldrift-Boden:** ohne Edge 14–24 % Passquote und 385 $ je funded Konto; der Rest ist Buch-Drift und hängt am Post-2021-Regime (#117, AP107).
+
+**Folgen:** kein Buch-, kein Sizing-Wechsel. **AP126 (läuft Konto A auf der Box noch mit frac 0,14 ≈ 2 Kontrakte je Bein?) ist damit der wertvollste offene Punkt** — das wäre die 59-%-Zeile statt der 83-%-Zeile. AP125 (Regime-Wächter + Kelly-Check) bekommt X(k) je Halbwertszeit als Zeile dazu; der Trichter selbst kann bei jeder Buch-Änderung aus `funded_finalize.py` mitlaufen (15 s auf gecachten Zellen). Keine neue Lehre — das Bild schärft 81, 118 und 121, ersetzt sie nicht.

@@ -72,6 +72,35 @@ Die Queue darf **nie leerlaufen** — Fokus aktuell HF (mehr Trades/Jahr). Erste
 
 Register-Pruning (Job fällt weg, wenn < 4 Configs neu), max. 120 Jobs/Tag, `replaces_leg` automatisch, wenn Modus+Markt einem Buch-Bein entsprechen. Zustand in `generator_state.json` (wird mit `--pull` gespiegelt). Ehrlichkeit: die Zufallsdecke steigt mit jedem Job — Brute Force kann sich keine Edge erschleichen, die Prämisse-Stufe killt tote Vorlagen nach 1–2 Backtests.
 
+## Varianten-Vorlagen: Vorrat für Wochen ohne Session (Max, 06.09.2026)
+Befund 06.09.: Queue seit 03.09. 22:00 leer, `queue_empty` zweimal täglich, Box 4 Tage still. Alle 130 Vorlage×Markt-Schlüssel vergeben, Folge-Jobs bis Tiefe 3 abgehakt, `hypothesis_bank.py` restlos eingereiht, `jobs_proposed/` leer. Die Bilanz seit 18.08.: 556 Jobs, nur **43 h Rechenzeit in 20 Tagen (~9 % Auslastung)**, ein Job im Median 2,3 min (p90 9 min), 9,4 s je Config. Eine handgebaute 10-Job-Runde war deshalb in 4-6 h durch und die Queue wieder leer (Scout-Report 03.09., Abschnitt 7).
+
+**Lösung = vierte Quelle im Generator (`VARIANT_SPECS` / `build_variants()` in `job_generator.py`):** jede tsmom/maband-Vorlage (22 Stück) wird programmatisch geklont, je Klon EINE im Register nachweislich leere Achse. Nur tsmom/maband, weil nur diese zwei Modi einen Null-Schalter haben (`controls.py ctl_null`) und deploy_ready werden können. Reihenfolge = Priorität, HF zuerst:
+
+| Suffix | Modus | neue Achse | Register-Beleg (n=17.639) | Prio | Configs | ~Stunden |
+|---|---|---|---|---|---|---|
+| `_mt` | maband | `mb_max_trades` 2/4/6 | ≠1 nur in 238 von 2.990 | 52 | 16.848 | 44 |
+| `_hf` | tsmom | Profil `tm_sig_len`/`tm_thr` 10/0,0015 · 5/0,0015 · 5/0,001 | len 15 + thr 0,003 in 7.470 von 9.255 | 52 | 45.360 | 118 |
+| `_tfm` | maband | `mb_bar_min` 1/2/3 | 184 von 2.990 | 48 | 16.848 | 44 |
+| `_tf` | tsmom | Profil `tm_bar_min` 3/5 × `tm_signal` signratio/wins, Fenster 30 min | 0 von 9.255 | 44 | 45.360 | 118 |
+| `_gegen` | maband | `mb_side=against` / anderes Band-/VWAP-Ereignis | against 29 von 2.990 | 42 | 8.208 | 21 |
+| `_spaet` | beide | `tm_sig_start` / `mb_start_min` 120/210 | < 2 %, 0 Survivors (Reserve) | 36 | 41.472 | 108 |
+| `_kal` (neu 06.09. spät) | beide | Profil Kalender-Gates: aus / Monatsende ±3 Tage / außerhalb / OpEx-Woche ja / nein / Roll-Woche | Gates neu, 0 Trials | 50 | ~124.000 | ~325 |
+| `_dix` (neu 06.09. spät) | beide | Profil Dark-Pool-Index (Vortag): aus / DIX ≥ 0,45 / DIX ≤ 0,40 | `dix_prev` lag ungenutzt in `daily_context` | 49 | ~62.000 | ~162 |
+| `vwap_pullback_leg` (Vorlage, kein Klon) | vwap_pullback | Stop/Ziel in Punkten, ATR-Abstand, 1h-Trendfilter um die Live-Defaults | Modus hatte nie eine Vorlage (128 Trials) | 58 | 81 | 0,2 |
+
+Summe ohne `_kal`/`_dix` **174.096 Configs ≈ 455 h ≈ 22 Tage bei 20 h/Tag**, mit den beiden Gate-Varianten ~360.000 Configs ≈ 940 h (Reihenfolge: `_mt`/`_hf` → `_kal` → `_dix` → Rest) (Single-Process), plus die automatische Refine-/Exit-Kette. Ein Varianten-Job hat 324-1.080 Configs, also 50 min bis ~3 h, damit fällt die Queue nicht mehr nach Stunden leer. Die Prämisse jedes Klons setzt die neue Achse auf den mittleren Wert, damit die Prämissen-Stufe die Variante prüft und nicht die schon gerechnete Basis. Preis: die Zufallsdecke steigt mit √(2 ln n) um rund +15 %, bewusst in Kauf genommen.
+
+**Pipeline-Audit vor dem Neustart (06.09., zwei Runden):** (B1) `tm_bar_min` ist bei `tm_signal=ret` mathematisch wirkungslos (Fenster-Return ist aggregationsinvariant), deshalb läuft `_tf` nur mit Signaltypen, die die Bar-Struktur lesen (signratio/wins), und mit 30-Minuten-Fenster, damit genug Bars im Fenster sind. (B2) Das Register wurde alle 10 Configs komplett neu geschrieben (1,4 s bei 17k, 15 s bei 190k Einträgen, hochgerechnet ~4 TB Schreiblast über den Urlaub): `discovery_runner.py` schreibt es jetzt nur noch alle 200 Configs und am Jobende (`registry_write_every_configs`), die Ergebnisdatei weiter alle 10.
+
+**Übergabe für den Urlaub (Kartierungslauf, bewusst so entschieden 06.09.):** erwartete deploy-fähige Kandidaten ≈ 0, weil alle Varianten als „neues Bein" gegen das Buch laufen (siehe Grenzen unten) und HF-Score mit dem Buch-Score negativ korreliert (Spearman −0,81, #139). Der Ertrag ist Registerwissen über sechs bisher leere Achsen; der Preis ist eine dauerhaft um ~11-15 % höhere Zufallsdecke für jede künftige Hypothese. **„0 Kandidaten" nach dem Urlaub ist deshalb das erwartete Ergebnis und kein Filter-Bug.** Interessant sind Survivors/PBO je Variante und die Monotonie-Fragen (Ertrag je Trade vs. `mb_max_trades`, Gegenseite vs. Basis). Die Ersatz-Slot-Frage (welches Buch-Bein einen Varianten-Fund ersetzen dürfte) bleibt Max' Entscheidung im Ticket Buch-Komposition.
+
+Zwei Fixes im selben Zug: `fill()` speichert den Generator-State auch bei 0 akzeptierten Jobs (vorher gingen die `n/a`-Marken verloren und der Runner versuchte alle 2 Minuten dieselben zwei Duplikate), und `_finer_values` hält Integer-Achsen ganzzahlig (`tm_bar_min` 7,5 wäre Unsinn).
+
+**Nachtrag 06.09. spät (Max: „Kandidaten, nicht Beschäftigung"):** (a) Generischer Null-Schalter `qbt._null_direction` für ts_reversal, last_hour, asian (us_dir) und vwap_pullback, dazu `ctl_delay` für asian → alle vier Buch-Modi können jetzt `deploy_ready` werden, also Ersatz-Kandidaten gegen `replaces_leg` liefern. (b) Neue Gate-Achsen in `sigcore`: Kalender-Flags (`mend_off`, `opex_week`, `roll_week`, `dto_opex`; Gates `tm_mend_within/outside`, `tm_opex_week`, `tm_roll_week`, `tm_dto_opex_max`) und `tm_dix_min/max`. Das sind neue ökonomische Bedingungen (Monatsende-Rebalancing, OpEx-Pinning, Roll-Woche, Off-Exchange-Akkumulation), keine neuen Parameter. Stichprobe NQ-Momentum ungegated: `tm_mend_within=3` n 284 statt 813, expR +0,60 statt +0,22 (IS, Vorsicht). (c) Jeder Generator-Job trägt `tag` (`vacation_variants_0906` / `generator_coverage`), Rausnehmen siehe CLAUDE.md „Queue-Stand Urlaub". Rest der Liste (Ersatz-Slot-Semantik, Trade-Size-Gate, Ideen-Schleife, neue Futures): Ticket AP137.
+
+**Bekannte Grenzen (nicht gelöst, nur benannt):** (1) Buch-Marginal läuft für alle Varianten als „neues Bein", weil `book_leg_for` für tsmom/maband kein Buch-Bein findet, und „neues Bein" hat laut #139/B3 noch nie funktioniert (577 Evals, 0 Treffer). Ein Fund zeigt sich also eher an Survivors/PBO als am Buch-Score. (2) Der Runner rechnet weiter auf einem von sechs Kernen; Parallelisierung über die Config-Schleife wäre der nächste 4x-Hebel. (3) `ctl_null` für die anderen 20 Modi fehlt weiterhin (Ticket „Pipeline-Fixes aus Audit #139").
+
 ## Offen / nächste Ausbaustufen
 - Register-Merge Box → PC; Job-Typen „Regime-Conditioning" (Ein/Aus-Schalter für bestehende Beine) und „Event-Bein" (braucht Engine-Modul); Kandidaten-Karten im Strategy Lab (Tab) statt nur `inbox.md`.
 - Ehrlich: mehr Alpha kommt nur mit **neuen Inputs** (Tick/L2, Optionen-Positionierung, Breadth). Der Runner macht die Suche sauber und billig, aber er zaubert keine neuen Mechanismen aus alten Minutenbars.
