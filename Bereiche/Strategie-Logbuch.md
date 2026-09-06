@@ -2697,7 +2697,7 @@ Asia-Dir ist damit das dritte Bein, auf dem jedes Overlay schadet (0 von 10 Zell
 - AP107 geschlossen mit Widerlegungsregeln statt offener Diskussion: 1 Bust = Varianz, 2 in Folge = `live-reconciler` gegenchecken, 3 in Folge oder ein negatives Live-Vorzeichen (40-60 Handelstage) oder rollierende 3J-Drift unter Break-even = Wette neu aufmachen.
 - AP91 (2x25k-Split-Plan) und AP97 (Konto-C-Frac-Erhöhung) archiviert — waren beide schon vor AP107 durch v2/Min-Size (#106) inhaltlich tot, Min-Size macht Sizing-Splits auf einem Konto folgenlos.
 - AP64 präzisiert: unter Min-Size bleibt von "Sizing-Split vs. sequenziell" nur noch **sequenziell/zeitversetzt** übrig.
-- Zwei neue Tickets: **AP121** (Regime-Wächter im Portfolio-Tab — rollierende 3J-Drift vs. Break-even + k*-Kelly-Check, damit #117/#143 nicht wieder unbemerkt veralten) und **AP122** (CushionFrac-Check Konto A, blockiert durch AP86 — seit 16.08. offen, ob der Min-Size-Deploy auf der Box je gemacht wurde).
+- Zwei neue Tickets: **AP125** (Regime-Wächter im Portfolio-Tab — rollierende 3J-Drift vs. Break-even + k*-Kelly-Check, damit #117/#143 nicht wieder unbemerkt veralten) und **AP126** (CushionFrac-Check Konto A, blockiert durch AP86 — seit 16.08. offen, ob der Min-Size-Deploy auf der Box je gemacht wurde).
 - **Erster Kauf unter der Wette:** 2x FundedNext Flex 50k (Kaufplan C, September = ungerader Monat), Konten FN1/FN2 in `book_state.json` unter `plan.accounts` eingetragen, `funded_finalize.py` nachgezogen. NT8-Einbindung durch Max am Abend des 06.09.2026.
 
 **Lehren:**
@@ -2708,7 +2708,7 @@ Asia-Dir ist damit das dritte Bein, auf dem jedes Overlay schadet (0 von 10 Zell
 
 **Register:** keine neuen Trials (reine Nachrechnung auf bestehenden Daten, kein neuer Backtest).
 
-Belege: Statistiker-/Mathematiker-Berichte 06.09.2026 (Agent-Transkripte, Scratchpad `ap107_base.py`, `ap107_v2.py`, `ap107_boot.py`, `ap107_k.py`, `ap107_chain.py`, `ap107_shrunk.py`, `qm_closed.py`, `qm_ap107.py`, `qm_legs.py`, `qm_check2-4.py`); Tickets [[Tickets|AP107]]/AP91/AP97/AP64/AP121/AP122 in `tasks.json`; `ap106_funded_sizing_lib.py` (RHO_HALFLIFE_DAYS-Dokumentation); `book_state.json` plan.accounts (FN1/FN2).
+Belege: Statistiker-/Mathematiker-Berichte 06.09.2026 (Agent-Transkripte, Scratchpad `ap107_base.py`, `ap107_v2.py`, `ap107_boot.py`, `ap107_k.py`, `ap107_chain.py`, `ap107_shrunk.py`, `qm_closed.py`, `qm_ap107.py`, `qm_legs.py`, `qm_check2-4.py`); Tickets [[Tickets|AP107]]/AP91/AP97/AP64/AP125/AP126 in `tasks.json`; `ap106_funded_sizing_lib.py` (RHO_HALFLIFE_DAYS-Dokumentation); `book_state.json` plan.accounts (FN1/FN2).
 
 ## Nächste Kandidaten (noch offen)
 - ~~Replace-Test: NQ_Momentum → MOMSEL_NQ_er0.3_s0.75~~ → in #080 ehrlich neu gerechnet: nur bei frac ≈0.10 sinnvoll; in #095 endgültig erledigt (Momentum ist im Leave-one-out neutral, bleibt drin) — **in #108 unter v2/Min-Size wieder aufgemacht als AP101** (nicht mehr als Buch-Frage, sondern als Vola-Senkung bei erhaltener Drift)
