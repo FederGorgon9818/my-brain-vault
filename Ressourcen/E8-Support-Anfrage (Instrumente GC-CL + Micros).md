@@ -4,7 +4,7 @@ tags:
   - trading/prop
   - e8
 erstellt: 2026-09-09
-status: entwurf-in-gmail-noch-nicht-gesendet
+status: gesendet-wartet-auf-antwort
 ticket: AP141
 ---
 ⬅️ [[Eval-Passing]] · [[Ticket-Epics]] · [[Research-Cache]] · [[Strategie-Logbuch]]
@@ -16,7 +16,7 @@ ticket: AP141
 
 ## Status
 
-- **09.09.2026:** Entwurf in Gmail angelegt (Drafts, an `support@e8markets.com`, gleicher Kanal wie AP77/AP90/AP93). **Noch nicht gesendet**, Max schickt ihn selbst ab.
+- **09.09.2026:** Mail an `support@e8markets.com` abgeschickt (gleicher Kanal wie AP77/AP90/AP93, Gmail messageId `1a086b5bda9e607c`).
 - Antwort bitte hier unten unter „Antwort" eintragen, dann Research-Cache-Zeile „E8 Signature Futures Instrumente (unvollständig, nur Sekundärquellen)" auf „bestätigt" setzen und AP141 schließen.
 
 ## Gesendeter Text (Entwurf)
