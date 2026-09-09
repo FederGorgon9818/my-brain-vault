@@ -12,6 +12,21 @@ import sys
 import time
 from pathlib import Path
 
+# Der Harness schickt/erwartet UTF-8 auf stdin/stdout. Ohne das hier faellt
+# Python auf Windows auf die Konsolen-Codepage zurueck (hier cp1252) - jeder
+# Umlaut, Gedankenstrich oder jedes Emoji im Hook-Payload (staendig im Vault:
+# Daily Notes, Inbox, Logbuch, auch in Bash-Kommandos) macht dann entweder die
+# stdout-JSON ungueltig (Kontext geht verloren) oder laesst read_input() beim
+# Decodieren scheitern - der Fehler wird dort still geschluckt und liefert {}
+# zurueck, also laufen Bash/Read-Waechter leer, ohne dass irgendwo ein Fehler
+# auftaucht. Fund + Fix: 09.09.2026, Anlass war "Kontext ist teilweise nicht
+# da" (Max). Vor jedem Hook-Import fest auf UTF-8 stellen, nicht raten lassen.
+for _stream in (sys.stdin, sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
 VAULT = Path(os.environ.get("CLAUDE_PROJECT_DIR") or Path(__file__).resolve().parents[2])
 
 # Engine-Ordner: PC-Pfad, per Env überschreibbar (Tests, Laptop, spätere Umzüge).
@@ -114,6 +129,93 @@ def norm(s):
 
 def any_re(patterns, text, flags=re.I):
     return any(re.search(p, text, flags) for p in patterns)
+
+
+# ---- Session-Transkripte (Cross-Session-Ueberblick, Daily-Note-Pflicht) ----
+# Regel Max, 09.09.2026: jede Session soll grob wissen, was in anderen lokalen
+# Sessions lief, und jede Session soll die Daily Note verlaesslich pflegen.
+# Grenze: Transkripte liegen lokal unter ~/.claude/projects/, nicht im Git-Repo -
+# das erfasst nur Sessions auf DEMSELBEN Geraet, nicht geraeteuebergreifend.
+# Die Daily Note selbst ist die geraeteuebergreifende Garantie (Git-synchronisiert).
+
+CLAUDE_PROJECTS = Path.home() / ".claude" / "projects"
+
+
+def to_epoch(ts):
+    """ISO-8601-Timestamp (wie in den Transkripten, mit 'Z') zu Unix-Epoch."""
+    try:
+        from datetime import datetime
+        return datetime.fromisoformat(str(ts).replace("Z", "+00:00")).timestamp()
+    except Exception:
+        return None
+
+
+def scan_transcript_light(path):
+    """Kompakter Scan eines Session-Transkripts: Titel, letzter echter User-Text,
+    erste/letzte Aktivitaet, ob Dateien geaendert wurden. Bewusst schlank (kein
+    Datei-Kollisions-Abgleich - das macht session_conflicts.py fuer session-guard)
+    und schnell genug fuer einen Hook-Aufruf (< 0.1s auch fuer grosse Transkripte)."""
+    meta = {
+        "sid": path.stem, "cwd": None, "branch": None, "title": None,
+        "last_prompt": None, "first_activity": None, "last_activity": None,
+        "made_changes": False, "mtime": mtime(path),
+    }
+    try:
+        with path.open("r", encoding="utf-8", errors="replace") as fh:
+            for line in fh:
+                if not any(s in line for s in ('"tool_use"', '"cwd"', '"aiTitle"')):
+                    continue
+                try:
+                    rec = json.loads(line)
+                except Exception:
+                    continue
+                ts = to_epoch(rec.get("timestamp"))
+                if ts:
+                    if meta["first_activity"] is None or ts < meta["first_activity"]:
+                        meta["first_activity"] = ts
+                    if meta["last_activity"] is None or ts > meta["last_activity"]:
+                        meta["last_activity"] = ts
+                if rec.get("cwd"):
+                    meta["cwd"] = rec["cwd"]
+                if rec.get("gitBranch"):
+                    meta["branch"] = rec["gitBranch"]
+                if rec.get("aiTitle"):
+                    meta["title"] = rec["aiTitle"]
+                if rec.get("type") == "user" and not rec.get("isMeta"):
+                    content = rec.get("message", {}).get("content")
+                    if isinstance(content, str) and content.strip():
+                        meta["last_prompt"] = content.strip()[:160]
+                if not meta["made_changes"]:
+                    content = rec.get("message", {}).get("content")
+                    if isinstance(content, list):
+                        for block in content:
+                            if (isinstance(block, dict) and block.get("type") == "tool_use"
+                                    and block.get("name") in ("Edit", "Write", "MultiEdit", "NotebookEdit")):
+                                meta["made_changes"] = True
+                                break
+    except Exception:
+        pass
+    return meta
+
+
+def recent_local_sessions(exclude_sid=None, limit=5, max_scan=15):
+    """Die zuletzt aktiven Sessions auf DIESEM Geraet, projektuebergreifend
+    (alle Ordner unter ~/.claude/projects/), neueste zuerst. Erst per Datei-Mtime
+    vorsortieren (billig), dann nur die Top-Kandidaten wirklich parsen (teurer)."""
+    try:
+        files = [p for p in CLAUDE_PROJECTS.glob("*/*.jsonl") if p.stem != exclude_sid]
+    except Exception:
+        return []
+    files.sort(key=lambda p: mtime(p) or 0, reverse=True)
+    out = []
+    for p in files[:max_scan]:
+        meta = scan_transcript_light(p)
+        if meta["last_activity"]:
+            out.append(meta)
+        if len(out) >= limit * 2:  # genug Kandidaten, Rest per echter Aktivitaet sortieren
+            break
+    out.sort(key=lambda m: m["last_activity"] or 0, reverse=True)
+    return out[:limit]
 
 
 # ---- Antworten -------------------------------------------------------------

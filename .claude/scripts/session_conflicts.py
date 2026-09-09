@@ -31,6 +31,16 @@ from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
 
+# Gleicher Fund/Fix wie in .claude/hooks/_common.py (09.09.2026): ohne das hier
+# faellt Python unter Windows auf die Konsolen-Codepage (cp1252) zurueck und
+# jeder Umlaut/jedes Emoji im Titel/letzten Prompt macht die Ausgabe zu
+# ungueltigem UTF-8 (verifiziert: UnicodeDecodeError beim Rueckdecodieren).
+for _stream in (sys.stdin, sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
 WRITE_TOOLS = {"Edit", "Write", "MultiEdit", "NotebookEdit"}
 
 # Bash-Kommandos, die am Tool-Layer vorbei schreiben. Die Engine-Skripte stehen mit drin,
@@ -88,7 +98,11 @@ def scan_session(path: Path, cutoff: float):
 
     with path.open("r", encoding="utf-8", errors="replace") as fh:
         for line in fh:
-            if '"tool_use"' not in line and '"cwd"' not in line:
+            # Bugfix 09.09.2026: der alte Filter liess nur Zeilen mit "tool_use"
+            # oder "cwd" durch - die Titel-Zeile (type "ai-title", Feld "aiTitle")
+            # hat keins von beidem und wurde nie erreicht. meta["title"] war seitdem
+            # IMMER None, jeder session-guard-Report zeigte "(ohne Titel)".
+            if not any(s in line for s in ('"tool_use"', '"cwd"', '"aiTitle"')):
                 continue
             try:
                 rec = json.loads(line)
@@ -105,8 +119,14 @@ def scan_session(path: Path, cutoff: float):
             for key in ("customTitle", "aiTitle"):
                 if rec.get(key):
                     meta["title"] = rec[key]
-            if rec.get("lastPrompt"):
-                meta["last_prompt"] = str(rec["lastPrompt"])[:120]
+            # Bugfix 09.09.2026: "lastPrompt" als Feldname gab es in diesem Schema
+            # nie (der echte Verweis laeuft ueber type "last-prompt" + "leafUuid",
+            # zu aufwendig aufzuloesen fuer einen Zeilen-Scan) - stattdessen den
+            # letzten echten (nicht Meta-/Caveat-)User-Text direkt mitnehmen.
+            if rec.get("type") == "user" and not rec.get("isMeta"):
+                content = rec.get("message", {}).get("content")
+                if isinstance(content, str) and content.strip():
+                    meta["last_prompt"] = content.strip()[:120]
 
             if ts < cutoff:
                 continue
