@@ -33,6 +33,10 @@ status: offen (noch nichts getestet)
 - MOC-Momentum NQ: tot (#087, 0/72)
 - OR_DELTA_BIAS: positive Edge, aber kein Buchbeitrag (#079) — Präzedenzfall „Edge ist nicht gleich Buch"
 - Value-Area-/IB-Breakout-Continuation: überwiegend schwach (#112-#115)
+- Rundzahl-Cluster (round_number_cluster), Bounce-Arm: tot, hält nicht besser als phasenverschobenes Placebo-Raster gleicher Distanz ([[Strategie-Logbuch]] #149, `roundnum_precursors.py`)
+- Pullback-Tiefe kontinuierlich als Fib-Ersatz (retracement_depth_continuous), Band-These: tot; die begleitende Dezil-Monotonie ist Barrieren-Diskretisierungs-Artefakt, kein Verhaltenseffekt ([[Strategie-Logbuch]] #149, Nachtest per Richtungs-Placebo bestätigt)
+
+**Messfund, kein eigener Job (nicht Friedhof, nicht testbar-Zeile):** Rundzahl-Cluster, Durchbruch-Arm — echtes Level bricht bei ES in allen 3 Rundungsgraden und bei NQ bei den kleinen Rundungsgraden signifikant häufiger als das Placebo (`roundnum_breakout_precursor.py`, [[Strategie-Logbuch]] #149). Ökonomisch bleibt #138s κ-Deckel (0,15·σ₁ₘ, 5 von 6 Ären unter Kosten) maßgeblich, und die hier gemessene Kappa-Zahl ist mit #138 methodisch nicht direkt vergleichbar (Excess-over-Threshold-Verdacht). **Mitnahme für jeden künftigen Level-Job** (AB-14-Empfehlung aus #138 damit erledigt): Rundzahl-Nähe als Zusatzspalte mitschreiben, kein eigener Slot in der Zufallsdecke.
 
 ## Status-Workflow
 Hypothese → (Quant-Team prüft Why + Power) → Discovery-Job → Ergebnis in Inbox → Zeile hier mit ✅/❌/➖ und Logbuch-Nummer markieren. Getestete Hypothesen bleiben stehen (Friedhof ist Wissen).
