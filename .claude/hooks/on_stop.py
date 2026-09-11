@@ -46,6 +46,30 @@ def main():
                     "Note zwischenzeitlich schon aktualisiert haben, dann greift das hier nicht."
                 )
 
+    # --- 3. Trigger gefeuert, Agent nie aufgerufen (Regel Max, 11.09.2026) --
+    # Heuristik aus agent_triggers.py, gleiche Quelle wie der Prompt-Hook und das
+    # Audit-Skript. Einmal blocken, dann nur erinnern: bewusst ausgelassen heisst,
+    # den Grund in der Antwort nennen und erneut beenden.
+    if tp and Path(tp).is_file():
+        try:
+            sys.path.insert(0, str(VAULT / ".claude" / "scripts"))
+            from agent_usage_audit import scan, gaps
+            s = scan(Path(tp))
+            found = gaps(s) if s["turns"] else []
+            # Nur Trigger, die im Prompt oder an Dateien/Kommandos hingen (nicht bloss im Antworttext),
+            # sonst erinnert der Hook an jede beilaeufige Erwaehnung.
+            strong = [g for g in found if any(sc in ("user", "file", "bash", "tool") for sc in g[3])]
+            if strong:
+                parts = [f"{'/'.join(m)} ({tid}: \"{snip[:60]}\")" for tid, m, n, sc, why, snip in strong[:5]]
+                issues.append(
+                    "diese Session hat Einschalt-Regeln getroffen, den Agent aber nie aufgerufen: "
+                    + "; ".join(parts)
+                    + ". Regel 11.09.2026: entweder jetzt einschalten oder in der Antwort in einem Satz sagen, "
+                    "warum er hier nicht passt, dann erneut beenden."
+                )
+        except Exception:
+            pass
+
     if not issues:
         sys.exit(0)
     msg = "Hook: " + " | ".join(issues)
