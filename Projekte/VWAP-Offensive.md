@@ -364,5 +364,34 @@ Max: „schau was wir da gemacht haben, und fang an alles zu testen, oder was wi
 
 **Auswertung:** `inbox_tool.py --pull` (bzw. auf der Box direkt `inbox_tool.py`), AW-14b von Hand aus `results/hyp_AW14b_NQ.json` (expR echt minus Zufall je Zelle, nie die Datei komplett lesen, gezielt per Python filtern). Übernahme ins Live-Buch erst nach Max' Rückkehr.
 
+## Auswertung 14.09.2026 — fünf Jobs, null Kandidaten, ein Bestandsbein im Verdacht
+
+Quant-Team parallel + `verdict-auditor` (Stempel), Details Daily Note 14.09. und Logbuch #153.
+
+| Job | Stempel | Buch-Lücke |
+|---|---|---|
+| `hyp_AW14b_NQ` (V12+V5, Anker-Kontrolle) | **nicht auswertbar**: `mb_rand_level` würfelt die Seite mit und erhält die Event-Zahl nicht (−13 %), with/against antisymmetrisch, Vorzeichen kippt IS↔OOS. Ein +0,02-R-Ankereffekt wäre sichtbar gewesen | richtiger Placebo `mb_vwap_anchor="rand_time"` (0 Register-Trials), gleicher Job, eine Achse tauschen → AP157 Punkt 1 |
+| `hyp_AW15_NQ` (V2 Continuation) | **tot**: Shrinkage 0,00, DSR 0,002 global, bester Sharpe unter der Register-Decke | keine; AW-15b nur nach bestandener Anker-Kontrolle |
+| `hyp_AC06b_NQ` (Slope-Ast) | **kein Kandidat**: `overfit` „kaputt“ (RC p 0,13), Sharpe 2,5× aufgebläht; Ersatz Momentum −6,5 pp, Add −5,9, Ersatz VWAP-PB Wash (θ-Problem, nicht Frequenz) | über Zufallsdecke fehlt UND Slot fehlt; kein weiteres Grid |
+| `hyp_AC06c_NQ` (fest gegen atmend) | **Konstant-Arm raus**: fest verliert in allen vier Paarungen ($/Jahr), IS-bestes/OOS-schlechtestes Profil. V8 nur für den Konstant-Arm entschieden, Struktur-Ziel (`leg`) ungemessen | dritter Arm `tm_stop_mode="leg"` auf denselben Entries → AP157 Punkt 4 |
+| `exit2` (BE-Offset) | **tot**: alle BE-Profile unter dem Original in $/Jahr, `tr1.5d1.0` bitgleich zu `trail=aus` (9 Duplikate im Register), BE erzeugt Wiedereinstiege (1272 → 1512 Trades), also andere Strategie als #142 | keine |
+
+**Nebenbefund, der den Rest überwiegt:** `original_book` in exit2 misst das Bestandsbein `NQ_VWAP-Pullback` mit **−4,7 ± 0,4 pp** (Buch ohne Bein 85,80 → mit Bein 81,13, OOS-only, komprimiert), Momentum mit derselben Methode +1,9 pp. Passt zur OOS-Degradation des Beins (IS expR 0,080 → OOS 0,024, OOS PF 1,06) und zu Max' Deaktivierung von 515/516/517 (AP152). → **AP158**: Bein auf Vollhistorie gegen das Buch ohne Bein neu vermessen, Epochen-Split, Entscheidung Max.
+
+**Pipeline-Befunde** (AP151 Punkte 7-9): `sharpe_ann` annualisiert Tage mit Trades mit √252 (Inflation √(252/tpy), Decke `e_max_sr_global` dadurch in beide Richtungen unbrauchbar, bei AC-06b 10,99); `noise_pp` im Buch-Marginal ist ein 3-Seed-MC-Fehler (nicht 5 wie dokumentiert) ohne Stichproben-Unsicherheit; Trail-Duplikate im Register.
+
+**Phase 5 damit abgeschlossen ohne Kandidat.** Was von den 12 Familien übrig ist: V12 mit richtigem Placebo, V8 als `leg`-Arm, V6/V9 weiter ohne Mechanismus. Nichts geht ins Next-Week-Buch.
+
+## AP150 (maband-Erweiterungen) gebaut, 15.09.2026
+
+Punkte 1-3 in `maband.py` umgesetzt, smoke-getestet, `engine-regression-tester` läuft. Punkt 6 war schon am 14.09. erledigt (siehe oben).
+
+- **Punkt 1 (ATR-Normierung):** `mb_vwap_dnorm = "sigma" | "atr"`, Default bleibt `sigma` (bitgleich). `atr` nutzt `ctx_row["atr20"]` statt der session-kumulativen Streuung.
+- **Punkt 2 (Level-Export + `tm_exit="level"`, V8):** `_event` liefert `vw`/`sd` auf Anfrage, `trades()` baut daraus Ziel (`vw + dir·k·sd`) und Stop (`vw` oder Gegenband, `mb_level_stop`). Geometrisch nur mit Continuation-Events (`mb_vwap_evt="side"/"reclaim"`) sinnvoll — bei `dist` (Reversion) verwirft der bestehende Ziel-hinter-Entry-Guard (`sigcore.simulate_trade`) jeden Trade, das ist die dokumentierte Halbierung aus diesem Dokument, kein Bug. **Wichtig:** die eigentliche V8-Entscheidung läuft seit dem 14.09. über AP157 Punkt 4 (`tm_stop_mode="leg"` als dritter Arm auf den AC-06c-Entries, billiger weil keine neuen Entries nötig), nicht mehr primär über dieses Level-Export. Das Level-Export steht als Werkzeug bereit, falls der leg-Arm eine strukturelle Ziel/Stop-Logik bestätigt — AW-05b sollte trotzdem erst NACH dem leg-Arm-Ergebnis eingereiht werden, sonst laufen zwei Wege parallel gegen dieselbe Frage.
+- **Punkt 3 (Sigma-Hygiene, gemessen statt geraten):** session-kumulatives `sd` ist bei Bar 6 im Median nur 28 %, bei Bar 15 (`mb_start_min`) 39 %, bei Bar 60 65 % des Tagesend-Werts (2731 NQ-Tage). Wächst strukturell mit der Bar-Zahl seit Anker — eine höhere Mindest-Bar-Schwelle behebt das nicht und würde jeden registrierten sigma-Trial bitweise ändern. Schwelle deshalb bei `>5` belassen (Register-Ehrlichkeit), der eigentliche Fix ist Punkt 1 für neue Jobs.
+- **Punkt 4 (Globex-Anker):** zurückgestellt. `qbt.load_rth()` schneidet auf 09:30-15:59 zu, kein Modul im Kern liest die im rohen Parquet vorhandenen Globex-Bars mit korrekter Handelstag-/Roll-Zuordnung — das ist ein neuer Loader, kein Quick-Add wie `rand_time`. Dazu Kontaminationsrisiko mit #108 (Globex/on_frozen bereits negativ gemessen): braucht erst einen Why, der den Unterschied trägt (variant-scout/strategy-auditor vor dem Bau).
+- **Punkt 5 (Null-Schalter-Deploy):** läuft parallel unter AP157 Blocker B, hier nicht dupliziert.
+- Keine neuen Jobs eingereiht — AW-15b (Punkt 1) und AW-05b (Punkt 2) bleiben durch AP157 Punkt 1/4/5 gesperrt, bis der rand_time-Placebo bzw. der leg-Arm ein Ergebnis liefert.
+
 ## Verwandte Notizen
 [[Alpha-Suche]] · [[Strategie-Logbuch]] · [[Hypothesen-Bank (Momentum & Averages)]] · [[Hypothesen-Bank (TWAP)]] · [[Discovery-Runner v2]] · [[Strategie-Familien]] · [[Day Trading]] · [[Research-Cache]]

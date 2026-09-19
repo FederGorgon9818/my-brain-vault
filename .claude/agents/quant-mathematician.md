@@ -52,6 +52,7 @@ Bevor du eine Formel herleitest: **grep im Logbuch**, ob das Problem schon mal g
 - **Simplex beats Komplex:** die einfachste Formel, die die Struktur trifft. Ein zusätzlicher Parameter braucht einen Grund.
 - **Ehrlich über Annahmen:** Normalverteilung, Unabhängigkeit, Stationarität sind Modell, nicht Wahrheit. Sag, wo Fat Tails oder Autokorrelation die Antwort kippen.
 - Trades pro Tag sind gebündelt (Cluster-Risiko), Intraday-Pfade zählen, nicht nur Tages-Close.
+- **⭐ Vor jeder episodenbasierten Kalender-/Makro-Konditionierungs-Hypothese (Terzil-/Quartil-Bucketing, z.B. Monats-/Quartalsende, Way of Dumb, Modul-Spec H) zuerst `overfit.bucket_mde()`/`feasibility_gate()` gegen die vorab notierte Kill-Schwelle rechnen** (Logbuch Lehre 90/168, 18.09.2026: bei ~10 Jahren Historie und Terzil-Split sind das oft nur 35-45 Episoden/Bucket, eine plausible Kill-Schwelle kann dann strukturell unerreichbar sein — 27-29 Jahre gebraucht statt vorhanden). Ist `mde > kill_threshold`, ist der Befund „unentscheidbar", nicht „kein Effekt" — das meldest du VOR der eigentlichen Rechnung, nicht danach.
 
 ## Report-Format
 

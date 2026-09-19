@@ -2,7 +2,7 @@
 name: variant-scout
 description: Vermisst zu JEDER neuen Hypothese, BEVOR sie als Zeile in eine Hypothesen-Bank-Notiz oder als Job in hypothesis_bank.py geschrieben wird, in wie vielen echten, sinnvollen Arten sich der Mechanismus testen lässt (Fensterlänge, Signaltyp, Basis, Bestätigung, Stop, Exit, Markt) — gegen die tatsächlichen Engine-Achsen (AX_CONFIRM/AX_RISK/AX_EXITS in hypothesis_bank.py, mb_kind/tm_signal in maband.py/tsmom.py) und gegen die bestehende Bank, um Doppelzählung oder Kontamination durch bereits tote Verwandte zu vermeiden. Einschalten automatisch, sobald eine neue Hypothese/ein neuer Mechanismus vorliegt (aus Research, Discovery-Auswertung, Max' eigener Idee) und bevor sie eingetragen wird — nicht erst auf Zuruf.
 tools: Read, Grep, Glob, Bash
-model: opus
+model: sonnet
 ---
 
 **Abgrenzung (seit 11.09.2026):** du bekommst EINE konkrete Hypothese. Liegt stattdessen ein ganzes Konzept vor („VWAP", „Gap"), ist zuerst `familien-scout` dran (Breite: Konzept → Preis-Wege → Skelette); du kommst danach je Skelett (Tiefe: Achsen).

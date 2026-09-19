@@ -1,0 +1,51 @@
+cells with book eval 1971
+verdicts [('schlechter', 1635), ('neutral', 260), ('besser', 51), ('grenzwertig', 25)]
+vs_original verdicts [(None, 1971)]
+
+=== TOP 40 by score_pp (Buch + Kandidat vs Basis)
+('gen_asian_us_dir_NQ_exits_08211923', '2026-08-21T19:39', 'ian_us_dir_NQ_exits_08211923|asia_target_mult=2,tr_end=15:55', 'asian', 264, 5.2, 0.6, 'besser', None, None, '50k', '')
+('gen_asian_us_dir_NQ_r2_08211916', '2026-08-21T19:23', '_dir_NQ_r2_08211916|asia_stop_mult=0.4625,asia_target_mult=2', 'asian', 264, 5.2, 0.6, 'besser', None, None, '50k', '')
+('gen_asian_us_dir_NQ_r2_08211916', '2026-08-21T19:23', 'dir_NQ_r2_08211916|asia_stop_mult=0.5,asia_target_mult=1.875', 'asian', 264, 5.2, 0.7, 'besser', None, None, '50k', '')
+('gen_asian_us_dir_NQ_r1_08211909', '2026-08-21T19:16', '_dir_NQ_r1_08211909|asia_stop_mult=0.5,asia_target_mult=1.75', 'asian', 264, 4.9, 0.6, 'besser', None, None, '50k', '')
+('gen_asian_us_dir_NQ_r2_08211916', '2026-08-21T19:23', '_NQ_r2_08211916|asia_stop_mult=0.4625,asia_target_mult=1.875', 'asian', 264, 4.9, 0.6, 'besser', None, None, '50k', '')
+('hyp_TE02_NQ', '2026-08-23T18:14', 'TE-02_NQ|rev_stop_mult=0.3,rev_thr=0.003,rev_er_min=0.3', 'ts_reversal', 628, 4.9, 0.4, 'besser', None, None, '50k', "{'base_expR': 0.494, 'sides': {'n_long': 325, 'n_short': 303")
+('gen_asian_us_dir_NQ_r1_08211909', '2026-08-21T19:16', '_us_dir_NQ_r1_08211909|asia_stop_mult=0.5,asia_target_mult=2', 'asian', 264, 4.8, 0.6, 'besser', None, None, '50k', '')
+('gen_asian_us_dir_NQ_r2_08211916', '2026-08-21T19:23', '_us_dir_NQ_r2_08211916|asia_stop_mult=0.5,asia_target_mult=2', 'asian', 264, 4.8, 0.6, 'besser', None, None, '50k', '')
+('hf_asian_thr_NQ', '2026-08-21T15:06', 'sian_thr_NQ|asia_dir_thr=0.8,asia_target_mult=2,tr_end=15:55', 'asian', 264, 4.8, 0.6, 'besser', None, None, '50k', '')
+('gen_asian_us_dir_NQ_r2_08211916', '2026-08-21T19:23', '_NQ_r2_08211916|asia_stop_mult=0.5375,asia_target_mult=1.875', 'asian', 264, 4.5, 0.7, 'besser', None, None, '50k', '')
+('gen_asian_us_dir_NQ_r1_08211909', '2026-08-21T19:16', 's_dir_NQ_r1_08211909|asia_stop_mult=0.425,asia_target_mult=2', 'asian', 264, 4.4, 0.6, 'besser', None, None, '50k', '')
+('hyp_TE02_NQ', '2026-08-23T18:14', 'TE-02_NQ|rev_stop_mult=0.3,rev_thr=0.0035,rev_er_min=0.3', 'ts_reversal', 524, 4.4, 0.6, 'besser', None, None, '50k', "{'base_expR': 0.431, 'sides': {'n_long': 271, 'n_short': 253")
+('gen_asian_us_dir_NQ_r2_08211916', '2026-08-21T19:23', '_dir_NQ_r2_08211916|asia_stop_mult=0.5375,asia_target_mult=2', 'asian', 264, 4.3, 0.7, 'besser', None, None, '50k', '')
+('hyp_TE02_NQ', '2026-08-23T18:14', 'TE-02_NQ|rev_stop_mult=0.3,rev_thr=0.0025,rev_er_min=0.3', 'ts_reversal', 753, 4.3, 0.4, 'besser', None, None, '50k', "{'base_expR': 0.443, 'sides': {'n_long': 397, 'n_short': 356")
+('gen_asian_us_dir_NQ_r1_08211650', '2026-08-21T16:56', '_us_dir_NQ_r1_08211650|asia_dir_thr=0.725,asia_target_mult=2', 'asian', 464, 4.0, 0.4, 'besser', None, None, '50k', '')
+('gen_asian_us_dir_NQ_exits_08211923', '2026-08-21T19:39', '_us_dir_NQ_exits_08211923|asia_target_mult=None,tr_end=15:55', 'asian', 264, 3.9, 0.7, 'besser', None, None, '50k', '')
+('gen_asian_us_dir_NQ_r1_08211909', '2026-08-21T19:16', 'ir_NQ_r1_08211909|asia_stop_mult=0.575,asia_target_mult=1.75', 'asian', 264, 3.9, 0.6, 'besser', None, None, '50k', '')
+('gen_asian_us_dir_NQ_exits_08211923', '2026-08-21T19:39', 'ian_us_dir_NQ_exits_08211923|asia_target_mult=2,tr_end=13:00', 'asian', 264, 3.8, 0.6, 'besser', None, None, '50k', '')
+('hyp_TE02_NQ', '2026-08-23T18:14', 'TE-02_NQ|rev_stop_mult=0.35,rev_thr=0.003,rev_er_min=0.3', 'ts_reversal', 628, 3.8, 0.4, 'besser', None, None, '50k', "{'base_expR': 0.432, 'sides': {'n_long': 325, 'n_short': 303")
+('gen_asian_us_dir_NQ_r1_08211909', '2026-08-21T19:16', 'ir_NQ_r1_08211909|asia_stop_mult=0.425,asia_target_mult=1.75', 'asian', 264, 3.7, 0.6, 'besser', None, None, '50k', '')
+('hf_asian_thr_NQ', '2026-08-21T15:06', 'n_thr_NQ|asia_dir_thr=0.8,asia_target_mult=None,tr_end=15:55', 'asian', 264, 3.7, 0.7, 'besser', None, None, '50k', '')
+('exit_NQ_Momentum', '2026-08-18T22:36', 'entum_exit|exit_profile=eod,rev_stop_mult=0.3,be_trigger=0.5', 'ts_reversal', 798, 3.6, 0.5, 'besser', None, None, '50k', '')
+('exit_NQ_Asia-Dir', '2026-08-19T00:14', 'open_exit|asia_target_mult=2,asia_stop_mult=0.5,tr_end=15:55', 'asian', 264, 3.5, 0.6, 'besser', None, None, '50k', '')
+('gen_asian_us_dir_NQ_r1_08211909', '2026-08-21T19:16', 's_dir_NQ_r1_08211909|asia_stop_mult=0.575,asia_target_mult=2', 'asian', 264, 3.5, 0.6, 'besser', None, None, '50k', '')
+('hf_asian_thr_NQ', '2026-08-21T15:06', 'sian_thr_NQ|asia_dir_thr=0.8,asia_target_mult=2,tr_end=13:00', 'asian', 264, 3.4, 0.6, 'besser', None, None, '50k', '')
+('gen_asian_us_dir_NQ_exits_08211923', '2026-08-21T19:39', '_us_dir_NQ_exits_08211923|asia_target_mult=None,tr_end=13:00', 'asian', 264, 3.2, 0.6, 'besser', None, None, '50k', '')
+('hf_asian_thr_NQ', '2026-08-21T15:06', 'n_thr_NQ|asia_dir_thr=0.8,asia_target_mult=None,tr_end=13:00', 'asian', 264, 3.2, 0.6, 'besser', None, None, '50k', '')
+('hyp_TE02_NQ', '2026-08-23T18:14', 'TE-02_NQ|rev_stop_mult=0.35,rev_thr=0.0025,rev_er_min=0.3', 'ts_reversal', 753, 3.1, 0.5, 'besser', None, None, '50k', "{'base_expR': 0.376, 'sides': {'n_long': 397, 'n_short': 356")
+('hyp_TE02_NQ_v2', '2026-09-01T18:43', 'TE-02_NQ_v2|rev_stop_mult=0.3,rev_thr=0.003,rev_er_min=0.3', 'ts_reversal', 642, 3.1, 0.3, 'besser', None, None, '50k', '')
+('hyp_TE02_NQ_v2', '2026-09-01T18:43', 'TE-02_NQ_v2|rev_stop_mult=0.3,rev_thr=0.0025,rev_er_min=0.3', 'ts_reversal', 768, 3.0, 0.4, 'besser', None, None, '50k', '')
+('gen_asian_us_dir_NQ_r1_08211650', '2026-08-21T16:56', 's_dir_NQ_r1_08211650|asia_dir_thr=0.725,asia_target_mult=1.5', 'asian', 464, 2.9, 0.4, 'besser', None, None, '50k', '')
+('hf_asian_thr_NQ', '2026-08-21T15:06', 'sian_thr_NQ|asia_dir_thr=0.8,asia_target_mult=1,tr_end=15:55', 'asian', 264, 2.9, 0.5, 'besser', None, None, '50k', '')
+('exit_NQ_Asia-Dir', '2026-08-19T00:14', 'en_exit|asia_target_mult=1.5,asia_stop_mult=0.5,tr_end=15:55', 'asian', 264, 2.8, 0.5, 'besser', None, None, '50k', '')
+('exit_NQ_Momentum', '2026-08-18T22:36', 'entum_exit|exit_profile=eod,rev_stop_mult=0.4,be_trigger=0.5', 'ts_reversal', 798, 2.8, 0.7, 'besser', None, None, '50k', '')
+('hyp_TE04_NQ', '2026-08-23T18:28', 'e_trigger=0.5,be_offset=0,trail_trigger=None,trail_dist=0.75', 'tsmom', 798, 2.7, 0.7, 'besser', None, None, '50k', "{'base_expR': 0.209, 'sides': {'n_long': 398, 'n_short': 400")
+('hyp_TE04_NQ', '2026-08-23T18:28', 'Q|be_trigger=0.5,be_offset=0,trail_trigger=None,trail_dist=1', 'tsmom', 798, 2.7, 0.7, 'besser', None, None, '50k', "{'base_expR': 0.209, 'sides': {'n_long': 398, 'n_short': 400")
+('hyp_TE15_NQ', '2026-08-23T18:34', 'TE-15_NQ|tm_dir=long_only,tm_thr=0.003,tm_stop_mult=0.3', 'tsmom', 398, 2.7, 0.6, 'besser', None, None, '50k', "{'base_expR': 0.482, 'sides': {'n_long': 398, 'n_short': 0, ")
+('hf_asian_thr_NQ', '2026-08-21T15:06', 'sian_thr_NQ|asia_dir_thr=0.8,asia_target_mult=1,tr_end=13:00', 'asian', 264, 2.6, 0.6, 'besser', None, None, '50k', '')
+('hyp_TE04_NQ', '2026-08-23T18:28', 'trigger=0.5,be_offset=0.2,trail_trigger=None,trail_dist=0.75', 'tsmom', 798, 2.5, 0.6, 'besser', None, None, '50k', "{'base_expR': 0.169, 'sides': {'n_long': 398, 'n_short': 400")
+('hyp_TE04_NQ', '2026-08-23T18:28', 'be_trigger=0.5,be_offset=0.2,trail_trigger=None,trail_dist=1', 'tsmom', 798, 2.5, 0.6, 'besser', None, None, '50k', "{'base_expR': 0.169, 'sides': {'n_long': 398, 'n_short': 400")
+
+=== TOP 40 by vs_original delta_pp (Ersatz)
+
+=== by month: n evals, n score>=1.5, n vs_orig>=1.5
+2026-08 [1242, 47, 0]
+2026-09 [729, 8, 0]

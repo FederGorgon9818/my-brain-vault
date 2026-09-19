@@ -4,12 +4,15 @@ tags:
   - trading
   - epics
 datum: 2026-08-10
-status: aktiv
-zweck: Steuerungsdokument. Jedes Ticket gehört in genau ein Epic. Reihenfolge ist bindend.
+status: archiviert
+zweck: Historisches Steuerungsdokument (10.-17.08.2026). Seit 06.09.2026 ist tasks.json auf der Box der einzige Ticket-Tracker.
 ---
 ⬅️ [[Projekte/_Projekte|Projekte]] · [[Eval-Passing]] · [[Strategie-Logbuch]] · [[Day Trading]]
 
 # 🎫 Ticket-Epics: von kaputt zu funded
+
+> [!info] Archiviert am 15.09.2026
+> Diese Notiz wurde zuletzt am 17.08.2026 gepflegt und ist danach nicht mehr nachgezogen worden. Die rote Box unten („alle Strategien deaktiviert“, 10.08.) ist längst überholt, die Live-Eval läuft seit 18.08. Der einzige Ticket-Tracker ist `tasks.json` im Engine-Ordner (Box = Quelle der Wahrheit, Regel 06.09.2026), lesbar per `/ticket`. Die Epic-Häkchen hier sind Stand 17.08. und werden nicht mehr gepflegt.
 
 Angelegt am 10.08.2026, nachdem der Tag sieben Bugs und drei falsche Live-Referenzen freigelegt hat (siehe [[2026-08-10]]). Ziel des Systems: **jederzeit auf einen Blick sehen, was gerade dran ist und was warten muss.**
 

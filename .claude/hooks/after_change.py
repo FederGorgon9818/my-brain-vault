@@ -5,6 +5,7 @@ jetzt greift, und gibt Claude den Hinweis als Kontext zurueck. Dateizustaende
 (book_state neuer als letzter push-next) werden nur EINMAL pro Aenderung gemeldet.
 """
 from _common import *  # noqa
+from pathlib import Path
 
 
 def main():
@@ -64,6 +65,24 @@ def main():
                      "CLAUDE.md-Roster eintragen, dann hot_reload.ps1.")
     if re.search(r"/\.claude/(workflows|hooks)/", path) and tool == "Write":
         notes.append("Hook: neue Automatik. Regel 27.08.2026: in hub_config.json (mock_loops) eintragen.")
+
+    # Prescan-Skripte: finalize-Zwang (AP153 P3, Logbuch #151). Eine Engine-Datei, die nach
+    # Prescan aussieht (*precursor*/*prescan*/*_probe*.py), *_results.json schreibt, aber kein
+    # `pc.finalize(` enthaelt, umgeht den Prescan-Vertrag (Bin-Selbsttest, Placebo-Arm,
+    # side_findings) -- genau so ist roundnum_breakout_precursor.py am 10.09. entstanden.
+    if tool != "Bash" and path and path.endswith(".py") and "/engine/" in path:
+        try:
+            src = Path(path).read_text(encoding="utf-8", errors="replace")
+            # Inhalt statt Dateiname (pipeline-auditor 14.09. H7): ein Prescan ist, was eine
+            # *_results.json schreibt und eine gematchte Null / den Vertrag benutzt
+            is_prescan = "_results.json" in src and ("MatchedBase" in src or "prescan_controls" in src
+                                                      or "random_grid_phase" in src)
+            if is_prescan and "pc.finalize(" not in src:
+                notes.append("Hook: Prescan-Skript schreibt *_results.json ohne `pc.finalize(` (AP153 P3, "
+                             "Logbuch #151). Vertrag aus discovery/prescan_controls.py einbauen: Bin-Selbsttest, "
+                             "Placebo-Arm mit grid_share, barriers/resolve, side_findings -- sonst kein Ergebnis.")
+        except Exception:
+            pass
 
     # Logbuch: logbook-distiller
     if re.search(r"strategie-logbuch\.md$", path):

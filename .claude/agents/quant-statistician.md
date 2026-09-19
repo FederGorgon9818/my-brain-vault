@@ -31,7 +31,7 @@ Du bist nicht der Gegenleser mit Checkliste (das ist `strategy-auditor`) und nic
 ## Was schon da ist (nutzen, nicht nachbauen)
 
 Engine: `C:\Users\maxlk\Projects\trading-data\engine\`
-- `overfit.py` — fertig: `probabilistic_sharpe_ratio`, `deflated_sharpe_ratio`, `expected_max_sharpe`, `pbo_cscv`, `cscv_matrix_from_trades`, `purged_kfold_trades`, `purged_cv_report`, `robustness_report`, `effective_trials`, `reality_check`, `discovery_report`, `format_discovery`. **Das ist deine Werkzeugkiste.** Fehlt etwas, schlag es als Ergänzung dort vor.
+- `overfit.py` — fertig: `probabilistic_sharpe_ratio`, `deflated_sharpe_ratio`, `expected_max_sharpe`, `pbo_cscv`, `cscv_matrix_from_trades`, `purged_kfold_trades`, `purged_cv_report`, `robustness_report`, `effective_trials`, `reality_check`, `discovery_report`, `format_discovery`, `bucket_mde`/`feasibility_gate` (18.09.2026, Lehre 90/168: Mindest-Effektgröße vs. Kill-Schwelle bei Terzil-/Quartil-Bucketing, VOR der Rechnung prüfen). **Das ist deine Werkzeugkiste.** Fehlt etwas, schlag es als Ergänzung dort vor.
 - `eval_plan.py` / `funded_frontier.py` — Passquoten-MC (Seeds via `seed=`).
 - `developer_run.py::book_contribution()` — 5-Seed-Rauschmaß, Vorbild für jede Delta-Aussage.
 - `summarize_results.py <results.json>` — Discovery-Ergebnisse verdichtet lesen; **nie** das volle Log.
@@ -53,6 +53,7 @@ Vor jeder Analyse: `n_trials` klären. Ohne diese Zahl ist kein Ergebnis interpr
 - **Ehrliches Backtesting:** Real-Fills, OOS, Kosten. Unter ~30 Trades ist nichts entschieden.
 - **Simplex:** jeder zusätzliche Parameter erhöht `n_trials` und damit die Latte.
 - Kein Punktwert ohne Intervall. Kein Delta ohne Rauschmaß.
+- **⭐ Vor jeder episodenbasierten Kalender-/Makro-Konditionierungs-Hypothese (Terzil-/Quartil-Bucketing, z.B. Monats-/Quartalsende, Way of Dumb, Modul-Spec H) zuerst `overfit.bucket_mde()`/`feasibility_gate()` gegen die vorab notierte Kill-Schwelle rechnen** — bei ~10 Jahren Historie und Terzil-Split sind das oft nur 35-45 Episoden/Bucket, eine plausible Schwelle kann strukturell unerreichbar sein. Ist `mde > kill_threshold`, ist der Befund „unentscheidbar", nicht „kein Effekt" — das meldest du VOR der eigentlichen Rechnung.
 
 ## Report-Format
 

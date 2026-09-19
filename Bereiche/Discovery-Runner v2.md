@@ -101,6 +101,38 @@ Zwei Fixes im selben Zug: `fill()` speichert den Generator-State auch bei 0 akze
 
 **Bekannte Grenzen (nicht gelöst, nur benannt):** (1) Buch-Marginal läuft für alle Varianten als „neues Bein", weil `book_leg_for` für tsmom/maband kein Buch-Bein findet, und „neues Bein" hat laut #139/B3 noch nie funktioniert (577 Evals, 0 Treffer). Ein Fund zeigt sich also eher an Survivors/PBO als am Buch-Score. (2) Der Runner rechnet weiter auf einem von sechs Kernen; Parallelisierung über die Config-Schleife wäre der nächste 4x-Hebel. (3) `ctl_null` für die anderen 20 Modi fehlt weiterhin (Ticket „Pipeline-Fixes aus Audit #139").
 
+## Register-Pending-Weg (seit 14.09.2026, AP153 P10 / AP122 P1 Minimalbau)
+
+Externe Schreiber (Prescans, Backfill, Hand-Sweeps) fassen `registry.json` **nie** direkt an (kein Lock, Lehre 144 zweimal verletzt). Stattdessen: `discovery_lib.registry_pending_add({key: entry}, source=...)` legt `discovery/registry_pending/<uuid>.json` ab. `load_registry()` mischt beim nächsten Laden alle Pending-Dateien **append-only** ein (ein vorhandener Key wird nie überschrieben, `n_total` zählt nur neue Keys), `write_registry()` schreibt das Register und löscht erst danach die eingemischten Dateien. Der Runner benutzt `write_registry` an allen drei Schreibstellen. Prescans (`mode="prescan"`) zählen damit als Trials (Zufallsdecke gegen `n_global`), Key = sha1 der Pseudo-Params (`prescan`, `symbol`, `step`, `arm`/`norm`). Noch offen aus AP122: `registry_add` ohne `runner.lock`-Besitz verweigern, `register_cf.py`/`backfill_registry.py` auf den Pending-Weg umstellen.
+
+Ebenfalls seit 14.09.: jeder Job aus der Hypothesen-Bank trägt `null_ref` (welche `controls.py`-Kontrolle die mechanische Null liefert; `none:…` bei Modi ohne Null-Schalter), Inbox-Kandidaten tragen `prior`/`prescan`/`null_ref`, und `promote_next` promotet `prior=low` ohne vertraglichen Prescan (`prescan_contract.ok` in der `*_results.json`) sowie `null_ref none:*` nie automatisch.
+
+## 🔬 Der EINE Weg für jede Strategie-Idee (Regel Max, 23.08.2026 — verbindlich)
+
+**Es gibt genau einen Weg, wie eine Idee getestet wird. Nicht mehrere Arten, sondern eine Art, die dafür sehr intensiv läuft.** Gilt für jede neue Strategie, jede Hypothese, jeden Discovery-Job, jede Developer-Version. Wer davon abweicht, braucht einen ausdrücklichen Grund von Max.
+
+**Die vier Schritte, immer in dieser Reihenfolge:**
+
+1. **WHY zuerst.** Kein Test ohne Mechanismus im Klartext: wer muss handeln, warum, und warum bleibt das Geld liegen. Ohne Why kein Job — das Feld ist Pflicht und wird beim Job-Bau geprüft (`assert` in `hypothesis_bank.py`).
+2. **Dann die ARTEN.** Eine Hypothese wird **nie als eine Strategie** getestet, sondern als **mindestens zehn Implementierungen desselben Mechanismus**: andere Fensterlänge, anderer Signaltyp, andere Bestätigung (Volumen / Delta / EMA12 / EMA20 / VWAP-Seite), anderer Stop (Range/Sigma/ATR), anderer Exit (EOD/Zeit/RR). Baustein: `AX_CONFIRM` / `AX_RISK` / `AX_EXITS` in `hypothesis_bank.py`. Weniger als zehn Varianten lässt der Job-Bau nicht zu. Übernimmt seit 01.09.2026 `variant-scout` (Vorfrage: wie viele ECHTE Varianten gegen die Engine-Achsen, Doppelzählungs-/Kontaminationswarnung gegen die Bank). Direkt danach `strategy-auditor` im Batch-Vorprüfungs-Modus — EIN Aufruf über die ganze Gruppe testbarer Hypothesen, reine Story-Prüfung, bevor Box-Rechenzeit verbrannt wird. Der Vollmodus-Trigger (adversarialer Gegenleser mit Backtest-Ergebnis, kurz vor Eval-Deploy) bleibt zusätzlich bestehen.
+3. **Dann die bekannten FALLEN — als Vorbedingung, nicht als Nachgedanke.**
+   - **`GATES_HARD`** (`discovery/hypothesis_bank.py`) für jede Grid-Zelle: min. Trades/OOS-Trades/Trades pro Jahr, Top-5-Konzentration ≤ 50 % (#038), Block-Bootstrap P ≥ 0,90, Plateau statt Spitze, letzte 3 Jahre nicht negativ (#057), Kosten-Stress 2 Ticks je Seite.
+   - **`discovery/controls.py`** für jeden Kandidaten, der das Buch-Marginal besteht: Look-ahead-Delay (#066/#067), Long-Bias (Goyal/Jegadeesh, #108), Nulldrift mit gewürfelter Richtung, Multi-Markt (#051), Epochen-Split 2016-2019 vs. 2022-2026 (#057), Zufallslevel bei Level-Strategien, Tages-Korrelation zum Bestandsbuch ≤ 0,70 (#079, Lehre 82).
+   Erst wenn alles davon steht, ist ein Fund **`deploy_ready`**. `promote_next.py` promotet nur noch deploy_ready-Kandidaten automatisch ins Next-Week-Buch.
+4. **Dann rechnen, lange und breit.** Auf der Box, nicht im Chat. Jobs kommen aus `python discovery/hypothesis_bank.py --enqueue --push`.
+
+**Werkzeuge (statt neue Einzelskripte):**
+
+| Datei | Rolle |
+|---|---|
+| `engine/sigcore.py` | gemeinsame Signal-/Ausführungsschicht: Bars, Averages, RVOL, Delta-Proxy, Tageskontext (immer um einen Tag verschoben), ehrliche Trade-Simulation, alle Gates an EINEM Ort |
+| `engine/tsmom.py` (`mode="tsmom"`) | verallgemeinertes Time-Series-Momentum: Fenster, Signaltyp (ret/zscore/rank/rangepos/signratio/accel/jerk/wins), Basis (open/prev_close/prev_rth/overnight), Schwelle in % oder σ |
+| `engine/maband.py` (`mode="maband"`) | Averages, Crossover, Geschwindigkeiten, Bänder, Kanäle, Anker-VWAP — teilt sich Ausführung und Gates mit `tsmom` |
+| `discovery/hypothesis_bank.py` | Hypothese → Job mit ≥ 10 Implementierungen, Why, harten Gates |
+| `discovery/controls.py` | die Lehren aus den Fehlschlägen als automatische Batterie |
+
+**Neue Idee heißt: neue Zeile in `hypothesis_bank.py`** (bei wirklich neuem Mechanismus ein neuer `mb_kind`/`tm_signal` in den bestehenden Modulen) — nicht ein neues Skript daneben. Nur so zählt das Register jeden Trial mit, nur so gilt dieselbe Zufallsdecke, nur so ist der Look-ahead-Check an einer Stelle statt an dreißig. Hypothesen-Vorrat: [[Hypothesen-Bank (Momentum & Averages)]] und [[Hypothesen-Bank (Volumen & Flows)]].
+
 ## Offen / nächste Ausbaustufen
 - Register-Merge Box → PC; Job-Typen „Regime-Conditioning" (Ein/Aus-Schalter für bestehende Beine) und „Event-Bein" (braucht Engine-Modul); Kandidaten-Karten im Strategy Lab (Tab) statt nur `inbox.md`.
 - Ehrlich: mehr Alpha kommt nur mit **neuen Inputs** (Tick/L2, Optionen-Positionierung, Breadth). Der Runner macht die Suche sauber und billig, aber er zaubert keine neuen Mechanismen aus alten Minutenbars.
