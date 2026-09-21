@@ -49,6 +49,27 @@ Wenn etwas gebaut, getestet und für gut befunden wurde, gilt es als **fertig un
 
 ---
 
+## 🧭 Auftrags-Typ zuerst: der feste Ablauf für JEDE Aufgabe (Regel Max, 21.09.2026)
+
+Max' Befund: „ich muss quasi immer selbst sagen, dass alle Agents eingeschaltet werden sollen". Das Audit über 14 Tage (121 Sessions) gab ihm recht — Agents, die nur per Text erinnert wurden, liefen in 9–56 % der Fälle (`logbook-distiller` 3 Aufrufe bei 30 ausgelassenen Sessions), Agents in einem Workflow zu 100 %. **Sessions mit Workflow hatten null Lücken.**
+
+Deshalb gilt ab sofort bei jeder Aufgabe dieselbe Reihenfolge:
+
+1. **Typ festschreiben**, bevor gerechnet, gebaut oder geurteilt wird:
+   `python .claude/hooks/receipt.py --sid <id> --type <typ>` (Kurz-ID steht in der Hook-Meldung, Liste per `--types`).
+2. **Pflichtkette fahren** — Workflow `kette` (Rechner parallel, Gegenleser danach mit deren Ergebnissen), bzw. `konzept-weg` / `ein-weg` für Konzepte und Hypothesen.
+3. **Erst dann schreiben.** `guard_chain.py` lehnt die Aktion sonst ab; `on_stop.py` lässt die Session bei offener Quittung nicht enden.
+
+**Auslassen ist erlaubt, aber nur mit Grund:** `receipt.py --sid <id> --skip <schritt> --why "<ein Satz>"`. Der Grund landet in der Quittung und damit im Retro. Ein Ein-Wort-`--why` wird abgelehnt.
+
+**Die Typen und ihre Ketten stehen in `.claude/hooks/work_types.py`** — das ist die Quelle, nicht diese Datei. Neue Kette → dort ändern, `kette.js` nachziehen, `python .claude/scripts/test_chain.py` laufen lassen (prüft, dass Hook und Workflow sich decken). Volle Doku, Ablauf, Gate-Liste: [[Arbeits-Workflow (Auftrags-Typen)]].
+
+Hart blockiert wird unabhängig vom Typ, wo die Aktion sich selbst verrät (die drei schlechtesten Quoten im Audit): Websuche ohne `research-scout`, Hub-/Lab-Datei oder `hot_reload.ps1` ohne `design-guard`, neuer Logbuch-Eintrag ohne `logbook-distiller`, `book_state*.json` ohne Quant-Team + `strategy-auditor`. Auch per Bash (`>>`, `sed -i`, `Set-Content`, `open(...,"w")`) — die Umgehung über die Shell ist mit abgedeckt.
+
+**Der Ausweg wird gezählt, nicht nur erlaubt:** `python .claude/scripts/receipt_stats.py --days 7` zeigt, wie oft eine Kette ausgelassen wurde und warum. Der `retro-agent` liest das sonntags. Ein Gate, das ständig umgangen wird, ist ein falsches Gate — dann wird die Kette gekürzt oder das Gate verengt, nicht besser aufgepasst.
+
+---
+
 ## 🗂️ Vault-Struktur
 
 Damit du weißt, wo du suchen und ablegen musst (spart Tokens):

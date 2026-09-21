@@ -42,7 +42,8 @@ def scan(path):
     """Ein Transkript: Titel, Zeitraum, benutzte Agents/Workflows/Skills, Trigger-Treffer je Scope."""
     s = {"sid": path.stem, "project": path.parent.name, "title": None, "first_prompt": None,
          "start": None, "end": None, "agents": Counter(), "workflows": Counter(), "skills": Counter(),
-         "direct_tools": Counter(), "hits": {}, "turns": 0, "changed": set()}
+         "direct_tools": Counter(), "hits": {}, "turns": 0, "changed": set(),
+         "workflow_types": set()}
     try:
         fh = path.open("r", encoding="utf-8", errors="replace")
     except Exception:
@@ -88,7 +89,22 @@ def scan(path):
                         if name == "Agent":
                             s["agents"][inp.get("subagent_type") or "general-purpose"] += 1
                         elif name == "Workflow":
-                            s["workflows"][inp.get("name") or Path(str(inp.get("scriptPath") or "?")).stem] += 1
+                            wfn = inp.get("name") or Path(str(inp.get("scriptPath") or "?")).stem
+                            # Inline-Skripte tragen keinen Namen; dann aus meta.name im
+                            # Skripttext lesen, sonst landet der Lauf als '?' und zaehlt nirgends.
+                            if wfn in ("?", "", None):
+                                m = re.search(r"name:\s*['\"]([\w-]+)['\"]", str(inp.get("script") or ""))
+                                wfn = m.group(1) if m else "?"
+                            s["workflows"][wfn] += 1
+                            # Der generische Workflow `kette` faehrt die Kette EINES Typs.
+                            # Ohne den Typ waere nicht erkennbar, welche Agents er abgedeckt
+                            # hat -- dann bliebe die Kette nach einem vollstaendigen Lauf
+                            # offen und das Gate wuerde weiter blocken (verdict-auditor,
+                            # 21.09.2026: genau dieser Bug haette --skip zum Normalweg gemacht).
+                            a = inp.get("args") or {}
+                            t = a.get("type") if isinstance(a, dict) else None
+                            if wfn == "kette" and t:
+                                s["workflow_types"].add(str(t))
                         elif name == "Skill":
                             s["skills"][inp.get("skill") or "?"] += 1
                         elif name in DIRECT_TOOL_BYPASS:
@@ -115,13 +131,31 @@ def _collect(s, scope, text):
 
 
 def used_agent_names(s):
+    """Agents, die in dieser Session wirklich gearbeitet haben -- inklusive derer,
+    die ein Workflow INTERN aufgerufen hat.
+
+    Wichtig: Workflow-interne Agent-Aufrufe stehen NICHT im Haupt-Transkript (dort
+    steht nur der eine `Workflow`-Aufruf). Wer das vergisst, sieht nach einem
+    vollstaendigen Workflow-Lauf eine leere Agent-Liste -- und ein Gate, das darauf
+    prueft, blockt danach weiter. Genau dieser Bug steckte am 21.09.2026 im neuen
+    `kette`-Workflow (Fund: verdict-auditor), deshalb hier die Zuordnung fuer alle drei.
+    """
     names = set(s["agents"])
-    # Workflows rufen Agents intern auf (ein-weg: variant-scout + strategy-auditor; konzept-weg: dazu familien-scout,
-    # verdict-auditor, research-scout).
     if "ein-weg" in s["workflows"]:
         names |= {"variant-scout", "strategy-auditor"}
     if "konzept-weg" in s["workflows"]:
         names |= {"familien-scout", "verdict-auditor", "research-scout", "variant-scout", "strategy-auditor"}
+    # `kette` faehrt die Pflichtkette EINES Typs -> genau deren Glieder gutschreiben.
+    # Die Ketten kommen aus work_types.py, damit hier keine zweite Hardcode-Tabelle
+    # entsteht, die auseinanderdriften kann.
+    if s.get("workflow_types"):
+        try:
+            sys.path.insert(0, str(HERE.parents[1] / "hooks"))
+            import work_types as _WT
+            for t in s["workflow_types"]:
+                names |= {_WT.step_name(x) for x in _WT.chain_of(t)}
+        except Exception:
+            pass
     return names
 
 

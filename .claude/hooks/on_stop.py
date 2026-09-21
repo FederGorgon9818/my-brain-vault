@@ -103,6 +103,44 @@ def main():
         except Exception:
             pass
 
+    # --- 4. Prozess-Quittung offen (Regel Max, 21.09.2026) ------------------
+    # Punkt 3 oben ist Heuristik ueber Transkript-Regex und trifft bei diktierten
+    # Prompts oft daneben. Die Quittung ist die deterministische Variante: welcher
+    # Auftrags-Typ, welche Pflichtkette, was davon lief. Greift nur, wenn die
+    # Session ueberhaupt gearbeitet hat -- reine Frage-Antwort-Sessions bleiben frei.
+    if tp and Path(tp).is_file():
+        try:
+            sys.path.insert(0, str(VAULT / ".claude" / "hooks"))
+            import receipt as R
+            import work_types as WT
+            rec = R.load(inp.get("session_id"))
+            meta4 = scan_transcript_light(Path(tp))
+            worked = meta4["made_changes"]
+            if rec and worked:
+                sid = rec["sid"]
+                if not rec.get("type"):
+                    issues.append((f"receipt-type:{sid}",
+                        f"diese Session hat gearbeitet, aber der Auftrags-Typ wurde nie "
+                        f"festgeschrieben (Quittung {sid}). Regel 21.09.2026: ohne Typ steht "
+                        f"keine Pflichtkette fest und niemand kann hinterher pruefen, ob der "
+                        f"richtige Ablauf lief. Nachtragen: "
+                        f"`python .claude/hooks/receipt.py --sid {sid} --type <typ>` "
+                        f"(Liste: --types), dann erneut beenden."
+                    ))
+                else:
+                    miss4 = R.missing_steps(rec, tp)
+                    if miss4:
+                        names4 = ", ".join(WT.step_name(s) for s in miss4)
+                        issues.append((f"receipt-chain:{sid}:{names4}",
+                            f"Auftrags-Typ `{rec['type']}` ({WT.label_of(rec['type'])}), aber die "
+                            f"Pflichtkette ist offen: {names4}. {WT.what_of(rec['type'])} "
+                            f"Entweder jetzt laufen lassen, oder mit Grund auslassen: "
+                            f"`python .claude/hooks/receipt.py --sid {sid} "
+                            f"--skip {WT.step_name(miss4[0])} --why \"<ein Satz>\"`."
+                        ))
+        except Exception:
+            pass
+
     if not issues:
         sys.exit(0)
     msg = "Hook: " + " | ".join(t for _, t in issues)

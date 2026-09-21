@@ -5,6 +5,9 @@ Namen:
   pipeline_ok    pipeline-auditor: keine Blocker fuer den Hypothesen-Job (gibt --enqueue frei)
   push_next_at   Push bewusst nicht noetig (loest den Stop-Hook)
   finalize_at    funded_finalize ist gelaufen
+  hypothese_ok   Edit an einer Hypothesen-Bank ist KEINE neue Hypothese (Formatierung,
+                 Status-/Ergebnis-Update) -- gibt Edit/Write auf die Bank-Datei frei,
+                 bis sie das naechste Mal angefasst wird (guard_write.py)
 """
 import sys
 from _common import touch_marker, marker_path

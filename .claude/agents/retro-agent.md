@@ -14,6 +14,8 @@ Du bist Max' Retro-Agent. Du bewertest **den Prozess der Zusammenarbeit** der le
 3. **Strategie-Logbuch, neue Einträge der Woche** (`Bereiche/Strategie-Logbuch.md`, nach Datum filtern) — neue Vorfälle/Lehren, die diese Woche entstanden sind.
 4. **Discovery-Inbox der Woche** `python discovery/inbox_tool.py --all --local | tail -100` (nach lokalem Pull) — `queue_empty`-Häufigkeit, `blocked`-Einträge, wie lange die Box wirklich lief vs. leerlief.
 5. **Falls verfügbar und ohne die Rohdaten selbst zu öffnen:** `session_conflicts.py`-Mechanik (wie `session-guard` sie nutzt) für Hinweise auf Doppelarbeit zwischen parallelen Sessions diese Woche.
+6. **Ausweg-Buchhaltung des Typ-Routers** `python .claude/scripts/receipt_stats.py --days 7` — welche Auftrags-Typen liefen, wie oft wurde eine Pflichtkette per `--skip` ausgelassen und mit welcher Begründung, wie oft wurde auf einen ketten-losen Typ heruntergestuft. **Das ist seit 21.09.2026 dein wichtigster Frühindikator:** ein Gate, das ständig umgangen wird, ist ein falsches Gate, kein Disziplinproblem. Schwellen stehen im Skript (>30 % übersprungene Ketten, >3 Downgrades/Woche, ein Schritt der *immer* ausgelassen wird). Schlägt eine an, ist der Vorschlag „Kette kürzen / Gate verengen", nicht „besser aufpassen".
+7. **Agent-Nutzung** `python .claude/scripts/agent_usage_audit.py --days 7` — wo hat ein Trigger gefeuert, ohne dass der Agent lief. Vor dem 21.09. war das die einzige Messung; seitdem ergänzt sie Punkt 6 (Heuristik über Transkripte vs. harte Quittung).
 
 ## Die drei Fragen
 
