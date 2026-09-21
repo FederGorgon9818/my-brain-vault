@@ -275,6 +275,26 @@ Zurückgeschrieben aus dem Research-Schritt des Workflows `konzept-weg`. **Zwei 
 
 ---
 
+## ein-weg-Runde (21.09.2026): variant-scout + strategy-auditor-Batch über 11 Wege
+
+Ergebnis: **1 von 11 direkt in die Bank** (AXV-W26), **6 nachbessern**, **4 nicht bauen** (Story fällt durch). Nicht an `ein-weg`: AXV-W29, AXV-W30 (Swing, Live-Buch-Merker).
+
+| Weg | Urteil | Auflage / Grund |
+|---|---|---|
+| **AXV-W26** ADX-Rang-Gate gegen gematchtes Vola-Rang-Gate auf den VWAP-Entries | **in Bank** (`hyp_AXVW26_NQ`, 22 Configs, `book=False`) | einzige Zeile, die eine Frage stellt statt eine Edge zu behaupten; Torwächter für W1/W2/W4/W5/W14; Konstruktions-Argument korrigiert (TR/ATR kürzt sich in DX heraus) |
+| AXV-W5 Bar-ADX zum Signalende als Filter | nachbessern (n=108) | zwei falsche Belege im Why (533 Trials waren MA-/Vola-Tages-Gates, keine ADX-Gates), Bar-Abschluss-Zeitstempel gegen #066/#067 festschreiben; braucht `maband`-Zweig (MS-V2). Bar-ADX in `tsmom` seit 21.09. vorhanden |
+| AXV-W4 ADX-Steigung statt Niveau | nachbessern (n=54) | richtungsoffen formulieren, invertierter Arm Pflicht, Tages-Fassung streichen (~1 Trade/Tag), erst als Bar-ADX-Slope-Arm nach MS-V2 |
+| AXV-W1 Überdehnung + Tages-ADX hoch | nachbessern (n=36) | Why-Lücke Vortags-Persistenz, erst nach grünem W26 |
+| AXV-W14 VWAP-Bandbreite eng × Tages-ADX hoch | nachbessern (n=12) | Akteur fehlt; bitgleich zu ADX-W36 (`hold`); erst nach W26 |
+| AXV-W33 ADX-Rollover am Tages-VWAP | nachbessern (n=90) | zwei fehlende Code-Achsen, Arm „hoch UND steigend" als Pflichtkontrolle (in #168 trug nur der, nicht der Rollover), Trade-Zahl vorab gegen `min_tpy=25` |
+| AXV-W13 Kreuzungszahl gegen ADX | nachbessern (n=33) | mit AW-07 zu einer Zeile zusammenlegen (MS-V5 fehlt) |
+| AXV-W35 | **nicht bauen** | Placebo ist ein Klon (Trade-Jaccard 0,87, 99 % gleiche Tage), AW-14c hat die ungated Hälfte schon gemessen |
+| AXV-W2 | **nicht bauen** | keine eigene Frage, nur die `tm_dir`-Achse von W1 |
+| AXV-W8 | **nicht bauen** | Why stützt sich auf `tm_vwap_side` als „harte Latte", ist aber eine Null-Latte (3,75 % gegen 3,88 % Survivors) |
+| AXV-W24 | **nicht bauen** | AC-06c nicht übertragbar, Zielweite bereits als Plateau gemessen |
+
+**Zusammenhang mit der Bau- und Testrunde ([[ADX Wege-Karte]], [[Strategie-Logbuch]] #168):** ADX-Tages-Gates haben auf Feature-Ebene keine Folgetag-Information gezeigt (W19), der Vola-Gegentest AXV-W26 fragt dasselbe entry-bedingt auf den VWAP-Entries. **Buch-Lücke:** alles steht auf Stufe 0 (Prämisse). Erst wenn AXV-W26 zeigt, dass das ADX-Gate das Vola-Gate schlägt (Latte AR-16: expR-Faktor ≥ 1,8 bei ≤ 50 % Trade-Verlust), lohnt sich W1/W14. Bar-ADX-Wege (W5/W4) brauchen den `maband`-Zweig (MS-V2, ~10 Zeilen).
+
 ## Dateien dieses Laufs
 
 - Report: `C:\Users\maxlk\Projects\trading-data\engine\discovery\scout_reports\familien_adx_x_vwap_260921.md`
