@@ -8,8 +8,13 @@ erstellt: 2026-07-07
 
 ⬅️ [[Day Trading]] · ➡️ [[Funded-Phase]] · 🎫 **Arbeitsreihenfolge: [[Ticket-Epics]]**
 
-> [!warning] Stand 10.08.2026: Strategien deaktiviert
-> Zwei Beine liefen mit falschen Zahlen ([[Strategie-Logbuch]] #075). Alles aus, bis 🔥 FIREFIGHT in [[Ticket-Epics]] grün ist. Die Zahlen weiter unten in dieser Notiz sind älter als die Bugfixes vom 10.08. und **nicht mehr gültig**, siehe [[2026-08-10]].
+> [!success] Stand 06.09.2026: FIREFIGHT beendet, Buch handelt live
+> Die echte E8 50k Eval laeuft seit dem Kontowechsel am 18.08.2026 unbeaufsichtigt auf der Box, vier Beine + `MaxRiskGuard` sind aktiv. Damit ist der FIREFIGHT-Zustand faktisch seit Wochen vorbei; die Notiz hier hinkte nur hinterher.
+> Das Flag `maxlab_watchdog_firefight.flag` auf der Box wurde am 06.09.2026 entfernt (als `.bak` archiviert). Solange es lag, waren **zwei** Alarme stumm: die Datenfrische-Pruefung und der neue Alarm "NT8 laeuft und ist verbunden, aber keine Strategie aktiv". Genau dieser Zustand blieb beim Ausfall vom 05.09. einunddreissig Stunden unbemerkt.
+>
+> **Wer das Flag wieder setzt, schaltet damit die Ausfallmeldung ab** — also nur bewusst und nur solange die Beine absichtlich aus sind.
+>
+> *Historisch (10.08.2026): zwei Beine liefen mit falschen Zahlen ([[Strategie-Logbuch]] #075), alles aus bis FIREFIGHT in [[Ticket-Epics]] gruen ist. Die Zahlen weiter unten in dieser Notiz sind aelter als die Bugfixes vom 10.08. und **nicht mehr gueltig**, siehe [[2026-08-10]].*
 
 > [!important] Einziges Ziel dieser Phase
 > **Die Prop-Eval bestehen.** Nichts anderes zählt hier. Optimiert wird ausschließlich auf: **hohe Passchance in kürzester Zeit.** Payouts, Profit-Split, Funded-Management = spätere Phase ([[Funded-Phase]]), spielen für die Strategie-Wahl HIER keine Rolle.
