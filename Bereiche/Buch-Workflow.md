@@ -38,6 +38,10 @@ Der Portfolio-Tab zeigt dann automatisch: Kaufplan (beide Konten mit Frac, Solo-
 
 Die Rechenlogik dafür liegt in `eval_plan.py` (gemeinsame Quelle für `funded_finalize.py` und den Analyse-Lauf `frac_pair_budget.py`) — Änderungen an der Passquoten-Mathematik gehören dorthin, nicht in eine Kopie.
 
+> [!warning] Buch-Marginals nie addieren (AP185, Lehre 169, 21.09.2026)
+> Jede Frage der Form „Buch heute vs. Buch minus X plus Y" läuft über **`eval_plan.block_marginal(base_cells, remove=[...], add={...}, plan=plan)`**. Es rechnet den Block direkt (gepaarte Seeds) und meldet bei zwei oder mehr Änderungen `additivity_gap_pp` gegen die Summe der Einzelwerte. Zwei Leave-one-out-Zahlen zu addieren ist im Trailing-DD-Käfig falsch: der DD-Kanal hat keine Diversifikationsgutschrift, ab Tages-Korrelation ca. 0,4 sind zwei Beine Substitute (17.09.: je Bein raus +3,9 bis +4,6 pp, beide raus −0,6 pp). Im 3-Bein-Buch ist die Lücke schon bei corr ≈ 0 zweistellig, weil das Entfernen zweier Beine kein kleines Störexperiment mehr ist. Basiszellen kommen aus `developer_run.book_baseline_cells(bstate)`, Korrelation aus `eval_plan.cells_corr()`.
+> **Automatik:** `discovery/promote_next.py` macht pro Zyklus des Next-Week-Buchs höchstens einen Auto-Swap auf korrelierte Beine (Sperre ab `PAIR_CORR_MAX = 0,40` gegen alle offenen `next_week.changes`, nicht pro Lauf); der zweite Kandidat wird `promote_skipped` und als `promote_conflict` in die Inbox gemeldet, Doppel-Swap nur als Block per `block_marginal` bewerten. Tests: `test_block_marginal.py`, `test_promote_lock.py`.
+
 ## 📗 Next-Week-Buch = Staging (Regel Max, 17.08.2026)
 
 **Neue Strategien, neue Versionen oder Parameter-Änderungen gehen NIE direkt in `book_state.json`**, sondern immer erst ins Staging-Buch **`book_state_next.json`** („Next Week"). Max testet das Buch eine Woche lang (Sim auf der Box + Backtest-Vergleich), optimiert am Wochenende und lässt es dann weiterlaufen.

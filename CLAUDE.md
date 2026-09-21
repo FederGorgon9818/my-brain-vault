@@ -263,6 +263,14 @@ Installiert ist nicht genug: sobald eines davon passt, **von selbst** einsetzen,
 - **Immer wenn Max ansagt, dass RiskGuard entfernt/neu hinzugefügt/eine neue Strategie-Instanz angelegt wird** (oder nach Box-Reboot/Kontowechsel): aktiv daran erinnern, `TelegramToken` + `TelegramChatId` neu einzutragen.
 - Echte Werte liegen NICHT im Vault, sondern auf der Box in `C:\Users\Administrator\maxlab_watchdog.json` (Bot **maxbot** @maxbotalgobot). Beim Erinnern die Werte per SSH holen und direkt mit ausgeben.
 
+### ⚖️ Neues Konto oder neue Firma → Regeln prüfen und alles anpassen (Regel Max, 22.09.2026)
+
+Auslöser: FundedNext-Challenge hat eine Consistency-Rule (Tagesgewinn ≤ 40 % vom Target), E8 nicht. Der Deckel fehlte im RiskGuard, bis er am 21.09. per Zufall auffiel. Deshalb: **sobald Max ein weiteres Konto kauft oder eine neue Firma/Phase dazukommt** (auch Funded-Wechsel, Kontogröße, Reset, Add-on), **von selbst und vor dem ersten Trade**:
+
+1. Regeln der Firma/Phase aus der Primärquelle holen (`research-scout`, Research-Cache zuerst) und in [[Firm-Regeln je Konto]] eintragen: Consistency/Tagesgewinn, DD-Typ und Einrasten, News-Regel, Inaktivität, Zeitfenster/Flat-Zeit, Kontraktlimit, Payout-Regeln, Algo-/VPS-Erlaubnis, Haushaltsgrenze.
+2. Jede Regel gegen die Umsetzung abgleichen und **alles Nötige anpassen**: `MaxRiskGuard.cs` (cfg-Datei `maxlab_riskguard.cfg` pro Konto, nie nur die UI), Strategie-Instanzen/Größe (k), `book_state.json`/Käfig (`cage_policy_lib`, `evaluate_v2`), Watchdog/Telegram. Was noch nicht als Property existiert, wird als Ticket angelegt und vor dem Trade gebaut oder das Konto handelt bis dahin nur mit Handaufsicht.
+3. Konten-Liste, Regel-Tabelle und die aktiven Deckel (Werte je Konto) in [[Firm-Regeln je Konto]] festhalten und Max ansagen, was angepasst wurde. Ein Konto gilt erst als startklar, wenn diese Prüfung durch ist. Der Dauer-Check bei Statuswechsel (Challenge zu Funded) hängt an AP203.
+
 ---
 
 ## 🖥️ Hub — Max' Desktop-Cockpit (Regel Max, 19.08.2026 — WICHTIG)

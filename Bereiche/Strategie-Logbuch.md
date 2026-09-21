@@ -3181,3 +3181,107 @@ Vollständig in [[Neue Märkte (NT8-Daten) Plan]]. Kurz: NT8 auf der Box liefert
 4. **Ein Bein raus aus dem Buch kann die ganze Bank lahmlegen:** `replaces="NQ_VWAP-Pullback"` warf nach #161 beim Import einen Assert, `--enqueue` war für ALLE Hypothesen blockiert, einen Tag lang unbemerkt. Beim Entfernen eines Beins `grep replaces=` in `hypothesis_bank.py` (5 Treffer, jetzt auf `hold`).
 5. **Eigener Urteils-Entwurf war in drei Zahlen falsch** (beste Config übersehen, weil nach expR statt $ sortiert; falsche Diagnose „Kosten" für GC; Prämissen falsch gezählt). Der `verdict-auditor` vor dem Stempel ist keine Formalie.
 6. Der RTH-Anker 09:30 ET ist für GC (COMEX 08:20, LBMA 10:00), CL (09:00, EIA Mi 10:30) und FX (London) der falsche Anker. Ohne eigenes Session-Fenster je Markt ist jede Aussage über diese Märkte eine Aussage über das US-Kassa-Fenster.
+
+## #166 — Agent-Nutzungs-Audit nachgeholt: [[Hypothesen-Bank (Momentum & Averages)]] nie durch variant-scout/strategy-auditor, TS-19 als Tautologie enttarnt (21.09.2026)
+
+**Anlass:** Max' Frage, in welchen Fällen Agents wie `variant-scout`/`strategy-auditor` trotz Trigger nie aufgerufen wurden. `agent_usage_audit.py --days 60` (123 Sessions) fand nach Filter auf echte Nach-Regel-Fälle (Regel 01.09.2026) zwei offene Bänke: [[Hypothesen-Bank (Momentum & Averages)]] (~200 Zeilen, seit 23.08. nie geprüft) und [[Hypothesen-Bank (PCA & Faktorstruktur)]] (18 Hypothesen, seit 30.08., separat per `ein-weg`-Workflow nachgeholt).
+
+**Root-Cause:** für Hypothesen-Bank-Einträge gab es nur Erinnerungen (`after_change.py` direkt nach dem Schreiben, `on_stop.py` am Sessionende, einmal blocken dann nur noch erinnern) — keine harte Sperre wie bei Box-Sync (`regression_ok`) oder Enqueue (`pipeline_ok`). Bei mehreren parallelen Sessions geht eine reine Text-Erinnerung unter. **Fix:** neuer Hook `guard_write.py` (PreToolUse Edit/Write/MultiEdit) blockt jetzt eine neue Zeile in einer Hypothesen-Bank, solange `variant-scout` UND `strategy-auditor` nicht in derselben Session liefen. Details: [[Hooks-Referenz]].
+
+**Nachgeholte Prüfung (weil 200 Einzel-Calls unverhältnismäßig gewesen wären, zwei gezielte Audit-Calls statt normalem Ablauf):**
+- `variant-scout` gegen den echten Code (Fokus TS/TK/TE, 50 Zeilen): Übersichtstabelle war Stand 23.08. und in beide Richtungen veraltet — mehrere TE-Zeilen nennen `ts_reversal`, laufen real auf `tsmom`/`maband` (MS-61-artige Verwechslungsgefahr für künftige Zeilen), TS strukturell unterschätzt (mind. 15-17/21 statt 11/20 `✅`). Block B (AV/AC/AS/AB/AW/AR/AK) vom selben Alter, noch nicht geprüft.
+- `strategy-auditor` Batch-Vorprüfung (dieselben 50 Zeilen, 31 Gruppen): 36 Storys halten (7 mit Auflage), 11 brauchen Nacharbeit vor erneutem Einreihen, **3 fallen durch**.
+- **TS-19 ist eine harte Tautologie:** `tm_dead` (`tsmom.py:347`) ist nur ein Multiplikator auf `tm_thr` — "Totzone" und "höhere Schwelle" sind derselbe Code-Pfad, die Zeile kann ihre eigene Verwerfen-Frage konstruktionslogisch nie beantworten. TK-10 (Sommermonate) und TE-13 (Freitagnachmittag) fallen als Kalender-Splits ohne Akteur durch (Multiple-Testing-Futter, Präzedenz Pivot-Break #051), liefen aber nur als `analysis` ohne eigenen Grid.
+- Alle drei sofort in `NM_EXCLUDE` (`hypothesis_bank.py`) eingetragen — sonst hätte der Neue-Märkte-Klon-Mechanismus (#165) sie sechsfach auf GC/CL/6E/6B/ZS/ZW vervielfacht, bevor es auffällt.
+- **Größter offener Punkt, ungelöst:** die Meta-Frage TS-01 vs. AK-01 (Levine/Pedersen, entscheidet über ~60 Zeilen) lief laut [[Friedhof-Analyse 2026-09-17]] als generischer `maband`-Grid, nicht im spezifizierten Sinn (Trade-Überlappungsrate/gemeinsame Regression). Nachrechnen braucht keinen neuen Job, nur Signalreihen-Korrelation + Trade-Overlap auf den bereits gerechneten Trials — Quant-Team-Aufgabe, noch nicht eingeplant.
+
+**Lehren:**
+1. Eine reine Text-Erinnerung reicht bei viel Parallelarbeit nicht — die Regel „variant-scout+strategy-auditor VOR der Bank-Zeile" brauchte eine harte Sperre wie Box-Sync/Enqueue, nicht nur eine weitere `on_stop.py`-Meldung.
+2. Eine Bank mit „Stand DD.MM." in der Übersichtstabelle veraltet in beide Richtungen (zu optimistisch UND zu pessimistisch), sobald die Engine weiterwächst — die Tabelle ist ein Snapshot, kein Live-Wert, und sollte das auch im Text sagen.
+3. Ein automatischer Markt-Klon-Mechanismus (`_nm_clone_all`) multipliziert nicht nur gute Zeilen, sondern auch unentdeckte Tautologien — eine Audit-Lücke bei der Quelle wird bei jedem Klon-Lauf teurer.
+
+**Noch offen:** die 11 Vorbehalts-Zeilen auf `hold=True` setzen (kein zentraler Schalter wie `NM_EXCLUDE`, einzeln je `H()`-Aufruf), TE-Block-Vorbehalt (Exit-Varianten auf unbestätigtem Signal), Block-B-Audit (AV/AC/AS/AB/AW/AR/AK), TS-01/AK-01-Nachrechnung. Vor dem nächsten `--enqueue` für diese Bank gehört das in ein Ticket.
+
+## #167 — [[Hypothesen-Bank (PCA & Faktorstruktur)]] nachgeholt geprüft: eigene Prä-Registrierung wäre beim Bauen umgangen worden (21.09.2026)
+
+**Anlass:** Fortsetzung von #166 (Agent-Nutzungs-Audit). Die PCA-Bank (18 Hypothesen, seit 30.08.) war die zweite Lücke — nie durch `variant-scout`/`strategy-auditor` gelaufen, per `ein-weg`-Workflow nachgeholt.
+
+**Methodik-Lehre zuerst:** die 18 Zeilen waren bereits vollständig als Bank-Einträge spezifiziert (Mechanismus, Why, Prüfbar-/Verwerfen-Spalte) — `ein-weg` ist für NEUE, noch nicht eingetragene Hypothesen gebaut. `variant-scout` hat das richtig erkannt (jede Zeile "wortgleich bereits in der Bank"), aber dadurch stufte der Workflow fast alles als "nicht neu" ein und rief `strategy-auditor` nie auf — kein Fehler des Workflows, sondern falsches Werkzeug für eine bereits bestehende Bank. Nachgeholt als direkter `strategy-auditor`-Batch-Call auf die 11 von `variant-scout` als Testbar/Grenzwertig eingestuften Zeilen.
+
+**Variant-scout (Achsen-Zählung, 18 Zeilen):** 7 Zeilen sind mit &lt;10 echten Achsen-Varianten (PR-04 n=1, PR-06 n=4, AR-01 n=1, F2-02 n=1, F2-04 n=2, ST-01 n=4, ST-04 n=6) **strukturell keine Grid-Hypothesen**, sondern einzelne Entscheidungstests — deckt sich mit der Bank-eigenen Notation "Beine: —" für genau diese Zeilen, kein Fehler der Bank.
+
+**Strategy-auditor (Story-Check, 11 Zeilen): zentraler Fund — die Gruppe der baubaren Zeilen umgeht die eigene Prä-Registrierung.** Die Bank selbst schreibt: erst die drei Primär-Zeilen (ST-01, PR-04, PR-01), dann Sekundär, dann Explorativ. Die 11 testbaren Zeilen enthalten aber weder PR-04 (Varianz-Ratio-Test) noch ST-01 (TOST PCA-vs-Mittelwert) — genau die zwei Zeilen, die entscheiden, ob der Mechanismus existiert und ob PCA überhaupt das richtige Werkzeug ist. Wer die 11 Zeilen einfach als `H()`-Jobs einreiht, hätte die eigene Prä-Registrierung faktisch gelöscht.
+
+**Zwei Zeilen fallen als Story durch:**
+- **PR-02** überschreibt die protokollierte Todesursache von `div_fade` (#033: "doppelte Kosten fressen die engen Spreads") durch "falsches Timing" ohne jede Messung, UND behauptet auf 15-60 Min das umgekehrte Vorzeichen von PR-01 auf demselben Residuum — ein Gegenvorzeichen-Paar auf derselben Größe findet garantiert eine Gewinnerin, ohne dass der Trial-Zähler das sieht.
+- **AR-03** ist ein Umschalter zwischen zwei Armen (`div_fade` tot, `div_mom` "nur marginal") — ein Interaktionstest auf einer Null-Basis zeigt nur, in welchem Regime das Rauschen lag, keine Edge.
+
+**Rechnungs-Realitätscheck:** die 11 geprüften Zeilen summieren 726 Achsen-Varianten, bei effektiv ~2,32 unabhängigen Markt-Replikationen also ~313 Varianten je echter Replikation — die globale Zufallsdecke bewegt sich davon kaum (+0,2 %). Bei der eigenen ehrlichen Edge-Erwartung (Sharpe 0,1-0,3, 0-2 % Power) ist das reine Box-Zeit auf einer zu 98 % nicht entscheidbaren Frage.
+
+**Entscheidung:** ST-03 (n=6) und AR-02 (n=27, mit OOS-Auflage) direkt baubar. PR-02 und AR-03 gestrichen. Rest wartet in Reihenfolge (PR-04+ST-01 → PR-01 → PR-05/ST-02/ST-05; F2-04 vor F2-01/F2-03; AR-04 nach 20-Min-Vormessung ohne Trials). Nichts davon ist bereits als `H()`-Job gebaut — reine Prämisse-Klärung, 0 Register-Trials verbraucht.
+
+**Lehre:** `ein-weg` ist NUR für Hypothesen richtig, die noch nicht in einer Bank stehen. Für eine bereits vollständig spezifizierte, aber nie durch die Agents gelaufene Bank ist der richtige Weg ein direkter `strategy-auditor`-Batch-Call auf die von `variant-scout` als baubar eingestuften Zeilen — analog zum Vorgehen bei [[Hypothesen-Bank (Momentum & Averages)]] in #166.
+
+**Noch offen:** PR-04 + ST-01 rechnen (keine Grid-Jobs, reine Statistik auf vorhandenen Daten), danach die Kaskade oben. Gehört ins selbe Ticket wie der Momentum-&-Averages-Rest aus #166.
+
+## #168 — ADX gebaut und getestet: W19/W27/W38 gemessen, W36/W14 zurückgehalten, W24/W6 als Jobs (21.09.2026)
+
+**Anlass:** Max: „W19, W36, W27, W14, W24, W6 bauen und testen" ([[ADX Wege-Karte]], ein-weg-Runde). ADX existierte in der Engine nicht (0 von 65.035 Register-Trials).
+
+**Engine-Bausteine (alle additiv, bitgleich für Configs ohne ADX, Golden-Master „Sync frei"):** `sigcore.wilder_adx` + Tageskontext-Spalten (`adx14`, `adx_rank`, `atr_exp_rank`, DI, Steigung; alle um einen Tag verschoben; Referenz-Schleife Korrelation 0,9997, Look-ahead-Wache identisch bei abgeschnittener Zukunft), Gates `tm_adx_*`/`tm_xadx_*`/`tm_badx_*`/`tm_er_max` in `gates_pass` + `controls.py` (GATE_OFF/INVERT), `tsmom`: Bar-ADX, Fremdmarkt-ADX, `tm_exit="adx_peak"`. Messskripte im Engine-Root: `adx_vs_vola_w19.py`, `adx_w27_probe.py`, `adx_w38_events.py`, `adx_w38_level.py` (44 Prescan-/Probe-Trials über `registry_pending_add` gebucht).
+
+| Weg | Ergebnis | Stempel-Umfang (verdict-auditor) |
+|---|---|---|
+| **W19/W20** | ADX ist weder Vola-Proxy (R² 0,19/0,11, Schwelle 0,60) noch ER (ρ 0,31), trägt aber **keine Folgetag-Information** (partielles ρ −0,03…+0,02, CI ±0,03, n≈2.670; rohes ρ ebenfalls ≈ 0) | gilt für ADX→eigener Markt, Tages-Ziele. **Nicht** abgedeckt: ES→NQ (W24), Konjunktionen (W36), Bar-ADX |
+| **W27** | 8/8 Configs nicht besser als zeit-gematchter Exit (dR −0,004…−0,041 R), gegen Original-EOD signifikant schlechter (−0,08…−0,21 R/Trade). Das Bein wird zu 90 % nach ~5 Min ausgestoppt, alle Gewinne stecken in ~85 EOD-Trades, ein ADX-Exit kappt sie | tot **nur** für den tsmom-Momentum-Träger, absoluter `give`, Bar 1/5 min. W5/W9 unberührt |
+| **W36** | vorregistriert nur 115 Trades = 11,7 tpy (Grenze 25); nur 4 von 16 Zellen kaum selektiv ≥ 25 tpy; Konjunktion dünner als bei Unabhängigkeit (14 % statt 20 %) | per `hold=` zurückgehalten, **nicht widerlegt**; Reaktivierung: Basis-Bein ≥ 150 tpy |
+| **W14/W38** | Rollover-Fade Tagesebene: CI deckt 0 in 16/18 Zellen, Kontrolle „hoch und steigend" meist stärker | W14 per `hold=`. **Nebenbefund Niveau** (hoch und steigend, k=5): NQ/ES L35/L40 halten vorregistrierte Regeln (NQ L35 +78 bp, ES L35 +147 bp), **Replikation YM/RTY scheitert** → Lead, keine Edge (post-hoc-Form, n 13-95, Swing = Live-Buch-Merker) |
+| **W24** | Job `hyp_ADXW24_NQ` (12 Configs, replaces `NQ_Momentum`) in der Bank | erste Messung von ES-ADX→NQ, W19 deckt sie nicht ab |
+| **W6** | Job `hyp_ADXW6_NQ` (45 Configs: 5 Chop-Arme inkl. ER-Gegenarm × 3 Startzeiten × 3 Stops) in der Bank, `prior=mid` | Fade-Träger friedhofsnah (7.785/7), #196 NO-GO; Runner-Prämisse entscheidet billig |
+
+**Lehren:**
+1. **Erst die Zählung, dann der Job.** W36 ist an einer Zwei-Zeilen-Zählung gestorben (Trades pro Jahr), nicht an Rechenzeit. Bei einem 77-tpy-Bein hält jedes zweite Gate nur ~33 % der Trades, sonst reißt `min_tpy=25`. Konjunktionen brauchen Basis-Beine mit ≥ 150 tpy.
+2. **Ein Haupteffekt-Nullbefund deckt keine Interaktion und keinen anderen Markt ab.** Der Satz „ADX hat keine Grundlage" wäre für W24 (gekreuzt) und W36 (Konjunktion) falsch gewesen; der `verdict-auditor` hat ihn vor dem Stempel gekippt.
+3. **Ein Kontrollarm kann eine bessere Hypothese enthüllen, als die getestete war (Niveau statt Rollover), aber genau dieser Befund ist post-hoc.** Die vorregistrierte Niveau-Studie hielt auf den Daten, aus denen sie abgeleitet wurde, und scheiterte an ungenutzten Märkten. Nur die Replikation zählt.
+4. **Zeit-gematchter Exit als Pflichtkontrolle** entlarvt Indikator-Exits: ADX klingt nach jedem Impuls von selbst ab und ist dann ein Uhr-Exit.
+
+**Noch offen:** `pipeline-auditor`-Freigabe, dann `--enqueue --push` für W24/W6; Ergebnis der beiden Jobs (Buch-Lücke: Stufe Prämisse); ADX × VWAP als eigener `konzept-weg`-Lauf (getrennt gestartet); Niveau-Lead auf weiteren Märkten (GC, CL, Zinsen).
+
+## #169 — AP185: Buch-Marginals sind nicht additiv, jetzt als Werkzeug und Sperre statt als Text (22.09.2026)
+
+**Anlass:** Ticket AP185 (quant-mathematician + pipeline-auditor 17.09.). NQ_LastHour_v3 und NQ_VWAP-Pullback korrelieren 0,42–0,58 und sind im Trailing-DD-Käfig Substitute: je Bein raus +3,9 bis +4,6 pp Passquote, **beide** raus −0,6 pp (Additivitätsfehler 9,0 pp, [[Strategie-Logbuch]] #159/#161). `promote_next.py` tauscht alle 30 Min je Tick ein Bein, jeweils mit dessen Einzel-Marginal. Zwei „besser"-Kandidaten auf den beiden Slots (vt01/vt01b) hätten sich in zwei Läufen beide ins Next-Buch geschrieben, ohne dass etwas warnt. (Stand 22.09.: NQ_VWAP-Pullback ist seit 18.09. schon aus dem Buch, der Fall ist entschärft, das Muster nicht.)
+
+**Umgesetzt (alles auf PC und Box, Tests grün):**
+- `eval_plan.block_marginal(base_cells, remove, add, plan)`: rechnet „Buch heute" gegen „Buch minus X plus Y" direkt (gepaarte Seeds, `evaluate_v2`), bei ≥ 2 Änderungen zusätzlich `additivity_gap_pp` gegen die Summe der Einzelwerte. Dazu `eval_plan.cells_corr()` (Outer-Join, 0-Füllung, wie `ctl_corr_book`).
+- `discovery/promote_next.py`: **kumulative** Ein-Swap-Sperre. Geprüft wird gegen alle offenen Auto-Swaps in `next_week.changes`, nicht pro Lauf (eine Pro-Lauf-Sperre feuert nie, weil jeder Tick nur ein Bein anfasst). Tages-Korrelation ≥ `PAIR_CORR_MAX` 0,40 oder nicht berechenbar → `promote_skipped` + Inbox-Zeile `promote_conflict`. Gleicher Slot (bessere Variante desselben Beins) bleibt frei.
+- Tests: `test_block_marginal.py` (synthetisch: Block == handgebaute Rechnung, Lücke > 2 pp bei corr 0,56; Eingabeprüfungen) und `test_promote_lock.py` (fünf Szenarien inkl. „gleicher Slot" und r = None). Beide stehen als Schritt 3b im `engine-regression-tester`. Doku: [[Buch-Workflow]].
+
+**Neuer Befund beim echten Buch (nur Anzeige):** im 3-Bein-Buch ist die Lücke schon bei corr ≈ 0 zweistellig (−12 bis −39 pp), weil „zwei von drei Beinen raus" kein kleines Störexperiment mehr ist, sondern ein anderes Buch. Nicht-Additivität ist also nicht nur ein Korrelationseffekt, sondern gilt für jede Mehrfachänderung eines kleinen Buchs.
+
+**Lehre 169:** Im Trailing-DD-Käfig sind Buch-Marginals nicht additiv (Lücke 9,0 pp bei zwei Substituten, im 3-Bein-Buch auch bei corr ≈ 0 zweistellig). Jede Mehrfachänderung des Buchs bewertet den Block direkt per `eval_plan.block_marginal`, und die Auto-Promotion sperrt einen zweiten Swap im selben Next-Week-Zyklus. Das durchsetzt Lehre 164 aus #159, die bis dahin nur Text war.
+
+**Offene Lücken (logbook-distiller 22.09., als Folgeticket):**
+1. `block_marginal` hat keinen Produktiv-Aufrufer in `promote_next` (Ticket-Punkt 6), dort steht nur der Korrelations-Proxy. 0,40 ist nicht kalibriert, und das echte Buch zeigt große Lücken auch unterhalb.
+2. Der NEW-Zweig (kein `replaces_leg`) ist nicht gesperrt.
+3. Die Korrelation wird für das alte Bein am Slot gerechnet, nicht für die Kandidaten-Zellen.
+4. `promote_skipped` ist ein Dauerveto (`pick_candidates` nimmt den Kandidaten nie wieder); nötig wäre ein zyklusgebundenes `promote_deferred`.
+5. Wegwerf-Skripte (`_scratch_*`, `ap105_*`, `_gate_robust.py`) rufen weiter `combine_cells` direkt, dort erzwingt nichts `block_marginal`. `controls.corr_max` steht weiter auf 0,70 (AP187).
+
+## #170 — AP194: „Queue leer" hieß drei verschiedene Dinge, der Generator war ausgereizt und 26 h tot, alpha-scout findet keinen Job (22.09.2026)
+
+**Anlass:** Ticket AP194. Die Discovery-Queue lief seit 14.09. leer (10× `queue_empty` im 12-h-Takt), die Box rechnete fünf Tage praktisch nichts. Unbewiesen war, ob der Generator tot, ausgereizt oder still an einer Exception gestorben war.
+
+**Diagnose (auf der Box gemessen, ohne `runner.log` einzulesen):**
+- **Ausgereizt:** 107 Vorlagen × 426 (Vorlage, Markt)-Paare komplett abgedeckt (420 Jobs, 6 übersprungen), alle 504 fertigen Jobs nachverfolgt (`exits` n/a 305, `refine` n/a 252), Dry-Run `next_jobs` = 0. Das gilt schon vor dem 18.09.
+- **Tot (18.09. 05:25 bis 19.09. 07:19):** 776× `AssertionError AW-11b` (`replaces='NQ_VWAP-Pullback'` nicht mehr im Buch, seit das Bein am 18.09. ausschied). `job_generator.py` importiert `hypothesis_bank` auf Modulebene und jeder `H()`-Aufruf asserted beim Import; ein einziger Bank-Eintrag hat den Nachschub der ganzen Queue stillgelegt, sichtbar nur als Log-Zeile.
+- **Dritter Fall (vom `logbook-distiller` gefunden):** das Tageslimit (120) gibt still `[]` zurück und wäre vom Runner als „ausgereizt" gelesen worden.
+
+**Umgesetzt (PC + Box, Test grün):** `discovery_runner.py` meldet `job_generator_dead` (einmal je 12 h, Zähler in `GENERATOR_DEAD_NOTIFIED`) und `queue_empty` trägt jetzt `generator: tot | ausgereizt | tageslimit` mit passender Handlungsanweisung; `job_generator.py` schreibt `last_reason` in den Generator-Stand. Test `test_generator_events.py`, Schritt 3b im `engine-regression-tester`.
+
+**Nachschub:** `alpha-scout` (Bericht [[Alpha-Scout AP194 (22.09.2026)]]) hat 12 neue Kandidaten **vorgezählt** (Trades/Jahr, gerichtete Bruttobewegung gegen Kosten, 0 Register-Trials): keiner mit vorhandenem Modul und vorhandenen Daten hält, 7 mit Zahl verworfen (Ankündigungsprämie +0,5 bp, Same-Time-of-Day −0,6 bis +0,04 Pkt, Vortags-Schlusslage, Asia→London NQ −2,8 Pkt, 6E-London, Eröffnungs-Fade RTY/YM/ES, CL-Pit). Drei Abdeckungs-Jobs mit sehr niedrigem Prior (GC-COMEX-Uhr 22 Tr/J, CL-EIA-Mittwoch mit identischer Kontrolle, NQ-Makro-Gate nicht auflösbar), Erwartung 0 Kandidaten. Einziger Raum mit echtem Informationsgewinn: Bitcoin (MBT/MET), blockiert durch Daten von Max und ein Session-Modul `crypto24`. Entscheidungen in AP211.
+
+**Nebenarbeit (AP161 Punkt 2):** `developer/book_cells.json` und `edge_ref.json` waren bitgleich zum Neuaufbau, also nicht stale; beide tragen jetzt einen Engine-Fingerprint (`eval_plan.engine_fingerprint`, Inhalts-Hash statt mtime), damit der nächste Engine-Patch sie nicht mehr still veraltet lässt.
+
+**Lehre 170:** Ein Leerlauf-Ereignis muss seine Ursache benennen (tot, Tageslimit, ausgereizt), und ein einzelner fehlerhafter Bank-Eintrag darf nur seine eigene Zeile stilllegen, nie den Nachschub der ganzen Queue. Zweiter Teil ist noch **nur Text** (AP210).
+
+**Offen:** Kopplung Bank→Generator (AP210, Kern-Datei, Regressionslauf), Max-Entscheidungen zu Abdeckungs-Jobs, Bitcoin-Daten und einem Pflichtschritt `prescan_gross.py` (AP211). Buch-Lücke der Suche insgesamt: Stufe Prämisse, es gibt keinen Kandidaten mit Modul und Daten, der sie erreicht.
