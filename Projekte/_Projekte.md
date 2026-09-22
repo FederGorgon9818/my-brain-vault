@@ -13,5 +13,6 @@ tags:
 > Abgeschlossene Projekte wandern in den [[_Archiv|Archiv]]-Ordner.
 
 ## Aktive Projekte
+- [[Testphase Juli-Modus]] – eine Woche Alpha-Suche wie im Juli (Idee → Prämissen-Tafel → kleines Grid → Ersatz-Marginal) + Gate-Kalibrierung; Trigger-Wort „Juli-Modus" (22.09.2026)
 - [[Token Tracker App]] – Claude Token-Verbrauch tracken (als .exe fertig)
 - [[Backtest-Engine]] – lokale ehrliche Backtest-Engine + QuantPad-Daten

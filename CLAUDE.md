@@ -178,6 +178,14 @@ Voller Ablauf (Dateien, Chat mit zweitem Claude, Charts, Ziel-Banner): [[Strateg
 
 ---
 
+## 🧪 Juli-Modus (Trigger-Regel Max, 22.09.2026)
+
+**Trigger-Regel:** Sagt Max **„Juli-Modus"**, **„Testphase Juli-Modus"** oder bezieht sich auf **„unseren Vorschlag / das Gespräch vom 22.09., warum wir früher mehr gefunden haben"**, ist immer [[Testphase Juli-Modus]] gemeint. Sofort dort weitermachen, keine Rückfrage, was gemeint ist.
+
+Kern in einem Satz: Alpha-Suche wieder wie im Juli, eine Idee von Max → Prämissen-Tafel (eine Tabelle, Stopp wenn sie nicht trägt) → Grid mit max. 24 Configs → Ersatz-Marginal statt Zusatz-Bein → Urteil mit Stempel, alles in einer Session, keine Bank, keine Queue, keine Box (Teil A). Vorher das Gate kalibrieren: bestehen die drei eigenen Beine das eigene Buch-Marginal-Gate, Schwelle nach Power statt nach Vorfall (Teil B, Prompt liegt in der Notiz). Befund, warum das nötig ist: seit dem 21.08. rund 65.000 Trials und 0 neue Mechanismen im Live-Buch, und die heutige Pipeline hätte das heutige Buch vermutlich nicht gefunden (Notiz Abschnitt 1, Teil B prüft genau das).
+
+---
+
 ## 🤖 Discovery-Runner v2 (Regel Max, 18.08.2026)
 
 **Rechnen macht die Maschine, entscheiden macht Claude.** Alpha-Suche läuft als Dauerprozess auf der Box (Queue → Prämisse → Grid+Gates → Buch-Marginal → Inbox). Volle Doku, Betrieb, Varianten-Vorlagen: [[Discovery-Runner v2]].
@@ -241,9 +249,37 @@ Seit 04.09.2026 setzt Claude Code Regeln deterministisch per Hook durch (`.claud
 Kurzfassung, was blockt statt nur erinnert:
 - `guard_bash.py`/`guard_read.py`: kein Box-Sync ohne frischen `regression_ok`-Marker, kein `--enqueue` ohne `pipeline_ok`-Marker, keine Dauerläufer als Session-Kind, kein volles Log-/Transkript-Einlesen.
 - `guard_write.py` (Regel 21.09.2026, Fund: Momentum&Averages- und PCA-Bank blieben sonst wochenlang ohne Gegenleser): keine neue Zeile in einer Hypothesen-Bank, solange `variant-scout` + `strategy-auditor` nicht in derselben Session gelaufen sind (am einfachsten über Skill/Workflow `ein-weg`). Reine Status-/Formatierungs-Edits lösen nichts aus; Fehlalarm-Override `python .claude/hooks/mark.py hypothese_ok`.
+- `guard_chain.py` (Regel Max, 22.09.2026): ein **Todesurteil** im Strategie-Logbuch wird abgelehnt, solange die vier Pflichtfelder fehlen (siehe nächster Abschnitt). Geprüft wird nur der **Urteilsblock** (`Verdikt:`/`Urteil:`/`Fazit:`), nicht der Fließtext — Rückblicke und Zitate fremder Urteile lösen nichts aus. Fehlalarm-Override `python .claude/hooks/mark.py urteil_ok`. Selbsttest: `python .claude/scripts/test_urteil_gate.py` (7 Fälle, inkl. der Fehlalarm-Quellen).
 - `on_stop.py`: Session endet nicht, solange `book_state*.json` neuer als der letzte `--push-next` ist, oder solange eigene Datei-Änderungen ohne Daily-Note-Eintrag im Raum stehen.
 - **Ein Hook blockiert nie die Arbeit, weil er selbst kaputt ist** — Fehler werden verschluckt und geloggt, nie geworfen.
 - Neue Reflex-Regel geplant? Zuerst fragen, ob sie als Hook abbildbar ist (Dateipfad, Kommando-Muster, Dateizeit), statt sie nur als Text hier abzulegen.
+
+---
+
+## ⚰️ „Tot" ist ein Urteil mit Reichweite, kein Stempel (Regel Max, 22.09.2026)
+
+**Der Anlass:** Max' Einwand — *„Es gibt eine Milliarde Arten, eine Edge zu ziehen, die wir nie getestet haben. Wie könnt ihr dann Sachen für tot erklären?"* Der `verdict-auditor` hat nachgezählt: **82 Todesurteile im Logbuch, nur 24 mit Wiedervorlage-Bedingung, 46 ohne Bedingung UND ohne Reichweite.** Klarster Fehlfall: **#163** trägt „endgültig tot" im Titel, während im Körper steht, man bräuchte 27-29 Jahre Historie — das ist unentscheidbar, kein Ergebnis. Dazu kamen am selben Tag drei kaputte Messwerkzeuge (maband-RVOL-Gate maß eine Uhrzeit, Entry- und Exit-Freitick in `qbt.py`): **im Friedhof liegt nachweislich Zeug, das mit kaputtem Lineal erschlagen wurde.**
+
+**Jedes Todesurteil trägt vier Pflichtangaben, sonst ist es kein Urteil, sondern eine Notiz:**
+
+1. **Reichweite:** Rolle (Signal/Filter/Exit/Sizing), Frequenz, Markt, Käfig, Kostenstruktur. **„Tot" ohne Objekt ist verboten.**
+2. **Kategorie**, eine von vier:
+
+| Kategorie | heißt wirklich | Reichweite |
+|---|---|---|
+| `strukturell-tot` | eine Rechnung verbietet die ganze Klasse | ganze Familie |
+| `empirisch-nichts-gefunden` | N Varianten gemessen, keine trug (N nennen) | nur diese N |
+| `echt-aber-zu-klein` | Effekt belegt, Ökonomie trägt ihn nicht | stirbt bei anderen Kosten/Käfig wieder auf |
+| `unentscheidbar` | MDE/Feasibility schlägt die Kill-Schwelle | **zählt nicht als Friedhof** |
+
+3. **Wiedervorlage:** Datum oder prüfbare Bedingung. „Nur auf ausdrückliche Ansage" ist zulässig, aber **nur bei `strukturell-tot`**.
+4. **Stempel:** Engine-Fingerprint, Datenstand, Kriterium/Betriebspunkt zum Urteilszeitpunkt (Lehre 159, seit 17.09. Text, seit heute Pflicht).
+
+**Die Sperre gegen den eigentlichen Anlass:** wer `strukturell-tot` beansprucht, **muss die Rechnung zitieren**, die die Klasse verbietet (Hüllkurve, Kostenhürde, Algebra). Ohne zitierte Rechnung ist es automatisch `empirisch-nichts-gefunden` mit N.
+
+**Durchgesetzt, nicht erinnert:** `guard_chain.py` lehnt einen Logbuch-Eintrag ohne diese Felder ab. Der Hook erzwingt, dass die Felder **da** sind, nicht dass sie stimmen — genau das hätte bei #163 gereicht. Wiedervorlagen gehören zusätzlich in `auto_check.py` (läuft alle 30 Min), **nicht nur ins Logbuch**: ein Feld, das niemand zurückliest, ist die #125-Falle ein zweites Mal. Zwei Fälle, bei denen die Bedingung bereits eingetreten war und es niemand merkte: **#164** (Blocker „kein GC/CL im Bestand" — einen Tag später brachte #165 die Daten) und **#139** (Bedingung „mehrere Kontrakte je Bein" — seit 21.09. erfüllt).
+
+**Und für die Gegenrichtung:** ein Friedhof, in dem alles „vielleicht doch" ist, ist genauso wertlos wie einer, der zu früh schließt. Wo ein „tot" sauber trägt, gehört das ausdrücklich hingeschrieben. Vorbilder im Logbuch: **#133** (CVD-Divergenz, zwei unabhängige Messungen plus Strukturbeweis plus benannte Reaktivierungsbedingung), **#067/#068** (ORB-Breakout, strukturell über 2.685 Tage), **#136** und **#165** (beide mit expliziter „Nicht tot:"-Liste).
 
 ---
 
@@ -320,6 +356,30 @@ Invoke-CimMethod -ClassName Win32_Process -MethodName Create -Arguments @{ Comma
 Aus Python: `job_escape.spawn([...])` aus `C:\Users\maxlk\Projects\hub\job_escape.py`. Kurzläufer (Backtest im Vordergrund, Grep, Build) sind egal, die sterben mit der Session.
 
 Der Hub schützt sich seit 18.08. selbst (Env-Marker `CLAUDECODE` → job-freier Neustart per WMI). Klemmt es trotzdem: `C:\Users\maxlk\Projects\hub\tools\Claude entsperren.cmd` außerhalb von Claude doppelklicken, oder `python tools/claude_unlock.py` aus einer laufenden Session.
+
+---
+
+## 🌍 Das große Ziel: wofür das alles gebaut wird (Max, 22.09.2026)
+
+Gilt als allgemeines Ziel für die Zukunft und steht über allen Teilzielen unten. Herkunft: Gespräch 22.09.2026, Max' eigene Worte, keine Rechnung.
+
+**Max arbeitet Vollzeit und will aus dem Trading-System ein Vermögen bauen, das ihn unabhängig macht** (Immobilien, davon leben, „reich werden"), **nicht erst in 30 Jahren, sondern so schnell wie ehrlich möglich.** Prop-Payouts sind dafür nur die Eintrittskarte, nicht das Ziel.
+
+**Das eigentliche Asset ist der belegte Track Record plus das dokumentierte System**, nicht der einzelne Payout. Sobald Live-Evidenz da ist, dass es funktioniert und regelmäßig Einkommen liefert, öffnen sich mehrere Wege gleichzeitig: eigenes Live-Konto, Bonität für Immobilien, und das Wissen verkaufen (Mentorship / „so baust du dir dein System"), das über Abos schneller zu einer Million skaliert als Payouts allein. **Deshalb ist die Doku-Disziplin (Vault, Skills, Logbuch, Friedhof, Hooks) kein Overhead, sondern das Produkt in Vorbereitung** und muss durchgehend nachvollziehbar bleiben.
+
+**Heilige Reihenfolge (Einschätzung Claude, von Max mitgetragen):**
+1. **Jetzt: Beweise sammeln und Sharpe hoch.** Beweis heißt Live, nicht Backtest: `live-reconciler` grün, Firmen-Zertifikate, Payout-Belege, Steuerbescheide, mindestens 12 Monate. Zeit bis Ziel hängt fast nur am Sharpe des Buchs (18.09.: Monate bis 50k ≈ 1 / (0,0147 · (SR − 0,35))). Sharpe kommt aus neuen unabhängigen Mechanismen und Märkten, nicht aus Feintuning der drei Beine und nicht aus Regeln (Deckel, Gewinnstopp, Konsistenz-Ideen verschieben Monate, nicht Jahre; Gewinnstopp am 21.09. beerdigt).
+2. **Nebenbei und früh: den Weg öffentlich dokumentieren**, Publikum aufbauen, bevor es ein Produkt gibt. Alleinstellungsmerkmal ist der Friedhof: dokumentierte Todesurteile mit Reichweite und Stempel zeigt sonst niemand.
+3. **Nach dem Live-Beleg: eigenes Konto (100k) und erstes Produkt gleichzeitig.**
+4. **Nie vor dem Beleg verkaufen.** Vertrauen ist später das Geschäft.
+
+**Leitplanken:**
+- **Job behalten.** Gehalt ist das Kredit-Asset für die Bank (Prop-Einkommen zählt erst nach 2 bis 3 Jahren Steuerbescheiden), erlaubt Compounden ohne Druck, und Gehalt plus Payouts halbiert die Zeit bis zum eigenen Kapital. Trading-Einkommen sauber über die EÜR (AP36), damit es bankfähig wird.
+- **Größe kauft Bust, nicht Tempo** (#106): k3 bis k4 bleibt das Optimum, „schneller" heißt nie „größer".
+- **Verkaufbar ist der Prozess, nie die Edge** (Kapazität, Nachahmung). Mentorship strikt als Methodik/Bildung, nie Signale, nie fremdes Geld verwalten (Lizenzpflicht in DE).
+- **Werdegang mitdenken:** die Engine ist als Quant-Bewerbung mehr wert als das Buch in den nächsten Jahren einbringt (siehe Memory „Networking & Werdegang").
+
+Realistischer Horizont, wenn beides läuft: eigenes Konto in 2 bis 3 Jahren, davon leben in 5 bis 8. Schneller nur mit Sharpe-Sprung oder fremdem Kapital.
 
 ---
 

@@ -137,6 +137,62 @@ def _bash_write_targets(cmd):
     return t
 
 
+# --- Urteils-Pflichtfelder (Regel Max, 22.09.2026) -------------------------
+# Anlass: Max' Einwand, dass wir Dinge "tot" nennen, von denen wir nur einen
+# winzigen Teil des Konstruktionsraums gemessen haben. Der verdict-auditor hat
+# es nachgezaehlt: 82 Todesurteile im Logbuch, davon 46 ohne jede Bedingung UND
+# ohne Reichweite. Klarster Fall #163 -- Titel "endgueltig tot", Koerper sagt
+# "braeuchte 27-29 Jahre Historie", also unentscheidbar.
+# Der Hook erzwingt, dass die Felder DA sind, nicht dass sie stimmen. Genau das
+# haette gereicht: #163 haette `unentscheidbar` setzen muessen und konnte dann
+# nicht mehr "endgueltig tot" im Titel tragen.
+_VERDICT_BLOCK = re.compile(
+    r"^[^\S\n]*[*_]{0,2}(?:Verdikt|Urteil|Fazit)[*_]{0,2}\s*:.*(?:\n(?![^\S\n]*#{1,4}\s).*)*",
+    re.M | re.I)
+_TOD = re.compile(r"\b(?:tot|erledigt|friedhof|verworfen|begraben|gestorben|"
+                  r"endg[uü]ltig|kein\s+kandidat)\b", re.I)
+_KATEGORIEN = ("strukturell-tot", "empirisch-nichts-gefunden",
+               "echt-aber-zu-klein", "unentscheidbar")
+
+
+def _urteil_felder_fehlen(text):
+    """Fehlende Pflichtfelder, wenn ein URTEILSBLOCK ein Todesurteil traegt.
+
+    Bewusst nur der Urteilsblock, nicht der Fliesstext: Eintraege wie #171 oder
+    die Friedhof-Analyse reden staendig ueber fremde Todesurteile, ohne selbst
+    eines zu faellen (Fehlalarm-Quelle 1 des verdict-auditor)."""
+    bloecke = [m.group(0) for m in _VERDICT_BLOCK.finditer(text or "")]
+    if not any(_TOD.search(b) for b in bloecke):
+        return []
+    low = (text or "").lower()
+    fehlt = []
+    if not any(k in low for k in _KATEGORIEN):
+        fehlt.append("KATEGORIE: eine von " + " | ".join(_KATEGORIEN))
+    if "reichweite:" not in low:
+        fehlt.append("REICHWEITE: Rolle, Frequenz, Markt, Kaefig, Kostenstruktur "
+                     "-- 'tot' ohne Objekt ist verboten")
+    if "wiedervorlage:" not in low:
+        fehlt.append("WIEDERVORLAGE: Datum oder pruefbare Bedingung "
+                     "('nur auf Ansage' nur bei strukturell-tot)")
+    if "stempel:" not in low:
+        fehlt.append("STEMPEL: Engine-Fingerprint, Datenstand, Kriterium/Betriebspunkt")
+    # Umlaute UND ASCII-Transliteration: der Vault schreibt ueberwiegend "ue"/"oe".
+    _UE = r"(?:u|ü|ue)"
+    if "strukturell-tot" in low and not re.search(
+            rf"h{_UE}llkurve|kostenh{_UE}rde|kostenschwelle|algebra|verbietet die klasse", low):
+        fehlt.append("BELEG fuer strukturell-tot: die Rechnung zitieren, die die ganze "
+                     "Klasse verbietet (Huellkurve, Kostenhuerde, Algebra). Ohne sie ist "
+                     "es empirisch-nichts-gefunden mit N")
+    return fehlt
+
+
+def _neuer_text(tool, ti):
+    if tool == "Write":
+        return ti.get("content") or ""
+    edits = ti.get("edits") if tool == "MultiEdit" else [ti]
+    return "\n".join((e.get("new_string") or "") for e in (edits or []))
+
+
 def _adds_new_entry(tool, ti):
     """Neuer Logbuch-Eintrag (nicht bloss Formatierung an bestehenden)."""
     if tool == "Write":
@@ -238,6 +294,28 @@ def main():
     if tool != "Bash" and path and re.search(LOGBOOK_FILE, path) and _adds_new_entry(tool, ti) \
             and "logbook-distiller" not in used and not _skipped(rec, "logbook-distiller"):
         _deny_action("logbuch", "logbook-distiller", sid, "Neuer Logbuch-Eintrag, aber")
+
+    # 3b. Todesurteil ohne Pflichtfelder (Regel Max, 22.09.2026)
+    if tool != "Bash" and path and re.search(LOGBOOK_FILE, path) and _adds_new_entry(tool, ti):
+        try:
+            ov = marker_time("urteil_ok")
+        except Exception:
+            ov = None
+        if not ov:
+            fehlt = _urteil_felder_fehlen(_neuer_text(tool, ti))
+            if fehlt:
+                deny(
+                    "STOP (Hook): der Urteilsblock faellt ein Todesurteil, aber es fehlen "
+                    "Pflichtangaben:\n  - " + "\n  - ".join(fehlt) +
+                    "\n\nRegel vom 22.09.2026: ein Todesurteil ohne Reichweite, Kategorie, "
+                    "Wiedervorlage und Stempel ist kein Urteil, sondern eine Notiz. Anlass war "
+                    "der Befund, dass 46 von 82 Todesurteilen im Logbuch weder Bedingung noch "
+                    "Reichweite tragen -- und dass #163 'endgueltig tot' im Titel fuehrt, "
+                    "waehrend im Koerper steht, man braeuchte 27-29 Jahre Historie.\n\n"
+                    "Faellt der Eintrag in Wahrheit gar kein Todesurteil (Rueckblick, Zitat, "
+                    "Prozess-/Werkzeug-Eintrag):\n"
+                    "  python .claude/hooks/mark.py urteil_ok"
+                )
 
     # 4. Buch-Datei ohne Quant-Team + Gegenleser
     book_touched = (tool != "Bash" and path and re.search(BOOK_FILE, path)) or \

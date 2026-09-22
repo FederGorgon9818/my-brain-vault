@@ -295,6 +295,18 @@ Ergebnis: **1 von 11 direkt in die Bank** (AXV-W26), **6 nachbessern**, **4 nich
 
 **Zusammenhang mit der Bau- und Testrunde ([[ADX Wege-Karte]], [[Strategie-Logbuch]] #168):** ADX-Tages-Gates haben auf Feature-Ebene keine Folgetag-Information gezeigt (W19), der Vola-Gegentest AXV-W26 fragt dasselbe entry-bedingt auf den VWAP-Entries. **Buch-Lücke:** alles steht auf Stufe 0 (Prämisse). Erst wenn AXV-W26 zeigt, dass das ADX-Gate das Vola-Gate schlägt (Latte AR-16: expR-Faktor ≥ 1,8 bei ≤ 50 % Trade-Verlust), lohnt sich W1/W14. Bar-ADX-Wege (W5/W4) brauchen den `maband`-Zweig (MS-V2, ~10 Zeilen).
 
+## AXV-W26 gerechnet: Torwächter fällt (22.09.2026)
+
+Box-Job `hyp_AXVW26_NQ` durchgelaufen (28 Configs, 2 k × 14 Gate-Arme). Auswertung nach der vorab festgelegten Regel (gepoolte Zwei-Stichproben-Differenz über beide k und alle Schwellen, Day-Block-Bootstrap Block 10 — **Korrektur während der Auswertung**: ein erster Versuch mit gepaarten Tagen ergab trivial exakt 0, weil an Tagen mit beiden Gates offen es sich um denselben zugrunde liegenden Trade handelt, das Gate filtert nur An/Aus, nicht den Trade selbst; korrigiert auf ungepaarten Zwei-Stichproben-Bootstrap):
+
+- **ADX gegen Vola-Gate (Expansion):** gepoolt +0,0101 R, 90%-CI [-0,0042; +0,0243] — **enthält 0**
+- **ADX gegen VIX-Gate (Level):** gepoolt +0,0015 R, 90%-CI [-0,0136; +0,0164] — **enthält 0**
+- **AR-16-Verlustgrenze:** ADX≥0,7 verliert 71 % der Trades gegenüber "kein Gate" (Latte: ≤50 %) — **gerissen**
+
+**Urteil: ADX schlägt weder das Vola- noch das VIX-Gate klar.** Kein Beleg, dass ADX auf den VWAP-Überdehnungs-Entries mehr Information trägt als ein einfacher Volatilitäts-Proxy. Konsistent mit W19 (Tagesebene: keine Folgetag-Information). Torwächter fällt damit — W1, W2, W4, W5, W6, W14 (alle warten laut ein-weg-Runde auf ein grünes AXV-W26) bleiben ohne Grundlage, solange kein neuer Beleg für ADX als eigenständigen Faktor vorliegt.
+
+**Nachtrag zur Bau-Historie:** Ergebnis eingebettet in [[Strategie-Logbuch]] #172.
+
 ## Dateien dieses Laufs
 
 - Report: `C:\Users\maxlk\Projects\trading-data\engine\discovery\scout_reports\familien_adx_x_vwap_260921.md`

@@ -866,6 +866,18 @@ Daraus: **A** NY-OR (W1-W9, **W46 Definition**, **W47 Exit-Raum**) - **B** Londo
 
 **Entscheidung:** S5 (`asian.py as_side='against'` + `as_fail_win`) wird **nicht gebaut**, `ONORB-W39a`/`ONORB-W5a` werden **nicht eingetragen** -- per Ticket-eigenem Kriterium ("traegt der Mechanismus am billigen Level nicht, wird S5 nicht gebaut"). Stand aber **"offen, depriorisiert"**, nicht "tot/erledigt" (Hypothese-vor-Urteil-Regel: toter Job, nicht toter Weg). Zwei unabhaengige Gegenindizien liegen jetzt vor (fb01b intraday + Mesfin Abschn. 4.3 fuer Session-Extrema), das Overnight-Level selbst bleibt ungetestet -- offener Punkt fuer eine spaetere Session, falls S5 doch noch gebraucht wird.
 
+**Abgrenzung (nicht verwechseln):** in Schritt 8 wurde trotzdem ein `as_side='against'` in `asian.py` gebaut -- das ist NICHT S5. Es flippt nur die Richtung NACH einem Level-Touch im bestehenden `break`/`break_us`-Pfad (Muster `maband.py mb_side='against'`, ~5 Zeilen), ohne eigenes Fehlschlag-Fenster (`as_fail_win`). Gebraucht fuer `ONORB-W30a` (NY-OR-Fade), nicht fuer den Overnight-Extrem-Sweep aus W39a.
+
+### AP216 Schritte 5-9 umgesetzt 22.09.2026 -- Zusammenfassung
+
+**S1 (`sigcore.overnight_context`) fertig gebaut:** `on_sigma`, `on_high`/`on_low` (-> `on_pos`, `on_range`), `eu_ret`/`asia_ret`, `on_rvol`. Zwei Bugs beim Bau gefunden und gefixt (`engine-regression-tester`, zwei Runden): (1) `night_mask` fehlte der Mitternachts-Wrap (verwarf 18:00-23:59 komplett, ~15% Unterschaetzung von `on_sigma`); (2) `pct_change()` lief auf dem ungruppierten Nacht-Subset statt je Session (kontaminierte die erste Bar jeder Session mit dem Return der VORHERIGEN Session, ~73% Ueberzeichnung). Beide gefixt, dritter, unabhaengiger Fund derselben Fehlerklasse in `asian.py`s `as_dir_src='on_pos'` (gleicher fehlender Wrap) ebenfalls gefixt. **Lehre:** jedes neue Nacht-Fenster braucht den `in_win()`-Mitternachts-Wrap, sonst verwirft ein `<`-Vergleich stillschweigend die Abend-Haelfte -- Grep-Check `mod <` / `m <` ohne begleitendes `>=` vor jedem kuenftigen S1/S3/S4-Zusatz.
+
+**Eingetragen (9 Jobs, 294 Configs gesamt, alle per `--dry` bestaetigt):**
+- `ONORB-W45a` (72), `ONORB-W7a` (24), `ONORB-W33a` (27, inkl. W47a-Ableitung), `ONORB-W24a` (54), `ONORB-W34a` (36), `ONORB-W29a` (18, inkl. on_rvol-Bestaetigungsarm), `ONORB-W30a` (27, neuer Fade-Modus), `ONORB-W27a` (18), `ONORB-W31a` (18, Residual-Check `on_rvol~on_range` R2=0,50 rechtfertigt eigenen Job trotz Kollinearitaet).
+- **Zurueckgehalten (`hold=`, nicht enqueue-bar):** `ONORB-W27b` (Fade-Arm des Asien/Europa-Vorzeichen-Paars) -- `as_side='against'` greift im `us_dir`-Pfad nicht (der liest die Richtung aus der Asien-Bewegung, nicht aus einem Level-Touch), Code-Fix noch offen, Folgeticket.
+
+**Buch-Luecke (alle neun):** durchweg Stufe "Praemisse", nichts gerechnet. `replaces="NQ_Momentum_d260818"` bei fuenf Jobs (W45a/W7a/W33a/W24a/W31a) -- die konkurrieren im Register alle um denselben Slot, nur einer kann am Ende gewinnen.
+
 ---
 
 ### Rang 1 -- `ONORB-W7a`: Opening-Range-FORM statt Opening-Drive, mit dem Nacht-Gate, das im Register schon in die richtige Richtung faellt

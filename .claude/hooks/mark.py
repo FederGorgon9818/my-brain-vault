@@ -8,6 +8,9 @@ Namen:
   hypothese_ok   Edit an einer Hypothesen-Bank ist KEINE neue Hypothese (Formatierung,
                  Status-/Ergebnis-Update) -- gibt Edit/Write auf die Bank-Datei frei,
                  bis sie das naechste Mal angefasst wird (guard_write.py)
+  urteil_ok      Logbuch-Eintrag faellt KEIN eigenes Todesurteil (Rueckblick, Zitat eines
+                 fremden Urteils, Prozess-/Werkzeug-Eintrag) -- gibt den Eintrag ohne die
+                 vier Pflichtfelder frei (guard_chain.py, Regel 22.09.2026)
 """
 import sys
 from _common import touch_marker, marker_path
