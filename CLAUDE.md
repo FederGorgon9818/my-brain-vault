@@ -109,6 +109,7 @@ Damit du weißt, wo du suchen und ablegen musst (spart Tokens):
 - **Bei JEDER Aufgabe von Max** am Ende der Antwort kurz dazuschreiben: (1) welches Modell dafür am besten passt (sonnet/haiku/opus/fable) und (2) ob vorher ein `/clear` (frische Session) sinnvoll ist oder der aktuelle Kontext weiterverwendet werden kann.
 - **Daily-Note-Bestätigung (Regel Max, 09.09.2026):** wenn in der Antwort etwas angepasst/geändert wurde (Datei, Code, Regel, Entscheidung — nicht bei reinen Frage-Antwort-Antworten ohne Änderung), am Ende genauso kurz dazuschreiben, ob und was in die heutige Daily Note nachgetragen wurde. Ergänzt den Daily-Note-Pflicht-Hook (`on_stop.py`, siehe [[Hooks-Referenz]]): der Hook blockt erst beim Session-Ende, diese Zeile gibt die Bestätigung direkt in der Antwort.
 - **MCP-Tools/Connectors kosten Kontext, auch wenn sie nicht gebraucht werden** (Fund 17.09.2026: ein einzelner ungenutzter Connector mit vielen Tools kann zweistellig Prozent vom Startkontext ziehen, sobald er geladen wird). Passt ein verbundener MCP-Server nicht zu Max' aktueller Firma/Setup, aktiv drauf hinweisen statt ihn stillschweigend mitzuschleppen.
+- **Live-Anzeige im Terminal (09.09.2026):** `.claude/statusline.py` zeigt Token-/Kontextfenster-Verbrauch direkt in der Statuszeile der Claude-Code-CLI. Nur im Terminal verfügbar, nicht in der Desktop-App.
 
 ---
 
@@ -123,6 +124,8 @@ Damit du weißt, wo du suchen und ablegen musst (spart Tokens):
 
 ## 🧭 Kontext bei Bedarf
 
+**Shortcut: `/briefing`** fährt genau diesen Ablauf als Skill ab.
+
 Wenn Max fragt „was steht an?", „wo war ich stehengeblieben?", „gib mir ein Briefing" o.ä.:
 
 1. Lies die **letzten 2-3 Daily Notes** aus `Daily Notes/`.
@@ -133,11 +136,25 @@ Wenn Max fragt „was steht an?", „wo war ich stehengeblieben?", „gib mir ei
 
 ## ⏹️ Bei Session-Ende
 
+**Shortcut: `/abschluss`** fährt genau diesen Ablauf als fester Skill ab (Daily Note, Erkenntnisse verteilen, Inbox, Buch-Push-/Regressions-Marker prüfen, Commit anbieten) — das ist der „Rewind" am Sessionende, den Max sich gebaut hat.
+
 Wenn eine Session endet oder Max darum bittet:
 
 1. **Daily Note** für heute erstellen/ergänzen (`Daily Notes/YYYY-MM-DD.md`) mit kurzer Zusammenfassung: was gemacht, was geschafft.
 2. **Neue Erkenntnisse** in die passenden Projekt- oder Bereichs-Dateien schreiben.
 3. **Inbox aufräumen**, falls noch nicht geschehen.
+
+---
+
+## 🎛️ Skill-Shortcuts (seit Mitte 09.2026)
+
+Fünf Skills bündeln länger bestehende Abläufe als aufrufbare Kurzbefehle — ändern nichts an der Logik oben, sind nur der schnelle Zugriff:
+
+- **`/abschluss`** – Session-Ende-Ablauf (siehe oben).
+- **`/briefing`** – Kontext bei Bedarf (siehe oben).
+- **`/box`** – Ampel-Check der Trading-Box über `box-ops` (Runner, Queue, Buch-Sync, RiskGuard/Telegram, NT8).
+- **`/queue`** – Discovery-Stand kompakt: Inbox von der Box, Runner-Status, Queue-Vorrat, ungelesene Kandidaten mit Buch-Lücke je Kandidat.
+- **`/ticket`** – Ticket aus `tasks.json` lesen (`/ticket AP150` oder Slug) oder offene Tickets nach Dringlichkeit auflisten.
 
 ---
 
@@ -212,6 +229,8 @@ Kurzer Kompass, welcher Agent wofür (volle Trigger stehen in der jeweiligen `de
 | `session-guard` | Überschreiben sich zwei Parallel-Sessions? | haiku |
 
 `familien-scout` (Konzept → Preis-Wege, Workflow `konzept-weg`) und der Workflow `ein-weg` (Schritt 2 des EINEN Wegs als Skript): Details in [[Hooks-Referenz]] und [[Familien-Scout Agent]].
+
+Audit-Werkzeug `.claude/scripts/agent_usage_audit.py` (11.09.2026, Vorläufer von `receipt_stats.py`) zählt, welcher Agent wie oft lief vs. wie oft er hätte laufen sollen — Basis für `retro-agent`.
 
 ---
 

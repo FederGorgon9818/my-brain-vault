@@ -806,7 +806,7 @@ Das Buch dazu: **3× `NOISE_ORB m1.5` · 8× `OPEXMOM t0.2/s0.75` · 4× `ASIA t
 ### Lehren
 26. **„Passquote" ist zweideutig — pro Konto oder P(funded)?** Pro Konto bleiben wir bei 48,4%; die Wahrscheinlichkeit, überhaupt funded zu werden, liegt mit zwei gespaltenen Konten bei 57%. Beide Zahlen sind korrekt, sie beantworten verschiedene Fragen. **Bei jedem Passquoten-Ziel vorher festlegen, welche der beiden gemeint ist.**
 27. **Sizing-Split ist der billigste Diversifikator, den wir haben** (#076). Kein neues Bein, kein neuer Mechanismus, keine Research — nur zweimal dasselbe Buch in unterschiedlicher Größe. Wirkt aber nur, wo die Mindestgröße von 1 Kontrakt nicht beide fracs zusammenzieht: auf 25k bringt es +10pp, auf 10k exakt null.
-28. **Slippage ist ordertyp-abhängig, und das ist kein Detail** (#076). Der ORB-Fade gewinnt allein durch die korrekte Behandlung seiner ruhenden Limit-Order +109% expR. Bei jeder Strategie mit Limit-Entry oder Target-Exit gehört die Slippage getrennt gerechnet.
+28. **Eine Kostenbuchung nach Ordertyp ohne Fill-Modell ist kein Fix, sondern ein Geschenk — Lehre korrigiert** (#076, Korrektur #171, 22.09.2026). Alte Fassung: „ORB-Fade gewinnt +109% expR allein durch die Slippage-Korrektur" — falsch. Ein Tick wurde dreifach gezählt, und die Zahl widersprach der eigenen #075 Fund 5 (+36%, gleiches Bein, gleicher Fix, gleicher Tag). Die Preisverbesserung einer ruhenden Limit-Order wird unter einem Martingal exakt von adverse selection aufgefressen (bewiesen, `quant-mathematician`, 61.810 NQ-Signale, Abweichung ±0,05 Pkt) — der faire Wert ist null, nicht positiv. Richtiger Default für einen nicht simulierten Limit-Fill: **volle Slippage**, nicht null. Der Freitick hing zusätzlich am Look-ahead-Modus `orb_exec="book"` (#066/#067), und `stop_honest` bei `orb_side="breakout"` (eine Stop-Order) bekam ihn ebenfalls geschenkt. Details, Beweis, Reichweite, Fix: #171.
 
 ## #077 — E8 DD-Mechanik schriftlich geklärt: schlechtester Fall bestätigt (10.08.2026)
 Antwort von E8-Support (Fábio, schriftlich, mit Verweis auf Help-Center-Artikel) auf Ticket `e8-dd-mechanik` (AP51):
@@ -3285,3 +3285,48 @@ Vollständig in [[Neue Märkte (NT8-Daten) Plan]]. Kurz: NT8 auf der Box liefert
 **Lehre 170:** Ein Leerlauf-Ereignis muss seine Ursache benennen (tot, Tageslimit, ausgereizt), und ein einzelner fehlerhafter Bank-Eintrag darf nur seine eigene Zeile stilllegen, nie den Nachschub der ganzen Queue. Zweiter Teil ist noch **nur Text** (AP210).
 
 **Offen:** Kopplung Bank→Generator (AP210, Kern-Datei, Regressionslauf), Max-Entscheidungen zu Abdeckungs-Jobs, Bitcoin-Daten und einem Pflichtschritt `prescan_gross.py` (AP211). Buch-Lücke der Suche insgesamt: Stufe Prämisse, es gibt keinen Kandidaten mit Modul und Daten, der sie erreicht.
+## #171 — Lehre 28 korrigiert: der ORB-Fade-„Fix" war ein geschenkter Tick, dreifach gezählt (22.09.2026)
+
+**Anlass:** `logbook-distiller`-Lauf prüft #076 gegen den Code, findet einen Widerspruch zur eigenen Zahl in #075.
+
+**Fund:** #076 Hebel A behauptet für `ORBFADE` (Limit-Entry, 0/422 Target-Exits) expR 0,063 → 0,132 (**+109%**) allein durch ordertyp-genaue Slippage. #075 Fund 5 nennt für dasselbe Bein, dieselbe Basis, denselben Fix, denselben Tag: 0,063 → 0,086 (**+36%**). Faktor 3. Da bei 0/422 Target-Exits die Exit-Seite unverändert bleibt, kann der maximal mögliche Effekt nur der eine Entry-Tick sein — die #075-Zahl folgt aus der in #076 selbst beschriebenen Regel, #076 hat ihn mindestens verdreifacht mitgezählt.
+
+**Beweis, dass der „Fix" selbst keiner war:** `qbt.py` bucht Slippage nach Ordertyp (Limit = 0, Market/Stop = 1 Tick), hat aber nie den tatsächlichen Fill der Limit-Order simuliert. `quant-mathematician` (heute, 61.810 NQ-Signale empirisch geprüft, Abweichung ±0,05 Punkte gegen die Formel): unter einem Martingal wird die Preisverbesserung einer ruhenden Limit-Order exakt von adverse selection aufgefressen, δ kürzt sich vollständig heraus. Fairer Wert des „Geschenks": **null**. Ehrliches Durchhandeln statt bloßen Berührens kostet genau den einen Tick, den man sparen wollte.
+
+**Zwei Verschärfungen (`strategy-auditor`):**
+- Default war `"book"` (fehlender `orb_exec`-Parameter) — der Kostenvorteil ging also zusätzlich an den Look-ahead-Modus aus #066/#067, zwei Fehler in dieselbe Richtung, multiplikativ.
+- `stop_honest` ist bei `orb_side="breakout"` eine STOP-Order (zahlt Spread + echte Slippage), bekam hier trotzdem 0 Ticks — ausgerechnet der als „ehrlich" geführte Modus war kosten-unehrlich.
+
+**Umgesetzt (Code-Gate, heute):**
+- `qbt.py`: `entry_is_limit` hängt jetzt an explizitem `entry_fill_simulated` (Default `False`) statt am Modus. Gesetzt ohne `fill_ok`-Spalte in der Trade-Tabelle → `ValueError` mit Verweis auf diese Lehre. Ohne simulierten Fill zahlt jeder Entry die volle Slippage.
+- `discovery/discovery_lib.py::stress_costs`: dieselbe Korrektur — vorher stresste das Kosten-Gate ORB-Limit-Kandidaten nur auf einer Seite, halbe Härte genau an der Verteidigungslinie gegen das bekannte MNQ-Kostenproblem.
+- `overfit.py::mde80`: 2,123 (α=10% einseitig) → 2,802 (α=5% zweiseitig), Faktor 1,32 zu laxe Latte korrigiert.
+- `hypothesis_bank.py` war bereits sauber: erzwingt `orb_exec="close"`, stand nicht in der Limit-Liste.
+
+**Reichweite (geprüft, `registry.json` nicht angefasst):** 98 von 184 ORB-Trials liefen ohne gesetzten `orb_exec` (Default `"book"`), davon **20 Survivors** — alle `SCALP_NQ_t0.3/0.5_h*` aus den Jobs `backfill:scalp_discovery_results` und `backfill:orb_discovery2_results`. Bewertet mit Freitick **und** Look-ahead-Exec gleichzeitig, ihr Survivor-Status ist nicht belastbar. Diese 20 gelten hiermit als nicht zitierfähig — sie sind ohnehin nicht im Buch, Neu-Rechnen lohnt nicht.
+
+**Entwarnung:** kein Live-Bein betroffen. Alle drei laufenden Buch-Beine (`ts_reversal`, `last_hour`, `asian`) laufen mit `orb_exec=None`.
+
+**Codiert vs. nur Text (logbook-distiller-Kernfrage):**
+- **Codiert:** die drei Fixes oben (`qbt.py`, `discovery_lib.py::stress_costs`, `overfit.py::mde80`), plus `hypothesis_bank.py` (bereits vorher sauber).
+- **Nur Text, offene Lücke:** es gibt **keinen Golden-Master-/Kanarie-Fall**, der einen künftig wieder geschenkten Tick automatisch auffliegen ließe. Geprüft gegen `discovery/golden_masters.json` (7 Buch-/Live-Fälle + 6 `KANARIE_*`): keiner deckt `qbt.run_strategy`s Limit-Fill-Pfad ab. `KANARIE_cost_consistency` prüft nur die Kommissionsformel in `firstbar_core.py`, eine andere Funktion.
+
+**Lehre 171:** Eine Kostenbuchung nach Ordertyp ohne Fill-Modell ist kein Fix, sondern ein Geschenk. Die Preisverbesserung einer ruhenden Limit-Order wird unter einem Martingal exakt von adverse selection aufgefressen — der richtige Default für einen nicht simulierten Limit-Fill ist volle Slippage, nicht null. Ersetzt Lehre 28.
+
+**Patch-Vorschlag für die offene Lücke (Umsetzung macht die Hauptsession, nicht dieser Agent):**
+- Datei `discovery/golden_masters.json`, neuer Fall `KANARIE_geschenkter_tick`, Typ `formula_selftest` (Bauplan analog `KANARIE_cost_consistency`): synthetischer Trade mit ORB-Limit-Entry, `entry_fill_simulated` nicht gesetzt (Default `False`), keine `fill_ok`-Spalte. Erwartet: `entry_slip_ticks == p["slippage_ticks"]` (nicht 0). Kippt der Wert künftig zurück auf 0, bricht der Kanarie-Test sofort statt erst beim nächsten Logbuch-Audit.
+- Datei `qbt.py`, Funktion `run_strategy`: zusätzlich zum bestehenden Raise ein zweiter Guard gegen die Hintertür „`entry_fill_simulated=False` UND `slippage_ticks=0`" (z.B. per Discovery-Preset versehentlich beides Null) — das wäre wieder exakt das alte Verhalten, nur ohne dass der explizite Parameter es zeigt.
+
+**Offen:** `KANARIE_geschenkter_tick` bauen (Ticket), danach einmal durch `engine-regression-tester` bestätigen lassen.
+
+## #171 — W19 auf GC/CL/YM/RTY ausgerollt: dasselbe "kein Folgetag-Effekt"-Muster auf allen sechs Märkten (22.09.2026)
+
+**Anlass:** Max, nach dem Bau- und Testlauf #168: „auf Gold und alle Märkte testen, die wir noch nicht angefangen haben." `adx_vs_vola_w19.py` erweitert um einen Symbol-Parameter (Default weiter NQ/ES, kein Override des Erstlaufs), auf GC, CL, YM, RTY laufen lassen — dieselben vorab festgelegten Urteilsregeln wie am 21.09.
+
+**Ergebnis:** ADX(t-1) ist auf keinem der vier neuen Märkte ein Vola-Proxy (R² ADX~Vola 0,066–0,144, alle weit unter der 0,60-Schwelle) und trägt auf keinem Information über den Folgetag (kein Markt erfüllt gleichzeitig CI-ohne-0 und |rho|≥0,05 — GC/CL: alle relevanten CIs enthalten 0 oder das rho bleibt unter der Latte; YM: zwei CIs ohne 0 bei dir_ret, aber |rho| 0,033–0,039 unter der Schwelle). Zusammen mit NQ/ES (#168) heißt das: **sechs von sechs getesteten Futures-Märkten** (Tech-Index, breiter Index, Dow, Small-Cap, Gold, Öl) zeigen dasselbe Muster.
+
+**Einordnung:** Das ist kein NQ/ES-Spezifikum, sondern spricht gegen die Grundannahme von ADX als Trendstärke-Prädiktor generell, jedenfalls auf Tagesebene und mit diesen Zielgrößen (Tages-Effizienz, |Return|/Sigma, vorzeichenbehaftete Rendite). Trägt Frage 1 der Research-Fragen aus der [[ADX Wege-Karte]] weiter zu: keine akademische Primärzahl, und jetzt auch keine eigene Multi-Markt-Bestätigung.
+
+**Buch-Lücke:** unverändert Stufe 0 für alle offenen Wege. Diese Messung ist eine Zusatzbestätigung des Torwächters W19, kein neuer Job, keine neuen Register-Trials (reines Feature-Messskript ohne Grid-Config).
+
+**Nicht getestet:** W24/W6/AXV-W26 (die drei Jobs in der Queue) liefen bisher nur auf NQ. Ob sich das Ergebnis (falls einer der drei doch trägt) auf andere Märkte übertragen lässt, ist eine eigene Frage für später.

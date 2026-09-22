@@ -291,6 +291,32 @@ Register 64.184 → 65.035 (**+851**, nicht die geplanten 3.750, weil die Prämi
 6. **Zurückgestellt, unverändert:** 6E/6B, ZS/ZW, AV/AC/AW auf GC/CL, neue Mechanismen (`rv` ZS↔ZW / 6E↔6B, GSCI/BCOM-Roll).
 7. Offen aus dem Vormittag: `_staging`-Ordner aufräumen.
 
+### 6.5 Session-Muster (asian.py) auf GC nachgeholt (22.09.2026)
+
+Schließt die Lücke aus der Korrektur oben: die 4 `asian.py`-Muster (`drift`/`fade_us`/`break_us`/`us_dir`) waren nie auf GC gerechnet, weil `mode="asian"` beim NM-Klonlauf 19.09. hart in `NM_SKIP_MODES` ausgeschlossen ist. `ein-weg` (variant-scout + strategy-auditor Batch) hat alle 4 geprüft:
+
+| Hypothese | Urteil ein-weg | Grund |
+|---|---|---|
+| NM-drift-GC | **abgelehnt, nicht gebaut** | kein Mechanismus für Gold, kein Stop im Code, auf allen 4 Index-Futures schon tot (#028), Roll-Kontamination |
+| NM-fadeus-GC | freigegeben, 108 Configs | — |
+| NM-breakus-GC | freigegeben nach Nachbesserung, 216 Configs | — |
+| NM-usdir-GC | freigegeben nach Nachbesserung, Fensterachse auf 3 Werte erweitert (n=36→54) | — |
+
+Drei manuelle `H()`-Zeilen in `discovery/hypothesis_bank.py` (Tag `neue_maerkte_0922_asian`, Backup `hypothesis_bank.py.bak-20260922-gc-asian`), `engine-regression-tester` grün (rein additiv, alle Referenzfälle + Kanarien unverändert), `pipeline-auditor` „sauber mit Auflagen" (`pipeline_ok` gesetzt, kein Blocker). Eingereiht und auf der Box gerechnet (Runner-Neustart nicht nötig, `asian.py` unverändert, Hash PC=Box identisch).
+
+**Ergebnis: alle 3 an der Prämisse (Stufe 0) gescheitert, 0 Grid gerechnet, 0 Survivors, 0 Kandidaten.**
+
+| Job | n (Prämisse) | IS expR netto | benötigt | Grund |
+|---|---|---|---|---|
+| NM-fadeus-GC | 1.444 | −0,106 R | ≥ +0,010 R (1,0 pp) | RTH-Open-Fade zurück in die Asia-Range trägt auf GC 2016-2023 (IS) nicht |
+| NM-breakus-GC | 2.567 | −0,050 R | ≥ +0,010 R | Overnight-Range-Breakout während RTH trägt auf GC 2016-2023 nicht |
+| NM-usdir-GC | 665 | −0,077 R | ≥ +0,010 R | Asia-Richtung ab US-Open trägt auf GC 2016-2023 nicht |
+
+**Verdachtsprüfung (Regel „Null-Ergebnis = Verdacht"), eigene Gegenrechnung außerhalb der Pipeline:** brutto/volle Historie zeigt für break_us (+0,044 R) und us_dir (+0,043 R) sogar ein leicht positives Rohsignal — das kippt nach Kosten und vor allem beim IS/OOS-Split (IS = 2016-2023, OOS = 2024-2026) ins Negative. Die scheinbare Brutto-Kante lebt spürbar vom OOS-Fenster, das den Gold-Boom Okt.2025-März.2026 enthält — exakt das Regime-Risiko, das der `pipeline-auditor` unten als Auflage 2 ohnehin verlangt hätte. Kein Code-/Filter-Bug (Mechanik in `asian.py` gegengelesen, Richtungslogik fade_us/break_us/us_dir korrekt, Trade-Zahlen strukturell plausibel gegen Handelstage) — echtes Prämissen-Aus auf der robusteren Vor-Boom-Historie, kein Pipeline-Fehler.
+
+**Die 3 Pflichtpunkte aus dem Story-Check (pipeline-auditor):** da keiner der drei Jobs die Prämisse übersteht, gibt es keine Survivors/Kandidaten, an denen Roll-Gegenprobe, Tail-Konzentrations-Check oder die gemeinsame Zufallsdecke fadeus/breakus auszuwerten wären — alle drei Punkte damit gegenstandslos für diesen Batch. Die Datenvoraussetzungen dafür (`GC_rolls.json`, `ctl_periods`) bestätigt der Auditor als vorhanden, aber noch nicht als automatisches Gate kodifiziert (`ctl_roll_contam` fehlt, `ctl_periods`-Boom-Fenster fehlt) — als Pipeline-Verbesserung Prio 1/2 vom Auditor vorgeschlagen, noch nicht als Ticket angelegt.
+
+**Gestempeltes Urteil:** die 4 Session-Muster aus `asian.py` sind auf GC im RTH-Fenster **geprüft und ohne Buch-fähige Kante** (drift ohnehin nicht gebaut, die anderen 3 an der Prämisse gestorben). Buch-Lücke aus der Korrektur oben damit geschlossen — nicht mit einer Edge, sondern mit einem sauber dokumentierten Nein.
 
 ---
 
@@ -320,6 +346,7 @@ Register 64.184 → 65.035 (**+851**, nicht die geplanten 3.750, weil die Prämi
 | 16:45-17:20 | Gesamt-Review `verdict-auditor` + `pipeline-auditor` | nur lesend | 6.3 |
 | 17:10 | Roll-Gegenprobe der 4 GC-Near-Misses | `qbt.run_strategy` + `GC_rolls.json`, 0 neue Trials | kein Roll-Artefakt, aber Regime-Klumpen 10/2025-03/2026 |
 | 08:30 | Prüfung: `--enqueue` würde exakt 90 NM-Jobs hinzufügen, 0 andere | Queue nur gelesen | ID-Liste `exported_data_nt8\_nm_only.txt` |
+| 22.09. 16:26-17:13 | `asian.py`-Muster auf GC nachgeholt: 3 `H()`-Zeilen, `engine-regression-tester` + `pipeline-auditor`, `--enqueue --push`, 3 Jobs/378 Configs gerechnet | `discovery/hypothesis_bank.py` (+ Backup), `discovery/queue.json` | 0 Survivors, alle 3 an der Prämisse gescheitert (6.5) |
 
 ### ⚠️ Korrektur 22.09.2026 (backtest-runner-Check)
 

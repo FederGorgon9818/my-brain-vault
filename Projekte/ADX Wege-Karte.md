@@ -407,7 +407,20 @@ MS-1 bis MS-3 (Teilmenge) sind gebaut ([[Strategie-Logbuch]] #168): Tages-ADX in
 | **W24** | **Job in der Bank** (`hyp_ADXW24_NQ`, 12 Configs, replaces `NQ_Momentum`), erste Messung ES-ADX→NQ | Box-Lauf offen |
 | **W6** | **Job in der Bank** (`hyp_ADXW6_NQ`, 45 Configs, ER-Gegenarm im selben Job); beide Prämisse-Configs negativ (−0,13 / −0,07 R) → Stufe 0 wird sehr wahrscheinlich scheitern (= „Prämisse gescheitert", nicht „tot") | Box-Lauf offen |
 
-**Buch-Lücke:** kein einziger ADX-Weg steht über Stufe 0 (Prämisse). W24 und W6 sind die zwei, die die Box noch rechnet. Alles andere ist gemessen und ohne Kandidaten oder zurückgehalten mit konkreter Reaktivierungsbedingung.
+**Buch-Lücke:** kein einziger ADX-Weg steht über Stufe 0 (Prämisse). W24, W6 und AXV-W26 sind die drei, die die Box gerade rechnet. Alles andere ist gemessen und ohne Kandidaten oder zurückgehalten mit konkreter Reaktivierungsbedingung.
+
+## W19 ausgerollt auf GC, CL, YM, RTY (22.09.2026)
+
+Max: „auf Gold und alle Märkte testen, die wir noch nicht angefangen haben." `adx_vs_vola_w19.py GC,CL,YM,RTY`, dieselben vorab festgelegten Urteilsregeln wie beim NQ/ES-Erstlauf, eigene Ergebnisdatei (`adx_w19_result_GC_CL_YM_RTY.json`), NQ/ES-Original unangetastet.
+
+| Markt | Tage | R² ADX~Vola | R² ADX~Vola+Trend | Information über Folgetag? |
+|---|---|---|---|---|
+| GC (Gold) | 2.418 | 0,066 | 0,32 | nein — einziges CI ohne 0 (abs_sig\|Vola [0,007; 0,073]) unter der \|rho\|≥0,05-Schwelle |
+| CL (Öl) | 2.418 | 0,119 | 0,312 | nein — alle CIs enthalten 0 |
+| YM (Dow) | 2.669 | 0,144 | 0,263 | nein — CIs ohne 0 bei dir_ret (−0,033 / −0,039), beide unter der Schwelle |
+| RTY (Russell) | 2.221 | 0,094 | 0,312 | nein — alle CIs enthalten 0 |
+
+**Ergebnis: dasselbe Muster wie NQ/ES, auf allen sechs getesteten Futures-Märkten (Tech-Index, breiter Index, Dow, Small-Cap, Gold, Öl).** ADX ist nirgends ein reiner Vola- oder Trend-Proxy (kein R² erreicht 0,60), trägt aber auch nirgends zusätzliche Information über den Folgetag — kein Markt erfüllt gleichzeitig CI-ohne-0 und \|rho\|≥0,05. Das ist kein Einzelfall von NQ/ES, sondern ein marktübergreifender Befund: die Grundannahme „hoher ADX sagt etwas über den nächsten Tag" trägt auf keinem der sechs Märkte, unabhängig von Assetklasse.
 
 ---
 

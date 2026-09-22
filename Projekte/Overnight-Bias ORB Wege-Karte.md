@@ -841,6 +841,31 @@ Daraus: **A** NY-OR (W1-W9, **W46 Definition**, **W47 Exit-Raum**) - **B** Londo
 - **Ein Code-Fund beim Gegenlesen, der im Scout-Bericht fehlte:** `ONORB-W7a` misst mit `tm_sig_start=15` das falsche Fenster (09:45-10:00 statt der im Why behaupteten ersten Viertelstunde 09:30-09:45) -- Fix ist eine Zeile (`tm_sig_start=0`).
 - **Volle Berichte** (variant-scout je Hypothese + strategy-auditor-Batch-Report) liegen im Workflow-Journal, Run `wf_b77d6c25-c92`.
 
+### Kollinearitaets-Check 22.09.2026 (AP216 Schritt 2, VOR W29a/W31a/W33a/W47a)
+
+**Ergebnis:** `on_range` (W29a) und `on_rvol` (W31a) sind kollinear (Pearson **r=0,77**, Spearman 0,74; VIF 2,5/2,4; 59% geteilte Varianz; Cheverud-Nyholt: 2,48 effektive statt 3 nominelle Tests). `on_sigma` (W33a, deckt TV-11 mit ab) bleibt auch nach identischer Normierung (eigener 20-Tage-Median statt Rohwert) klar eigenstaendig: r steigt von 0,29-0,34 auf nur 0,42-0,47, also deutlich unter der 0,6-0,7-Schwelle fuer "dieselbe Messung in zwei Verkleidungen" (VIF unnormiert 1,13). W47a hat keine eigene Rohkennzahl mehr (Ableitung in W33a).
+
+**Mechanistische Einordnung (quant-mathematician):** die 0,77 ist Lehrbuch, kein Fund -- Range ist ein Parkinson-Vola-Schaetzer, Volumen und Vola haengen ueber Mixture-of-Distributions/Clark-Subordination an derselben latenten Informationsrate, und beide sind hier auf denselben 20-Tage-Nenner normiert. Gegenprobe per Monte-Carlo (GBM + persistente log-AR(1)-Vola) reproduziert die beobachteten Werte fast exakt, ohne dass ein Strukturunterschied im Modell steckt.
+
+**Entscheidung (quant-mathematician + quant-statistician, konvergent):**
+1. **`ONORB-W29a`**: `on_range` als Hauptachse, `on_rvol` als vorab festgelegter Bestaetigungsarm IM SELBEN Job (gleiche Buckets, kein Selektionsrecht) -- kostet keinen eigenen Trial.
+2. **`ONORB-W33a`**: eigener Job, `on_sigma` traegt eigenstaendig, W47a-Ableitung (Ziel-/Haltedauer-Skalierung) als Sub-Achse desselben Jobs.
+3. **`ONORB-W31a` bekommt KEINEN eigenen Job**, ausser eine spaetere Residual-Pruefung (on_rvol orthogonalisiert gegen on_range) zeigt beim Bau von Schritt 9 noch eigenstaendigen Beitrag -- offen, noch nicht gerechnet.
+4. Strukturell am ehesten wirklich orthogonal waere `on_range/on_sigma` (Pfad-Effizienz: Trendnacht vs. Chopnacht) -- kein eigener Weg in der Karte, vorgemerkt fuer eine spaetere Hypothese, falls W29a/W33a nicht tragen.
+
+**Buch-Luecke:** beide verbleibenden Jobs (W29a inkl. Bestaetigungsarm, W33a inkl. W47a-Ableitung) stehen noch auf Stufe "Praemisse", nichts davon ist gerechnet.
+
+### Vorlauf-Auflage `fb01`/`fb01b` geprueft 22.09.2026 (AP216 Schritt 4, W39a/W5a)
+
+**Fund:** die reparierte Job-Datei `fb01b_failbreak_fixed_NQ/RTY` (alpha-scout 03.09., korrigierte Kanal-Groesse 3/5-Min-Bars x 20-30 Bars statt der rechnerisch nie erfuellbaren 15-Min x 26/39-Bars-Kombination) wurde entgegen dem Karten-Stand ("nie gerechnet") tatsaechlich schon bis zur Praemissen-Stufe gerechnet -- die Ergebnisdateien lagen nur lokal nicht vor, ein Box-Sync am 22.09. hat sie sichtbar gemacht. Beide Symbole, beide Praemissen-Zellen, klar negativ:
+- NQ: PREMISE0 n=4434 IS expR=-0,028 (edge -4,2pp), PREMISE1 n=7069 IS expR=-0,031 (edge -4,8pp)
+- RTY: PREMISE0 n=3692 IS expR=-0,024 (edge -3,6pp), PREMISE1 n=5903 IS expR=-0,033 (edge -5,1pp)
+- **verdict-auditor-Gegenpruefung:** auch OOS negativ (NQ -1,2/-2,2pp, n=1064/1707), alle 6 Gates gefallen, PF 0,83-0,87 auf beiden Symbolen. Nach Kosten-Stress (2 Tick) bleibt `mb_side='against'` **brutto negativ** (~-0,013R) -- das Intraday-Kanal-Extrem zeigt Fortsetzungs-, keine Umkehrtendenz. Die `with`-Kontrollzelle war als Verwerfen-Kriterium angelegt und kann `against` nur zusaetzlich killen, kein Nachtest noetig.
+
+**Aber (verdict-auditor-Korrektur, wichtig):** `fb01b` misst ein **Intraday-Donchian-Extrem** (20-30 Bars ab RTH-Minute 90), NICHT das **Overnight-High/-Low** (W39a) und NICHT das **NY-OR-Level** (W5a) -- das Why redet vom Vorsessions-Hoch/Tief, implementiert ist ein anderer Level-Typ. Der guenstige Vorlauf ist damit gerechnet und eindeutig negativ, widerlegt aber nicht den eigentlichen Mechanismus von W39a/W5a.
+
+**Entscheidung:** S5 (`asian.py as_side='against'` + `as_fail_win`) wird **nicht gebaut**, `ONORB-W39a`/`ONORB-W5a` werden **nicht eingetragen** -- per Ticket-eigenem Kriterium ("traegt der Mechanismus am billigen Level nicht, wird S5 nicht gebaut"). Stand aber **"offen, depriorisiert"**, nicht "tot/erledigt" (Hypothese-vor-Urteil-Regel: toter Job, nicht toter Weg). Zwei unabhaengige Gegenindizien liegen jetzt vor (fb01b intraday + Mesfin Abschn. 4.3 fuer Session-Extrema), das Overnight-Level selbst bleibt ungetestet -- offener Punkt fuer eine spaetere Session, falls S5 doch noch gebraucht wird.
+
 ---
 
 ### Rang 1 -- `ONORB-W7a`: Opening-Range-FORM statt Opening-Drive, mit dem Nacht-Gate, das im Register schon in die richtige Richtung faellt
