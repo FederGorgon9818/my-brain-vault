@@ -94,7 +94,7 @@ US-Fenster 09:30-16:00 ET, letzte 3 Jahre, Median. Käfig-Maßstab: die Buch-Bei
 | Trend Following `maband` (AV/AC/AS/AB/AW/AR/AK) | 53 | ✅ | ✅ | – | Auswahl | Auswahl | – |
 | Trend Following `ts_reversal` / `orb` | 7 | ✅ | ✅ | – | ✅ | ✅ | – |
 | Mean Reversion `tsmom` / `maband` | 8 | ✅ | – | ✅ | – | – | ✅ |
-| Intraday Bias (`tsmom`, `maband`, `asian`, `last_hour`) | 10 | ✅ | ✅ | ✅ | – | – | ✅ |
+| Intraday Bias (`tsmom`, `maband`, `asian`, `last_hour`) | 10 | ⚠️ falsch markiert, siehe Korrektur unten | ✅ | ✅ | – | – | ✅ |
 | Swing `tsmom` | 4 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | **bewusst NICHT** | | | | | | | |
 | Relative Value `rv` (Index-Paare) | 7 | nein: Paar-Logik ES/NQ/RTY/YM, kein ökonomisches Paar mit Gold/Öl definiert |
@@ -320,6 +320,10 @@ Register 64.184 → 65.035 (**+851**, nicht die geplanten 3.750, weil die Prämi
 | 16:45-17:20 | Gesamt-Review `verdict-auditor` + `pipeline-auditor` | nur lesend | 6.3 |
 | 17:10 | Roll-Gegenprobe der 4 GC-Near-Misses | `qbt.run_strategy` + `GC_rolls.json`, 0 neue Trials | kein Roll-Artefakt, aber Regime-Klumpen 10/2025-03/2026 |
 | 08:30 | Prüfung: `--enqueue` würde exakt 90 NM-Jobs hinzufügen, 0 andere | Queue nur gelesen | ID-Liste `exported_data_nt8\_nm_only.txt` |
+
+### ⚠️ Korrektur 22.09.2026 (backtest-runner-Check)
+
+Die Zeile „Intraday Bias (tsmom, maband, asian, last_hour) | 10 | GC ✅" in Abschnitt 3 ist **falsch dokumentiert**. Geprüft anhand `exported_data_nt8\_nm_testregister.json` + `discovery\queue.json` + `discovery\results\hyp_NM*_GC.meta.json`: alle 49 GC-Jobs sind Trend-Following (`maband`/`tsmom`/`ts_reversal`), auch die NM-AS-/NM-AB-/NM-AK-/NM-AR-Präfixe (MA-Band-/Donchian-Varianten der Trend-Familie, kein `engine/asian.py`). **Kein einziger GC-Job mit Modus `drift`/`fade_us`/`break_us`/`us_dir` (die eigentlichen `asian.py`-Muster) existiert.** Die 4 Asian/London-Session-Muster auf GC stehen also weiterhin komplett aus — echte Buch-Lücke, nicht nur zurückgestellt.
 
 ### ⬜ NOCH NICHT GEMACHT
 

@@ -4,6 +4,7 @@ erstellt: 2026-09-21
 aktualisiert: 2026-09-22
 research: 2026-09-22 (research-scout-Rueckschrieb: 1 belegt, 12 offen, 0 widerlegt, 0 raus)
 nachtrag: 2026-09-21 (verdict-auditor-Lueckenschluss: W39-W50, elf korrigierte Staende)
+ein_weg: 2026-09-22 (variant-scout + strategy-auditor Batch: 1x haelt ohne Vorbehalt ONORB-W45a, 9x mit Vorbehalt, 3x faellt durch)
 status: aktiv
 ziel: v2-Passquote je Eval verbessern, oder das Kapitel "Overnight-Bias als Bedingung fuer den Opening-Range-Breakout" sauber schliessen
 ---
@@ -829,7 +830,16 @@ Daraus: **A** NY-OR (W1-W9, **W46 Definition**, **W47 Exit-Raum**) - **B** Londo
 - **`ONORB-W45a` hat die staerkste neue Teilstuetze der offenen Gruppe** (Kurov/Sancetta/Strasser/Wolfe JFQA 2019: ES-Futures driften ab rund 30 Minuten vor dem 08:30-Release, etwa 40 Prozent der Anpassung laufen vor der Zahl; Barclay/Hendershott fuer den informationsmotivierten Pre-Open). Der Praediktions-Teil (erste RTH-Stunde) bleibt trotzdem ungetestet, die KF-40-Frage offen.
 - **Kein Weg wurde geloescht, keine Nummer geaendert, kein Tot-Stempel gesetzt.** "Research widerlegt" waere ohnehin keiner -- tot nur nach vollem Test (Regel "Hypothese vor Urteil").
 
-**Nicht an `ein-weg` in dieser Runde:** keines. Alle 13 Skelette gehen weiter.
+## Ein-Weg-Ergebnis 22.09.2026 (`variant-scout` + `strategy-auditor`-Batch)
+
+**Ergebnis in einer Zeile:** 13 vermessen, **1x Story haelt ohne Vorbehalt** (`ONORB-W45a`), **9x haelt mit Vorbehalt**, **3x faellt durch, nicht bauen** (`ONORB-W47a`, `ONORB-W35a`, `ONORB-W10a`).
+
+- **Top-Kandidat: `ONORB-W45a`** (letzte Nacht-Stunde 08:30-09:30 ET). Einzige Story mit allem zusammen: benannter Akteur, harte Uhrzeit, peer-reviewte Stuetze (Kurov/Sancetta/Strasser/Wolfe JFQA 2019), eingebaute Gegenkraft ueber den Makro-/Nicht-Makro-Split. Haengt an Modul-Spec S9 (`pre_ret`/`pre_rvol` in sigcore.py, ~22 Zeilen) -- noch nicht gebaut.
+- **Drei verworfen:** `ONORB-W47a` (verdeckte Doppelzaehlung mit W33a -- die beiden echten Zusatzachsen gehoeren als Achse 2 in den W33a-Job), `ONORB-W35a` (kein Akteur, Mess-Objekt auf derselben Datenbasis tot), `ONORB-W10a` (Gate auf ein bereits falsifiziertes Signal ohne eigenes Why fuer das Gate).
+- **Quer ueber die Gruppe:** `ONORB-W29a`, `ONORB-W31a`, `ONORB-W33a`, `ONORB-W47a` koennten dieselbe Nacht-Vola in vier Verkleidungen messen (Range, Volumen, Sigma, Sigma-am-Ziel) -- das gehoert einmal als Korrelationsmessung geprueft, bevor Box-Rechenzeit in vier getrennte Jobs geht, sonst zaehlt eine Messung vierfach gegen die Zufallsdecke. Drei Hypothesen (`ONORB-W24a`, `ONORB-W34a`, `ONORB-W27a`) haben ein gutes Zwangshandel-Argument, das das Vorzeichen offenlaesst, aber mit gesetztem Vorzeichen in den Job geht -- `ONORB-W31a` zeigt, wie es richtig geht (misst die Gegenthese als eigenen Arm mit).
+- **Bindende Vorlauf-Auflage weiterhin unerfuellt:** `ONORB-W39a` und `ONORB-W5a` duerfen nicht gebaut werden, bevor die vier `premise_failed`-Jobs `fb01`/`fb01b` repariert und gerechnet sind (Status per Grep 22.09. bestaetigt: weiterhin `premise_failed`).
+- **Ein Code-Fund beim Gegenlesen, der im Scout-Bericht fehlte:** `ONORB-W7a` misst mit `tm_sig_start=15` das falsche Fenster (09:45-10:00 statt der im Why behaupteten ersten Viertelstunde 09:30-09:45) -- Fix ist eine Zeile (`tm_sig_start=0`).
+- **Volle Berichte** (variant-scout je Hypothese + strategy-auditor-Batch-Report) liegen im Workflow-Journal, Run `wf_b77d6c25-c92`.
 
 ---
 
@@ -844,7 +854,7 @@ Daraus: **A** NY-OR (W1-W9, **W46 Definition**, **W47 Exit-Raum**) - **B** Londo
 - **Research-Fragen:** Gibt es eine Quelle, die die POSITION in der Opening Range gegen den REINEN RETURN ueber dasselbe Fenster als Praediktor vergleicht (`rangepos` vs. `ret`)? Zarattini/Aziz nutzen die Richtung der ersten Kerze, nicht die Position. / Ab welcher Overnight-Bewegung gilt eine Nacht in der Literatur als 'Preisfindung' statt Rauschen -- gibt es eine belegte Schwelle in Sigma oder Prozent?
 - **Research-Stand (22.09.2026, `research-scout`):** `offen` -- Keine Quelle vergleicht die POSITION in der Opening Range (rangepos) gegen den reinen Return ueber dasselbe Fenster; Zarattini/Aziz nutzen die RICHTUNG der ersten Kerze (Research-Cache Z. 19). Keine belegte Sigma- oder Prozent-Schwelle, ab der eine Nacht als 'Preisfindung' statt Rauschen gilt. Gegenindiz: Grant/Wolf/Yu JBF 2005 (der Open-Sprung revertiert intraday). Eigen: #147/#150 -- die First-Bar-Richtung ist ein NQ-Befund. Cache am 22.09. um die Negativbefund-Zeilen ergaenzt. Folge: Why bleibt Eigenkonstruktion aus dem Register-Befund (ON01), nicht aus Literatur.
 - **Pflichtzellen (neu 21.09.):** Montags-Split [[#W42]], Epochen-Split vor/ab 2022 (GM-15), Vergleichsarm `ORB2_ZAR` (Zarattini-Noise-Band).
-- **Stempel:** _offen, noch nicht durch `variant-scout` + `strategy-auditor`_
+- **Stempel (22.09., `ein-weg`):** variant-scout **Testbar** (n=72, alle Achsen ok) -- strategy-auditor **Story haelt mit Vorbehalt**: `tm_sig_start` muss 0 sein, nicht 15 (sonst misst der Job 09:45-10:00 statt der im Why behaupteten ersten Viertelstunde). Vor Eintragung pruefen, ob der Pullback-Overlay-Block (`hypothesis_bank.py` Z.1824-1852) die rangepos-thr0,7-Zellen schon gerechnet hat. Naechster Schritt: Fix einarbeiten, dann H()-Zeile, `replaces=NQ_Momentum_d260818`.
 
 ### Rang 2 -- `ONORB-W33a`: Stop- und Zielgroesse an der Nacht-Vola statt an der Vortages-ATR
 
@@ -857,7 +867,7 @@ Daraus: **A** NY-OR (W1-W9, **W46 Definition**, **W47 Exit-Raum**) - **B** Londo
 - **Verwandte Tote:** #046 (BE/Trail-Overlay: 0 von 8 Beinen ueberlebte OOS); #157 (be_trail v2 +2,95 pp, CI von -2 bis +8)
 - **Research-Fragen:** Gibt es eine Arbeit, die Overnight-RV EXPLIZIT als Stop-Skala (nicht als Prognosevariable) testet, mit Ergebnis gegen ATR? / Ist der Overnight-RV->Intraday-RV-Zusammenhang auf NQ-Futures im Fenster 2023-2026 noch vorhanden, oder ist er wie der Overnight-Drift verfallen?
 - **Research-Stand (22.09.2026, `research-scout`):** `belegt` -- Mechanismus belegt: Overnight-RV sagt Intraday-RV voraus, ueber 40 Prozent Overnight-Anteil an der Tagesvarianz -- Zhang/Zhao SSRN 3574323 (Cache Z. 386) plus Zadourian/Grassberger EPL 2017 (Z. 387). Eigene Stuetze: Logbuch #139/AR-17, sd_off/sd_on = 1,50, CI [1,24; 1,88]. NICHT belegt und damit Testgegenstand: (a) Overnight-RV als STOP-SKALA gegen ATR (keine Arbeit gefunden), (b) Persistenz 2023-2026 (das Paper ist von 04/2020). Why ueberarbeitet und mit Quellen versehen.
-- **Stempel:** _offen, noch nicht durch `variant-scout` + `strategy-auditor`_
+- **Stempel (22.09., `ein-weg`):** variant-scout **Grenzwertig** (n=81, S1 `on_sigma` fehlt komplett) -- strategy-auditor **Story haelt mit Vorbehalt**: ist Skalen-Overlay, keine eigene Strategie/Familie, braucht deshalb keinen Akteur. Warnung: teilt die Nacht-Vola-Messung moeglicherweise mit W29a/W31a/W47a -- Kollinearitaet vorher pruefen. Buch-Luecke: S1 bauen (zusammen mit TV-11), dann Pilot auf tsmom/maband, erst danach an die drei echten Buch-Beine (die heute range- statt sigma-basiert stoppen).
 
 ### Rang 3 🆕 -- `ONORB-W47a`: Ziel und Haltedauer am OR-Level an der Nacht-Vola statt als fester Parameter
 
@@ -871,7 +881,7 @@ Daraus: **A** NY-OR (W1-W9, **W46 Definition**, **W47 Exit-Raum**) - **B** Londo
 - **Research-Fragen:** Gibt es eine Arbeit, die Take-Profit-Distanz oder Haltedauer EXPLIZIT an der Overnight-Vola bedingt (nicht am Vortages-ATR)? / Existiert Literatur zur optimalen Haltedauer nach einem Opening-Range-Bruch als Funktion der erwarteten Tages-Vola (Optimal-Stopping-Rahmen)?
 - **Research-Stand (22.09.2026, `research-scout`):** `offen` -- Keine Arbeit zu Take-Profit-Distanz oder Haltedauer bedingt auf die Overnight-Vola, und keine Optimal-Stopping-Arbeit zur Haltedauer nach einem OR-Bruch (Cache 22.09., Negativbefund). Gegenindizien: eigen #068 (kein Follow-Through nach dem Bruch, auch mit Vola-Kondition) und Mesfin arXiv 2605.04004 Tab. 3 (kurzer Horizont ist die schlechteste Variante). Der Hebel bleibt belegt (#050), die BEDINGUNG nicht -- Why steht unveraendert auf Entwurf.
 - **Pflichtzellen:** Montags-Split [[#W42]], Epochen-Split vor/ab 2022, `ctl_sides`, Seed-Streuung ueber 5 Seeds (Exit-Effekte sind klein, #157-Muster).
-- **Stempel:** _offen, noch nicht durch `variant-scout` + `strategy-auditor`_
+- **Stempel (22.09., `ein-weg`):** **faellt durch, nicht bauen** (strategy-auditor). Verdeckte Doppelzaehlung mit `ONORB-W33a`: die beiden echten Zusatzachsen (k-Multiplikator, Richtung der Haltedauer-Funktion) gehoeren als Achse 2 in den W33a-Job, keine eigene Zeile.
 
 ### Rang 4 -- `ONORB-W24a`: Die Nacht als TOR statt als Signal: Ausbruchsrichtung muss mit der Nacht-Richtung uebereinstimmen
 
@@ -884,7 +894,7 @@ Daraus: **A** NY-OR (W1-W9, **W46 Definition**, **W47 Exit-Raum**) - **B** Londo
 - **Verwandte Tote:** TN-01/TN-03/TN-12 (145 Trials tm_base='overnight', 0 Survivors -- dort Signal, hier Tor); #036 (Long/Short-Asymmetrie bei ORB)
 - **Research-Fragen:** Gibt es Evidenz, dass Overnight-Returns als BEDINGTES Tor auf ein Intraday-Signal besser funktionieren denn als eigenstaendiges Signal (Conditioning statt Prediction)? / Lou/Polk/Skouras trennen Overnight und Intraday in eigenstaendige Fortsetzungseffekte -- sagt jemand etwas ueber die INTERAKTION beider Vorzeichen am selben Tag?
 - **Research-Stand (22.09.2026, `research-scout`):** `offen` -- Einzige Interaktions-Arbeit auf NQ: Yu/Rentzler/Wolf JOIM 2005 (Nacht-Return ueberwiegend mit REVERSAL verbunden), dazu Grant/Wolf/Yu JBF 2005 und SSRN 2730304 / 5807282 (Cache Z. 294/295). Die Literatur spricht damit gegen das Bild 'Halter im Ruecken'. Als TOR auf ein Ausbruchssignal ist die Nacht-Richtung aber nie getestet worden, und unser eigenes Buchbein Asia-Dir setzt die Asien-Richtung fort. Auflage: der Test muss BEIDE Vorzeichen (agree und against) messen, nicht nur agree.
-- **Stempel:** _offen, noch nicht durch `variant-scout` + `strategy-auditor`_
+- **Stempel (22.09., `ein-weg`):** variant-scout **Testbar** (n=54, Engine-Luecke klein und praezise: `tm_on_dir` in tsmom.py, ~20 Zeilen) -- strategy-auditor **Story haelt mit Vorbehalt**: die Rollen-Unterscheidung Tor-statt-Signal ist belegt (beide Gates rechnen heute mit `abs()`), aber das Why traegt nur den `agree`-Arm, waehrend Yu/Rentzler/Wolf JOIM 2005 eher Reversal findet -- zweites Why fuer den `against`-Arm noetig vor Eintragung.
 
 ### Rang 5 -- `ONORB-W29a`: Nacht-Range als Tor fuer den NY-Ausbruch: nur nach weiter Nacht wird ein Level-Bruch gehandelt
 
@@ -897,7 +907,7 @@ Daraus: **A** NY-OR (W1-W9, **W46 Definition**, **W47 Exit-Raum**) - **B** Londo
 - **Verwandte Tote / Bank-Zeilen (21.09. erweitert):** #138 / TB-03 (Intraday-Kompression -> KLEINERE Folgebewegung, eng gestempelt); #068 (ORB-Break ohne Follow-Through); **HV-44** ("breites Overnight-Value-Gebiet -> ORB-Ausbrueche zuverlaessiger" -- woertlich dieser Weg, mit `orb_exec="close"` als Pruefplan); **HV-43** (POC-Abstand als Gap-Fill-Praediktor); **TV-03** und **AB-03** (Tages-Kompression, im 229er-Block gemessen, 59 Surv / 0 Kandidaten laut SES-W38); **GM-15** (Nacht/Tag-Range-Verhaeltnis ab 2022 niedriger -- **Epochen-Split vor/ab 2022 ist hier Pflicht**); `ideas.json` **"Noise-ORB NQ (Zarattini)" = Validiert** (das 14-Tage-Sigma-Noise-Band ist der Stand der Technik, gegen den `on_range` antreten muss).
 - **Research-Fragen:** Gibt es eine Arbeit, die die Overnight-RANGE (nicht den Return, nicht die RV) als Bedingung fuer Opening-Range-Breakouts testet? / Zarattini nutzt ein Noise-Band aus 14-Tage-Sigma; ist die Overnight-Range als Band-Breite je getestet worden?
 - **Research-Stand (22.09.2026, `research-scout`):** `offen` -- Keine Arbeit testet die Overnight-RANGE als ORB-Bedingung oder als Band-Breite. Teilstuetze nur indirekt ueber Overnight-Vola -> Intraday-Vola (Cache Z. 386). Eigene Gegenindizien: #074 / Lehre 21 (Overnight-Vola-Filter senkte die Passquote) und #068 (Vola-Spike-Kondition aendert das Follow-Through nicht).
-- **Stempel:** _offen, noch nicht durch `variant-scout` + `strategy-auditor`_
+- **Stempel (22.09., `ein-weg`):** variant-scout **Grenzwertig** (n=36, nur der Breakout-Arm sofort baubar; `on_range`-Spalte + Wiring in asian.py fehlen komplett) -- strategy-auditor **Story haelt mit Vorbehalt**: ein Objekt, das per Gate zwischen Breakout und Fade umschaltet, sitzt in zwei Familien gleichzeitig. Fade-Arm (W30) braucht einen eigenen, null-schalter-faehigen Modus und gehoert als eigene Zeile `ONORB-W30`, nicht in denselben Job.
 
 ### Rang 6 🆕 -- `ONORB-W39a`: Der Sweep des Nacht-Extrems -- Preis nimmt das Overnight-High/-Low und dreht
 
@@ -912,7 +922,7 @@ Daraus: **A** NY-OR (W1-W9, **W46 Definition**, **W47 Exit-Raum**) - **B** Londo
 - **Research-Fragen:** Existiert Literatur zum "failed breakout" / "liquidity sweep" auf Index-Futures mit sauberer Fehlschlag-Definition und OOS-Test? / Gibt es eine Quelle, die Stop-Cluster an Session-Extrema direkt misst (Osler 2000/2003 zeigt das fuer FX mit Kundenorderdaten -- gibt es ein Futures-Pendant?)
 - **Research-Stand (22.09.2026, `research-scout`):** `offen` -- Kein Futures-Nachweis fuer Stop-Cluster an Session-Extrema (Osler-Futures-Negativbefund Cache Z. 1217; Turtle-Soup ist nur Folklore, Z. 49). Der naechste Test faellt negativ aus: Mesfin arXiv 2605.04004 Abschn. 4.3, 6.442 Asia-Grabs, Fade -2,20 Punkte (T -14,1), brutto nur 0,2-0,8 Punkte und damit unter der Friktionsdecke -- allerdings auf Bar-Ebene in Asien, nicht am Overnight-High/-Low zum NY-Open. Eigen: #028 (Asia-Fade tot), lebende Verwandte i2 on_rev 9/94.
 - **Pflichtzellen:** tick-treues Zufallslevel, `ctl_sides`, Montags-Split [[#W42]], Epochen-Split vor/ab 2022.
-- **Stempel:** _offen, noch nicht durch `variant-scout` + `strategy-auditor`_
+- **Stempel (22.09., `ein-weg`):** variant-scout **Grenzwertig** (n=16) -- strategy-auditor **Story haelt mit Vorbehalt, aber NICHT enqueue-bar**: die bindende Vorlauf-Auflage (`fb01`/`fb01b` reparieren + rechnen) ist per Grep 22.09. weiterhin `premise_failed` -- S5 darf laut eigenem Text erst danach gebaut werden.
 
 ### Rang 7 -- `ONORB-W34a`: Wo der Open in der Nacht-Range liegt, ist die Schmerzverteilung der Nacht-Kohorte
 
@@ -925,7 +935,7 @@ Daraus: **A** NY-OR (W1-W9, **W46 Definition**, **W47 Exit-Raum**) - **B** Londo
 - **Verwandte Tote / Bank-Zeilen (21.09. erweitert):** #112/#113 (Value-Area-Reversal war Barrieren-Artefakt -- hier kein Beruehrungs-Ereignis, sondern ein Zustand am Open); AR-20 (Asia-Dir-Einzelkonfiguration unter der Familien-Decke); **XA-38** ist **woertlich dieser Weg** und stand die ganze Zeit in der Bank: "die Asien-Range-Position des Preises beim US-Open (oberes oder unteres Drittel der Overnight-Range) traegt Richtungsinformation fuer den RTH-Vormittag", Pruefplan Terzile.
 - **Research-Fragen:** Gibt es Literatur zur Position des Cash-Opens innerhalb der Overnight-Range als Praediktor (Market-Profile-Praktikerwissen vs. peer-reviewed)? / Wird die Schmerzverteilung der Nacht-Halter irgendwo quantifiziert (unrealisierter Gewinn/Verlust der Overnight-Kohorte)?
 - **Research-Stand (22.09.2026, `research-scout`):** `offen` -- Nur Market-Profile-Praktikerwissen (Cache Z. 554, Konvention) und Blog-Statistiken. Keine peer-reviewte Arbeit zur Position des Cash-Opens in der Overnight-Range, keine Quantifizierung der Schmerzverteilung der Nacht-Halter (Cache 22.09., Negativbefund). Gegenindiz: Mesfin Tab. 5 -- MNQ-Gaps fuellen sich nicht konsistent im RTH.
-- **Stempel:** _offen, noch nicht durch `variant-scout` + `strategy-auditor`_
+- **Stempel (22.09., `ein-weg`):** variant-scout **Grenzwertig** (n=54, `on_pos`-Kennzahl fehlt komplett, ~10-25 Zeilen analog `us_dir`) -- strategy-auditor **Story haelt mit Vorbehalt**: bestes Zwangshandel-Argument der Gruppe, aber genau dieses Argument legt das Vorzeichen nicht fest -- wer im Gewinn sitzt, nimmt ihn mit ODER stockt auf, beides folgt aus derselben Zwangslage. Zweites Why fuer den Gegen-Arm noetig vor Eintragung.
 
 ### Rang 8 -- `ONORB-W5a`: Der Fehlausbruch am NY-OR-Level gegen eine gegenlaeufige Nacht
 
@@ -939,7 +949,7 @@ Daraus: **A** NY-OR (W1-W9, **W46 Definition**, **W47 Exit-Raum**) - **B** Londo
 - **Verwandte Tote / nie gerechnet:** #068 (ORB-Break kein Follow-Through -- das ist hier die PRAEMISSE, nicht der Widerspruch); #068 Pineda-Retest (36 Varianten negativ -- Retest ist der Einstieg NACH dem Bruch, nicht nach dessen Scheitern); **`fb01_failbreak_session_NQ/RTY` und `fb01b_failbreak_fixed_NQ/RTY` (alle vier `premise_failed`)**; Schwesterkarte SES-W26.
 - **Research-Fragen:** Existiert Literatur zum 'failed breakout' / 'false break' auf Index-Futures mit sauberer Fehlschlag-Definition und OOS-Test? / Gibt es eine Quelle, die Fehlausbruch-Haeufigkeit als Funktion der Overnight-Positionierung misst?
 - **Research-Stand (22.09.2026, `research-scout`):** `offen` -- Keine Arbeit zum Fehlausbruch mit sauberer Definition und OOS-Test auf Index-Futures, und keine zur Haeufigkeit als Funktion der Overnight-Positionierung (Cache Z. 49 / Z. 1217, am 22.09. bestaetigt). Naechste Verwandte Mesfin Abschn. 4.3 ist nach Friktion negativ. Eigene Vorlaeufer fb01/fb01b stehen weiterhin auf premise_failed (nie gerechnet). Die Vorlauf-Auflage bleibt damit bindend.
-- **Stempel:** _offen, noch nicht durch `variant-scout` + `strategy-auditor`_
+- **Stempel (22.09., `ein-weg`):** variant-scout **Grenzwertig** (n=270 rechnerisch, aber Konjunktion aus seltenem Fehlausbruch UND gegenlaeufiger Nacht schneidet zweifach -- Zellen absehbar unter 30 Trades) -- strategy-auditor **Story haelt mit Vorbehalt**, dieselbe Vorlauf-Auflage wie `ONORB-W39a` (`fb01`/`fb01b` unerfuellt), zusaetzlich vorab Ereignis-Haeufigkeit zaehlen.
 
 ### Rang 9 -- `ONORB-W27a`: Die Nacht, die in sich dreht: Asien hoch, London runter, also Fade-Tag
 
@@ -952,7 +962,7 @@ Daraus: **A** NY-OR (W1-W9, **W46 Definition**, **W47 Exit-Raum**) - **B** Londo
 - **Verwandte Tote / Bank-Zeilen (21.09. erweitert):** TN-08 (Europa-Richtung als besserer Bias: 37 Trials im `asian`-Modus, 0 Kandidaten -- dort Europa ALLEIN, hier das Vorzeichen-PAAR); **XA-39** (Europa-Rendite als besserer RTH-Praediktor als Asien, Pruefplan = beide Segmente als getrennte Regressoren); **MO-51** (letzte Globex-Stunde gegen erste RTH-Stunde -- jetzt eigener Weg [[#W45]] / Skelett `ONORB-W45a`); #113 (Session-VAH/VAL-Unterschiede waren reine Vola-Geometrie)
 - **Research-Fragen:** Gibt es Arbeiten zur Informations-Uebergabe zwischen Asien- und Europa-Session in Index-Futures (Ito/Hashimoto behandelt FX)? / Wird der intranight-Richtungswechsel irgendwo als Regime-Merkmal fuer den Folgetag genutzt?
 - **Research-Stand (22.09.2026, `research-scout`):** `offen` -- Keine Arbeit zur Asien->Europa-Uebergabe und keine zum intranight-Richtungswechsel als Regime-Merkmal in Index-Futures. Ito/Hashimoto (Cache Z. 553) behandelt nur FX-Spot (Cache 22.09., Negativbefund).
-- **Stempel:** _offen, noch nicht durch `variant-scout` + `strategy-auditor`_
+- **Stempel (22.09., `ein-weg`):** variant-scout **Grenzwertig** (n=108) -- strategy-auditor **Story haelt mit Vorbehalt**: gleiches Muster wie `ONORB-W29a` -- Breakout- und Fade-Arm gehoeren in getrennte Zeilen, ein Objekt kann nicht in zwei Familien gleichzeitig sitzen.
 
 ### Rang 10 🆕 -- `ONORB-W45a`: Die letzte Nacht-Stunde (08:30-09:30 ET) als eigenes Segment
 
@@ -966,7 +976,7 @@ Daraus: **A** NY-OR (W1-W9, **W46 Definition**, **W47 Exit-Raum**) - **B** Londo
 - **Research-Fragen:** Gibt es Arbeiten zur Informationsverarbeitung im Pre-Market-Fenster von Index-Futures (08:30-09:30 ET) als Praediktor fuer die erste RTH-Stunde? / Ist der 08:30-Release-Effekt in Futures bis zum Cash-Open nachweislich vollstaendig eingepreist, oder laeuft er im RTH weiter (KF-40 behauptet Ersteres)?
 - **Research-Stand (22.09.2026, `research-scout`):** `offen` -- Teilstuetze fuer ein eigenes Informationsfenster vor dem Cash-Open: Kurov/Sancetta/Strasser/Wolfe JFQA 2019 (ES-Futures, Drift ab ca. 30 Minuten vor dem 08:30-Release, rund 40 Prozent der Anpassung laufen vorher) und Barclay/Hendershott (Aktien, Pre-Open-Handel ist informationsmotiviert). NICHT getestet: die Praediktion der ersten RTH-Stunde und ob der 08:30-Effekt bis 09:30 vollstaendig eingepreist ist -- die KF-40-Frage bleibt offen. Damit staerkste Teilstuetze der offenen Skelette, aber kein Beleg fuer den Praediktor selbst.
 - **Pflichtzellen:** Makro-Tage gegen Nicht-Makro-Tage, Montags-Split [[#W42]], Epochen-Split vor/ab 2022. **DST-Kontrolle [[#W49]] entfaellt** -- 08:30/09:30 ET sind US-Anker und wandern mit.
-- **Stempel:** _offen, noch nicht durch `variant-scout` + `strategy-auditor`_
+- **Stempel (22.09., `ein-weg`):** variant-scout **Grenzwertig** (n=72, 3 von 4 Achsen fehlen: S9 `pre_ret`/`pre_rvol` nicht gebaut) -- strategy-auditor **Story haelt** (einzige der ganzen Gruppe OHNE Vorbehalt: benannter Akteur, harte Uhrzeit, peer-reviewte Stuetze, eingebaute Gegenkraft ueber den Makro-/Nicht-Makro-Split). **Top-Kandidat fuer den ersten Job dieser Karte.** Naechster Schritt: S9 in sigcore.py bauen, dann H()-Zeile mit Makro-Split als Pflichtzelle.
 
 ### Rang 11 -- `ONORB-W31a`: Nacht-Volumen statt Nacht-Bewegung: hohe europaeische Beteiligung als Trendtag-Bedingung
 
@@ -979,7 +989,7 @@ Daraus: **A** NY-OR (W1-W9, **W46 Definition**, **W47 Exit-Raum**) - **B** Londo
 - **Verwandte Tote / Bank-Zeilen (21.09. erweitert):** VV-19 (ungebaut); **XA-42** (hohes Globex-Volumen = Fortsetzung, niedriges = Reversion -- woertlich dieser Weg); **MO-19** (Gegenthese: hohes ON-Volumen -> Ruecklauf in der ersten RTH-Stunde); **MO-50** (Europa-Kernzeit-Drift bei erhoehtem Volumen -> Fortsetzung); #031 (RVOL als ORB-Filter bestaetigt, aber intraday gerechnet); #021 (Orderflow-Delta tot -- hier reines OHLCV-Volumen, kein Delta)
 - **Research-Fragen:** Ist Globex-Nachtvolumen als Praediktor fuer die Trendstaerke des folgenden US-Tages irgendwo peer-reviewed getestet? / Zarattini/Barbon/Aziz finden die ORB-Edge im relativen Volumen bei Aktien -- gibt es ein Futures-Pendant mit Nacht-Volumen?
 - **Research-Stand (22.09.2026, `research-scout`):** `offen` -- Kein Globex-Nachtvolumen-Praediktor und kein Futures-Pendant zu Zarattini/Barbon/Aziz gefunden. Cartea et al. (Cache Z. 1275) laufen in die GEGENRICHTUNG (Tagesvolumen -> Overnight-Return, Aktien). Eigen: #068 / #125 -- RVOL uebertraegt sich auf NQ nicht.
-- **Stempel:** _offen, noch nicht durch `variant-scout` + `strategy-auditor`_
+- **Stempel (22.09., `ein-weg`):** variant-scout **Grenzwertig** (`on_rvol` fehlt komplett, nur `tm_side` mit 2 echten Varianten ohne Bau vorhanden) -- strategy-auditor **Story haelt mit Vorbehalt**: methodisch die sauberste Anlage der Gruppe (misst die Gegenthese MO-19 als eigenen Arm statt sich einen Prior auszusuchen), aber die duennste kausale Kette (Nacht-Volumen ist weitgehend ein Vola-Proxy). Teilt die Nacht-Vola-Messung moeglicherweise mit W29a/W33a/W47a -- Kollinearitaet vorher pruefen.
 
 ### Rang 12 -- `ONORB-W35a`: Der Ausgang des London-Ausbruchs als Vorzeichen fuer den NY-Ausbruch
 
@@ -992,7 +1002,7 @@ Daraus: **A** NY-OR (W1-W9, **W46 Definition**, **W47 Exit-Raum**) - **B** Londo
 - **Verwandte Tote:** #028 (London-Break selbst tot -- hier wird der Trade nicht gehandelt, nur sein Ausgang gelesen)
 - **Research-Fragen:** Gibt es Literatur zu session-uebergreifenden Breakout-Kaskaden (Europa-Ausbruch als Praediktor fuer US-Ausbruch)? / Wird 'Liquiditaet gibt heute nach vs. absorbiert' irgendwo als Tageszustand quantifiziert und mit Breakout-Erfolg verknuepft?
 - **Research-Stand (22.09.2026, `research-scout`):** `offen` -- Keine Literatur zu Europa->US-Breakout-Kaskaden und keine zu 'Liquiditaet gibt nach vs. absorbiert' als Tageszustand (Cache 22.09., Negativbefund). Eigen: der London-Breakout wurde in #028 (46 Configs) mitgetoetet -- der 'London-Ausgang' als ZUSTANDSVARIABLE ist damit kaum gemessen, nicht widerlegt.
-- **Stempel:** _offen, noch nicht durch `variant-scout` + `strategy-auditor`_
+- **Stempel (22.09., `ein-weg`):** **faellt durch, nicht bauen** (strategy-auditor). Kein Akteur im Why, nur eine Tages-Charakter-Behauptung in Mechanismus-Sprache; das Mess-Objekt selbst (Londoner Ausbruch) ist auf derselben Datenbasis tot (#028, 46 Configs; `firstbar_ematrail session=eu` 960/0).
 
 ### Rang 13 (abgewertet von 8) -- `ONORB-W10a`: Die London-EIGENE Opening Range (03:00-03:30 ET), bedingt auf die Asien-Richtung
 
@@ -1006,7 +1016,7 @@ Daraus: **A** NY-OR (W1-W9, **W46 Definition**, **W47 Exit-Raum**) - **B** Londo
 - **Research-Fragen:** Gibt es eine Arbeit, die die LONDON-eigene Opening Range auf Index-Futures testet (nicht den Asia-Range-Break bei London-Open)? / Wie gross ist der reale Spread/Slippage auf MNQ im Fenster 03:00-09:30 ET gegenueber dem RTH -- gibt es eine belastbare Zahl?
 - **Research-Stand (22.09.2026, `research-scout`):** `offen` -- Keine Arbeit zur London-EIGENEN Opening Range auf Index-Futures. Das eigene Logbuch spricht stark dagegen (#028: London-Break inklusive London-IB, 46 Configs tot; firstbar_ematrail eu 0/960). Einziger neuer Baustein bleibt die Asien-Richtung, und die ist ungemessen. Zusaetzlich kein verifizierbarer MNQ-Spread fuer 03:00-09:30 ET -- es gibt nur die 2-Punkte-Pauschale aus Mesfin arXiv 2605.04004. Die Auflage 'erst rechnen, wenn Rang 1-11 nichts getragen haben' bleibt.
 - **Auflage vor dem Rechnen (neu 21.09.):** (1) der Why muss allein auf der Asien-Richtungsbedingung stehen, (2) `slippage_ticks=2.0` vorab, (3) DST-Kontrollweg [[#W49]] als Pflichtspalte, (4) erst rechnen, wenn Rang 1-11 nichts getragen haben.
-- **Stempel:** _offen, noch nicht durch `variant-scout` + `strategy-auditor`_
+- **Stempel (22.09., `ein-weg`):** **faellt durch, nicht bauen** (strategy-auditor). Gate auf ein bereits ehrlich falsifiziertes Signal, ohne jedes Why fuer das Gate selbst -- die Hypothese sagt selbst, dass ohne die Bedingung alles nur ein Aufwaermen waere. Zusaetzlich das duennste Buch des Tages (2 Ticks Pflicht-Slippage) bei der schwaechsten Begruendung.
 
 ---
 

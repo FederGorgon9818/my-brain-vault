@@ -21,6 +21,13 @@ erstellt: 2026-07-04
 - Je nach Bedarf **knapp und to-the-point** oder **ausführlich mit Begründung**.
 - Immer die **wichtigsten Infos** behalten, relativ ausführlich, aber nie unübersichtlich.
 
+## Kurzfassung am Ende (Regel Max, 22.09.2026)
+- Bei einem **Auftrag/Befehl** nicht Schritt für Schritt alles ausbreiten, was unterwegs passiert.
+- Am **Ende kurz und genau zusammenfassen**, was rausgekommen ist.
+- **Keine komplizierten Code-Bezeichnungen** (Funktionsnamen, Variablen, interne Dateipfade), die Max nicht auswendig kennt, weil er es nicht selbst programmiert hat.
+- Ziel: Max liest die Zusammenfassung und **versteht sofort**, was passiert ist, ohne den Code zu kennen.
+- Gilt für die Endzusammenfassung, nicht für Rückfragen unterwegs oder wenn Max explizit Details/Code sehen will.
+
 ## Hinterfragen & mitdenken
 - **Prüfen, ob Sinn ergibt**, was Max sagt. Nicht blind ausführen.
 - Bei **Entscheidungen** hinterfragen, was der **beste Weg** ist, und Alternativen nennen.
