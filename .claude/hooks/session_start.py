@@ -173,8 +173,14 @@ def main():
         line = summary_line()
         if line:
             notes.append(line)
-    except Exception:
-        pass  # ein Hinweis-Hook darf nie die Session blockieren
+    except Exception as e:  # ein Hinweis-Hook darf nie die Session blockieren, aber laut scheitern
+        try:
+            import time as _time
+            STATE.mkdir(parents=True, exist_ok=True)
+            with open(STATE / "hook_errors.log", "a", encoding="utf-8") as f:
+                f.write(f"{_time.strftime('%Y-%m-%d %H:%M:%S')} session_start.research_expiry: {e!r}\n")
+        except Exception:
+            pass
 
     sessions_digest = _recent_sessions_digest(exclude_sid=inp.get("session_id"))
     if sessions_digest:

@@ -55,15 +55,30 @@ _DATE_RX = re.compile(DATE)
 _MARK_RX = re.compile(r"(?:g(?:ü|ue)ltig\s+Stand|gepr(?:ü|ue)ft|Stand|recherchiert|Nachtrag)\s*:?\s*" + DATE, re.I)
 _NACHTRAG_RX = re.compile(r"Nachtrag\s*:?\s*" + DATE, re.I)
 
-# Negativbefund = "wir haben gesucht und nichts gefunden". "kein Peer-Review" ist eine
-# Qualitaetsangabe zu einer GEFUNDENEN Quelle und bewusst nicht drin (verdict-auditor 28.09.).
-NEG_RX = re.compile(
+# Negativbefund = "wir haben gesucht und nichts gefunden".
+# Stark: die Suche selbst ist ausgesprochen ("... gefunden", "existiert kein").
+NEG_STRONG_RX = re.compile(
     r"negativbefund"
-    r"|\bkein(?:e|en|er)?\b[^|]{0,150}?\b(?:gefunden\w*|auffindbar|identifiziert)"
+    r"|\bkein(?:e|en|er|es)?\b[^|]{0,150}?\b(?:gefunden\w*|auffindbar|identifiziert)"
     r"|\b(?:nicht|nirgends)\s+(?:gefunden|auffindbar)\b"
-    r"|\bexistiert\s+(?:in\s+)?(?:kein\w*|nicht)\b"
-    r"|\bkein(?:e|en|er)?\s+(?:[\w-]+\s+){0,2}?(?:paper|studie|studien|arbeit|quelle|prim(?:ä|ae)rquelle|treffer|beleg\w*|evidenz)\b",
+    r"|\bexistiert\s+(?:in\s+)?(?:kein\w*|nicht)\b",
     re.I)
+# Schwach: "keine (akademische) Studie ...". Dieselbe Form steht aber oft als Qualitaetsnotiz
+# zu einer GEFUNDENEN Quelle ("kein Peer-Review", "keine Primaerquelle", "kein OOS-Split im
+# Paper", "keine Quelle noetig") -- die sind ausgeschlossen (verdict-auditor, Runde 1 und 2).
+NEG_WEAK_RX = re.compile(
+    r"\bkein(?:e|en|er)?\s+(?:[\w-]+\s+){0,2}?(?:paper|studie|studien|arbeit|quelle|treffer|beleg\w*|evidenz)\b", re.I)
+_WEAK_EXCL_RX = re.compile(
+    r"n(?:ö|oe)tig|im\s+paper|direkt\s+gelesen|im\s+volltext|von\s+\w+\s+selbst|externe\s+quelle|peer-?review", re.I)
+
+
+def is_neg(line):
+    if NEG_STRONG_RX.search(line):
+        return True
+    for m in NEG_WEAK_RX.finditer(line):
+        if not _WEAK_EXCL_RX.search(line[m.start():m.end() + 40]):
+            return True
+    return False
 # Literatur-Bezug: im Logbuch Pflicht (sonst ist es ein Trading-Negativbefund, den die
 # Todesurteil-Pflicht in guard_chain.py regelt), in Firmenabschnitten entscheidet er, ob
 # eine "kein ... gefunden"-Zeile ein Recherche-Negativbefund oder eine Firmenregel ist.
@@ -71,10 +86,17 @@ LIT_RX = re.compile(r"\b(?:paper|papers|studie|studien|literatur|akademisch\w*|s
 # Abschnitte, deren Inhalt von selbst veraltet (Regeln, Preise, Kosten, Termine).
 FIRM_HDR_RX = re.compile(
     r"g(?:ü|ue)ltig\s+Stand|prop-?firm|\bE8\b|fundednext|ftmo|bulenox|tradeify|topstep|\bapex\b|mffu"
-    r"|take\s+profit\s+trader|kommission|databento|algo-?erlaubnis|handelszeiten|payout|\bpreise?\b|kosten"
+    r"|take\s+profit\s+trader|kommission|databento|algo-?erlaubnis|handelszeiten|payout|\bpreise?\b(?!-)|kosten"
     r"|makro-kalender|k(?:ä|ae)fig",
     re.I)
+# Literatur-Abschnitte ueber Prop Firms (z.B. "Prop-Firm-Paper: akademische Literatur") sind
+# keine Firmenregeln, auch wenn der Firmenname in der Ueberschrift steht.
+_LIT_HDR_RX = re.compile(r"\b(?:literatur|akademisch\w*)\b", re.I)
 _SEP_RX = re.compile(r"^\|\s*:?-{3}")
+
+
+def _is_firm_hdr(h):
+    return bool(FIRM_HDR_RX.search(h)) and not _LIT_HDR_RX.search(h)
 
 
 def _date(m):
@@ -109,13 +131,13 @@ def scan_cache(text, label="Research-Cache.md"):
             h2, h3 = line[3:].strip(), ""
             d = _dates(_DATE_RX, h2)
             h2_date, h3_date = (max(d) if d else None), None
-            firm2, firm3 = bool(FIRM_HDR_RX.search(h2)), False
+            firm2, firm3 = _is_firm_hdr(h2), False
             continue
         if line.startswith("### "):
             h3 = line[4:].strip()
             d = _dates(_DATE_RX, h3)
             h3_date = max(d) if d else None
-            firm3 = bool(FIRM_HDR_RX.search(h3))
+            firm3 = _is_firm_hdr(h3)
             continue
         s = line.lstrip()
         if not h2 or not s or s.startswith(("#", ">", "---")):
@@ -129,11 +151,12 @@ def scan_cache(text, label="Research-Cache.md"):
             if re.match(r"^\|\s*~~", s):
                 continue  # durchgestrichen = schon ersetzt, der Nachfolger steht darunter
         firm = firm2 or firm3 or bool(re.search(r"g(?:ü|ue)ltig\s+Stand", line, re.I))
-        neg = bool(NEG_RX.search(line))
+        neg = is_neg(line)
         if not is_row:
-            # Fliesstext nur mit ausdruecklichem "Negativbefund" (z.B. E8-Payout-Grenzen),
-            # sonst wuerde jede Erlaeuterung mit "kein" gemeldet.
-            if not re.search(r"negativbefund", line, re.I):
+            # Fliesstext nur mit ausdruecklichem "Negativbefund" oder Negativbefund MIT
+            # Literaturbezug ("Ehrliche Kernluecke: kein gefundenes Paper ..."), sonst wuerde
+            # jede Erlaeuterung mit "kein" gemeldet.
+            if not (re.search(r"negativbefund", line, re.I) or (neg and LIT_RX.search(line))):
                 continue
         if neg and (not firm or LIT_RX.search(line)):
             kind = "neg"
@@ -145,7 +168,7 @@ def scan_cache(text, label="Research-Cache.md"):
             continue
         cand = [d for d in (h2_date, h3_date, *marks) if d]
         sec = f"{h2} / {h3}" if h3 else h2
-        out.append(dict(kind=kind, file=label, line=i, date=max(cand) if cand else None,
+        out.append(dict(kind=kind, file=label, line=i, date=max(cand) if cand else None, dates=cand,
                         section=sec, text=_clean(line), raw=line))
     return out
 
@@ -162,7 +185,7 @@ def scan_logbook(text, label="Strategie-Logbuch.md"):
             continue
         if line.lstrip().startswith(">"):
             continue  # Nachtrag-Bloecke sind die Erledigung, nicht der Befund
-        if not (NEG_RX.search(line) and LIT_RX.search(line)):
+        if not (is_neg(line) and LIT_RX.search(line)):
             continue
         marks = _dates(_MARK_RX, line)
         for nxt in lines[i:i + 3]:  # direkt folgender Nachtrag-Block (bis 3 Zeilen, Leerzeile erlaubt)
@@ -171,7 +194,7 @@ def scan_logbook(text, label="Strategie-Logbuch.md"):
             elif nxt.strip():
                 break
         cand = [d for d in (sec_date, *marks) if d]
-        out.append(dict(kind="neg", file=label, line=i, date=max(cand) if cand else None,
+        out.append(dict(kind="neg", file=label, line=i, date=max(cand) if cand else None, dates=cand,
                         section=sec, text=_clean(line), raw=line))
     return out
 
@@ -179,6 +202,10 @@ def scan_logbook(text, label="Strategie-Logbuch.md"):
 def evaluate(items, today, days=DEFAULT_DAYS):
     due, soon, undated = [], [], []
     for it in items:
+        # Nur Daten bis heute zaehlen: ein Termin in der Zukunft ("FOMC 08.12.2027 TENTATIVE")
+        # ist kein Pruefdatum und wuerde die Zeile sonst bis 2028 stummschalten (Runde 2).
+        past = [d for d in it.get("dates", [it["date"]]) if d and d <= today]
+        it["date"] = max(past) if past else None
         if it["date"] is None:
             undated.append(it)
             continue
@@ -293,6 +320,17 @@ def _synthetic():
         "| Support bestaetigt Regel | [e](u) | bestätigt |",                                         # 19 zeit, 01.09
         "## Bulenox (gültig Stand 28.07.2026, geprüft 25.09.2026)",                                  # 20
         "| VPS verboten | x | bestätigt |",                                                          # 21 zeit, 25.09
+        "## Methodik (recherchiert 28.07.2026)",                                                     # 22
+        "| Effekt A | u | praktiker, keine Primärquelle |",                                          # 23 ignoriert (Qualitaetsnotiz)
+        "| Effekt B, kein OOS-Split im Paper | u | bestätigt |",                                     # 24 ignoriert (Qualitaetsnotiz)
+        "**Ehrliche Kernlücke:** kein gefundenes Paper testet PCA auf N=4.",                         # 25 neg (Fliesstext mit Lit-Bezug)
+        "## Makro-Kalender 2027 (recherchiert 23.08.2026)",                                          # 26
+        "| FOMC 2027: 27.01.2027, 08.12.2027 (TENTATIVE) | u | bestätigt |",                        # 27 zeit, Zukunftsdaten zaehlen nicht
+        "## Prop-Firm-Paper: akademische Literatur zu Prop Firms (recherchiert 28.09.2026)",        # 28
+        "| Lim 2026a bewertet Challenges | u | bestätigt (kein Peer-Review) |",                     # 29 ignoriert (Literatur, keine Firmenregel)
+        "## Gamma (recherchiert 16.08.2026)",                                                        # 30
+        "### Gamma-Flip als diskrete Preis-Schwelle (recherchiert 16.08.2026)",                      # 31
+        "| Studie zeigt Z | u | bestätigt |",                                                        # 32 ignoriert ('Preis-Schwelle' ist kein Preis)
     ])
     log = "\n".join([
         "## #074 — Alpha durch Fehlersuche (10.08.2026)",                                            # 1
@@ -323,6 +361,14 @@ def _synthetic():
         ("syn Cache: Fliesstext-Negativbefund wird gelesen", 17 in c),
         ("syn Cache: Ueberschrift mit zwei Daten nimmt das spaetere", c.get(19, {}).get("date") == dt.date(2026, 9, 1) and (C, 19) not in dk),
         ("syn Cache: 'geprüft' in der Ueberschrift erledigt den Abschnitt", c.get(21, {}).get("date") == dt.date(2026, 9, 25) and (C, 21) not in dk),
+        ("syn Cache: 'keine Primärquelle' als Qualitaetsnotiz ignoriert", 23 not in c),
+        ("syn Cache: 'kein OOS-Split im Paper' ignoriert", 24 not in c),
+        ("syn Cache: Fliesstext 'kein gefundenes Paper' mit Lit-Bezug ist Negativbefund", c.get(25, {}).get("kind") == "neg"),
+        ("syn Cache: Zukunftsdaten schalten nicht stumm (FOMC 2027 am 23.10.2026 faellig)",
+         c.get(27, {}).get("kind") == "zeit" and bool(evaluate([dict(c[27])], dt.date(2026, 10, 23))[0])
+         and not evaluate([dict(c[27])], dt.date(2026, 9, 28))[0]),
+        ("syn Cache: Literatur-Abschnitt ueber Prop Firms ist keine Firmenregel", 29 not in c),
+        ("syn Cache: 'Preis-Schwelle' macht keinen Preis-Abschnitt", 32 not in c),
         ("syn Logbuch: Nachtrag darunter erledigt den Befund", l.get(2, {}).get("date") == dt.date(2026, 9, 28) and (L, 2) not in dk),
         ("syn Logbuch: offener Recherche-Negativbefund faellig", (L, 6) in dk),
         ("syn Logbuch: Trading-Negativbefund ohne Literaturbezug ignoriert", 7 not in l),
@@ -362,7 +408,12 @@ def _real():
     res.append(("echt Cache: 'Bulenox 50k Option 2' (### #073) datiert 10.08.", bool(b) and b["date"] == dt.date(2026, 8, 10)))
     # 3. Klassifikation
     lim = [x for x in cache if "7178078" in x["raw"] or "Price of a Funded Account" in x["raw"]]
-    res.append(("echt Cache: Lim 2026a (nur 'kein Peer-Review') ist kein Negativbefund", all(x["kind"] != "neg" for x in lim)))
+    res.append(("echt Cache: Lim 2026a wird weder als Negativbefund noch als Firmenregel gemeldet", not lim))
+    pca = one("kein gefundenes Paper testet PCA")
+    res.append(("echt Cache: PCA-Kernluecke (Fliesstext) ist Negativbefund", bool(pca) and pca["kind"] == "neg"))
+    fomc = one("FOMC-Statement-Tage 2027")
+    res.append(("echt Cache: FOMC 2027 (TENTATIVE) am 23.10.2026 faellig, nicht durch Zukunftsdaten stumm",
+                bool(fomc) and bool(evaluate([dict(fomc)], dt.date(2026, 10, 23))[0])))
     v = one("Cross-Market-VWAP-Spread")
     res.append(("echt Cache: 'Kein dediziertes Paper ... VWAP-Spread' ist Negativbefund", bool(v) and v["kind"] == "neg"))
     g = one("keine gefundene Studie")
@@ -404,7 +455,7 @@ def main():
         return 0
     if a.json:
         due, soon, undated, errors = collect(today, a.days)
-        conv = lambda xs: [{**{k: v for k, v in x.items() if k != "raw"},
+        conv = lambda xs: [{**{k: v for k, v in x.items() if k not in ("raw", "dates")},
                             "date": x["date"].isoformat() if x["date"] else None} for x in xs]
         print(json.dumps({"today": today.isoformat(), "days": a.days, "errors": errors, "due": conv(due),
                           "soon": conv(soon), "undated": conv(undated)}, ensure_ascii=False, indent=1))
