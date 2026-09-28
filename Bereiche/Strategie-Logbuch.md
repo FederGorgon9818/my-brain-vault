@@ -3393,3 +3393,192 @@ Vollständig in [[Neue Märkte (NT8-Daten) Plan]]. Kurz: NT8 auf der Box liefert
 **Lehre:** Eine Kostenverbesserung, die kleiner ist als die Streuung der zugrunde liegenden Trades, hebt keine tote Strategie — sie verschiebt nur die Nulllinie um genau den Betrag der Kostenersparnis, was bei jedem knapp gescheiterten Kandidaten zufällig ~26 % zum Kippen bringt (arithmetisch erwartbar, kein Signal). Vor jeder "was wäre wenn die Kosten X wären"-Rechnung: erst die Sizing-/Käfig-Konsequenz der zugrunde liegenden Änderung prüfen, nicht nur die Kostenformel isoliert.
 
 **Buch-Lücke:** unverändert, kein neuer Kandidat aus diesem Strang. AXV-W26 war ein Torwächter (kein Bein), die Mini-Rekalkulation bleibt Backlog (Sizing-Frage) bzw. verworfen (Kostenfrage).
+
+## #174 — GC Opening-Drive (Klon NQ_Momentum) an vier Gold-Ankern: 12 Survivors aus 1.800 sind Nullniveau, VWAP-Abstand ist Regime, drei Gold-Paper auf GC nicht reproduziert (24.09.2026)
+
+**Anlass:** Max (Juli-Modus): NQ_Momentum 1:1 auf Gold (15 Min Drive ≥ 0,3 % → mitgehen bis EOD, Stop 0,3x, BE 0,5R), dazu ADX > 20 / > 10 und VWAP als Filter, dann erweitert auf London/andere Uhrzeiten, Fenster 5-60 Min, Stop-Basis letzte Kerze/15 Min/Stunde, Exits ohne EOD, und Paper-Suche nach einem Why. Gelaufen: `ein-weg` (variant-scout + strategy-auditor: GC-OD-01 testbar mit Auflagen, ADX- und VWAP-Story fallen durch), `research-scout` (Web-Tools tot, danach per Browser/Crossref/Europe PMC), `quant-statistician`, `quant-mathematician`, `verdict-auditor` (hält mit Auflagen, drei Nachtests gerechnet), `logbook-distiller`. Alles in `engine/_scratch_gc_od/`.
+
+**Bau:** Engine unverändert. Der 09:30-Anker ist in `qbt._reversal_trades`/`load_rth` hart verdrahtet (AP197), deshalb Zeitverschiebung der 1m-Bars je Anker (`harness.py`), bitgleich für 09:30 verifiziert, Trade-Zahl 08:20 gegen unabhängige Prämisse 321 vs. 318. Stop-Basis per Quelltext-Patch an genau einer Zeile (`early_range`), bitgleich für `window`.
+
+**Zahlen:**
+- Literal-Klon: 09:30 expR +0,155 aber OOS −0,03 / letzte 3 J −0,10 (IS-lastig, wie #165); 08:20 +0,017, top5 = 10.
+- Prämisse 08:20 (Rohbewegung bis 15:55): +1,41 Pkt, CI [−0,98; 3,95], Kosten 0,5 Pkt, 2016-19 negativ. VWAP-Seite als Filter tautologisch (98 % der Drives erfüllen ihn).
+- Grid 1.800 Configs (Anker 03:00/08:20/09:30/10:00 × Fenster 5/15/30/60 × 2 Schwellen × 3 Stops × 5 Exits × 4 Stop-Basen): 12 Survivors (7× 08:20, 5× 10:00), alle Exit Target 2R. Unter Nulldrift erwartet ~4 (CI 1,4-9,2, Null-Welten 0-12), n_eff 40-100, bester SR 0,56 gegen Decke 1,23 (n_eff) / 1,90 (Grid) / 2,39 (global), DSR ≤ 0,011, Einzelspitzen, kein Plateau. In $ schlagen die Survivors ihren Nulldrift-Zwilling nicht (R_pts wächst mit dem Goldpreis). Nicht boom-getragen. Kosten 35-57 % der Brutto-Edge (NQ-Bein 18 %).
+- Nachtests verdict-auditor: Top 10 nach $ der am top5-Gate gescheiterten eod/eod_be/time60-Configs SR 0,40-0,51, alle unter der Decke; GC-Vollkontrakt statt MGC hebt SR nur um 0,01-0,06.
+- ADX(t-1) > 20 hilft auf keinem Survivor (≤ 20 meist besser), > 10 ist praktisch immer wahr. Deckt sich mit #168/#171.
+- Makro 08:30: die 08:20-5-Min-Varianten verlieren an Release-Tagen (−0,10 bis −0,41 R), verdienen nur an den übrigen — Gegenteil des Whys „Makro-Drive setzt sich fort".
+- VWAP-Abstand (nachträglich auf 4 Survivors gefunden), vorab festgelegt nachgetestet: Schwelle rollierender Median/Terzil nur aus Vergangenheit, alle 16 Nachbar-Configs 08:20, IS 2016-22 vs. OOS 2023-26. Oberes Terzil hebt OOS in 15/16 Configs (+0,14 R), IS nur in 7/16 (+0,03 R). Regime-Effekt der Gold-Trendphase, kein stabiler Filter.
+- Paper: Xu/Bouri/Saeed/Wen 2020 (GLD, r5 11:30-12:00 → letzte Halbstunde, t 3,03) auf GC brutto ≈ 0. Gao et al. 2018 (r1 → letzte Halbstunde) brutto +0,11 Pkt, nach Korrektur für 2 Specs CI-Untergrenze −0,02, netto −0,39. Wei 2026 (SSRN 7257240, nur Abstract): US→Asia lag-1 auf GC ρ +0,01 [−0,07; +0,11] statt +0,13.
+
+**Urteil A — GC Opening-Drive-Momentum.** Reichweite: GC/MGC, Signal-Rolle, 1 Trade/Tag, Anker 03:00/08:20/09:30/10:00 ET, Fenster 5-60 Min, Stop 0,3-1,0x mit 4 Basen, Exits Target 2R/eod/eod+BE/Zeit 15/Zeit 60, MGC-Kosten 1 Tick + 1,02 $ (Stress 2 Ticks, Vollkontrakt gegengerechnet). Nachweisschwelle ~0,2 R netto; **Effekte unter ~0,2 R sind mit 10,6 Jahren `unentscheidbar`** (Power: 0,07 R bräuchte ~78 Jahre). Kategorie: **empirisch-nichts-gefunden**, N = 1.800 (n_eff 40-100), plus 32 VWAP-Filter-Configs. Nicht tot: Survivor #5 (08:20, 15 Min, 0,3 %, Stop 0,3x Fenster, Target 2R) eingefroren; Gold außerhalb dieses Grids (Asia-Session-Fenster, andere Signalrollen); eigener GC-Anker in der Engine (AP197). Wiedervorlage: #5 nur als Vorzeichen-Check auf GC-Daten vor 2016, sobald verfügbar (Live-Trades entscheiden nichts: ~760 Trades ≈ 25 Jahre nötig). Stempel: `qbt.py` sha256 9cf6a84e6c09a8b6…, `harness.py` f1b6b6b316f2f9e1…, GC NT8 2015-12-28 bis 2026-07-24, Survivor-Gate `grid.py` + Nulldrift + Zufallsdecke 1,23/1,90/2,39, Register 66.111 + 1.837 pending (nicht auf Box synchronisiert).
+
+**Urteil B — Paper-Specs letzte Halbstunde auf GC.** Reichweite: GC/MGC, Timing-Rolle 15:30-15:55 ET, Signal Xu r5 (11:30-12:00) bzw. Gao r1 (Vortagesschluss → 10:00), je alle Tage/hohe Vola, MGC-Kosten 2 Ticks/Seite. Kategorie: **empirisch-nichts-gefunden**, N = 5 (Xu 3, Gao 2); Gao mit Brutto-Hinweis (+0,11 Pkt, nach Korrektur nicht über 0). Wiedervorlage: Gao nur bei Round-Trip-Kosten ≤ 0,1 Pkt (Maker beidseitig), Xu nur auf ausdrückliche Ansage. Stempel wie A.
+
+**Urteil C — Wei US→Asia Session-Momentum auf GC.** Reichweite: reine ρ-Messung, zwei Sessiondefinitionen, keine Strategie. Kategorie: **unentscheidbar** (CI schließt die MDE 0,07 nicht aus, Sessiongrenzen aus dem Abstract geraten), zählt nicht als Friedhof. Wiedervorlage: sobald Volltext mit den Sessiongrenzen gelesen ist. Stempel wie A.
+
+**Lehren (logbook-distiller geprüft):**
+1. **Das top5-Gate ist nicht exit-neutral.** Bei gedeckeltem Payoff (Target bR) gilt top5 ≤ 5b/(n·E), das Gate wird zu n·E > 10b und lässt systematisch rr-Exits durch; 67-77 eod-Configs mit IS/OOS/L3 > 0 scheiterten alle daran, unter Nulldrift überlebten dieselben rr2-Muster. Gate lebt in `discovery_lib.py` (`top5_share_max`, `GATES_HARD` 0,50) ohne Exit-Normierung → Ticket vorgeschlagen.
+2. **Eine Survivor-Zahl ohne Null-Erwartung ist kein Befund** (12 echt vs. ~4 unter Null, Null-Welten bis 12). Grid-weite Kennzahl „erwartete Survivors unter Nulldrift" fehlt in `discovery_lib.py` → Ticket vorgeschlagen.
+3. **R und $ können gegeneinander laufen**, wenn R je Trade stark schwankt (Survivor +0,063 R, −83 $/J). Wiederholung von #165 Lehre 5: Survivor-Tabellen nach $ sortieren, `ctl_null` prüft R und $ schon.
+4. **Ein nachträglich gefundener Filter bestätigt sich auf denselben Daten fast automatisch.** Pflicht: Vergangenheits-Schwelle (shift 1), alle Nachbar-Configs, IS/OOS getrennt. Als Kontrolle `ctl_posthoc_filter` vorgeschlagen → Ticket.
+5. Der 09:30-Anker für Nicht-Index-Märkte hängt an **AP197**, kein neues Ticket.
+6. Scratch-Grids: `{**cfg, **stats}` überschrieb die Fensterlänge mit der Trefferquote (`win`). Spaltenpräfixe nutzen.
+
+**Buch-Lücke:** kein Kandidat. #5 hängt an „über Zufallsdecke" (SR 0,56 vs. 1,23) und wäre selbst dann nur ~1 Monat schneller zu 50k bei ~8 MGC.
+
+## #175 — AP204 neu auf gemeinsamem Kalender: Start E8 150k mit k2, NQ_Gap-fade_hf bleibt draußen, zwei Messwerkzeuge rechneten am falschen Betriebspunkt (23./24.09.2026)
+
+**Anlass:** offene Entscheidung aus #173 (Altlast 2): `NQ_Gap-fade_hf` war im AP116-Lauf (31.08.) nur am 150k-Tier „besser" (90,68 gegen 83,85 %), 150k ist seit AP204 der gekaufte Betriebspunkt, das Buch hat nur noch 3 Beine. Max: „rechne das". Daraus wurde über zwei Tage eine Neuberechnung von AP204. Gelaufen: `kette` rechnen (quant-mathematician + quant-statistician, fünf Runden), `kette` urteil und Einzelaufruf (verdict-auditor, drei Runden), `logbook-distiller` (zwei Runden). Engine unverändert. Skripte, Logs und Ergebnisse: `engine/_scratch_ap204_kal/` (README dort).
+
+**Stufe 1, Baseline:** Das heutige 3-Bein-Buch hat in `evaluate_v2` eine 150k-Delle: 100k 84,9 % gegen 150k 63,6 % (+21,3 pp gepaart, 12 Seeds, t ≈ 126). Sie ist zu 97 % **Zeitzensur** (35,5 pp „Horizont abgelaufen", 0,9 pp Bust) und hängt an der Konvention `horizon_months=36` bei `frac=0.01` (k1). Kippunkt bei rund 54 Monaten, ab k≥2 dreht sie sich um (k3: 150k ist das beste Tier). E8-Evals haben real kein Zeitlimit.
+
+**Stufe 2, Buch + Gap-Bein** (10 gepaarte Seeds, frische Zellen, Engine-Fingerprint `3114d580`): Extra-Drift +741 $/J (iid-CI90 +44 bis +1.428; Block-Bootstrap-CI90 des Tagesmittels −1,9 bis +43,3 $, P(≤0) 0,063), Korrelation Momentum +0,08, LastHour +0,01, Asia-Dir −0,13. Symmetrisch in `evaluate_v2`, k1: 25k −12,95 / 50k −6,74 / 100k +4,40 / 150k +15,55 / FN −10,26 pp, Nulldrift-Kontrolle sauber. **k-Variation 150k: k1 +15,55, k2 −4,53, k3 −10,32 pp.** Die positiven k1-Werte sind Horizont-Zensur (bei H 84 M 100k +0,10, 150k −0,10 pp). Epochen-Split der Gap-Drift: 2016-19 +132 $/J (t 0,60), 2020-22 **−642 $/J** (t −0,73), 2023-26 +2.570 $/J (t 2,62), aktuell gegen 2016-22 Welch p 0,009 (Schnitt nachträglich gewählt). DSR 0,19 bei n_trials 116. Top-10-Tage tragen 88 % der Drift. Im Zeit-Ziel (`tempo_plan`, unabhängige Pfade) hilft das Bein, solange es seine Drift ungefähr wie das Buch behält (Median bis 50k k2 59,3 → 52,0 M, k3 47,0 → 41,4 M), Schaden nur bei k3 im Szenario ×0,58 (Erreichung 79,5 → 74,0 %). Asymmetrisch (Buch k, Gap 1 Kontrakt) lohnt nur, wenn das Bein ≥ 37 % (k3) bzw. 22 % (k2) seiner Drift behält; faire Schrumpfung 0 bis 0,43. Ersatz für Asia-Dir ist schlechter als ohne (Asia 770 $/J bei t 2,62 gegen Gap 741 $/J bei t 1,73).
+
+**AP204 neu auf gemeinsamem Kalender.** `tempo_plan.simulate_fleet` zieht je Konto einen eigenen Pfad, real handeln alle Konten dasselbe Buch an denselben Tagen. Neu gebaut (`ap204_kal.py`): echte Käfig-Kernel aus `tempo_plan`, nur die Ziehung ersetzt, jedes Konto sieht den gemeinsamen Master-Pfad ab seinem Starttag. Pflichtprobe: im unabhängigen Modus reproduziert es `simulate_fleet` (IS k3 44,5 gegen 44,3 M), Nulldrift 0,0 bis 0,2 %. Ergebnis AP204-Politik (P10-Form, Deckel 2.500 $, 600 Welten), k2 / k3, FN-Preis 279 $:
+
+| | Backtest | letzte 3 J | ×0,58 | letzte 3 J ×0,58 |
+|---|---|---|---|---|
+| 50k in 10 J | 93 / 90 % | 94 / 90 % | 38 / 41 % | 55 / 43 % |
+| 50k in 5 J | 44 / 63 % | 77 / 78 % | 6 / 13 % | 17 / 23 % |
+| RMST k3 − k2 | −9,7 M | −2,7 M | −5,5 M | +0,2 M |
+| Plan tot | 4 / 9 % | 6 / 10 % | 20 / 37 % | 28 / 47 % |
+
+Unter Korrelation wird der Deckel zur absorbierenden Barriere (k3 ×0,58: 80 → 41 % Erreichung, ohne Deckel 61 %). Mit FN-Listenpreis 484 $ verliert k3 seinen Tempovorsprung in zwei von vier Szenarien. Einzelkonto E8 150k k2 / k3 (Backtest): Eval-Bust 10,5 / 18,8 %, Funded-Ruin 12,9 / 24,0 %, Netto je Kauf 10.987 / 9.114 $; ×0,58: Funded-Ruin 37,9 / 52,8 %.
+
+**Mischformen** (`ap204_cyc.py`, `ap204_ord.py`, k-Rotation je Firma, 49 + 28 Kombinationen, Code Pfad für Pfad von beiden Quant-Agents reproduziert): reine k2/k3-Mischungen liegen zwischen alles-k2 und alles-k3, bei FN 484 schlägt keine alles-k2 robust. **k1 in der Rotation senkt „Plan tot" nur scheinbar**: E8-150k-k1-Konten leben 80 bis 93 Monate als Zombies (formal aktiv, Netto ≤ 0). Ökonomischer Tod sinkt nur um 5 bis 10 statt 20 pp, die Zielquote in 10 J **fällt** in 3 von 4 Szenarien (IS −2,8, ×0,58 −6,0, letzte 3 J ×0,58 −4,0 pp), unter Nulldrift ist der Effekt reine Definition.
+
+**Entscheidung (Max, 24.09.2026):** Start **Fr 02.10. mit 1× E8 150k, k2** (2 Micros je Bein). Nach RMST (Zeit bis 50k) ist k3 gleich oder schneller; nach Zielquote in 10 J liegt k2 in „letzte 3 J ×0,58" vorn (55 gegen 43 %), und k2 halbiert das Risiko, dass der Plan stirbt, dessen Tod bei k3 typischerweise ins BOS-Jahr fiele (Monat 13 bis 22). Die Wahl ist eine Gewichtung dieser Achsen, kein reines Rechenergebnis. FN-150k-Größe offen, bis AP205 deployed und der echte FN-Preis bekannt ist (AP248). k1 in der Rotation: verworfen. „2-2-3" auf E8 (jedes dritte Konto k3) ist praktisch gleichauf mit alles-k2, zulässig ab dem dritten E8-Konto, kein belegter Vorteil. Tickets angepasst: AP214 (Kauftag auf k2), AP204 (Nachtrag); neu AP245 bis AP248.
+
+**Urteil: NQ_Gap-fade_hf als Buch-Bein.**
+Reichweite: Config `gap` fade, `gap_atr` 0,5-1,5, `gap_stop_mult` 0,75, `gap_confirm_min` 10, NQ, Rolle Signal, Intraday, 1 MNQ je Einheit, MNQ-Kosten Engine-Standard, zum 3-Bein-Buch NQ_Momentum_d260818 + NQ_LastHour_v3 + NQ_Asia-Dir-USopen_d260820. Gemessen: (a) Zusatz-Bein symmetrisch in `evaluate_v2` (H 36 M) an E8 25k/50k/100k/150k und FN Flex 50k bei k1, an 50k/100k/150k zusätzlich k2/k3; (b) `tempo_plan`-Flotte 120 M, Deckel 2.500 $: symmetrisch k1-k4 (unabhängige Pfade), asymmetrisch Buch k + Gap 1 (k2/k3 gemeinsamer Kalender, k2-k4 unabhängig), Ersatz für Asia-Dir k1-k4 (unabhängig), je 4 Regime + Nulldrift. Nicht mitbeurteilt: Live-Buch ohne Käfig (`LIVE_EXTRA`), andere Configs der Gap-Familie, Filter- und Exit-Rolle, andere Märkte, symmetrisch auf gemeinsamem Kalender, Epochen-Permutationstest über alle Schnittpunkte.
+Kategorie: **empirisch-nichts-gefunden**, N = 116 Trials der NQ-Gap-Familie (45 Survivors). Die beste Config trägt nach Selektionskorrektur nicht: DSR 0,19, Block-Bootstrap-CI90 des Tagesmittels [−1,9; +43,3] $, P(≤0) 0,063, Top-10-Tage 88 % der Drift, 2020-22 −642 $/J, Drift konzentriert in 2023-26 (Welch p 0,009 gegen 2016-22, Schnitt nachträglich gewählt). Der Buch-Nutzen ist bedingt, nicht abwesend: Bei Gap-Schrumpfung wie beim Buch schlägt Buch k2 + Gap 1 das reine k2 auf gemeinsamem Kalender in allen vier Regimen (IS RMST 64,5 → 59,3 M, ×0,58 Erreichung 40 → 47 %, 3 Seeds). Er kippt, sobald das Bein weniger als 22 % (k2) bzw. 37 % (k3) seiner Drift behält, die faire Schrumpfung liegt bei 0 bis 0,43. Draußen, weil der Nutzen an einer nicht belegten Drift hängt. Symmetrisch am gekauften Tier 150k: k2 −4,53, k3 −10,32 pp. Die positiven k1-Werte (100k +4,40, 150k +15,55) sind Horizont-Zensur.
+Nicht tot: asymmetrisch Buch k2 + Gap 1 Kontrakt (Break-even liegt in der fairen Schrumpfungsspanne), Live-Buch-Rolle.
+Wiedervorlage: ab **01.10.2027**, maschinell über **AP247**. Engine-Tageszellen dieser Config, 1 MNQ, netto nach Engine-Kosten, Zeitraum 01.10.2026-30.09.2027, Summe ≥ 1.285 $ (50 % des 2023-26-Niveaus von 2.570 $/J). Wenn erfüllt: DSR über die Gesamtstichprobe inklusive Forward-Jahr mit n_trials aus dem Register (≥ 116), danach Buch-Marginal asymmetrisch und symmetrisch am dann gekauften Betriebspunkt auf gemeinsamem Kalender (AP245), Gap-Schrumpfung aus der DSR abgeleitet statt pauschal 0,58. Die Schwelle ist ein Auslöser, kein Beleg (1 Jahr streut um etwa 1.390 $/J, bei Drift 0 springt sie in etwa 18 % der Fälle an). Eintrag in `auto_check.py` ist Teil von AP247.
+Stempel: Engine-Fingerprint `3114d5801ec878c01312dbea89a33d63`, Tageszellen bis 06.08.2026, DSR per `overfit.deflated_sharpe_ratio`, Kriterium Zeit bis 50.000 $ (AP204-Politik, Deckel 2.500 $), Zwischengröße `evaluate_v2` Passquote/cost_per_funded, Betriebspunkt E8 150k k2 (gekauft), k3 verglichen.
+
+**Lehren (logbook-distiller geprüft):**
+1. **Bewertet und gekauft wird an verschiedenen Betriebspunkten.** `evaluate_v2` rechnet hart verdrahtet k1 / 36 M (`eval_plan.py:438`), `tempo_plan` k3 / 1.250 Tage, die Tier-Ordnung dreht zwischen beiden. Max hat am 23.09. entschieden: angleichen. Nur Text → **AP246**.
+2. **Die Auto-Promotion entscheidet am falschen Käfig.** `discovery_lib.py:795/851` und `eval_plan.block_marginal` fallen ohne `primary_tier` auf „50k" zurück, `book_state.json` hat das Feld nicht. Aktiver Fehler im laufenden Betrieb → **AP246**.
+3. **Eine Flotte aus unabhängigen Pfaden überschätzt die Zielquote in schwachen Regimen um bis zu Faktor 2**, weil alle Konten dasselbe Buch an denselben Tagen handeln und gebündelte Busts den Deckel aufbrauchen, bevor ein Payout kommt. Dasselbe Problem stand schon in **#072** (Fehler 2, `goal_multiaccount.py`), die Korrektur ist beim Werkzeugwechsel zu `tempo_plan.py` verloren gegangen. Nur Text → **AP245**.
+4. **„Plan tot = nichts läuft mehr" lässt sich von langlebigen Klein-Konten formal verhindern.** Ökonomischen Tod (Ziel verfehlt UND Deckel blockiert bzw. Netto ≤ 0) und Zombie-Anteil messen. Erweitert die Nulldrift-Pflicht aus **#106 / Lehre 81** auf abgeleitete Sicherheitskennzahlen. Nur Text → **AP245**.
+5. **Eine sensitivitätsfaire Schwelle ist ein Buch-Effekt, kein Tier-Effekt.** Die Driftsensitivität je Tier hängt am Zensurgrad des gerechneten Buchs (150k: 24,1 pp je 1.000 $/J auf 3 Beinen, 9,8 auf dem alten 4-Bein-Buch). Schwelle immer am jeweils gerechneten Buch messen. Bleibt Text (kein fester Pipeline-Ort, ad-hoc-Rechenmethodik).
+6. **Eine Zelle, deren Delta beim Lockern der Horizont-Konvention verschwindet, ist kein Befund** (150k-k1 +15,55 pp, bei H 84 M −0,10). Bleibt Text (Lesedisziplin, kein fester Pipeline-Schritt).
+7. Passquote je Eval und Zeit bis Ziel ranken erneut entgegengesetzt (k2 besteht öfter, k3 zahlt im Funded mehr). Keine neue Lehre, siehe **#106 / Lehre 81**.
+
+**Buch-Lücke:** `NQ_Gap-fade_hf` hängt an „Buch-Marginal besser" am gekauften Betriebspunkt mit belegter Drift. Die asymmetrische Rolle (Buch k2 + Gap 1) ist bedingt positiv, scheitert aber daran, dass die Drift nach Selektionskorrektur nicht belegt ist. Nächste Stufe erst nach der Wiedervorlage 01.10.2027 (AP247).
+
+---
+## #176 — Friedhof-Nachlauf durch Gate v2, Teil 1 (Slot-Familien + Gap-Vertreter): 113 Kandidaten, 0 fürs Buch, die diversifizierenden Karten sind noch ungemessen (25./26.09.2026)
+
+**Anlass:** Max, 25.09.: „Alle vielversprechenden Friedhof-Strategien durch das neue Gate v2.“ Entschieden hat er dazu: Kandidaten erst kuratiert, dann breit. Strenge zweistufig: ins Next-Week-Buch nur nach BH-FDR 10 % über die Nacht-Familie plus Placebo-Kontrolle, einzeln bei α 0,02 Bestandene kommen als „knapp“ auf eine Liste für Max. Referenz ist das Next-Week-Buch, gerechnet greedy nacheinander, ohne Obergrenze. Fenster volle Historie UND OOS, dazu eine Placebo-Kampagne, neue Beine zuerst. Gelaufen: Session 4defc2f4, lokal und job-frei, 4 Worker, vom 25.09. 08:50 bis 26.09. 19:27. Gegengelesen haben quant-mathematician, quant-statistician, strategy-auditor (zweimal) und verdict-auditor. Engine unverändert bis auf den Gap-Null-Schalter (siehe unten). Alles gesichert in `engine/_scratch_friedhof_gate_v2/` (215 Dateien, Auswertung `final/classify.py`, `final/classification.json`).
+
+**Umfang:** 110 Kandidaten in der Nacht und 3 Gap-Vertreter in einem eigenen Prozess. Die 110 stammen aus 529 gesichteten Friedhof-Karten: 37 Tier 1 kuratiert (Logbuch, Buch-Historie, Lab, Discovery-Results), 64 Tier 2 breit (Register/Results, je Mechanismus der beste Pick), 9 Tier 3 aus der Sichtung aller 111 Lab-Reports (`reports_screening.md`). Nach Quelle: Register 47, discovery_results 30, Vault 18, Lab-Reports 9, dazu 6 Einzelquellen. Je Kandidat lief Gate v2 als neues Bein und, falls `replaces_leg` gesetzt war, als Ersatz. Beides in voller Historie und im OOS, dazu Placebo (Tier 1 und jeder 5. aus Tier 2) und Kontrollen. **Nicht gemessen wurden 72 Karten plus 2 FLIP:** 56 Gap-Karten fielen nach der Regel „ein Vertreter je Wette“ raus (das ursprüngliche Ex-Buch-Bein `FH_RTY_Gap-fade`, t 4,24, lief nicht, nur sein Retune), und 16 Karten haben keinen Null-Schalter. Referenzbuch `91c972fe` (Live = Next-Week: NQ_Momentum_d260818, NQ_LastHour_v3, NQ_Asia-Dir-USopen_d260820), Basis-Passquote 50k 87,37 %.
+
+**Placebo-Kampagne:** Die volle Historie ist als Primärfenster freigegeben, OOS zählt nur noch als Vorzeichen-Konsistenz. Voll lagen 0 von 50 Placebos bei p roh < 0,02 (erlaubt wären 2), mittleres z −0,30, SD 0,52, keiner mit p < 0,10. Im OOS ebenfalls 0 von 50. Das Gate ist also nicht zu locker, bewiesen ist die Eichung damit aber nicht. Der Seed 4242 ist fest, und die Placebos ballen sich in wenigen Familien (19 Momentum, 8 Asia, 5 OpEx). Deshalb liegt n_eff weit unter 50, und die zu kleine SD lässt sich nicht trennen in „Gate konservativ“ oder „Placebos korreliert“. Die Gegenprobe mit echten Kandidaten (20 von 104 mit z > 2,05 gegen 0 von 50) ist durch den Winner's Curse verzerrt, sie sagt also nichts über die Trennschärfe. Die ORB-Breakout-Karten taugen hier nicht als Negativkontrolle: n 76 bis 152 heißt keine Power, und ORB_VIXBAND ist laut #068 keine saubere Nullkarte.
+
+**Ergebnis:**
+- **Familien-BH (q 0,10, Simes, 14 Familien vorab aus Metadaten).**
+  - V1 (k_lo): R = 0 in beiden Fenstern. Bester Simes-Wert SLOT_LASTHOUR 0,0145, die erste Hürde liegt bei 0,0071.
+  - V2 (k_hi, eine Sicht je Kandidat): R = 2, nämlich SLOT_MOM und SLOT_LASTHOUR. Die Nacht findet auf Familienebene also genau die zwei Continuation-Mechanismen, auf denen das Buch schon steht, und kein Mitglied besteht Stufe 2.
+  - Flacher BH wie in `fdr_greedy`: nur TS-05 kommt durch und scheitert dann an Stufe 2.
+- **Woran es hängt (beide Varianten gleich):** 78 an Stufe 1, 27 an den Vor-Gates, 6 an Stufe 2, 1 knapp (TN-04), 1 Lauf-Fehler.
+- **Power:** Bei medianem k (z_krit 3,17 bis 3,22) hätte die Nacht ein Bein vom Kaliber LastHour (z 2,61) nur mit 0,27 bis 0,29 gefunden, geschrumpft (×0,58) nur mit 0,04 bis 0,05. Die 0 ist deshalb vor allem eine Power-Aussage.
+- **Stufe-1-Treffer (k_lo), 7 Stück:**
+
+| Kandidat | Sicht | z | Buch-Punkt |
+|---|---|---|---|
+| TS-05 | neu | 4,56 | −14,9 pp |
+| TK-03 | neu | 3,86 | −14,2 pp |
+| TE-01 | neu | 3,64 | −17,1 pp |
+| TS-13 | neu | 3,61 | −10,2 pp |
+| REFINEAPEX_Momentum_3 | Ersatz | 3,56 | −17,8 pp (gegen Original −19,2 ± 6,8) |
+| NQ_Momentum (früheres Live-Bein) | Ersatz | 2,55 | −18,3 pp (gegen Original −20,5 ± 6,6) |
+| TN-04 | Ersatz | 2,75 | +6,43 pp (gegen Original +0,97 ± 1,58) |
+
+Die ersten vier gehören alle zur NQ-Momentum-Familie (30 bis 120 Min Signal) und wurden nur als Zusatzbein gemessen, also als Duplikat neben dem Live-Momentum-Bein. Die zwei Momentum-Ersätze sind signifikant schlechter als das Original.
+
+**TK-03 (Quant-Team + strategy-auditor):** nicht ins Buch, auch nicht mit Tempo als Stufe 2.
+- Es ist LastHour mit früherem Anker (Open bis 11:30, beide Seiten, ρ 0,43).
+- Tail-Lotterie: 42 Trades bringen 99,5 % des PnL, 32 davon Shorts an Crash-Tagen. 2016-19 ≈ 0, seit 2023 ohne die Top-Tage negativ.
+- Tempo bei E8 150k k2, Spalte „letzte 3 J ×0,58“: mit 1 Micro neutral (+1,8 ± 1,7 M), mit 2 Micros +7,7 M langsamer.
+- Der Stufe-1-Treffer entsteht nur bei 50k k1, weil der Kandidat dort die Buch-Varianz dominiert. Bei Live-Größe liegt z bei 2,13 < 3,19.
+
+Für TS-05, TE-01 und TS-13 ist dasselbe Muster eine Erwartung, gerechnet ist es nicht. Keiner der drei hatte eine Ersatz-Sicht.
+
+**TN-04 (knapp nach Regel, vom strategy-auditor gestrichen):**
+- Der Pick ist NQ_LastHour_v3 mit lh_thr 0,003 statt 0,002, also eine strikte Teilmenge (827 von 976 Trades, ρ 0,89). Der Overnight-Filter, nach dem die Hypothese heißt, steckt nicht im Grid. Getestetes und begründetes Objekt sind nicht dasselbe.
+- Ersatz/voll: p_k(k_lo 6) 0,0177, das ist eine Marge von 0,28 pp auf einer Schwelle von 18,54 pp. Mit k_hi 27,5 liegt p_k bei 0,078.
+- Gegen das Original +0,97 ± 1,58 pp, das ist dieselbe Frage zum dritten Mal mit wechselndem Vorzeichen. OOS-Punkt −0,71 pp.
+- Delay-Kontrolle: z_sign −6,1 wie beim Live-Bein und 77 % der Edge bleiben stehen, also kein Look-ahead. Das gehört an den live-reconciler.
+- Nach Max' Regel vom 25.09. hat ein reiner Parameter-Nachbar ohne eigenen Filter keinen Buch-Pfad. Status deshalb „durch, kein Buch-Pfad“. **Die Knapp-Liste ist leer.**
+- Achtung: Die Workbench-Karte von TN-04 steht auf grün („bereit fürs Next-Week-Buch“), weil die Ampel die Slot-Ersatz-Regel und das OOS nicht auswertet. Der Verdict-Text auf der Karte stimmt, die Ampel nicht.
+
+**Nächstgelegene neue Beine (alle nein):**
+- vt01_NQ: z 2,37 gegen 2,71. Die Story widerlegt sich selbst, weil Vol-Target-Fonds den ganzen Index verkaufen, die Basis auf ES/RTY/YM aber roh negativ ist.
+- FH_RTY_Gap-fade_retune_RT: z 1,88 gegen 3,18. Einziges neues Bein mit positivem Buch-Punkt (+2,07 / +1,10 pp), aber vierte Retune-Generation, und 52 % des R kommen von der unteren Filtergrenze.
+- gen_maband_crossover_wide_tfm_NQ: bester von 647 Picks, OOS-PF 7,75 bei einem EOD-Trendfolger. Das ist Selektion, kein Look-ahead.
+- Kontrollarm AW-14c_NQ: der Zufallsanker erreicht z 3,32. Die maband-VWAP-Edge ist also generische Intraday-Continuation, nicht der Anker.
+
+**Gap-Null-Schalter gebaut (Max: ja):** `tm_null` in `qbt._gap_trades`, `gap` in `discovery_lib.NULL_MODES`. Regressionstest vorher und nachher grün, ohne Schalter bit-identisch, pipeline-auditor „sauber mit Auflagen“. Backups `*.bak-20260925-gapnull`. **Nicht auf die Box gesynct.** Aus dem Audit inzwischen erledigt, nicht mehr offen: `controls.ctl_null` zog vorher eine eigene Modusliste, seit heute (AP257 P1, 26.09.2026) zieht sie aus derselben Quelle wie Gate v2/v3 (`discovery_lib.NULL_MODES`, siehe `controls.py` Zeile 799-806) — vorher fehlten dort gap, orb und cal, 135 von 1.041 Jobs sprangen die Nullkontrolle dadurch stillschweigend über. Offen bleibt nur noch, ob dieser Stand schon auf die Box gesynct ist.
+
+**Register:** 18 fehlende echte Kandidaten-Configs als Pending nachgetragen (`registry_pending/5fb28544…`), keine Zwillinge und keine Placebos. `registry.json` wurde nicht geschrieben, n_total bleibt 68.112. Workbench: 6 Karten (TK-03, TS-13, TE-01, TS-05, NQ_Momentum, TN-04).
+
+**Urteil (je Gruppe):**
+**Reichweite:** 113 Einzel-Configs (110 Nacht, 3 Gap), überwiegend NQ, dazu ES und RTY. Rolle Signal als neues Bein und, wo gesetzt, Ersatz eines Live-Beins. Intraday mit EOD-Flat, 1 Micro, Engine-Kosten inklusive 2-Tick-Stress in den Vor-Gates. Käfig Gate v2 E8 50k k1 (Passquote, 3 Seeds), volle Historie primär, OOS als Vorzeichen. Je Mechanismus nur der eine Pick, nicht das Grid. Nicht mitbeurteilt: die 72 + 2 nicht gemessenen Karten, Stufe 2 als Tempo am gekauften Betriebspunkt 150k k2 (nur für TK-03 gerechnet), Filter- und Exit-Rollen, Live-Buch (`LIVE_EXTRA`).
+- **strukturell-tot (2):** ORB_maxwin_close, ORB_nr7_close. Beleg ist die Zerlegung aus #068: über 2.685 NQ-Ausbruchstage gibt es nach dem Break bis EOD −0,6 Pkt bei 51 %, auch mit Trend-/Spike-Kondition. Das verbietet die Klasse Close-Breakout-ORB mit EOD-Exit auf NQ. Das Verfehlen von Stufe 1 in dieser Nacht bestätigt nichts (n 76 bis 152, keine Power).
+- **empirisch-nichts-gefunden (7), je N = 1 Config:**
+  - Sechs Tail-Lotterien (ohne die besten 1 % negativ): FH_ES_Momentum_s15, AK-01, gen_maband_combo_channel_atr, FH_NQ_Asia-Break-USsession, asian_EUbreak, FH_NQ_Momentum_d260821.
+  - ORB_VIXBAND_NQ: Tail-Körper −4.979 $ bei 1.368 Trades, Sharpe-t 1,15. Der Bank-Status „echter Fund“ aus #068 ist damit widerrufen.
+  - Dazu, als Why-Urteil und nicht als Kandidat: der VWAP-Anker-Why der maband-Familie ist für Job hyp_AW14c_NQ widerlegt (N = 96 Configs, NQ, 50k k1). Der Zufallsanker trägt gleich viel: Median-Sharpe der against-Seite 0,58 gegen Session 0,55.
+- **echt-aber-zu-klein (0):** Die Continuation-Treffer bestehen k_hi nur unter Normal-Extrapolation. Mit t(9) über die 10 Zwillinge liegt p_k_hi bei 0,07 bis 0,79, und z hängt an der Skala 50k k1.
+- **unentscheidbar (102), zählt nicht als Friedhof:** Stufe 1 verfehlt, aber ein Kaliber wie LastHour ist bei dieser Trade-Zahl nicht ausgeschlossen, oder Solo-Sharpe-t ≥ 3, oder Stufe-1-Treffer nur mit k_lo. Dazu gehören TE-15_v2, TS-12, tsmom_erret 0.0008 und FA-01 (nur als Duplikat gemessen, die Sicht „neu“ drückt z bei Slot-Kandidaten im Schnitt um 0,76), außerdem REFINE_ORB_2_close (alle Vor-Gates bestanden, Stufe 1 ohne Power) und TN-04.
+- **nicht gemessen (2), keine Kategorie:** TS-21 delta0.15 (KeyError 'date'), gen_maband_crossover_wide_atr_tfm_ES (IS/OOS leer).
+
+**Wiedervorlage:** je Ursache prüfbar, nicht pauschal.
+- (a) Stufe-1-Treffer, die nur mit k_lo halten (TS-05, TK-03, TE-01, TS-13, REFINEAPEX_Momentum_3, NQ_Momentum): sobald Stufe 1 mit mindestens 50 Zwillingen oder t-Tails läuft und `overfit.effective_trials` je Job gilt.
+- (b) Power-begrenzte Karten (OpEx, Asia, seltene Karten, REFINE_ORB_2_close): sobald Gate v2 mit Größen-Normierung läuft oder eine MDE-Rechnung Entscheidbarkeit zeigt.
+- (c) Momentum-Slot-Kandidaten ohne Ersatz-Sicht (19 von 59): Ersatz-Sicht gegen NQ_Momentum_d260818 rechnen, `run_night` unverändert, ca. 2 h. Die Continuation-Familie (Momentum 59, MA-Trend 14, AW-14c) bekommt eine gemeinsame Wiedervorlage mit einem vorab festgelegten Vertreter, nicht 70 einzelne.
+- TN-04 nur für den nie getesteten Overnight-Filter: v3-Parameter fix, das ON-Gate als einziger neuer Parameter mit einem Wert aus dem Why, k = 1 vorab registriert, nur Ersatz-Sicht, Zwilling v2, Tempo bei 150k k2. Voraussetzung: AP257 P0 bis P2 sind erledigt.
+- RTY-Gap-Retune genau einmal mit eingefrorener Config, sobald Stufe 2 auf Tempo läuft (AP257 P3) und Zwilling v2 die Filtergrenzen mitwürfelt. Vorher Target-Fill-Anteil und Füllung beim Durchhandeln prüfen.
+- Tail-Lotterien und ORB_VIXBAND: nur bei neuem Why für genau diese Klasse oder bei einem Stempelwechsel am betroffenen Modus.
+- ORB-Breakout (strukturell): nur auf ausdrückliche Ansage.
+- Die Bedingungen (a) bis (c) gehören in `auto_check.py`, nicht nur hierher → Ticket vorgeschlagen.
+
+**Stempel:**
+- Engine vor dem Gap-Null-Schalter: book-cache `d1596278`, eval_plan `fed10828`, discovery_lib `3a7b0341`, gilt für 54 Nacht-Ergebnisse.
+- Engine danach: `a9537503`, `a69af99b`, `d23c588d`, gilt für 56 Nacht- und 3 Gap-Ergebnisse. Regression vorher und nachher grün, ohne tm_null bit-identisch.
+- controls `4d6564be`.
+- Buch `91c972fe` (Live = Next-Week: NQ_Momentum_d260818, NQ_LastHour_v3, NQ_Asia-Dir-USopen_d260820), Basis-Passquote 87,37 % (eigene Tage).
+- Kriterium Gate v2: Vor-Gates; Stufe 1 gegen 10 Nulldrift-Zwillinge, α 0,02 mit Šidák über k_lo; Stufe 2 Δ Passquote ≥ 0 bzw. Ersatz besser als Original. Dazu die Nachtregel BH-FDR q 0,10 und Placebo (p roh, k = 1).
+- Betriebspunkt E8 50k k1, 3 Seeds. Primärfenster volle Historie, OOS nur als Vorzeichen.
+- n_global 68.112 (PC-Register, nachgezählt). Datenstand 25./26.09.2026.
+
+**Nicht tot:**
+- Die 16 Karten ohne Null-Schalter plus 2 FLIP. Das sind genau die diversifizierenden Tier-1-Karten: FH_VIX_spike_rev_NQ (LIVE_EXTRA, t 8,46), NOISE_ORB_NQ_m1.0 und FH_NOISE_ORB_NQ, ES_TOM_F1_regime_cell (Gate-v2-Spiegel ohne Auswahlkorrektur bestanden), FH_NQ_VOLBRK_i2, FH_NQ_ONREV_i2, FH_OR_DELTA_BIAS_NQ_long, RV-Lead-Lag (9 Karten, t bis 3,53).
+- Die 56 ausgelassenen Gap-Karten.
+- Die Continuation-Mechanismen selbst, die im Buch stehen.
+
+Gemessen wurden dagegen zu 81 % Continuation-Slot-Familien. Genau dort ist Stufe 2 bei 50k k1 gegen ein Buch mit 87 % Passquote strukturell feindlich. **Das hier ist Teil 1, nicht „Friedhof durchs neue Gate: 0“.**
+
+**Lehren:**
+1. **Die Lab-Note ist kein Filter.** 49 von 111 Reports tragen A (37 aus dem Juli, 19 ORB mit Look-ahead-Fills), das Live-Bein Momentum hat nur B. Der Lab-Sharpe ist etwa per-Trade-SR × √252 und damit bei seltenen Strategien stark überzeichnet: FOMC-post 2,86 gegen nachgerechnet 0,20, ORB_maxwin 4,23 gegen 0,14. Brauchbar ist `t_korr = SR × √(Trades/252)`.
+2. **Ein Stufe-1-Treffer kann an der Skala hängen statt an der Edge.** Bei 50k k1 dominiert ein Zusatzbein die Buch-Varianz. TK-03 hat z 3,86 dort und 2,13 bei Live-Größe. Stufe 1 braucht eine Größen-Normierung → an pipeline-auditor / AP257.
+3. **Ein Tempo-Vergleich ist nur gegen ein Buch fair, das auf die gleiche Tages-SD skaliert ist**, sonst gewinnt Größe (#106 neu aufgetaucht). Dazu kommt: `tempo_plan` kauft nur an Ereignissen, und Ausgabe-Marken verschieben die Simulation.
+4. **Placebo auf p roh auswerten (k = 1), nicht auf stage1_edge mit Šidák.** Mit Šidák-k prüft das Placebo praktisch nichts. Aber auch roh prüft es das Gate an nicht ausgewählten Zwillingen, nicht den Auswahl-Bias. Ganze Null-Grids fehlen noch (Latte-Audit P2), ebenso mindestens 200 Placebos mit Seed je Job.
+5. **Ein Modus ohne Null-Schalter ist für Gate v2 unsichtbar, nicht „durch“.** Der Gap-Schalter war ein Eingriff mit Regression. Dieselbe Fehlerklasse steckte in `ctl_null` (eigene Modusliste) — seit heute (AP257 P1) behoben, `ctl_null` zieht jetzt aus `discovery_lib.NULL_MODES`. Kein Ticket mehr nötig, nur noch prüfen, ob der Stand schon auf die Box gesynct ist.
+6. **Eigene Lauf-Fehler:**
+   - Die Reihenfolge war nach altem Buch-Wert sortiert. Dadurch kamen zuerst fast nur Ersatz-Varianten von Momentum/Asia, und kuratierte Kandidaten rutschten immer vor die breiten. Nach Max' Einwand korrigiert: neue Beine, dann Ersatz, dann Reports.
+   - Zwei Abbrüche von außen: 25.09. 12:23 Strg+C am Konsolenfenster, 21:02 Prozess abgeschossen. Am 26.09. 10:41 fensterlos neu gestartet (pythonw + WMI ShowWindow 0).
+   - Der erste Gap-Start rechnete gegen ein leeres Buch und wurde verworfen.
+   - Folgerung: Reihenfolge vor dem Start festschreiben, Dauerläufer nie mit Konsolenfenster starten, vor jedem Lauf einen Smoke-Check auf die Basis-Passquote des Referenzbuchs machen.
+7. **Grid-Nachbarn der Live-Slots dominieren den Friedhof.** Der Suchraum ist fast nur Continuation, dasselbe Bild wie im Latte-Audit (93 bis 97 % tsmom/maband). Wer solche Nachbarn als neues Bein misst, drückt z im Schnitt um 0,76. Slot-Kandidaten gehören in die Ersatz-Sicht und in die BH-Familie mit einem Vertreter je Wette. Reine Parameter-Nachbarn ohne eigenen Filter haben keinen Buch-Pfad.
+
+**Buch-Lücke:** kein Kandidat, nichts ins Next-Week-Buch, kein Übernahme-Ticket.
+- TS-05 hängt an Stufe 2 in der Duplikat-Sicht, die Ersatz-Sicht fehlt. Unter V1 könnte sie höchstens die Knapp-Liste verlängern, weil der Simes-Wert von SLOT_MOM an m = 59 hängt.
+- TN-04 hängt an „signifikant besser als Original“ und hat keinen Buch-Pfad.
+- RTY-Gap-Retune hängt an Stufe 1 (z 1,88 gegen 3,18).
+
+Die offenen Regelfragen (Stufe 2 Tempo statt Passquote, k_hi statt k_lo, Kontrollpaket) ändern nachweislich keine Klasse für TK-03. Für TS-05, TE-01 und TS-13 ist das nur eine Erwartung. Nächster Schritt ist Teil 2, nach Aufwand sortiert:
+1. Ersatz-Sicht für die 6 Momentum-Grenzfälle.
+2. Null-Schalter für regime_cell und vix_bias (oder ES_TOM auf `cal` abbilden), dann ES_TOM_F1 und FH_VIX_spike_rev_NQ als vorab festgelegte Einzelvertreter.
+3. Null-Schalter für noise_orb, i2, rv und flip, dann je Wette ein Vertreter mit k nach Register plus Placebo.

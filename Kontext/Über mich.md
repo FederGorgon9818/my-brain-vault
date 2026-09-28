@@ -8,6 +8,7 @@ erstellt: 2026-07-04
 ## Basics
 - **Name:** Max *(Ansprache gerne auch: „Boss")*
 - **Beruf:** Fachinformatiker für Anwendungsentwicklung (Ausbildung abgeschlossen)
+- **Stand 23.09.2026:** Junior Fachinformatiker bei GEWO, befristet bis 03.07.2027, danach 2 Monate Vollzeit selbstständig, ab Sept. 2027 BOS (Abitur), Trading als Nebengewerbe. Details: [[Unternehmensgründung Entscheidung]].
 
 ## Hintergrund
 - Ausgebildeter Anwendungsentwickler – programmiert selbst.

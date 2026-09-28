@@ -11,6 +11,15 @@ Dies ist der persönliche Wissensspeicher (Obsidian Vault) von **Max**. Diese Da
 - **Fokus:** Eigene IT-Projekte & Tools bauen + Day Trading (~2 Jahre Erfahrung).
 - **Details:** siehe [[Über mich]], [[Tech-Stack]].
 
+### Lebenslage & Zeitplan (Stand 23.09.2026, von Max)
+
+- **Alter 19.** Job: Junior Fachinformatiker IT bei GEWO Feinmechanik, Vollzeit, **3.600 € brutto/Monat**, **befristet bis 03.07.2027**.
+- **Nebentätigkeit (Trading/Gewerbe) am 23.09.2026 von GEWO genehmigt** (widerruflich, §8.4 Arbeitsvertrag).
+- **04.07. bis Anfang Sept. 2027:** Vollzeit selbstständig. **Ab Anfang Sept. 2027: BOS** (Abitur nachholen), Trading läuft als **Nebengewerbe** weiter. Danach Plan Finance-Studium → Quant.
+- **Geld:** spart 600 €/Monat aufs Konto + 450 €/Monat ETF-Sparplan. Laufend (laut Belegen): Claude Max 5x 90 € netto / 107,10 € brutto im Monat, Contabo 31,06 €/Monat brutto, Databento geplant, kein TradingView. Umsatzquelle nur Prop-Payouts, Mentorship später.
+- **Gewerbe noch nicht angemeldet.** Entscheidung 23.09.: **sofort gründen (Okt. 2026, Nebengewerbe, Einzelunternehmen)**, Kleinunternehmer vs. Regelbesteuerung klärt Max mit seiner **Freundin (Steuerfachangestellte, wohnen nicht zusammen)**. Volle Analyse, Kosten, Agenda: [[Unternehmensgründung Entscheidung]]. Zeitplan und Rechnung: [[Gründung Zeitplan]].
+- **Konsequenz für jede Kauf-/Kostenentscheidung:** ab 04.07.2027 kein Gehalt mehr. Jeder Euro, der vorher in Evals/Hardware geht, fehlt in der BOS-Zeit. Bei Käufen immer mitdenken, ob die BOS-Reserve noch steht.
+
 ---
 
 ## 🗣️ Kommunikationsstil (WICHTIG)
@@ -176,6 +185,8 @@ Neue Strategien/Versionen/Parameter-Änderungen gehen NIE direkt in `book_state.
 
 Voller Ablauf (Dateien, Chat mit zweitem Claude, Charts, Ziel-Banner): [[Strategy Developer]].
 
+**Seit 25.09.2026 heißt der Tab „Workbench“** ([[Strategy Lab Workbench]]): alle Trades im Chart, Patterns, Filter mit Trial-Zähler und verdecktem OOS, Ampel nach dem neuen Lineal (Gate v2), P(Pass) E8/FN, NT8-Overlay. Oberfläche liegt in `engine/lab_ui/` (nicht mehr im HUB-String von `app_server.py`), nach jeder Änderung `python lab_selftest.py`. **Jeder Test aus einer Session mit Trades gehört per `workbench.publish(...)` in den Sub-Tab „Tests“** (`on_stop.py` Teil 5 prüft das).
+
 ---
 
 ## 🧪 Juli-Modus (Trigger-Regel Max, 22.09.2026)
@@ -197,6 +208,21 @@ Kern in einem Satz: Alpha-Suche wieder wie im Juli, eine Idee von Max → Prämi
 - **⭐ Die Queue darf nie leerlaufen.** `job_generator.py` füllt selbst nach (Folge-Jobs, Abdeckungs-Vorlagen, Varianten-Vorlagen). Schreibt der Runner `queue_empty`, ist die Vorlagen-Welt ausgereizt → `alpha-scout` einschalten, neue Mechanismen liefern, nicht mehr Grid.
 - **Nie** `runner.log` oder volle `results/*.json` einlesen — `inbox_tool.py`/`summarize_results.py` reichen.
 - **⭐ Claude reiht neue Funde selbst ein**, ohne dass Max es ansagen muss, sobald Dry-Run + `pipeline-auditor` durch sind. Nach jeder Engine-/`job_generator.py`-Änderung: Runner neu starten (Stop → Sync → Start), sonst läuft er mit altem Code weiter (Vorfall 28.08.2026: 5,5 h Leerlauf).
+
+---
+
+## ⚖️ Gate v2: das Buch-Gate für neue Strategien (Max, 24./25.09.2026, AP250)
+
+**Anlass:** Teil B der [[Testphase Juli-Modus]]. Das alte Gate hätte keines unserer drei eigenen Buch-Beine aufgenommen (Power für einen echten 3-pp-Effekt nur 0,10 bis 0,16, Messung gegen die falsche Null). Seit 25.09. gilt in Discovery-Runner, Developer-Tab und jeder manuellen Buch-Prüfung:
+
+1. **Vor-Gates je Config:** mindestens 30 Trades (10 im OOS). **Kein Frequenz-Filter mehr** (Trades/Jahr ist ein Proxy, keine Statistik). Stattdessen **Sharpe-Beleg** t = SR_ann·√Jahre ≥ 2. Tail-Test: Gewinn ohne die besten 1 % der Trades > 0 (an den Buch-Beinen kalibriert).
+2. **Stufe 1, Edge:** der Kandidat muss **10 Nulldrift-Zwillinge von sich selbst** schlagen (gleiche Trades, Richtung per Münzwurf), gepaart auf demselben Bootstrap, **α 0,02 je Mechanismus/Job**, Šidák über die bewerteten Picks. Das ist #106 je Kandidat eingebaut.
+3. **Stufe 2, Buch:** Δ Passquote im Punkt **≥ 0** (Buch wird nicht schlechter), bei Ersatz besser als das Original. Bewertet auf der **vollen Historie** (OOS-Fenster allein ist zu kurz, pro Job `gate_window: "oos"` möglich).
+4. **Kontrolle:** je Job ein **Placebo** (Zwilling als Kandidat) durch dieselbe Funktion, `discovery/placebo_log.json`, Inbox-Alarm wenn mehr als α + 2 SE durchkommen.
+
+- Code: `discovery_lib.book_gate_v2()`, Vor-Gates `DEFAULT_GATES`/`GATES_HARD`. Null-Schalter (`tm_null`) haben ts_reversal, last_hour, asian, tsmom, maband, vwap_pullback, orb, cal; andere Modi werden sichtbar geblockt, nicht durchgewunken.
+- Referenz (eigene Beine): **LastHour besteht**, Momentum (Edge +4,4 pp, nicht belegt) und Asia-Dir nicht. Seltene Strategien scheitern am Sharpe, nicht an der Frequenz.
+- **Gleiches Maß für Bestandsbeine:** wer das Gate nicht besteht, wird mit derselben Latte gegen Zeit bis 50k geprüft (Asia-Dir zuerst, AP183). Details: [[Discovery-Runner v2]] Abschnitt Gate v2, [[Testphase Juli-Modus]] Abschnitt 3.
 
 ---
 
@@ -250,7 +276,7 @@ Kurzfassung, was blockt statt nur erinnert:
 - `guard_bash.py`/`guard_read.py`: kein Box-Sync ohne frischen `regression_ok`-Marker, kein `--enqueue` ohne `pipeline_ok`-Marker, keine Dauerläufer als Session-Kind, kein volles Log-/Transkript-Einlesen.
 - `guard_write.py` (Regel 21.09.2026, Fund: Momentum&Averages- und PCA-Bank blieben sonst wochenlang ohne Gegenleser): keine neue Zeile in einer Hypothesen-Bank, solange `variant-scout` + `strategy-auditor` nicht in derselben Session gelaufen sind (am einfachsten über Skill/Workflow `ein-weg`). Reine Status-/Formatierungs-Edits lösen nichts aus; Fehlalarm-Override `python .claude/hooks/mark.py hypothese_ok`.
 - `guard_chain.py` (Regel Max, 22.09.2026): ein **Todesurteil** im Strategie-Logbuch wird abgelehnt, solange die vier Pflichtfelder fehlen (siehe nächster Abschnitt). Geprüft wird nur der **Urteilsblock** (`Verdikt:`/`Urteil:`/`Fazit:`), nicht der Fließtext — Rückblicke und Zitate fremder Urteile lösen nichts aus. Fehlalarm-Override `python .claude/hooks/mark.py urteil_ok`. Selbsttest: `python .claude/scripts/test_urteil_gate.py` (7 Fälle, inkl. der Fehlalarm-Quellen).
-- `on_stop.py`: Session endet nicht, solange `book_state*.json` neuer als der letzte `--push-next` ist, oder solange eigene Datei-Änderungen ohne Daily-Note-Eintrag im Raum stehen.
+- `on_stop.py`: Session endet nicht, solange `book_state*.json` neuer als der letzte `--push-next` ist, oder solange eigene Datei-Änderungen ohne Daily-Note-Eintrag im Raum stehen. Seit 25.09.2026 auch nicht, wenn Scratch-Tests gerechnet, aber nicht per `workbench.publish` ins Lab gestellt wurden (Ausweg `mark.py tests_ok`).
 - **Ein Hook blockiert nie die Arbeit, weil er selbst kaputt ist** — Fehler werden verschluckt und geloggt, nie geworfen.
 - Neue Reflex-Regel geplant? Zuerst fragen, ob sie als Hook abbildbar ist (Dateipfad, Kommando-Muster, Dateizeit), statt sie nur als Text hier abzulegen.
 
@@ -374,8 +400,8 @@ Gilt als allgemeines Ziel für die Zukunft und steht über allen Teilzielen unte
 4. **Nie vor dem Beleg verkaufen.** Vertrauen ist später das Geschäft.
 
 **Leitplanken:**
-- **Job behalten.** Gehalt ist das Kredit-Asset für die Bank (Prop-Einkommen zählt erst nach 2 bis 3 Jahren Steuerbescheiden), erlaubt Compounden ohne Druck, und Gehalt plus Payouts halbiert die Zeit bis zum eigenen Kapital. Trading-Einkommen sauber über die EÜR (AP36), damit es bankfähig wird.
-- **Größe kauft Bust, nicht Tempo** (#106): k3 bis k4 bleibt das Optimum, „schneller" heißt nie „größer".
+- **Gehalt bis zum Schluss mitnehmen, Gewerbe früh anmelden (aktualisiert 23.09.2026).** Der Job ist befristet bis 03.07.2027, danach BOS, das Gehalt als Kredit-Asset fällt also weg. Deshalb zählt die **EÜR ab 2026** als Beleg für die Bank (Prop-Einkommen zählt erst nach 2 bis 3 Jahren Steuerbescheiden), Trading-Einkommen sauber über die EÜR (AP36). Bis Juli 2027 Gehalt plus Payouts compounden, ab Sept. 2027 muss die BOS-Zeit aus Rücklage plus Payouts getragen werden, nie aus Prop-Nachkäufen auf Pump.
+- **Größe kauft Bust, nicht Tempo** (#106): „schneller" heißt nie „größer". Auf gemeinsamem Kalender (alle Konten handeln dieselben Tage) hat k4 keinen Vorteil mehr, k2 gegen k3 ist eine Gewichtung von Tempo gegen Plan-Tod (#175). Start mit k2.
 - **Verkaufbar ist der Prozess, nie die Edge** (Kapazität, Nachahmung). Mentorship strikt als Methodik/Bildung, nie Signale, nie fremdes Geld verwalten (Lizenzpflicht in DE).
 - **Werdegang mitdenken:** die Engine ist als Quant-Bewerbung mehr wert als das Buch in den nächsten Jahren einbringt (siehe Memory „Networking & Werdegang").
 
@@ -387,14 +413,14 @@ Realistischer Horizont, wenn beides läuft: eigenes Konto in 2 bis 3 Jahren, dav
 
 - **Trading-Pipeline: Eval → Funded → Live.** Einstieg immer über [[Day Trading]].
 - **Aktuelle Phase: [[Eval-Passing]]** (Prop-Eval bestehen, **E8**, nicht Apex). **⭐ Die erste ECHTE E8 50k Eval läuft live** (Konto `E61803453048`, handelt unbeaufsichtigt von der Box), dazu FN1/FN2 (FundedNext Flex 50k).
-- **⭐ ZIEL seit 18.09.2026 (Max, präzisiert 21.09.): 50.000 $ Eigenkapital aus gebündelten Prop-Payouts, um ein eigenes Live-Konto (am liebsten 100k) zu eröffnen.** Zielfunktion ist **E[Zeit bis Zielkapital]** (Netto-Payouts minus alle Eval-Käufe), nicht mehr die Passquote je Eval. Die Funded-Phase zählt mit. Laufende Konten laufen weiter, Frage ist nur, was dazukommt. Rechnung: `engine/tempo_plan.py` (Bestandskonten, Kaufpolitiken, Haushaltsgrenzen, Regime-Spalten). Stand 21.09.: Empfehlung E8 150k k3 + FN 150k k3, Deckel 2.500 $ Netto-Auslage, Entscheidung offen in Ticket AP204. Details [[Daily Notes/2026-09-18]], [[Daily Notes/2026-09-21]].
+- **⭐ ZIEL seit 18.09.2026 (Max, präzisiert 21.09.): 50.000 $ Eigenkapital aus gebündelten Prop-Payouts, um ein eigenes Live-Konto (am liebsten 100k) zu eröffnen.** Zielfunktion ist **E[Zeit bis Zielkapital]** (Netto-Payouts minus alle Eval-Käufe), nicht mehr die Passquote je Eval. Die Funded-Phase zählt mit. Laufende Konten laufen weiter, Frage ist nur, was dazukommt. Rechnung: `engine/tempo_plan.py` (Bestandskonten, Kaufpolitiken, Haushaltsgrenzen, Regime-Spalten). **Entschieden (AP204, Update 24.09.): Start Fr 02.10.2026 mit 1× E8 150k, k2 (2 Micros je Bein), Deckel 2.500 $ Netto-Auslage; FN 150k erst nach AP205, FN-Größe offen (AP248).** Details [[Strategie-Logbuch]] #175, [[Daily Notes/2026-09-18]], [[Daily Notes/2026-09-21]], [[Daily Notes/2026-09-24]].
 - **Plattform: NinjaTrader 8 / NinjaScript (C#)** auf Tradovate, nicht MultiCharts/PowerLanguage (siehe [[Tech-Stack]]).
 - Nächster Schwerpunkt: **[[Alpha-Suche]]** (First-Passage-Sizing + Cross-Asset-Signale).
 - Werkzeuge: [[Backtest-Engine]], [[Portfolio-Simulator]], [[Strategie-Logbuch]].
 
 ### 🧭 Stehende Trading-Prinzipien (für JEDE künftige Strategie)
 
-- **⭐ DAS einzige Entscheidungskriterium (Max, 10.08.26, präzisiert 16.08.26 / Logbuch #106, Zieländerung 18.09.26):** Bei JEDER Empfehlung/Entscheidung (Bein rein/raus, Parameter, Firma, Kontogröße, Sizing) zuerst fragen: **verkürzt oder verlängert es die Zeit bis 50.000 $ Eigenkapital aus Payouts, bei begrenzter Auslage?** Nicht Einzel-Edge, nicht Sharpe, nicht Eleganz. Passquote je Eval und Kosten pro funded Konto bleiben Zwischengrößen, nicht das Ziel. Die #106-Warnung gilt weiter als Pflichtkontrolle: ein Zeit-Score belohnt Größe und Nachkauf-Lotterie (Nulldrift-Test: 88 % davon entstanden bei Edge 0), deshalb IMMER mit Nulldrift-Zwilling rechnen (unter Edge 0 muss jede Politik 0 % Erreichung zeigen) und die Auslage p90 mitnennen. Min-Size (1 Kontrakt je Bein) ist als Betriebspunkt nicht mehr gesetzt, Größe wird gerechnet. Rechnung auf ehrlicher Basis: aktuelles Buch, gefixte Engine, Intraday-Bust-Check (#077), Block-Bootstrap, Nulldrift-Kontrolle, Letzte-3-Jahre-Spalte plus geschrumpfte Spalte (Shrinkage 0,58); bei Bein-Selektion nested OOS/Marginal-Test „Buch + 1, nur OOS". Positive Edge ist notwendig, nicht hinreichend (Lehre 82). Kernrechnung: `tempo_plan.py` (Zeit bis Ziel), `eval_plan.evaluate_v2` / `cage_policy_lib.evaluate_v2` (Käfig je Konto), Tiers in `cage_v2_tiers.json`.
+- **⭐ DAS einzige Entscheidungskriterium (Max, 10.08.26, präzisiert 16.08.26 / Logbuch #106, Zieländerung 18.09.26):** Bei JEDER Empfehlung/Entscheidung (Bein rein/raus, Parameter, Firma, Kontogröße, Sizing) zuerst fragen: **verkürzt oder verlängert es die Zeit bis 50.000 $ Eigenkapital aus Payouts, bei begrenzter Auslage?** Nicht Einzel-Edge, nicht Sharpe, nicht Eleganz. Passquote je Eval und Kosten pro funded Konto bleiben Zwischengrößen, nicht das Ziel. Die #106-Warnung gilt weiter als Pflichtkontrolle: ein Zeit-Score belohnt Größe und Nachkauf-Lotterie (Nulldrift-Test: 88 % davon entstanden bei Edge 0), deshalb IMMER mit Nulldrift-Zwilling rechnen (unter Edge 0 muss jede Politik 0 % Erreichung zeigen) und die Auslage p90 mitnennen. Min-Size (1 Kontrakt je Bein) ist als Betriebspunkt nicht mehr gesetzt, Größe wird gerechnet. Rechnung auf ehrlicher Basis: aktuelles Buch, gefixte Engine, Intraday-Bust-Check (#077), Block-Bootstrap, Nulldrift-Kontrolle, Letzte-3-Jahre-Spalte plus geschrumpfte Spalte (Shrinkage 0,58); bei Bein-Selektion nested OOS/Marginal-Test „Buch + 1, nur OOS". Positive Edge ist notwendig, nicht hinreichend (Lehre 82). Kernrechnung: `tempo_plan.py` (Zeit bis Ziel; rechnet die Konten unabhängig und ist damit in schwachen Regimen bis Faktor 2 zu optimistisch, bis AP245 den Kalender-Modus einbaut, Vorlage `engine/_scratch_ap204_kal/`), `eval_plan.evaluate_v2` / `cage_policy_lib.evaluate_v2` (Käfig je Konto), Tiers in `cage_v2_tiers.json`.
 - **⭐ Buch-Lücke immer mitnennen (Regel Max, 21.08.2026):** Sobald über eine Strategie/Variante/einen Discovery-Kandidaten gesprochen wird, IMMER dazusagen, **was konkret noch fehlt, damit sie ins Buch kommt** — entlang der Stufen: Prämisse → Survivors/Gates → PBO sauber → über Zufallsdecke → Buch-Marginal „besser" → Next-Week-Buch + Ticket → Wochenend-Review → NT8-Deploy. Nicht nur „0 Kandidaten" melden, sondern die Stufe benennen, an der es hängt.
 - **Simplex beats Komplex:** immer so einfach wie möglich starten. Komplexität nur mit OOS-Beweis + Why, sonst raus. Siehe [[Simplex beats Komplex]].
 - **Jede Strategie = vollständiges Skript:** Entry + Stop + Take-Profit + Notausgang(Zeit) + Sizing + **WHY**. Siehe [[Strategie-Anatomie (Framework)]].

@@ -143,8 +143,77 @@ Regeln:
 Ausgabe an Max am Ende (Kurzfassung, keine Code-Bezeichnungen): (1) bestehen unsere Beine das eigene Gate, ja/nein je Bein mit Zahl, (2) welche Schwelle und welches Design vorgeschlagen wird und was es an Power und Falsch-Positiven kostet, (3) was sich damit an der Bewertung der offenen Kandidaten (Friedhof Abschnitt 4) ändern würde, (4) Modell-/Clear-Hinweis.
 ```
 
-### Ergebnis Teil B
-*(noch nicht gerechnet, wird von der Teil-B-Session nachgetragen)*
+### Ergebnis Teil B (24.09.2026, Session eadffd5a, Quant-Team)
+
+Stempel: Engine-Fingerprint `91c972fe`, Buch 3 Beine (book_state.json), 50k-Tier, Rechenweg exakt wie `book_marginal_confirm` (B=200, Block 10, Seed 17). Rechnungen und JSONs: `engine/_scratch_gate_kalibrierung/`. Nichts an Engine/Buch geändert.
+
+**1. Unsere Beine als Fremde gegen das 2-Bein-Restbuch: alle drei fallen durch.**
+
+| Bein | Δ Passquote | Streuung | 90 %-CI | Schwelle k2 / k8 | Gate heute | gepaart gegen Nulldrift-Zwilling |
+|---|---|---|---|---|---|---|
+| Momentum | +2,1 pp | 4,8 | −3,9 bis +10,6 | 7,8 / 10,6 | nein | +4,6 (z 1,25, knapp unter Schwelle, mit 10 Zwillingen neu rechnen) |
+| LastHour_v3 | +5,2 pp | 8,2 | −4,1 bis +21,2 | 13,4 / 18,3 | nein | +16,4 (z 2,55, besteht) |
+| Asia-Dir | −2,7 pp | 5,2 | −11,5 bis +4,1 | 8,5 / 11,6 | nein | +2,4 (z 0,39, nein) |
+
+- Echte Streuung bei ganzen Beinen 4,8 bis 8,2 pp, nicht ~3 pp wie angenommen. Power des heutigen Gates für einen echten 3-pp-Effekt: **0,10 bis 0,16** (nicht 0,24). Für 50 % Power bräuchte das Maß „Δ Passquote gegen null" 45 bis 130 Jahre Historie.
+- Die richtige Null ist negativ: ein Zufalls-Bein ohne Edge kostet das Buch über seine Varianz allein 2,5 bis 11 pp. Das Gate testet gegen 0 und ist damit um genau so viel zu streng.
+- LastHour trägt seine +5,2 pp komplett über **Tempo** (ohne 36-Monats-Grenze −0,15 pp). Das passt zum Ziel Zeit bis 50k.
+- Asia-Dir kostet im Punkt auch ohne Zeitgrenze ~4 pp (Intraday-Tiefs summieren sich, Verlust-Cluster), statistisch aber nicht von 0 unterscheidbar. Gehört zu AP183, nicht zur Gate-Frage.
+
+**2. Seltene Grade-A-Strategien aus dem Vergleich-Tab (Zusatz Max, 6 bis 15 Trades/Jahr) als 4. Bein, heutige Engine, ORB nur ehrlich:**
+
+| Strategie | Trades | $/Jahr (1 Kontrakt) | Δ pp | 90 %-CI |
+|---|---|---|---|---|
+| REFINE_ORB_2 (close) | 152 | 531 | +1,45 | −1,6 bis +3,8 |
+| OPEXMOM_ES | 74 | 193 | +1,06 | −1,6 bis +5,6 |
+| EVENT_ES_primary | 110 | 265 | +1,03 | −2,0 bis +4,7 |
+| OPEXMOM_RTY / _YM | 85 / 102 | 82 / 95 | +0,7 / +0,5 | beide um 0 |
+| OPEXMOM_NQ | 66 | 257 | −0,1 | −4,7 bis +6,5 |
+| FOMC-post ES, ORB maxwin/nr7 (close) | 44 bis 81 | 33 bis 124 | ~0 | um 0 |
+| Korb OPEXMOM_NQ + EVENT_ES | 176 | 515 | −0,1 | −6,3 bis +6,0 |
+| Korb 4 Kalender-Beine | 363 | 679 | −0,8 | −8,3 bis +7,1 |
+
+- Keine ist von 0 unterscheidbar, die Körbe sind schlechter als die Einzelbeine (Varianz und Intraday-Tiefs summieren sich, OpEx NQ/ES/YM korrelieren 0,83 bis 0,96, das ist **ein** Bet, nicht vier; vor 2020 Edge ≈ 0).
+- ORB-Reports aus dem Juli liefen im Look-ahead-Modus (`orb_exec` book). Ehrlich mit Stop-Order bleiben 5 bis 15 Trades in 10 Jahren, mit close ist ORB_maxwin tot (expR −0,02), nr7 im OOS negativ. REFINE_ORB_2: close 152 Trades, stop_honest 15, Look-ahead-Verdacht bei der Juli-Auswahl.
+- Mathematiker: Frequenz ist nicht das Problem, **Sharpe** ist es. Ein Bein wird über dem Gate sichtbar ab Jahres-Sharpe ≈ 1,9 (1,25 × Buch), egal wie oft es handelt. Die seltenen liegen bei 0,1 bis 0,7, bei 7 bis 10 Trades/Jahr bräuchte es ≳ 2.000 $/Jahr je Kontrakt. Für einen Korb aus Sharpe-0,6-Beinen bräuchte es ≥ 10 wirklich unabhängige Mechanismen.
+- Offen: Beitrag bei θ-optimaler Größe statt 1 Kontrakt nie gerechnet (Juli-Buch hatte OPEXMOM 6 bis 8× Gewicht).
+
+**3. Frequenz-Gates:** `min_tpy=25` und `min_trades=100` sind Proxys, keine Statistik (min_trades zitiert Lehre 113 falsch, θ hängt nicht an der Frequenz). Ein Bootstrap-/t-Gate hält seine Fehlalarmrate schon ab n=30. Weitere versteckte Frequenz-Gates: `min_oos_trades=25`, `top5_share_max` (hängt mechanisch an n).
+
+**4. Vorschlag neues Lineal (Entscheidung Max, noch nicht umgesetzt):**
+
+| Design | Fehlalarme je Job (Edge 0) | Power 3 pp | Fehlalarme je 500 Jobs |
+|---|---|---|---|
+| heute (k2) | 0,001 bis 0,016 | 0,10 bis 0,16 | ~1 bis 15 |
+| gepaart gg. 10 Zwillinge, α 0,10, + Δ real ≥ 0 | 0,04 bis 0,09 | 0,53 bis 0,62 | 20 bis 46 |
+| gepaart, α 0,05, + Δ real ≥ 0 | 0,025 bis 0,05 | 0,39 bis 0,60 | 12 bis 25 |
+| gepaart, α 0,02, + Δ real ≥ 0 | 0,013 bis 0,02 | 0,25 bis 0,53 | 7 bis 10 |
+
+Bei 2 % echten Mechanismen: heute ~1,3 echte Funde auf ~4 falsche, mit α 0,02 ~4 echte auf ~8 falsche (gleiche Reinheit, 3× mehr Funde).
+
+- Stufe 1 Edge-Nachweis: gepaart gegen ≥ 10 Nulldrift-Zwillinge, ein gepoolter Test je Mechanismus (k=1, kein Šidák mehr), α 0,02 bis 0,05.
+- Stufe 2 Buch-Nutzen: Δ real ≥ 0 im Punkt statt Signifikanz. SD-Boden 3 pp weg (kostet seltene Kandidaten Power 0,45 → 0,17).
+- Vor-Gates: `min_trades` 100 → 30, `min_oos_trades` 25 → 10, `min_tpy` streichen, dafür Beleg t = SR·√Jahre ≥ 2 und Sharpe-Kriterium SR_c/SR_b ≥ 1,25. `top5_share_max` → „Erwartungswert ohne Top 5 % Trades > 0".
+- #106 bleibt: 5 % Placebo-Jobs (Zwilling als Kandidat) durch die ganze Kette, Alarm, wenn deren Durchlassquote über α + 2·SE liegt. „0 %" gibt es bei keinem Test, erreichbar ist „genau α".
+- Das Next-Week-Buch ist **keine** statistische zweite Stufe (3 Monate Forward = 6,5-fache SD). Echte Zusatzevidenz nur aus unabhängigen Kontrollen (Delay, Spiegel, zweiter Markt).
+- 36-Monats- und Passquote ohne Zeitgrenze getrennt ausweisen (Tempo-Bein vs. Sicherheits-Bein).
+
+**5. Gate v2 beschlossen (Max, 24.09.2026, α 0,02) und an den drei Beinen durchgerechnet** (10 Zwillinge, `gate_v2_legs.py` → `v2res_*.json`):
+
+- Stufe 1 Edge: gepaart gegen 10 Nulldrift-Zwillinge, ein Test je Mechanismus (k=1), einseitig α 0,02 (z 2,05).
+- Stufe 2 Buch: Δ Passquote real ≥ 0 im Punkt.
+- Beleg: Sharpe-t = SR_ann·√Jahre ≥ 2 statt Frequenz-Filter.
+- Kontrolle: Placebo-Jobs (#106).
+
+| Bein | Stufe 1: Edge über Zwillinge (pp) | Schwelle | P(besser als Zwillinge) | Stufe 2: Δ Buch | Sharpe-t | Ergebnis |
+|---|---|---|---|---|---|---|
+| LastHour_v3 | +19,0 (sd 6,5) | 13,4 | 1,00 | +5,4 | 3,67 | **besteht** |
+| Momentum | +4,4 (sd 3,65) | 7,5 | 0,89 | +2,1 | 2,86 | Stufe 1 nein (auch bei α 0,10 knapp nein: 4,4 gegen 4,7) |
+| Asia-Dir | +2,7 (sd 5,8) | 11,9 | 0,67 | −2,7 | 2,62 | nein, beide Stufen |
+
+Lesart: Das neue Gate hätte LastHour gefunden, das alte keines der drei. Momentum hat im Buch-Maß eine plausible, aber nicht belegte Edge (89 % Wahrscheinlichkeit besser als Münzwurf). Das liegt an der Beweislage des Beins, nicht am Lineal. Asia-Dir ist weder als Edge noch als Buch-Beitrag belegt, das gehört zu AP183. Kein Stempel „tot" für eines der Beine: Kategorie `unentscheidbar` im Buch-Maß, Einzel-Sharpe-t liegt bei allen dreien über 2.
+
+**Vorbedingungen / offene Punkte:** ~~Momentum mit 10 Zwillingen nachrechnen~~ (erledigt, siehe 5) (entscheidet α 0,10). LastHour-Zwilling hat 11 bis 14 % weniger Trades als das Original (kein reines Richtungswürfeln, Frage an pipeline-auditor). `cal`/`orb` haben keinen Null-Schalter (sonst läuft Design B dort leer). θ-Surrogat ersetzt die MC nicht (Rangkorrelation 0,18), höchstens Kill-Filter ab < −3 pp. **Nebenfund Falle:** Min-Size in `cage_policy_lib.evaluate_v2` hängt an frac 0,01 und Median-Intraday-Tief > 30 $ (heute 35 bis 48 $). Ein Kandidat mit vielen kleinen Verlusttagen rechnet still auf 2 Kontrakte hoch.
 
 ---
 
@@ -152,7 +221,7 @@ Ausgabe an Max am Ende (Kurzfassung, keine Code-Bezeichnungen): (1) bestehen uns
 
 | # | Idee (Markt, Beobachtung, Warum, Wann) | Stufe erreicht | Ergebnis | Datum |
 |---|---|---|---|---|
-| 1 | *(von Max)* | | | |
+| 1 | ES/NQ/GC. Fr-High < Do-High ⇒ Montag holt in der RTH das Fr-Tief. Why fehlt (Claude-Entwurf vom strategy-auditor verworfen). Montag RTH | 2 (Prämissen-Tafel) | **trägt nicht** für den Short ab Montag-RTH-Open: Treffer 27 bis 34 % (mit Gap-Fällen unter 50 %), Überschuss über Montags-Placebo ES +1,5 %, NQ +5,2 %, GC −4,1 % (alle CI über 0), netto negativ in allen 6 Zellen. Effekt ≥ ~10 pp ausgeschlossen, kleinere nicht auflösbar. Offen: Einstieg Sonntag 18:00 ET (Gap-Fälle). `engine/_scratch_juli_frlh/`, Lab-Tests `20260926_frlh_*`. Stempel im Logbuch noch offen. **Why-Recherche 28.09.:** kein erzwungener Wochentags-Akteur (Chen/Singal widerlegt, externer Backtest ~Zufall), einziger tragfähiger Kandidat Monatsende-Zahlungsdruck (Etula 2020 + Wang/Li/Erickson 1997), ungeprüft | 26.09.2026 |
 | 2 | *(von Max)* | | | |
 | 3 | *(von Max)* | | | |
 

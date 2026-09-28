@@ -6,6 +6,8 @@ erstellt: 2026-09-17
 ---
 # 🛠️ Strategy Developer — Tab im Strategy Lab (seit 14.08.2026)
 
+> [!info] Seit 25.09.2026 heißt der Tab **Workbench** ([[Strategy Lab Workbench]]). Versionen, `developer_run.py`, Chat und Trigger-Regel bleiben gleich, dazu kommen: alle Trades im Chart, Patterns, Filter mit Overfit-Schutz, Urteil nach dem neuen Lineal, „Als Version speichern“, NT8-Overlay.
+
 ⬅️ [[Day Trading]] · [[Buch-Workflow]] · [[Backtest-Engine]]
 
 Max entwickelt hier **interaktiv genau eine Strategie in Versionen** — er sagt im Chat, was gebaut/geändert werden soll, Claude setzt es um. Kein Auto-Discovery, Max' eigene Ideen.

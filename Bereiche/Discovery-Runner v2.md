@@ -133,6 +133,22 @@ Ebenfalls seit 14.09.: jeder Job aus der Hypothesen-Bank trägt `null_ref` (welc
 
 **Neue Idee heißt: neue Zeile in `hypothesis_bank.py`** (bei wirklich neuem Mechanismus ein neuer `mb_kind`/`tm_signal` in den bestehenden Modulen) — nicht ein neues Skript daneben. Nur so zählt das Register jeden Trial mit, nur so gilt dieselbe Zufallsdecke, nur so ist der Look-ahead-Check an einer Stelle statt an dreißig. Hypothesen-Vorrat: [[Hypothesen-Bank (Momentum & Averages)]] und [[Hypothesen-Bank (Volumen & Flows)]].
 
+## ⚖️ Gate v2: das kalibrierte Lineal (Max, 24./25.09.2026, AP250)
+
+Anlass: [[Testphase Juli-Modus]] Teil B. Das alte Buch-Gate hätte keines der drei eigenen Buch-Beine aufgenommen (Power für einen echten 3-pp-Effekt 0,10 bis 0,16). Seitdem gilt:
+
+| Stufe | Frage | Regel |
+|---|---|---|
+| Vor-Gates (Stufe 1, je Config) | Trägt die Config überhaupt? | `min_trades` 30, `min_oos_trades` 10, **kein Frequenz-Filter mehr**, stattdessen Sharpe-Beleg t = SR_ann·√Jahre ≥ 2; Tail-Test: Gewinn ohne die besten 1 % der Trades > 0 (an den Buch-Beinen kalibriert, 5 % hätte Momentum und LastHour rausgeworfen) |
+| Edge (Stufe 2, `book_gate_v2`) | Schlägt der Kandidat seine eigenen Zufalls-Zwillinge? | gepaart gegen 10 Nulldrift-Zwillinge (gleiche Trades, Richtung gewürfelt), α 0,02 je Job, Šidák über die bewerteten Picks |
+| Buch (Stufe 2) | Wird das Buch nicht schlechter? | Δ Passquote im Punkt ≥ 0, bei Ersatz: besser als das Original |
+| Kontrolle (#106) | Ist das Gate ehrlich? | Placebo je Job (Zwilling des besten Picks als Kandidat), `discovery/placebo_log.json`, Inbox-Alarm wenn mehr als α + 2 SE durchkommen |
+
+- Bewertet wird Stufe 2 auf der **vollen Historie** (im OOS-Fenster allein fiel selbst LastHour durch). Pro Job umschaltbar mit `gate_window: "oos"`.
+- Null-Schalter (`tm_null`) haben: ts_reversal, last_hour, asian, tsmom, maband, vwap_pullback, orb, cal. Andere Modi werden sichtbar geblockt („kein Null-Schalter").
+- Developer-Tab zeigt dasselbe Urteil (`MAXLAB_GATE_V2=0` schaltet es für schnelle Iterationen ab, ~8 Min je Lauf).
+- Referenz: LastHour besteht, Momentum (Edge +4,4 pp, 80 bis 89 % über Zufall) und Asia-Dir nicht. Rechnungen `engine/_scratch_gate_kalibrierung/`.
+
 ## Offen / nächste Ausbaustufen
 - Register-Merge Box → PC; Job-Typen „Regime-Conditioning" (Ein/Aus-Schalter für bestehende Beine) und „Event-Bein" (braucht Engine-Modul); Kandidaten-Karten im Strategy Lab (Tab) statt nur `inbox.md`.
 - Ehrlich: mehr Alpha kommt nur mit **neuen Inputs** (Tick/L2, Optionen-Positionierung, Breadth). Der Runner macht die Suche sauber und billig, aber er zaubert keine neuen Mechanismen aus alten Minutenbars.

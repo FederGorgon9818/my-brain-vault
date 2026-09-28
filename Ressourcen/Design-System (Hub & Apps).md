@@ -72,7 +72,7 @@ Max' Bedien-Prinzipien, unabhängig von Farben und Optik.
 
 ## 2. Strategy Lab (+ Developer-Tab)
 
-`C:\Users\maxlk\Projects\trading-data\engine\app_server.py` (`:root` ab Zeile ~598) · Stil: **fast schwarz, Terminal-Ernst, Gold-Akzent**, viel Tabelle und Zahl.
+`C:\Users\maxlk\Projects\trading-data\engine\lab_ui\` (seit 25.09.2026: `index.html`, `lab.css` mit `:root`, `lab.js`, dazu `workbench.css/.js`; vorher HUB-String in `app_server.py`, AP244) · Selbsttest nach jeder Änderung: `python lab_selftest.py` · Stil: **fast schwarz, Terminal-Ernst, Gold-Akzent**, viel Tabelle und Zahl.
 
 **Tokens (Ist-Stand):**
 
@@ -175,7 +175,7 @@ Kein neues Farbschema — `--accent` (Gold `#c79a3f`) übernimmt die Rolle von B
 
 ## 3. Lab-Reports (`reports/*.html`)
 
-Erben die Lab-Tokens (`report.py`, gleicher `:root`-Block). **Regel aus CLAUDE.md:** ändert sich hier etwas an Chart-Defaults, muss es in der `HUB`-Sektion von `app_server.py` mitgezogen werden — sonst driften Report und Developer-Tab optisch auseinander.
+Erben die Lab-Tokens (`report.py`, gleicher `:root`-Block). **Regel aus CLAUDE.md:** ändert sich hier etwas an Chart-Defaults, muss es in `lab_ui/lab.css`/`lab.js` (früher `HUB`-Sektion von `app_server.py`) und in `lab_ui/workbench.js` (Kerzen-/Equity-Chart der Workbench) mitgezogen werden — sonst driften Report und Developer-Tab optisch auseinander.
 
 **Struktur seit 30.08.2026 (Max' Vorgabe, gleiches Prinzip wie Portfolio-Tab — Abschnitt 2.F/G):** Titel → Verdict-Karte → Score-Aufschlüsselung (der "Grund") → Equity-Kurve → KPI-Kachel-Zeile (15 Kacheln inkl. Largest Win/Loss, Win/Loss-Streak) sind **permanent sichtbar**. Alles andere — Eval Pass/Blow-Narrativ, Strategie-Anatomie-Erklärung, Regime-Tabellen, Monte-Carlo, Selektions-Ehrlichkeit/DSR/Purged-K-Fold, Parameter-Heatmap, Prop-Firm-Assistant — steckt in `<details><summary>` (Baustein schon vorher im CSS vorhanden, Zeile ~64-70), **alle standardmäßig zu**. Reine Darstellungs-Änderung, keine Zahl wurde neu gerechnet — Daten kommen unverändert aus `copilot.full_report_data()`/`qbt.metrics()`. `qbt.py::metrics()` liefert seit demselben Tag zusätzlich `largest_win_usd`/`largest_loss_usd`/`avg_hold_min` (additiv, nichts Bestehendes geändert).
 

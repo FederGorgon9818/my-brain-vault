@@ -11,10 +11,24 @@
             "id": "7045f1e3b88fa380",
             "type": "leaf",
             "state": {
-              "type": "graph",
-              "state": {},
-              "icon": "lucide-git-fork",
-              "title": "Graph-Ansicht"
+              "type": "markdown",
+              "state": {
+                "file": "Ressourcen/Research-Cache.md",
+                "mode": "source",
+                "source": false,
+                "backlinks": true,
+                "backlinkOpts": {
+                  "collapseAll": false,
+                  "extraContext": false,
+                  "sortOrder": "alphabetical",
+                  "showSearch": false,
+                  "searchQuery": "",
+                  "backlinkCollapsed": false,
+                  "unlinkedCollapsed": true
+                }
+              },
+              "icon": "lucide-file",
+              "title": "Research-Cache"
             }
           },
           {
@@ -88,7 +102,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "",
+                "query": "tag:#evidence",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -109,12 +123,12 @@
               "title": "Lesezeichen"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "horizontal",
-    "width": 200,
-    "collapsed": true
+    "width": 200
   },
   "right": {
     "id": "0c3e29ee38ccf6b1",
@@ -229,8 +243,13 @@
       "realclaudian:Open Claudian": false
     }
   },
-  "active": "7045f1e3b88fa380",
+  "active": "cc41df7790a0ef11",
   "lastOpenFiles": [
+    "Projekte/Gespräch mit Freundin (Steuer & Gründung).md",
+    "Projekte/Gründung Zeitplan.md",
+    "CLAUDE.md.tmp.10552.34052f58a086",
+    "Projekte/Unternehmensgründung Entscheidung.md",
+    "Projekte/Unternehmensgründung Entscheidung.md.tmp.10552.2e3a1ee03de8",
     "Bereiche/Strategie-Logbuch.md",
     "Bereiche/Hypothesen-Bank (Volumen & Flows).md",
     "Ressourcen/Momentum-Theorie (Futures).md",
@@ -247,9 +266,7 @@
     "Ressourcen/E8-Support-Anfrage (100k-150k Drawdown + Signature-Status).md",
     "Ressourcen/E8-Support-Anfrage (100k-150k Drawdown + Signature-Status).md.tmp.10188.3a552e0cdc54",
     "CLAUDE.md.tmp.19828.efb2fcc55943",
-    "Bereiche/Strategie-Logbuch.md.tmp.16124.68d93d12e5f1",
     "Daily Notes/2026-08-16.md",
-    "Bereiche/Strategie-Logbuch.md.tmp.2584.1aa823bb0dac",
     "Projekte/Backtest-Engine.md",
     "Daily Notes/2026-08-15.md",
     "Daily Notes/2026-08-14.md",
@@ -266,9 +283,6 @@
     "Ressourcen/Paper-Analysen/Mean-Reversion Paper (High-Winrate Fokus).md",
     "Daily Notes/2026-08-03.md",
     "Daily Notes/2026-08-02.md",
-    "Bereiche/Wochenreport 2026-W31 (27.07-31.07).md",
-    "Daily Notes/2026-07-31.md",
-    "Ressourcen/Paper-Analysen/Strategie-Familien.md",
     "Unbenannt 1.canvas",
     "Unbenannt 2.canvas",
     "Unbenannt.canvas"

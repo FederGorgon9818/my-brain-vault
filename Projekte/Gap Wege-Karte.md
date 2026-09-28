@@ -102,7 +102,7 @@ Der Gap ist bei uns **das am dichtesten gemessene und am schlechtesten aufgelös
 | [[#W29]] | Gap-Differenz zwischen zwei Index-Futures konvergiert | Relative Value | Signal | **`premise_failed`** (RV-08/09/10, je 1 Trial) — nie widerlegt, nur nie gerechnet | `rv gap_div` ✅, aber `rv` ohne Null-Schalter | Bank-Zeilen stehen |
 | [[#W30]] | Derselbe Gap-Weg auf GC/CL | Trend Following | Signal | **offen, 0 Trials** | `tsmom` overnight ✅ | neues Bein |
 | [[#W31]] | **Wartung:** RTY_Gap-fade nach dem Roll-Fix neu bewerten | Mean Reversion | Signal | **Wiedervorlage offen** (#135 nie nachgeholt) | `gap` + S-GAP-1 | Wiederaufnahme oder sauberes Urteil |
-| [[#W32]] | **Wartung:** NQ_Gap-fade_hf am heutigen Buch/Betriebspunkt | Mean Reversion | Signal | **stale** (Urteil gegen ein Buch, das es nicht mehr gibt) | `gap` + S-GAP-1 | neues Bein |
+| [[#W32]] | **Wartung:** NQ_Gap-fade_hf am heutigen Buch/Betriebspunkt | Mean Reversion | Signal | **geurteilt 24.09.** ([[Strategie-Logbuch]] #175: empirisch-nichts-gefunden, N = 116, DSR 0,19; nicht tot als Buch k2 + Gap 1; Wiedervorlage 01.10.2027, AP247) | `gap` + S-GAP-1 | neues Bein |
 | [[#W33]] | Long und Short getrennt führen | — | Filter | **strukturell unmöglich** im `gap`-Modus, im `tsmom`-Pfad frei — **Achse** | `tsmom` ✅ | — |
 | [[#W34]] | Gap füllt nicht heute, sondern in den Folgetagen **(Swing)** | Swing | Signal | **offen, 0 Trials** · `swing: true` | kein Halten über Nacht möglich | **Live-Buch-Merker, nicht Prop-Buch** (E8 verbietet Halten) |
 
@@ -283,7 +283,8 @@ Der Gap ist bei uns **das am dichtesten gemessene und am schlechtesten aufgelös
 > Zahlen aus dem Lauf (Config: `gap` fade, `gap_atr 0,5-1,5`, `stop 0,75`, `confirm 10`): 25k 54,74 gegen 59,2 · 50k 78,81 gegen 82,59 · 100k 86,94 gegen 88,19 · **150k 90,68 gegen 83,85** · FN-Flex50k 68,64 gegen 74,45. Korrelation zum Bestand: Asia-Dir **−0,13**, LastHour +0,02, Momentum +0,09.
 > **Der Tier, an dem der Kandidat gewinnt, ist genau der, den Max seit AP204 kauft (E8 150k, Start 02.10.).**
 
-- **Stand:** stale. Das „schlechter/neutral" gilt für die damaligen Tiers und das damalige Buch, nicht für den heutigen Betriebspunkt.
+- **Stand (24.09.2026): geurteilt, [[Strategie-Logbuch]] #175.** Gegen das heutige 3-Bein-Buch neu gerechnet. Die 150k-Zelle von damals war Horizont-Zensur (`evaluate_v2` rechnet k1 / 36 Monate): am gekauften Betriebspunkt 150k schadet das Bein symmetrisch (k2 −4,5, k3 −10,3 pp). Die Drift sitzt nur in 2023-26 (2020-22 −642 $/J, Welch p 0,009), DSR 0,19 bei 116 Trials, Top-10-Tage 88 % der Drift. Kategorie **empirisch-nichts-gefunden**. **Nicht tot:** asymmetrisch Buch k2 + Gap 1 Kontrakt ist bedingt positiv (schlägt reines k2 auf gemeinsamem Kalender, solange das Bein ≥ 22 % seiner Drift behält). Wiedervorlage 01.10.2027 über Ticket AP247 (Forward-Drift ≥ 1.285 $ als Auslöser, dann DSR neu und Buch-Marginal).
+- ~~Stand: stale.~~ (bis 23.09.) Das „schlechter/neutral" galt für die damaligen Tiers und das damalige Buch.
 - **Engine-Weg:** `gap` + Modul-Spec S-GAP-1 (ohne Null-Schalter kein `deploy_ready`).
 - **Buch-Bezug:** neues Bein — der einzige Grund, warum ein Mean-Reversion-Bein hier etwas beitragen kann, ist die negative Korrelation zum Asia-Dir-Bein.
 - **Kosten:** 0 neue Register-Trials (bestehende Config), damit die billigste Erkenntnis der ganzen Karte.
@@ -323,7 +324,7 @@ Kriterien: Ersatz vor neu · engine-fähig vor Modul-Spec · ohne tote Verwandte
 |---|---|---|---|---|---|
 | 1 | **GAP-W3a** | W3 Continuation mit Bestätigung + Größenband | `tsmom` ✅ | Ersatz NQ_Asia-Dir | heute rechenbar, deploy-fähig, eigene Bestzahlen **und** externe Evidenz zeigen in dieselbe Richtung |
 | 2 | **GAP-W1a** | W1/W2 Fade, Seiten getrennt (Reparatur TN-03) | `tsmom` ✅ | Ersatz NQ_Asia-Dir | gleiche Rechenkosten, aber externe Evidenz steht dagegen — deshalb hinter Rang 1 |
-| 3 | **GAP-W32a** | W32 Bestandsrevision am 150k-Punkt | S-GAP-1 | neues Bein | 0 neue Trials, Urteil nachweislich stale, 150k war schon „besser" |
+| 3 | ~~**GAP-W32a**~~ | W32 Bestandsrevision am 150k-Punkt | S-GAP-1 | neues Bein | **erledigt 24.09.** (#175): 150k-Vorsprung war Horizont-Zensur, Urteil empirisch-nichts-gefunden, Wiedervorlage 01.10.2027 (AP247) |
 | 4 | **GAP-W31a** | W31 Wiedervorlage RTY nach Roll-Fix | S-GAP-1 | Wiederaufnahme | 0 neue Ideen, offene Pflicht aus #135 |
 | 5 | **GAP-W9a** | W9/W10/W11 echter Gap vs. Gap in der Range | S-GAP-2 | Ersatz NQ_Asia-Dir | größte inhaltliche Lücke, erklärt möglicherweise alle bisherigen Nullergebnisse |
 | 6 | **GAP-W14a** | W13/W14 Gap gegen/mit Vortagstrend | S-GAP-3 | Tor auf NQ_Momentum | billigste Spec, Kennzahl liegt schon da |

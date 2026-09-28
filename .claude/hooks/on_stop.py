@@ -141,6 +141,38 @@ def main():
         except Exception:
             pass
 
+    # --- 5. Tests gerechnet, aber nicht in die Workbench gestellt (Max, 25.09.2026) --
+    # Anlass: Max sah von Session-Tests (Regime-Tafeln, Paper-Checks) nur Zahlen im Chat,
+    # nie die Trades. Scratch-Laeufe in der Engine muessen per workbench.publish(...) als
+    # Karte im Lab-Sub-Tab "Tests" landen (Vault: Projekte/Strategy Lab Workbench.md).
+    # Ausweg bei Prämissen-Tafeln ohne Trades: `python .claude/hooks/mark.py tests_ok`.
+    if tp and Path(tp).is_file():
+        try:
+            scratch_runs, published = 0, False
+            pat_run = re.compile(r"python[^\n\"]*_scratch[^\n\"]*\.py", re.I)
+            with Path(tp).open("r", encoding="utf-8", errors="replace") as fh:
+                for line in fh:
+                    if '"tool_use"' not in line:
+                        continue
+                    if "workbench.publish" in line or "wb.publish(" in line or "W.publish(" in line:
+                        published = True
+                    if pat_run.search(line):
+                        scratch_runs += 1
+            ok_t = marker_time("tests_ok")
+            meta5 = scan_transcript_light(Path(tp))
+            if ok_t and meta5["first_activity"] and ok_t >= meta5["first_activity"]:
+                published = True
+            if scratch_runs and not published:
+                issues.append((f"tests-publish:{scratch_runs > 0}",
+                    f"diese Session hat {scratch_runs} Test-Lauf/Laeufe in einem _scratch-Ordner gerechnet, "
+                    "aber nichts in die Workbench gestellt. Regel 25.09.2026: jeden Test mit Trades per "
+                    "`import workbench; workbench.publish(name, trades, why=..., n_trials=..., source=...)` "
+                    "als Karte in den Lab-Sub-Tab \"Tests\" stellen, damit Max die Trades selbst sieht. "
+                    "Reine Tafeln ohne Trades: `python .claude/hooks/mark.py tests_ok`, dann erneut beenden."
+                ))
+        except Exception:
+            pass
+
     if not issues:
         sys.exit(0)
     msg = "Hook: " + " | ".join(t for _, t in issues)
