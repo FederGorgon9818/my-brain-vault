@@ -56,6 +56,16 @@ Datei: [[Intraday Momentum Paper]]
 | 5761402 | Huber — MaxAI (RL/GA Index-Futures) | zu wackelig |
 | 6722841 | Wong — MC Evaluation of Strategy | MC-Methodik |
 
+## Suchbedingung E: Prop-Firm-Paper, alle Arbeiten speziell über Prop Firms (28.09.2026)
+**Ziel:** Max will alle Research Paper, die sich speziell auf Prop Firms beziehen, mit Why und Aussagen. **Ergebnis:** rund 60 Arbeiten (moderne Funded-Firmen, klassische Prop-Trader, angrenzend HFT/Volcker, Branchenberichte), nur Abstract-Ebene, Volltext-Lesen steht aus (Netzwerk gesperrt). Datei [[Prop-Firm-Paper (Literaturüberblick)]].
+| ID | Titel | Rolle |
+|---|---|---|
+| SSRN 7445798 | Villahermosa: Prop-Firm Challenges, Barrier Model of Pass Rates and EV | P(Pass) = L/(T+L) ohne Edge, Nulllinie |
+| SSRN 7178078 | Lim: The Price of a Funded Account (aktuarielle Analyse) | Zeitlimit = versteckter Anbietervorteil |
+| SSRN 7184138 | Lim: Phantom Generosity (31 Verträge, 21 Firmen) | 29/31 mit negativem EV, Firmen-Vergleich |
+| SSRN 7260819 | Fernández: Valuing Prop Firm Evaluation Contracts (Closed Form) | Formel, Gegencheck für evaluate_v2 |
+| arXiv 2609.14859 | Hall: Gate Design and Stage-Dependent Incentives | Pass ist kein Skill-Beweis, Eval-Stil vs. Funded-Stil |
+
 ---
 
 ## Noch nicht getestet (offene Kandidaten)
