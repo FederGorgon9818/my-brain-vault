@@ -259,7 +259,7 @@ if (!SKIP_RESEARCH && withQuestions.length) {
       'Reihenfolge ist Pflicht: Ressourcen/Research-Cache.md, dann Bereiche/Strategie-Logbuch.md, erst dann Web (defuddle statt WebFetch, Primaerquellen).',
       'Je Hypothese ein Status: belegt (Quelle stuetzt den Mechanismus kausal), widerlegt (Literatur oder eigenes Logbuch spricht dagegen), offen (nichts gefunden).',
       'Bei belegt: das Why mit Beleg neu formulieren (why_revised). Neue EXTERNE Claims in den Research-Cache eintragen (Format der Datei exakt einhalten).',
-      'Keine Websuche aus Gewohnheit: steht es schon im Cache, ist das die Antwort.',
+      'Keine Websuche aus Gewohnheit: steht es schon im Cache, ist das die Antwort. Ausnahme (Regel 28.09.2026, Logbuch #074): ein NEGATIVBEFUND ("kein Paper/keine Studie gefunden") in Cache oder Logbuch, der aelter als 60 Tage ist, ist keine Antwort, sondern eine Wiedervorlage: neu suchen, dann in der alten Zeile "geprüft TT.MM.JJJJ" ergaenzen.',
       '',
       qBlock,
       '',
