@@ -37,6 +37,8 @@ Status-Vokabular, nichts dazuerfinden:
 
 Zeitkritisches (Preise, Prop-Firm-Regeln) bekommt ein "gültig Stand"-Datum.
 
+**Negativbefunde altern auch** (Regel 28.09.2026, Anlass Logbuch #074: „kein Paper zu Prop-Firm-Sizing“ war sieben Wochen später durch fünf neue Preprints überholt). Ein Negativbefund („keine Studie / kein Paper zu X gefunden“) nennt immer die genutzten Suchwinkel und die gesperrten oder leer gelaufenen Quellen. Triffst du beim Cache-Grep auf einen Negativbefund, der älter als 60 Tage ist, und die Frage hängt daran: erst neu suchen, dann in der alten Zeile „geprüft TT.MM.JJJJ“ ergänzen (Datum ist die einzige zulässige Änderung an einer alten Zeile) und den Stand melden. Fällige Zeilen: `python .claude/scripts/research_cache_expiry.py`.
+
 **Harte Trennung, nicht verwischen:** in den Research-Cache kommt **nur externe Evidenz**. Erkenntnisse aus eigenen Backtests gehören ins Strategie-Logbuch. Wenn dir auffällt, dass etwas dorthin gehört, schreib es nicht selbst rein, sondern melde es im Report.
 
 Du schreibst **ausschließlich** in `Ressourcen/Research-Cache.md`, keine andere Datei. Bestehende Zeilen nicht löschen und nicht umformulieren, nur anhängen. Widerspricht ein Fund einem alten Claim, hängst du den neuen an und meldest den Widerspruch.

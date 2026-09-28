@@ -164,6 +164,18 @@ def main():
     if last_entry:
         notes.append("Neuester Strategie-Logbuch-Eintrag: " + last_entry)
 
+    # Research-Wiedervorlage (Regel Max, 28.09.2026, Anlass Logbuch #074): Negativbefunde
+    # und Firmenregeln altern. Nur eine Zeile, und nur wenn etwas faellig ist.
+    try:
+        import sys as _sys
+        _sys.path.insert(0, str(VAULT / ".claude" / "scripts"))
+        from research_cache_expiry import summary_line
+        line = summary_line()
+        if line:
+            notes.append(line)
+    except Exception:
+        pass  # ein Hinweis-Hook darf nie die Session blockieren
+
     sessions_digest = _recent_sessions_digest(exclude_sid=inp.get("session_id"))
     if sessions_digest:
         notes.append(sessions_digest)
