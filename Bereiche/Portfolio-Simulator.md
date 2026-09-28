@@ -45,7 +45,7 @@ erstellt: 2026-07-07
 > First-Passage-Physik: +$3000 vor −$2500. Driftlos = 45%, wir haben ~+12 Punkte Drift.
 > - **Trailing DD:** Boden wandert mit dem Gewinn hoch (wird enger) → max ~59%, 60%/<50d **unmöglich**.
 > - **Static DD:** Boden bleibt fix bei −DD → voller Drift-Effekt → **61-64% / <50d machbar**.
-> - **Regel für Funded/Eval:** **Static-DD-Anbieter wählen** (Tradeify/MFFU Static-Pläne), nicht Trailing. Das ist +7 Punkte Passchance geschenkt. Mehr DD-Puffer ($3000 statt $2500 static) = nochmal +3-4 Punkte.
+> - **Regel für Funded/Eval:** **Static-DD-Anbieter wählen** (Tradeify~~/MFFU~~ Static-Pläne; ⚠️ 28.09.2026: MFFU hat keinen Static-Plan mehr, alle Pläne trailen, siehe [[MFFU 50k Pläne (Regeln + Wahl)]]), nicht Trailing. Das ist +7 Punkte Passchance geschenkt. Mehr DD-Puffer ($3000 statt $2500 static) = nochmal +3-4 Punkte.
 > - 5. Bein **NQ_ORB-fade** dazu (Reversion, |Korr| 0,08) hob 61%→63% und RoDD auf 9,2. ES-Momentum brachte NICHTS (korreliert mit NQ-Mom).
 >
 > **Discovery (ehrlich, 12 Versuche → 5 Überlebende):** NQ = alle 3 (Momentum/ORB-Breakout/LastHour) · ES = nur Momentum (schwach, rausgeworfen) · RTY = nur Gap-fade · **YM = nichts robust**. Einzelreports im Lab.

@@ -3,16 +3,45 @@ tags:
   - ressource/propfirm
   - trading/eval
 erstellt: 2026-08-04
+aktualisiert: 2026-09-28
 ---
 # 🏦 MFFU 50k: Pläne im Vergleich (Screenshots 04.08.2026)
 
 ⬅️ [[Live-Setup (Algo auf Prop)]] · [[Eval-Passing]]
 
-## Alle 4 Pläne (50k, Target immer $3K, Max DD immer $2K!)
+> [!warning] ⚠️ Alter Stand (04.08.2026), aktualisiert am 28.09.2026
+> Alles ab „Alle 4 Pläne“ ist der Screenshot-Stand vom 04.08. Was davon heute falsch ist, ist durchgestrichen oder mit ⚠️ markiert. **Der aktuelle Stand steht im nächsten Abschnitt.** Quelle: [[Research-Cache]] Abschnitt „MyFundedFutures Re-Check (28.09.2026)“. Achtung: dort nur Such-Snippets (Firmenseiten waren aus der Cloud-Session gesperrt), vor einem Kauf im Checkout und im Help Center gegenlesen.
 
-| Regel | ⚡ Rapid | 💼 Pro | 🧱 Builder | 🎛️ Flex |
+## ✅ Stand 28.09.2026 (Re-Check)
+
+- **Pläne:** verkauft werden nur noch **Rapid, Rapid EOD (nur 25K/50K), Builder, Pro**. **Flex ist seit 05.08.2026 eingestellt**, Core gibt es auch nicht mehr.
+- **Preis:** seit 25.08.2026 für alle neuen Evals **Einmalzahlung**, keine Verlängerung, keine Aktivierungsgebühr. Das Monats-Abo gibt es für Neukäufe nicht mehr. Code **CLUB** 40 bis 50 % nur auf den Erstkauf (Rate schwankt).
+- **Kein Static-Plan mehr:** alle vier Pläne trailen (EOD oder intraday).
+
+| Regel | ⚡ Rapid 50K | ⚡ Rapid 150K | 💼 Pro 150K |
+|---|---|---|---|
+| Listenpreis einmalig | $209 | $463 (mit CLUB ca. $232 bis $278) | $557 |
+| Target / Max Loss | $3.000 / $2.000 | $9.000 / $4.500 | $9.000 / $4.500 |
+| Eval: DD-Modus | EOD-Trailing | EOD-Trailing | EOD-Trailing |
+| **Funded: DD-Modus** | ⚠️ **intraday-trailing** | ⚠️ **intraday-trailing** | ✅ **EOD-Trailing** |
+| Daily Loss | keiner | keiner | keiner |
+| Consistency | Eval 50 %, Funded keine | Eval 50 %, Funded keine | Eval 50 %, Funded keine |
+| Min. Handelstage Eval | 2 | 2 | 2 |
+| Payout | täglich, min $500, **90/10**, Buffer $2.100 | täglich, min $500, **90/10**, Buffer $4.600, kein Cap | alle 14 Tage, min $1.000, max 60 % je Payout, 80/20, Buffer $4.600 |
+| Live-Wechsel | automatisch bei $10.000 Netto an einem Tag | automatisch bei $10.000 Netto an einem Tag | Review nach 3 Payouts oder $20.000 |
+
+- **Builder** (100K/150K): Eval in 1 Tag möglich, weiches Daily Loss ($1.750 / $2.500, pausiert nur), Payout-Cap $3.000 / $4.500, max. 5 Payouts, nur ein Builder-Funded-Konto je Person.
+- **Für alle Pläne:** max. 10 Evals gleichzeitig. Sobald ein 100K- oder 150K-Funded dabei ist, max. **3 Sim-Funded** insgesamt. **7 Kalendertage ohne Trade** und das Konto kann geschlossen werden. Auto-Close 16:10 ET. T1-News im Sim-Funded flat (±2 Min). **Live-Wechsel ist nicht ablehnbar**, sobald man ausgewählt wird (bis $5.000 gehen in eine Reserve).
+- **Algo und VPS:** Support-Mail vom 27.07.2026 (Stephanie, Mensch): keine IP-Beschränkung, VPS erlaubt, Algo auf allen Plänen und Stufen (Eval, Sim-Funded, Live) erlaubt, kein HFT, keine Sim-Fill-Exploits. **Aber:** unsere Anfrage beschrieb damals „actively supervising remotely via phone“. **Ob unbeaufsichtigter Betrieb erlaubt ist, ist offen**, mehrere Drittquellen sagen „kein Set-and-forget“. Sammel-Anfrage mit allen Fragen an support@myfundedfutures.com am 28.09.2026 verschickt, Antwort offen.
+- **Kontakt:** support@myfundedfutures.com funktioniert (läuft über Intercom, Antwort am 27.07. nach 7 Minuten).
+
+## ~~Alle 4 Pläne (50k, Target immer $3K, Max DD immer $2K!)~~ Stand 04.08., veraltet
+
+> ⚠️ Preise hier waren **Monats-Abo** (heute Einmalzahlung, siehe oben), **Flex gibt es nicht mehr**, Builder-Regeln haben sich geändert.
+
+| Regel | ⚡ Rapid | 💼 Pro | 🧱 Builder | 🎛️ ~~Flex~~ (eingestellt) |
 |---|---|---|---|---|
-| **Preis (mit Code)** | **$78.50** (300K) | $113.50 (300K) | $76.50 (BUILDER) | $153 (kein Code) |
+| **Preis (mit Code)** | ~~**$78.50** (300K)~~ | ~~$113.50 (300K)~~ | ~~$76.50 (BUILDER)~~ | ~~$153 (kein Code)~~ |
 | **Eval: DD-Modus** | EOD-Trailing | EOD-Trailing | EOD-Trailing | EOD-Trailing |
 | **Eval: Daily DD** | ❌ keiner | ❌ keiner | ⚠️ **$1.000!** | ❌ keiner |
 | Eval: Max Position | 5 Kontrakte | 3 | 4 | 3 |
@@ -29,6 +58,8 @@ erstellt: 2026-08-04
 
 ## Unsere ehrlichen Passchancen (6-Bein-Buch, Target $3K / DD $2K EOD-Trailing)
 
+> ⚠️ Rechnung vom 04.08. mit dem damaligen 6-Bein-Buch und alter Engine. Gilt nicht für das heutige Buch (E8 150k k2 wird mit `tempo_plan.py` gerechnet).
+
 | Cushion-Frac | P(pass) | ~Tage |
 |--:|--:|--:|
 | 0.10 | 58% | ~104 |
@@ -43,7 +74,7 @@ erstellt: 2026-08-04
 
 | Regel | MFFU Rapid | **Lucid Flex** | Lucid Pro |
 |---|---|---|---|
-| Preis | $78.50/**Monat** (läuft weiter!) | **einmalig** (~$90-370 je Größe, exakt beim Kauf prüfen) | einmalig |
+| Preis | ~~$78.50/**Monat** (läuft weiter!)~~ seit 25.08.: $209 einmalig (Liste) | **einmalig** (~$90-370 je Größe, exakt beim Kauf prüfen) | einmalig |
 | Eval: Target / DD | $3K / $2K EOD-Trailing | **$3K / $2K EOD-Trailing (identisch)** | $3K / $2K EOD-Trailing |
 | Eval: Daily Loss | ❌ | **❌ keiner** | ⚠️ $1.200 |
 | Eval: Consistency | 50% | 50% | ❌ |
@@ -51,13 +82,13 @@ erstellt: 2026-08-04
 | **Funded: DD-Modus** | ⚠️ **RealTime** | ✅ **EOD-Trailing** | ✅ EOD-Trailing |
 | Funded: Consistency | ❌ | **❌ keine** | 40% |
 | Split | 90% | 90% | 90% |
-| **Algo-Policy** | semi-auto, **beaufsichtigt** | ✅ **VOLL-Automation explizit erlaubt** (Bots/Copier) | ✅ voll |
+| **Algo-Policy** | ~~semi-auto,~~ Algo erlaubt, **Aufsicht unklar** (Anfrage 28.09.) | ✅ **VOLL-Automation explizit erlaubt** (Bots/Copier) | ✅ voll |
 | Payout | 1 Tag | 5 separate Tage mit Min-Tagesprofit | ab 3 Handelstagen |
 
 **→ NEUE ENTSCHEIDUNG: Lucid Flex 50k.** Gründe:
 1. **Gleiche Eval-Mathematik** wie MFFU Rapid (identische Passchancen: ~52-56% / 72-101d)
-2. **Einmalzahlung statt Monats-Abo:** unser Grind dauert 2,5-3,5 Monate → MFFU würde ~$160-275 kosten, Lucid einmal ~$150-190
-3. **Voll-Automation offiziell erlaubt** → Max' Job-Situation (nicht am PC um 15:30) ist bei Lucid regelkonform, bei MFFU (Aufsichtspflicht) ein Graubereich
+2. ~~**Einmalzahlung statt Monats-Abo:** unser Grind dauert 2,5-3,5 Monate → MFFU würde ~$160-275 kosten, Lucid einmal ~$150-190~~ ⚠️ entfällt seit 25.08.2026, MFFU ist jetzt auch Einmalzahlung
+3. **Voll-Automation offiziell erlaubt** → Max' Job-Situation (nicht am PC um 15:30) ist bei Lucid regelkonform, bei MFFU (Aufsichtspflicht) ein Graubereich (⚠️ 28.09.: weiter offen, Sammel-Anfrage läuft)
 4. **Funded deutlich besser:** EOD-Trailing + KEINE Consistency (MFFU Rapid: RealTime-DD)
 5. Kein Daily-Loss-Limit im Eval (Pro und MFFU Builder haben eins → Sim-Mismatch)
 
@@ -69,7 +100,7 @@ erstellt: 2026-08-04
 1. **Günstigster Preis** (gleichauf mit Builder)
 2. **Eval-Regeln = exakt unser simuliertes Regime:** EOD-Trailing, KEIN Daily-DD, 5 Kontrakte (weit über unserem Cap von 14 Micros)
 3. Builder ist zwar $2 billiger, hat aber **Daily DD $1.000 = zusätzliche Ruin-Barriere**, die NICHT in unserer Simulation ist → senkt real die Passchance und zwingt den Risk-Guard zu einem harten Tagesstopp. Nicht wert für $2 Ersparnis.
-4. Flex: teurer + min $150/Tag-Payout-Regel + nur 3 Kontrakte → nein.
+4. ~~Flex: teurer + min $150/Tag-Payout-Regel + nur 3 Kontrakte → nein.~~ (Flex seit 05.08.2026 eingestellt)
 5. Pro: $35 teurer für besseres Funded (EOD statt RealTime). Fürs ERSTE Konto nicht nötig — Ziel ist jetzt Eval-Passen.
 
 **Der Rapid-Haken (bewusst akzeptiert):** Funded = RealTime-Trailing-DD (das harte Apex-Modell). Gegenstrategie: **90% Split + 1-Tages-Payouts** = Gewinne sofort rausziehen, Risiko de-risken. Wenn wir funded sind und das Buch läuft, kaufen wir fürs zweite Konto ggf. Pro (EOD-Funded) — Entscheidung dann.
@@ -80,3 +111,4 @@ erstellt: 2026-08-04
 1. **Consistency 50%:** kein Einzeltag > 50% des Gesamtprofits beim Pass-Antrag. Guard-Regel: wenn bester Tag > 45% vom Total → Size auf Minimum bis verdünnt.
 2. **Max 5 Kontrakte / 50 Micros:** unser Cap 14 Micros → nie relevant, trotzdem hart im Guard verdrahten.
 3. DD-Floor $2.000 EOD-Trailing → Cushion-Berechnung im Sizing auf 2.000 stellen (nicht 2.500!).
+4. **Neu (28.09.):** 7 Tage ohne Trade schließen das Konto, T1-News im Funded ±2 Min flat, Auto-Close 16:10 ET.

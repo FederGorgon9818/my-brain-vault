@@ -15,7 +15,7 @@ erstellt: 2026-07-21
 
 | Firma | Algo erlaubt? | Bedingungen | DD-Typ |
 |---|---|---|---|
-| **MyFundedFutures (MFFU)** | ✅ seit Juli 2025 auf ALLEN Konten | semi-auto, aktiv beaufsichtigt, <200 Trades/Tag, keine Sim-Exploits | je nach Plan EOD-Trailing (Core/Pro), Static-Variante prüfen (Flex/Builder) |
+| **MyFundedFutures (MFFU)** | ✅ seit Juli 2025 auf ALLEN Konten (Support-Mail 27.07.2026: Algo auf Eval, Sim-Funded und Live erlaubt, VPS erlaubt, keine IP-Beschränkung) | ~~semi-auto,~~ aktiv beaufsichtigt? ⚠️ **unbeaufsichtigt offen** (Sammel-Anfrage 28.09.2026), <200 Trades/Tag, keine Sim-Exploits | ~~je nach Plan EOD-Trailing (Core/Pro), Static-Variante prüfen (Flex/Builder)~~ ⚠️ 28.09.: Core und Flex eingestellt, **kein Static-Plan mehr**. Rapid: Eval EOD, Funded intraday. Pro: EOD/EOD. Builder: EOD. Details [[MFFU 50k Pläne (Regeln + Wahl)]] |
 | **Tradeify** | ✅ persönliche Bots | Bot gehört NUR dir (kein gekauftes/geteiltes System!), Video-Nachweis vom Start auf deinem PC, kein HFT, >50% der Trades & Profite aus Trades >10s Haltezeit | Lightning = **EOD-Trailing** (nicht static!) |
 | Apex | ❌ kein Algo | — | — |
 | Topstep | ⚠️ restriktiv | — | — |
@@ -61,11 +61,11 @@ erstellt: 2026-07-21
 11. Jeden Abend: Trades ins [[Strategie-Logbuch]] (automatisch via CSV), einmal pro Woche Review: läuft das Buch im erwarteten Band?
 
 ### Phase 4: Funded
-12. Nach dem Pass: **Consistency-Regel beachten** (Tradeify: 20% → 25% → 30% je Payout; MFFU planabhängig, Flex funded ohne Consistency). Heißt: kein Einzeltag > X% des Gesamtprofits → unser Portfolio mit vielen kleinen Tagen passt da gut rein, aber wir simulieren das noch (nächster Schritt im Lab).
+12. Nach dem Pass: **Consistency-Regel beachten** (Tradeify: 20% → 25% → 30% je Payout; MFFU: Eval 50 %, Funded bei Rapid und Pro ohne Consistency, ~~Flex funded ohne Consistency~~ Flex seit 05.08.2026 eingestellt). Heißt: kein Einzeltag > X% des Gesamtprofits → unser Portfolio mit vielen kleinen Tagen passt da gut rein, aber wir simulieren das noch (nächster Schritt im Lab).
 13. Payout-Kadenz klein und regelmäßig (90% Split, Caps beachten).
 
 > [!danger] ⚠️ VPS-VERBOT bestätigt (27.07.2026, Bulenox-Ticket #RAX-292098)
-> **"The use of any VPN, VPS, proxy, or IP-masking technology is strictly prohibited"** — Verstoß = Kündigung + Verfall aller Rewards. Recherche zeigt: auch bei Apex/MFFU ist VPS mindestens genehmigungspflichtig; Datacenter-IPs sind branchenweit das Misstrauens-Signal.
+> **"The use of any VPN, VPS, proxy, or IP-masking technology is strictly prohibited"** — Verstoß = Kündigung + Verfall aller Rewards. Recherche zeigt: auch bei Apex~~/MFFU~~ ist VPS mindestens genehmigungspflichtig (⚠️ 28.09.2026: MFFU laut Support-Mail 27.07. ohne IP-Beschränkung, VPS erlaubt); Datacenter-IPs sind branchenweit das Misstrauens-Signal.
 > **Neuer Plan: HOME-TRADING-BOX** (Mini-PC/alter Laptop bei Max daheim, Wohnsitz-IP = überall regelkonform). Bulenox-Käfig bleibt erhalten. Einrichtung identisch zum VPS (Tailscale, NT8, Bridge, Sync) — Anleitung [[VPS-Einrichtung Schritt für Schritt]] gilt sinngemäß, nur ohne Contabo-Teil. VPS wird nach Migration gekündigt. Fernaufsicht per RDP/Tailscale bleibt (maskiert die Trading-IP nicht — NT verbindet von der Heim-IP).
 
 ## 🖥️ Betrieb ohne eigenen PC (VPS) — ⚠️ OBSOLET, siehe Warnung oben
@@ -85,7 +85,7 @@ erstellt: 2026-07-21
 - NT8 "Auto-Flat bei Disconnect"
 - Risk-Guard mit **Telegram-Push-Alerts** (Fills, Tageslimit, Disconnect) → Aufsicht in der Hosentasche
 
-**Regel-Haken:** MFFU/Tradeify = beaufsichtigte Automation, KEIN unbeaufsichtigter Vollautomat. Handy-Alerts + erreichbar sein = ok. Tradeify verlangt "Bot auf eigenem PC + Video" → **vor Kauf beim Support schriftlich klären, ob VPS ok ist** (üblich, aber absichern).
+**Regel-Haken:** MFFU/Tradeify = beaufsichtigte Automation, KEIN unbeaufsichtigter Vollautomat. Handy-Alerts + erreichbar sein = ok. Tradeify verlangt "Bot auf eigenem PC + Video" → **vor Kauf beim Support schriftlich klären, ob VPS ok ist** (üblich, aber absichern). ⚠️ 28.09.2026: MFFU-VPS ist seit 27.07. schriftlich ok (damals als „beaufsichtigt per Handy“ gefragt). Ob **unbeaufsichtigt** erlaubt ist, klärt die Sammel-Anfrage vom 28.09.
 
 ## 🔀 Netting-Konto & mehrere Beine auf MNQ (gemessen 30.07.2026)
 Prop-Konten sind **Netting** (eine Netto-Position pro Instrument, kein gleichzeitig long+short). 6 der 9 Beine handeln MNQ, ORB-Break vs ORB-Fade sind sogar per Design gegenläufig. **Messung:** an 15% der Tage stehen sich zeitweise Beine gegenüber, aber nur **2,6% der Brutto-Exposure** wird real weggenettet (Beine handeln meist zu verschiedenen Zeiten oder an Trendtagen gleichgerichtet).
