@@ -25,7 +25,7 @@ Fliesstext bewusst nicht (das sind meist Paper-Daten); bei Firmenregel-Zeilen sc
 wenn seine Ueberschrift ein spaeteres Datum traegt ("... geprueft 25.10.2026").
 
 Nutzung (Vault-Root):
-    python .claude/scripts/research_cache_expiry.py [--days 60] [--today JJJJ-MM-TT] [--all] [--json]
+    python .claude/scripts/research_cache_expiry.py [--today JJJJ-MM-TT] [--all] [--json] [--days N]
     python .claude/scripts/research_cache_expiry.py --quiet      # eine Zeile, leer wenn nichts faellig
     python .claude/scripts/research_cache_expiry.py --selftest   # synthetische Faelle + echte Dateien
 """
@@ -45,8 +45,16 @@ for _s in (sys.stdout, sys.stderr):
 VAULT = Path(__file__).resolve().parents[2]
 CACHE = VAULT / "Ressourcen" / "Research-Cache.md"
 LOGBOOK = VAULT / "Bereiche" / "Strategie-Logbuch.md"
-DEFAULT_DAYS = 60
+# Schwellen (Max, 28.09.2026): Negativbefunde 45 Tage (60 haetten #074 nicht gefangen, der
+# Fund kam nach 49 Tagen), Firmenregeln/Preise weiter 60 Tage wie die alte Cache-Regel.
+NEG_DAYS = 45
+ZEIT_DAYS = 60
 SOON_DAYS = 14
+# Die SessionStart-Zeile zaehlt Firmenregeln nur fuer die aktiven Firmen (Max, 28.09.2026),
+# alle anderen stehen in der vollen Liste (Sonntags-Retro). Neue Firma gekauft -> hier ergaenzen
+# (gehoert zur CLAUDE.md-Regel "Neues Konto oder neue Firma -> Regeln pruefen").
+ACTIVE_FIRMS = "E8, FundedNext"
+ACTIVE_FIRMS_RX = re.compile(r"\bE8\b|SimFi|fundednext|\bFN\b", re.I)
 SHOW = 25  # je Kategorie, Rest per --all (nie still kappen: der Rest wird gezaehlt)
 
 DATE = r"(\d{1,2})\.(\d{1,2})\.(\d{4})"
@@ -173,6 +181,19 @@ def scan_cache(text, label="Research-Cache.md"):
     return out
 
 
+# "keine Arbeit quantifiziert ..." ist selbst ein Literaturbezug, auch ohne "Paper"/"Studie"
+# (sonst fiele der Momentum-Korrelations-Befund aus #074 durch, verdict-auditor Runde 2).
+_LIT_NEG_RX = re.compile(r"\bkein\w*\s+(?:[\w-]+\s+){0,2}?(?:paper|studie|studien|arbeit|arbeiten)\b", re.I)
+
+
+def _threshold(it, days=None):
+    return days if days is not None else (NEG_DAYS if it["kind"] == "neg" else ZEIT_DAYS)
+
+
+def _is_active(it):
+    return bool(ACTIVE_FIRMS_RX.search(it.get("raw", "")) or ACTIVE_FIRMS_RX.search(it.get("section", "")))
+
+
 def scan_logbook(text, label="Strategie-Logbuch.md"):
     """Recherche-Negativbefunde im Logbuch (Negativbefund UND Literatur-Bezug)."""
     lines = text.splitlines()
@@ -185,7 +206,7 @@ def scan_logbook(text, label="Strategie-Logbuch.md"):
             continue
         if line.lstrip().startswith(">"):
             continue  # Nachtrag-Bloecke sind die Erledigung, nicht der Befund
-        if not (is_neg(line) and LIT_RX.search(line)):
+        if not (is_neg(line) and (LIT_RX.search(line) or _LIT_NEG_RX.search(line))):
             continue
         marks = _dates(_MARK_RX, line)
         for nxt in lines[i:i + 3]:  # direkt folgender Nachtrag-Block (bis 3 Zeilen, Leerzeile erlaubt)
@@ -199,7 +220,8 @@ def scan_logbook(text, label="Strategie-Logbuch.md"):
     return out
 
 
-def evaluate(items, today, days=DEFAULT_DAYS):
+def evaluate(items, today, days=None):
+    """days=None: Schwelle je Art (Negativbefund NEG_DAYS, Firmenregel ZEIT_DAYS); sonst fuer alle."""
     due, soon, undated = [], [], []
     for it in items:
         # Nur Daten bis heute zaehlen: ein Termin in der Zukunft ("FOMC 08.12.2027 TENTATIVE")
@@ -211,15 +233,16 @@ def evaluate(items, today, days=DEFAULT_DAYS):
             continue
         age = (today - it["date"]).days
         it["age"] = age
-        if age > days:
+        thr = _threshold(it, days)
+        if age > thr:
             due.append(it)
-        elif age > days - SOON_DAYS:
+        elif age > thr - SOON_DAYS:
             soon.append(it)
     due.sort(key=lambda x: -x["age"])
     return due, soon, undated
 
 
-def collect(today, days=DEFAULT_DAYS, files=None):
+def collect(today, days=None, files=None):
     """(due, soon, undated, errors). Eine fehlende oder unlesbare Datei ist ein FEHLER,
     kein 'nichts faellig' -- sonst waere das Gate still blind (verdict-auditor 28.09.)."""
     items, errors = [], []
@@ -232,41 +255,53 @@ def collect(today, days=DEFAULT_DAYS, files=None):
     return due, soon, undated, errors
 
 
-def summary_line(today=None, days=DEFAULT_DAYS):
-    """Eine Zeile fuer den SessionStart-Hook; leer, wenn nichts faellig ist."""
-    today = today or dt.date.today()
-    due, _soon, undated, errors = collect(today, days)
+def summary_from(due, undated, errors, days=None):
+    """Text der SessionStart-Zeile (rein, damit der Selbsttest ihn pruefen kann).
+    Zaehlt Negativbefunde und Firmenregeln AKTIVER Firmen; andere Firmen nur als Zahl
+    (volle Liste im Retro), damit die Zeile kein Dauerrauschen wird (Max, 28.09.2026)."""
     if errors:
         return ("Research-Wiedervorlage BLIND: " + ", ".join(errors) +
                 " -- Datei fehlt oder ist unlesbar, das Gate meldet nichts (python .claude/scripts/research_cache_expiry.py).")
-    n_neg = sum(1 for x in due if x["kind"] == "neg")
-    n_zeit = len(due) - n_neg
-    if not due and not undated:
-        return ""
+    neg = [x for x in due if x["kind"] == "neg"]
+    act = [x for x in due if x["kind"] == "zeit" and _is_active(x)]
+    other = [x for x in due if x["kind"] == "zeit" and not _is_active(x)]
+    n = lambda k, one, many: f"{k} {one if k == 1 else many}"
     bits = []
-    if n_neg:
-        bits.append(f"{n_neg} Negativbefunde")
-    if n_zeit:
-        bits.append(f"{n_zeit} Firmenregel-/Preis-Zeilen")
+    if neg:
+        bits.append(f"{n(len(neg), 'Negativbefund', 'Negativbefunde')} (aelter als {days or NEG_DAYS} Tage)")
+    if act:
+        bits.append(f"{n(len(act), 'Regel-Zeile', 'Regel-Zeilen')} aktiver Firmen {ACTIVE_FIRMS} (aelter als {days or ZEIT_DAYS} Tage)")
     if undated:
         bits.append(f"{len(undated)} ohne Datum")
-    return (f"Research-Wiedervorlage: {' und '.join(bits)} aelter als {days} Tage. Vor Wiederverwendung in "
-            f"einer Entscheidung neu pruefen (Liste: python .claude/scripts/research_cache_expiry.py).")
+    if not bits:
+        return ""
+    tail = f", dazu {n(len(other), 'Zeile', 'Zeilen')} anderer Firmen nur im Retro" if other else ""
+    return (f"Research-Wiedervorlage: {' und '.join(bits)}{tail}. Vor Wiederverwendung in einer Entscheidung "
+            f"neu pruefen (Liste: python .claude/scripts/research_cache_expiry.py).")
+
+
+def summary_line(today=None, days=None):
+    """Eine Zeile fuer den SessionStart-Hook; leer, wenn nichts Relevantes faellig ist."""
+    today = today or dt.date.today()
+    due, _soon, undated, errors = collect(today, days)
+    return summary_from(due, undated, errors, days)
 
 
 def _fmt(it):
     age = f"{it['age']} T" if "age" in it else "ohne Datum"
     d = it["date"].strftime("%d.%m.%Y") if it["date"] else "?"
     sec = _clean(it["section"], 70)
-    return f"  {it['file']}:{it['line']}  ({age}, {d}, „{sec}“)\n      {it['text']}"
+    tag = " [aktive Firma]" if it["kind"] == "zeit" and _is_active(it) else ""
+    return f"  {it['file']}:{it['line']}{tag}  ({age}, {d}, „{sec}“)\n      {it['text']}"
 
 
-def report(today, days=DEFAULT_DAYS, show_all=False):
+def report(today, days=None, show_all=False):
     due, soon, undated, errors = collect(today, days)
     neg = [x for x in due if x["kind"] == "neg"]
-    zeit = [x for x in due if x["kind"] == "zeit"]
+    zeit = sorted([x for x in due if x["kind"] == "zeit"], key=lambda x: (not _is_active(x), -x["age"]))
     P = print
-    P(f"Research-Wiedervorlage, Stand {today.strftime('%d.%m.%Y')}, Schwelle {days} Tage")
+    thr = f"{days} Tage fuer alles" if days is not None else f"Negativbefunde {NEG_DAYS} Tage, Firmenregeln {ZEIT_DAYS} Tage"
+    P(f"Research-Wiedervorlage, Stand {today.strftime('%d.%m.%Y')}, Schwelle {thr}")
     for e in errors:
         P(f"  !! BLIND: {e} (Datei fehlt oder ist unlesbar, Ergebnis unvollstaendig)")
     P(f"  faellig: {len(neg)} Negativbefunde, {len(zeit)} Firmenregel-/Preis-Zeilen | "
@@ -340,6 +375,7 @@ def _synthetic():
         "## #050 — Volumen (20.07.2026)",                                                            # 5
         "Negativbefund: keine akademische Studie zu Volumen-Filtern gefunden",                       # 6 faellig
         "Negativbefund: kein Kandidat im Grid gefunden",                                             # 7 Trading, ignoriert
+        "- **keine Arbeit quantifiziert Korrelation X↔Y**",                                         # 8 neg ("keine Arbeit" = Lit-Bezug)
     ])
     c = {x["line"]: x for x in scan_cache(cache)}
     l = {x["line"]: x for x in scan_logbook(log)}
@@ -351,7 +387,7 @@ def _synthetic():
         ("syn Cache: 'geprüft' in der Zeile erledigt sie", (C, 5) not in dk and c[5]["kind"] == "neg"),
         ("syn Cache: normaler Claim nicht gemeldet", 6 not in c),
         ("syn Cache: 'kein Peer-Review' ist kein Negativbefund", 7 not in c),
-        ("syn Cache: ###-Unterabschnitt datiert (09.08., nicht 28.07.)", c.get(9, {}).get("date") == dt.date(2026, 8, 9) and (C, 9) not in dk),
+        ("syn Cache: ###-Unterabschnitt datiert (09.08., nicht 28.07.)", c.get(9, {}).get("date") == dt.date(2026, 8, 9)),
         ("syn Cache: 'Kein dediziertes Paper ... gefunden' (>80 Zeichen) erkannt", c.get(9, {}).get("kind") == "neg"),
         ("syn Cache: gültig-Stand-Abschnitt zeitkritisch und faellig", c.get(11, {}).get("kind") == "zeit" and (C, 11) in dk),
         ("syn Cache: Tabellen-Kopfzeile nicht gemeldet", 12 not in c),
@@ -372,8 +408,27 @@ def _synthetic():
         ("syn Logbuch: Nachtrag darunter erledigt den Befund", l.get(2, {}).get("date") == dt.date(2026, 9, 28) and (L, 2) not in dk),
         ("syn Logbuch: offener Recherche-Negativbefund faellig", (L, 6) in dk),
         ("syn Logbuch: Trading-Negativbefund ohne Literaturbezug ignoriert", 7 not in l),
+        ("syn Logbuch: 'keine Arbeit quantifiziert ...' wird erkannt", 8 in l),
+        ("syn Schwellen: Negativbefund 45 Tage (46 T faellig, 45 T nicht)",
+         bool(evaluate([dict(l[8])], dt.date(2026, 9, 4))[0]) and not evaluate([dict(l[8])], dt.date(2026, 9, 3))[0]),
+        ("syn Schwellen: Firmenregel 60 Tage (Zeile vom 28.07. am 26.09. nicht, am 27.09. faellig)",
+         not evaluate([dict(c[11])], dt.date(2026, 9, 26))[0] and bool(evaluate([dict(c[11])], dt.date(2026, 9, 27))[0])),
+        ("syn Sessionzeile: zaehlt Negativbefunde + aktive Firmen, andere Firmen nur als Zahl", _summary_case()),
         ("syn Logbuch: Nachtrag-Block selbst nicht gemeldet", 4 not in l),
     ]
+
+
+def _summary_case():
+    t = dt.date(2026, 9, 28)
+    mk = lambda kind, raw, sec: dict(kind=kind, raw=raw, section=sec, date=dt.date(2026, 7, 1),
+                                     dates=[dt.date(2026, 7, 1)], file="x", line=1, text=raw)
+    due, _s, und = evaluate([mk("neg", "kein Paper zu X gefunden", "Research"),
+                             mk("zeit", "E8 Target 6 %", "Prop-Firmen"),
+                             mk("zeit", "Apex 50k EOD", "Prop-Firmen Runde 2")], t)
+    line = summary_from(due, und, [])
+    only_other = summary_from([x for x in due if "Apex" in x["raw"]], [], [])
+    return ("1 Negativbefund " in line and "1 Regel-Zeile aktiver Firmen" in line
+            and "1 Zeile anderer Firmen nur im Retro" in line and only_other == "")
 
 
 def _real():
@@ -397,10 +452,13 @@ def _real():
     lb2 = [x for x in scan_logbook(stripped) if "Prop-Firm-First-Passage-Sizing" in x["raw"]]
     ok = False
     if lb2:
-        d9, *_ = evaluate([dict(lb2[0])], dt.date(2026, 10, 9))
-        d10, *_ = evaluate([dict(lb2[0])], dt.date(2026, 10, 10))
-        ok = not d9 and bool(d10)
-    res.append(("echt Logbuch: ohne Nachtrag am 10.10. faellig, am 09.10. nicht", ok))
+        d24, *_ = evaluate([dict(lb2[0])], dt.date(2026, 9, 24))
+        d25, *_ = evaluate([dict(lb2[0])], dt.date(2026, 9, 25))
+        ok = not d24 and bool(d25)
+    res.append(("echt Logbuch: #074 ohne Nachtrag am 25.09. faellig (45 T), am 24.09. nicht", ok))
+    mom = [x for x in scan_logbook(ltext) if "Momentum↔Alternative" in x["raw"]]
+    res.append(("echt Logbuch: #074 Momentum-Korrelation eigene Zeile, nicht vom Prop-Firm-Nachtrag erledigt",
+                bool(mom) and mom[0]["date"] == dt.date(2026, 8, 10)))
     # 2. ###-Datierung an echten Abschnitten (#070 recherchiert 09.08., #073 recherchiert 10.08.)
     t = one("Turtle Soup")
     res.append(("echt Cache: 'Turtle Soup' (### #070) datiert 09.08.", bool(t) and t["date"] == dt.date(2026, 8, 9)))
@@ -438,7 +496,7 @@ def selftest():
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    ap.add_argument("--days", type=int, default=DEFAULT_DAYS)
+    ap.add_argument("--days", type=int, default=None, help="eine Schwelle fuer alles (Standard: %d Negativbefunde, %d Firmenregeln)" % (NEG_DAYS, ZEIT_DAYS))
     ap.add_argument("--today", help="JJJJ-MM-TT (Test/Rueckblick)")
     ap.add_argument("--all", action="store_true", help="alle faelligen Zeilen statt der ersten %d je Kategorie" % SHOW)
     ap.add_argument("--quiet", action="store_true", help="eine Zeile fuer Hooks, leer wenn nichts faellig")
@@ -457,7 +515,7 @@ def main():
         due, soon, undated, errors = collect(today, a.days)
         conv = lambda xs: [{**{k: v for k, v in x.items() if k not in ("raw", "dates")},
                             "date": x["date"].isoformat() if x["date"] else None} for x in xs]
-        print(json.dumps({"today": today.isoformat(), "days": a.days, "errors": errors, "due": conv(due),
+        print(json.dumps({"today": today.isoformat(), "days": a.days or {"neg": NEG_DAYS, "zeit": ZEIT_DAYS}, "errors": errors, "due": conv(due),
                           "soon": conv(soon), "undated": conv(undated)}, ensure_ascii=False, indent=1))
         return 1 if errors else 0
     return report(today, a.days, a.all)

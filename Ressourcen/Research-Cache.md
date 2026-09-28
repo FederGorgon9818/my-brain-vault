@@ -9,7 +9,7 @@ zweck: Persistenter Evidence Store. VOR jeder Websuche hier greppen. Nach jeder 
 **Regeln:**
 - Ein Claim pro Zeile: Aussage · Quelle · Abrufdatum · Status (`bestätigt` = Paper/Primärquelle, `praktiker` = Blog/Backtest Dritter, `eigene-daten` = von uns repliziert, `veraltet`).
 - Zeitkritisches (Preise, Firmenregeln) bekommt ein "gültig Stand"-Datum → nach 60 Tagen neu prüfen.
-- **Negativbefunde altern genauso** („kein Paper / keine Studie zu X gefunden“, Regel Max 28.09.2026, Anlass Logbuch #074): sie gelten nur zum Suchdatum. Vor Wiederverwendung in einer Entscheidung neu prüfen, wenn älter als 60 Tage. Ein Negativbefund nennt die genutzten Suchwinkel und gesperrten Quellen. Neu geprüft → in der Zeile „geprüft TT.MM.JJJJ“ ergänzen. Fällige Zeilen listet `python .claude/scripts/research_cache_expiry.py` (eine Zeile beim Sessionstart, volle Liste im Sonntags-Retro).
+- **Negativbefunde altern genauso** („kein Paper / keine Studie zu X gefunden“, Regel Max 28.09.2026, Anlass Logbuch #074): sie gelten nur zum Suchdatum. Vor Wiederverwendung in einer Entscheidung neu prüfen, wenn älter als 45 Tage (Firmenregeln weiter 60). Ein Negativbefund nennt die genutzten Suchwinkel und gesperrten Quellen. Neu geprüft → in der Zeile „geprüft TT.MM.JJJJ“ ergänzen. Fällige Zeilen listet `python .claude/scripts/research_cache_expiry.py` (eine Zeile beim Sessionstart, volle Liste im Sonntags-Retro).
 - Modell-Zusammenfassungen sind KEINE Quelle. Immer Original-Link.
 - Markterkenntnisse aus eigenen Backtests → gehören in die [[Strategie-Logbuch|Insight-Bank]], nicht hierher. Hier nur EXTERNE Evidenz.
 

@@ -50,6 +50,7 @@ Vault: `C:\Users\maxlk\Documents\Obsidaian\My Brain\My Brain\`
 - `Ressourcen/Momentum-Theorie (Futures).md` Abschnitt 7, `Ressourcen/Institutionelle Order-Execution (Theorie).md` → ungetestete Hypothesen-Kandidaten.
 - `Bereiche/Strategie-Logbuch.md` → Friedhof und Lehren (`grep -n "Friedhof\|tot\|verworfen\|Lehre" …`), bevor du etwas vorschlägst, das dort schon gestorben ist.
 - `Ressourcen/Research-Cache.md` → externe Evidenz, die wir schon haben (Überschriften greppen, dann gezielt).
+- **Alte Negativbefunde sind keine geschlossene Lücke** (Regel Max, 28.09.2026, Anlass Logbuch #074: „kein Paper zu Prop-Firm-Sizing“ war sieben Wochen später durch fünf Preprints überholt). Steht in Cache oder Logbuch „kein Paper / keine Studie / nichts gefunden“ und ist der Befund älter als 45 Tage, behandelst du die Frage als **offen** und suchst im Web neu, bevor du eine Idee deshalb verwirfst oder nicht vorschlägst. Fällige Befunde: `python .claude/scripts/research_cache_expiry.py`. Neu geprüft → in der Cache-Zeile „geprüft TT.MM.JJJJ“ ergänzen, beim Logbuch einen Nachtrag im Report vorschlagen.
 
 ### 3. Web (nur für Lücken)
 
