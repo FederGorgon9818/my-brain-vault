@@ -68,7 +68,7 @@ Rollback: Git existiert nicht im Vault — Rückbau = Abschnitt/Dateien löschen
 - **Discovery lesen:** `python summarize_results.py <results.json> [top_n]` — volle Logs nur bei konkretem Debugging-Bedarf per Select-String.
 - **Recherche:** `Grep "stichwort" Ressourcen\Research-Cache.md` → nur bei Miss websuchen → Fund eintragen.
 - **Modellwechsel:** `/model sonnet` für Routine, `/model fable` für Entscheidungen. Claude schlägt Downgrade aktiv vor, wenn ein Block abgeschlossen ist.
-- **Subagenten:** nur auf Zuruf ("nimm einen Haiku-Scout dafür") — Harness-Konvention.
+- **Subagenten:** ~~nur auf Zuruf ("nimm einen Haiku-Scout dafür") — Harness-Konvention.~~ Überholt seit den eigenen Agents (`.claude/agents/`, Pflichtketten per Hook/Workflow). Seit 28.09.2026 gilt „Delegieren nach Nutzen, nicht pauschal“ aus dem Token-Disziplin-Block der CLAUDE.md: abgeben bei viel Lesen mit wenig Rückgabe, bei parallelen Aufgaben, bei mechanischer Arbeit (haiku) oder wenn die Hauptsession auf opus/fable läuft (sonnet). Pauschales „nie selbst arbeiten“ wurde verworfen: Übergabe und kalter Start kosten bei kleinen Aufgaben mehr, als ein günstigeres Modell spart (gleiche Begründung wie Orchestrator/Implementierungs-Agent in §9).
 - **Sicherheit:** unverändert — nichts davon berührt Trading-Ausführung, Secrets oder produktive Configs.
 
 ## 6. Tests
