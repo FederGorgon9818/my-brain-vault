@@ -19,7 +19,7 @@ Eval = **+Target erreichen, bevor Trailing-DD greift**, in begrenzter Zeit (Boun
 2. **Zarattini "VWAP Holy Grail" (SSRN 4631351):** Sharpe 2,1 bei **nur 9,4% Max DD**. Niedriger DD = starker Eval-Kandidat. Behauptung mit ehrlicher Engine prüfen. https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4631351
 3. **MaxAI — Huber (SSRN 5761402):** RL/GA Index-Futures, PF 1,07, DD $41k → zu wackelig fürs Eval. Referenz.
 4. **Wong (SSRN 6722841):** MC-Stresstest-Methodik.
-5. **Neu (28.09.2026):** fünf Preprints von Juli bis Sept. 2026, die Challenges als First-Passage-Problem rechnen (Villahermosa, Lim ×2, Fernández, Hall), dazu die klassische Prop-Trader-Literatur. Übersicht: [[Prop-Firm-Paper (Literaturüberblick)]].
+5. **Neu (28.09.2026):** fünf Preprints von Juli bis Sept. 2026, die Challenges als First-Passage-Problem rechnen (Villahermosa, Lim ×2, Tomàs Fernández, Hall), dazu die klassische Prop-Trader-Literatur. Übersicht: [[Prop-Firm-Paper (Literaturüberblick)]].
 
 ## Plan
 - [ ] **Eval-Optimizer** in Prop Firm Assistant bauen: findet pro Strategie die Size/Risiko-Kombi mit max P(pass) + min Tage bis Pass, pro Firm, inkl. PFPL-Kostenmodell.
