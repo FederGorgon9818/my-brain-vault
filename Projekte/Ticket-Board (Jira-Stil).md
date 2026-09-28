@@ -5,7 +5,7 @@ tags:
   - strategy-lab
   - tickets
 erstellt: 2026-09-28
-status: geplant (Bau aus PC-/Laptop-Session, Engine nötig)
+status: gebaut (Branch claude/awesome-hawking-tqcayx in trading-data), Einspielen auf PC/Box offen
 ---
 # 🗂️ Ticket-Board im Strategy Lab (Jira-Stil)
 
@@ -197,6 +197,47 @@ Tickets je Phase werden in der Bau-Session angelegt (neue Nummern nur nach `--pu
 - Box-Automatiken legen selbst Tickets an: **ja**, siehe 3b.
 
 ---
+
+## Stand 28.09.2026 abends: gebaut (Cloud-Session, noch nicht auf PC/Box)
+
+Gebaut in der Cloud gegen das GitHub-Backup `trading-data`, Branch `claude/awesome-hawking-tqcayx` (Commits 24c3487, df1c21d). **Weder PC noch Box haben den Stand.** Auf der Box ist noch nichts migriert.
+
+| Teil | Datei | Was |
+|---|---|---|
+| Schreibschicht | `engine/ticket_lib.py` | einzige Stelle, die tasks.json schreibt: Sperre, atomar mit Windows-Retry, Tagesbackup `tasks.json.bak-board-*`, Verlauf `ticket_events.jsonl`, Sprints `ticket_board.json`, Burndown, Velocity, Auto-Tickets |
+| CLI für Claude | `engine/ticket_tool.py` | show, find, new, move, edit, note, link, board, backlog, sprint (new/plan/start/close/edit/list), report |
+| Migration | `engine/ticket_migrate.py` | Probelauf Standard, `--apply` schreibt. Additiv: Board, Typ, Rang, Zuständig. Holt entfernte Tickets aus `tasks.json.bak*` als erledigt mit Label `archiv` zurück (auf dem PC-Schnappschuss: 118 ergänzt, 140 zurück). Legt Sprint S2026-41 an |
+| Lab | `engine/lab_ui/tickets_board.js/.css`, `lab.js`, `index.html` | im Tab Tickets drei neue Ansichten: **Board**, **Backlog**, **Sprints**. Tab-Leiste jetzt oben für alle sechs Ansichten |
+| Server | `engine/app_server.py` | `/api/tickets/*`. Die alten `/api/tasks`-Schreibwege laufen jetzt über die Sperre. 15 s nach der letzten Änderung wird mit der Box abgeglichen, vor dem Anlegen wird gezogen |
+| Abgleich | `engine/discovery/inbox_tool.py` | Dreiwege-Merge über `tasks.json.sync-base`: pro Feld gewinnt die Seite, die geändert hat. Notizen werden vereinigt. Kollision nur bei gleicher AP mit anderer id. Sprints und Verlauf laufen mit |
+| Automatik (3b) | `engine/auto_check.py` | `auto_tickets()`: Discovery-Kandidat „besser" (letzte 7 Tage, ungelesen), `queue_empty` (24 h), Runner-Herzschlag > 30 Min. `promote_next` und Workbench „Trade ist falsch" tragen Board-Felder |
+| Tests | `test_ticket_lib.py`, `test_ticket_sync.py`, `lab_selftest.py` | alle grün in der Cloud, Workbench-Teil vom Selbsttest braucht Windows-Daten |
+| Skills (Vault) | `.claude/skills/ticket`, `.claude/skills/sprint` | `/ticket` über das CLI, `/sprint` für Planning und Abschluss |
+
+**Farben:** Prio „gelb" heißt im Board „Mittel" und nutzt `--accent`. Die alte Ansicht kennt „gelb" gar nicht (zeigt es als grün „Normal"), das war vorher schon so.
+
+**Gegenleser:** `design-guard` vorab und nach dem Bau (9 Pflichtpunkte, alle umgesetzt), `verdict-auditor` (Urteil zuerst „voreilig": Umbenennen hätte den Sync blockiert, Erledigt am PC wäre von einer späteren Box-Notiz überschrieben worden; beides behoben und als Test drin).
+
+### Einspielen (in dieser Reihenfolge, aus einer PC-Session)
+
+1. `session-guard`, dann `git status` in trading-data. Lokale Änderungen seit dem Backup (28.09. 15:37) an denselben Dateien vorher sichern.
+2. Branch holen und zusammenführen (`git fetch origin claude/awesome-hawking-tqcayx`, dann `git merge`). Die Dateien `tasks.json` und `tasks.json.bak*` fasst der Branch nicht an.
+3. Am PC: `python test_ticket_lib.py`, `python test_ticket_sync.py` (jetzt mit echter discovery_lib), `python lab_selftest.py` komplett, `engine-regression-tester`. Ein kurzer Test, ob das Schreiben klappt, während das Lab die Datei liest.
+4. Box: `tasks.json` sichern, Engine-Dateien syncen (Hook verlangt `regression_ok`), Runner laut Hook neu starten (Discovery-Code geändert).
+5. Auf der Box `python ticket_migrate.py` (Probelauf) und Max die Zahlen zeigen, erst dann `--apply`. Die Box hat andere Backups als der PC, die Zahl 140 gilt dort nicht.
+6. Am PC `python discovery/inbox_tool.py --pull`, Lab-Server neu starten (Python-Code geändert).
+7. **Erst danach** den Vault-Branch mit den neuen Skills übernehmen, sonst zeigt `/ticket` auf ein Tool, das es am PC noch nicht gibt.
+
+### Grenzen und Tickets für später (nach `--pull` anlegen)
+
+- Auto-Tickets entstehen im `auto_check.py` am PC. **Ist der PC aus, legt die Box selbst keine an.** Ein Box-eigener Check wäre ein eigenes Ticket.
+- Wiedervorlagen aus dem Logbuch sind nicht angebunden, es gibt dafür keine maschinenlesbare Liste.
+- Beim Zurückschreiben auf die Box nutzt scp keine Sperre und schreibt nicht atomar. Das Fenster ist ein paar Sekunden lang.
+- `updated` steht ohne Zeitzone. Rund um die Zeitumstellung (25.10.) kann eine Stunde lang die falsche Seite als neuer gelten, das betrifft nur den Fall, dass beide dasselbe Feld geändert haben.
+- Löschen wird nicht synchronisiert, Tickets werden nur erledigt.
+- Noch nicht gebaut: Swimlanes, Cumulative Flow, Epic-Timeline, WIP-Limit je Board einstellbar im Lab (steht in `ticket_board.json`, Standard „In Arbeit" 3; im Bestand sind es heute schon 8).
+
+**Offen bei Max:** WIP-Limit „In Arbeit" 3 lassen oder höher setzen? Soll die Prio „gelb" auch in der alten Ansicht korrekt als „Mittel" erscheinen (kleiner Fix in `lab.js`, PRIODEF)?
 
 ## Start-Prompt für die Bau-Session (PC oder Laptop)
 
