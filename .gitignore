@@ -11,3 +11,6 @@ __pycache__/
 *.pem
 id_rsa*
 id_ed25519*
+
+# Hook-Laufzeitzustand ohne Engine (Laptop/Cloud), siehe .claude/hooks/_common.py
+.claude/hooks/.state/
