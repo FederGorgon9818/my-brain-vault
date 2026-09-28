@@ -235,9 +235,9 @@ Gebaut in der Cloud gegen das GitHub-Backup `trading-data`, Branch `claude/aweso
 - Beim Zurückschreiben auf die Box nutzt scp keine Sperre und schreibt nicht atomar. Das Fenster ist ein paar Sekunden lang.
 - `updated` steht ohne Zeitzone. Rund um die Zeitumstellung (25.10.) kann eine Stunde lang die falsche Seite als neuer gelten, das betrifft nur den Fall, dass beide dasselbe Feld geändert haben.
 - Löschen wird nicht synchronisiert, Tickets werden nur erledigt.
-- Noch nicht gebaut: Swimlanes, Cumulative Flow, Epic-Timeline, WIP-Limit je Board einstellbar im Lab (steht in `ticket_board.json`, Standard „In Arbeit" 3; im Bestand sind es heute schon 8).
+- Noch nicht gebaut: Swimlanes, Cumulative Flow, Epic-Timeline, WIP-Limit im Lab einstellbar (geht nur in `ticket_board.json`, Standard: keins).
 
-**Offen bei Max:** WIP-Limit „In Arbeit" 3 lassen oder höher setzen? Soll die Prio „gelb" auch in der alten Ansicht korrekt als „Mittel" erscheinen (kleiner Fix in `lab.js`, PRIODEF)?
+**Entschieden (Max, 28.09.2026 abends):** kein WIP-Limit (Commit 08f1eb3 in trading-data). Prio „gelb" heißt jetzt auch in der alten Ansicht „Mittel". Einspielen über eine PC-Session (Aufgaben-Karte in der Claude-App), die Box-Migration darf nach plausiblem Probelauf direkt `--apply` machen.
 
 ## Start-Prompt für die Bau-Session (PC oder Laptop)
 
