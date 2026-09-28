@@ -11,3 +11,6 @@ __pycache__/
 *.pem
 id_rsa*
 id_ed25519*
+
+# Hook-Laufzeitstatus (Session-Quittungen)
+.claude/hooks/.state/
