@@ -207,3 +207,34 @@ Institutionelle Prop-Firmen als Untersuchungsobjekt. Diese Literatur ist riesig,
 4. **Quant-Team (Anschlussauftrag):** L/(T+L)-Nulllinie und Tomàs-Fernández-Formel gegen unseren Nulldrift-Zwilling in `tempo_plan.py` legen.
 
 Voraussetzung für 1 und 3: in den Einstellungen der Cloud-Umgebung Network Access erweitern oder diese Hosts erlauben: `papers.ssrn.com`, `arxiv.org`, `export.arxiv.org`, `api.openalex.org`, `api.semanticscholar.org`, `api.crossref.org`, `ideas.repec.org`, `www.federalreserve.gov`, dann frische Session (neues Such-Kontingent).
+
+---
+
+## 🎯 Auftrag für die Volltext-Session (freigegeben von Max, 28.09.2026)
+
+**Startsatz für die neue Session:** „Lies `Ressourcen/Paper-Analysen/Prop-Firm-Paper (Literaturüberblick).md`, Abschnitt ‚Auftrag für die Volltext-Session‘, und führ ihn aus.“ Vorher Network Access erweitern (Hosts siehe oben), sonst hängt sie am selben Proxy.
+
+**Typ und Kette:** `research` → `research-scout` (bei vielen Papern als Workflow, je Paper ein Leser plus ein Skeptiker, der gegen die Originalquelle prüft). Wer eine eigene Rechnung anstößt, wechselt auf `rechnen` (Quant-Team).
+
+**Linse von Max:** nicht nur zusammenfassen, sondern **gezielt suchen, was unsere Sicht dahinter angreift oder uns einen Vorteil bringt.** Je Paper zwei Fragen:
+1. **Angriff:** Welche unserer Annahmen unten widerlegt, schwächt oder relativiert das Paper? Mit Seite/Tabelle und Zahl.
+2. **Vorteil:** Was können wir konkret nutzen (Firma/Vertrag wählen, Größe, Reset, Payout-Timing, Rabatt, Regel-Lücke), und um wie viel verkürzt es die Zeit bis 50.000 $?
+
+**Unsere Annahmen, gegen die gelesen wird** (Stand CLAUDE.md, 28.09.2026):
+
+| # | Unsere Sicht | Welches Paper könnte sie angreifen |
+|---|---|---|
+| S1 | Zielfunktion ist E[Zeit bis 50.000 $ aus Payouts] bei begrenzter Auslage (Deckel 2.500 $ netto), nicht die Passquote | A2, A3, A5 (bewerten sie anders, z.B. EV je Vertrag?) |
+| S2 | „Größe kauft Bust, nicht Tempo“ (#106), Start mit k2, k4 bringt im Kalender-Modus nichts (#175) | A1 (L/(T+L) nur statisch), A2 (Sizing-Grat bei 2 % Tagesvola), A5 (Sizing allein 40 % Pass). Dazu klassische Theorie mit Frist: Browne (1995/1999, Ziel bis Deadline erreichen), Grossman & Zhou (1993, Drawdown-Grenze) |
+| S3 | Jede Politik wird gegen den Nulldrift-Zwilling gerechnet, unter Edge 0 muss Erreichung 0 % sein | A1 bis A5 (deren Zero-Edge-Zahlen als externer Eichpunkt) |
+| S4 | Gleiches Buch, gleiche Größe in Eval und Funded (der Split „große Eval, kleiner Master“ ist ungerechnet) | A5 (Eval belohnt anderen Stil als Funded, Faktor 9) |
+| S5 | Kaufpolitik P10, Start 1× E8 150k am 02.10., FN 150k nach AP205, FN-Größe offen (AP248) | A3 (31 Verträge: sind E8/FN dabei, welcher EV?), A4 (Streuung 62 % bei gleicher Größe) |
+| S6 | E8-Mechanik: EOD-Floor, aber Intraday-Check (AP51, #077) | A4 (Parameter Breach-Check-Frequenz, stimmt unsere Abbildung?) |
+| S7 | Regeln (Deckel, Gewinnstopp, Konsistenz) verschieben Monate, nicht Jahre, Gewinnstopp am 21.09. beerdigt | A2, A4, A5 (Wert von Regeln und Stopp-Politik im Vertrag) |
+| S8 | Haupthebel ist der Buch-Sharpe: Monate bis 50k ≈ 1 / (0,0147 · (SR − 0,35)) | A1, A2 (ab welcher Drift kippt der EV, wie steil?) |
+| S9 | Konten werden in `tempo_plan.py` unabhängig gerechnet (bis Faktor 2 zu optimistisch, AP245 Kalender-Modus) | A2, A3 (wie modellieren sie mehrere Konten und Resets?) |
+| S10 | Firmenwahl E8 + FN, Bulenox raus (VPS-Verbot), dritte Firma mit Box-Erlaubnis offen | A3 (Rangliste der 31 Verträge) |
+
+**Zusätzlich neu suchen** (über die Liste oben hinaus): Paper, die S2 oder S4 direkt widersprechen (optimale Größe mit Frist, Reset als Optimal-Stopping-Problem, Größen-Split zwischen Eval und Funded), Paper zu Payout-Politik (wie viel abheben, wie viel Puffer stehen lassen) und alle Zitierer von A1 bis A5. Außerdem die zwei leer gelaufenen Suchwinkel nachholen (Abschlussarbeiten/nicht-englisch, Datenbank-Abfragen).
+
+**Ausgabe:** diese Notiz ergänzen (je Paper „Angriff“ und „Vorteil“, Beleg-Stufe auf Volltext hochsetzen), neue Claims in den [[Research-Cache]], am Ende eine Tabelle „Annahme S1 bis S10: hält / wackelt / fällt, Beleg“. Was eine eigene Rechnung braucht, wird als Ticket vorgeschlagen (vorher `--pull`), nicht still gerechnet.
