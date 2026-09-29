@@ -65,6 +65,22 @@ Kalender-Modus, Gerüst vom Bulenox-Check (`engine/_scratch_mffu_2909/`, golden(
 
 **Stand:** Zwei Punkte bestätigen den Hauptfall, der Inaktivitäts-Punkt verschlechtert ihn, nur der Rabatt verbessert ihn. Neu zu rechnen wäre: strict + Live beendet Konten + CLUB auf alle Käufe, mit und ohne Inaktivitätsregel.
 
+### Neurechnung mit den bestätigten Regeln (29.09.2026, Runde 2)
+
+Buffer bleibt stehen, Live legt alle MFFU-Konten still, CLUB auf alle Käufe, reiner Keep-alive-Trade nicht erlaubt. dRMST in Monaten gegen AP204 (90 %-CI, `quant-statistician`), negativ = schneller.
+
+| Variante | IS | letzte 3 J ×0,58 | ganze Historie ×0,58 | Plan-Tod-Plus |
+|---|---|---|---|---|
+| CLUB 50 %, Buch pausiert nie 7 Tage (unrealistisch) | −2,0 [−2,4; −1,6] | −1,9 | −1,3 | +1 bis +8 pp |
+| CLUB 40 %, dito | −1,6 | −1,2 | −1,1 | +1 bis +10 pp |
+| **CLUB 50 % mit Inaktivitätsregel (realistisch)** | **+6,3 [4,2; 8,4]** | +4,9 | +3,6 | +2,5 bis +19 pp |
+| CLUB 40 % mit Inaktivitätsregel | +7,4 | +5,5 | +4,0 | +3 bis +22 pp |
+| Referenz FN-ähnliche Drittfirma | −7,6 | −6,4 | −5,2 | |
+
+- Das Buch hatte 34 Pausen von 7 Tagen oder mehr in 10,6 Jahren (3,2 je Jahr). Break-even liegt grob bei höchstens 0,4 tödlichen Pausen je Jahr. Selbst wenn nur ein Drittel der Pausen tötet, bleibt MFFU langsamer (+3 bis +4 Monate).
+- **Urteil (29.09.2026): MFFU nicht kaufen.** Nulldrift-Kontrolle bestanden.
+- **Wiedervorlage:** (a) MFFU gibt schriftlich einen strategiekonformen Mini-Trade frei, oder (b) das Buch bekommt Beine, die die Pausen schließen (weniger als ca. 0,4 Pausen ≥ 7 Tage je Jahr), z. B. nach dem GC/CL-Ausbau. Dann `engine/_scratch_mffu_2909/` mit neuem Kalender neu rechnen.
+
 ## ~~Alle 4 Pläne (50k, Target immer $3K, Max DD immer $2K!)~~ Stand 04.08., veraltet
 
 > ⚠️ Preise hier waren **Monats-Abo** (heute Einmalzahlung, siehe oben), **Flex gibt es nicht mehr**, Builder-Regeln haben sich geändert.
