@@ -15,6 +15,13 @@ Agent. Die verbindliche Formulierung steht in der CLAUDE.md, hier nur der Reflex
 """
 import re
 
+try:  # dieselbe Kernliste wie Sync-Sperre und after_change.py (AP246, verdict-auditor 29.09.2026)
+    from _common import ENGINE_CORE as _CORE
+except Exception:  # ein Hook scheitert nie an sich selbst: dann die alte Liste
+    _CORE = ["sigcore.py", "discovery/controls.py", "discovery/hypothesis_bank.py", "overfit.py", "qbt.py",
+             "tsmom.py", "maband.py"]
+_CORE_RX = "|".join(re.escape(p) for p in _CORE)
+
 # (id, agents, scopes, pattern, warum)
 TRIGGERS = [
     ("konzept", ["familien-scout"], ("user",),
@@ -40,7 +47,7 @@ TRIGGERS = [
      r"(--enqueue\b|--add-job\b|\b(neuen?|den) (hypothesen-?)?job (bauen|einreihen|in die queue)|in die queue (legen|packen|stellen|tun))",
      "Job geht auf die Box: pipeline-auditor prueft die Pipeline (setzt pipeline_ok, Regel 25.08.2026)"),
     ("engine_core", ["engine-regression-tester"], ("file", "bash"),
-     r"(/(sigcore|controls|hypothesis_bank|overfit|qbt|tsmom|maband)\.py$|-SyncOnly|box_provision_discovery\.ps1 -Sync)",
+     r"(/(" + _CORE_RX + r")$|-SyncOnly|box_provision_discovery\.ps1 -Sync)",
      "Engine-Kern geaendert oder Box-Sync: engine-regression-tester vor dem Sync (Regel 27.08.2026)"),
     ("ui", ["design-guard"], ("file",),
      r"(/hub/.*\.(js|css|html|json)$|/engine/(app_server|lab_app|report)\.py$|/hub/hub_app\.py$|/static/.*\.(js|css|html)$)",
