@@ -36,6 +36,24 @@ aktualisiert: 2026-09-28
 - **Neu aus der Support-Antwort 28.09.:** Rapid-Funded-Intraday-Trailing zählt **offene Gewinne mit** (jeder Zwischenhoch zieht den Floor hoch). EOD-Floor rastet bei Start + 100 $ ein, sobald die Tagesschluss-Balance Start + DD + 100 $ erreicht (150K: 154.600 $ → 150.100 $). Max. **10 Konten insgesamt** (Eval + Funded zusammen). News im Rapid/Pro-Funded: **keine Positionen und keine Orders** ±2 Min um FOMC, FOMC-Minutes, NFP, CPI (Energie zusätzlich EIA). Eval-Consistency: bester Tag × 2 wird das neue Ziel, kein Fail. NT8 nur über Tradovate (Rithmic für NT8 gesperrt).
 - **Kontakt:** support@myfundedfutures.com funktioniert (läuft über Intercom, Antwort am 27.07. nach 7 Minuten).
 
+## 🧮 Rechnung: MFFU Pro 150K als dritte Firma (29.09.2026)
+
+Kalender-Modus, Gerüst vom Bulenox-Check (`engine/_scratch_mffu_2909/`, golden() bitgleich zu `tempo_plan`), Buch-Fingerprint a4dd9e28, 5 Regime × 3 Seeds × 250 Welten, gepaart gegen AP204 (E8 150k k2 + FN 150k k2, Deckel 2.500 $). Kernel geprüft von `quant-mathematician`, Auswertung `quant-statistician` (90 %-CI, Seed-stratifizierter Bootstrap). dRMST in Monaten bis 50k, negativ = schneller.
+
+| Variante | IS | letzte 3 J ×0,58 | ganze Historie ×0,58 | Plan-Tod IS |
+|---|---|---|---|---|
+| **Hauptfall** (Keep-alive-Trade gebaut, Buffer bleibt stehen, Live-Wechsel beendet die MFFU-Konten) | **+1,3 [+0,6; +2,1]** | +1,4 | 0,0 [−0,5; +0,6] | 3,2 → 10,9 % |
+| Payout „loose“ (Buffer darf mit raus) | −2,0 | −1,3 | −2,2 | 10,8 % |
+| Live beendet die Konten NICHT | −4,6 | −4,3 | −4,6 | 10,8 % |
+| CLUB 50 % auf die ersten 4 Käufe | −1,8 | −1,5 | −1,2 | 4,7 % |
+| ohne Keep-alive (7-Tage-Inaktivität greift) | +12,6 | +9,6 | +5,9 | 13,6 % |
+| MFFU statt FN | +14,3 | +9,8 | +6,7 | 5,1 % |
+| Referenz: alte Annahme „FN-ähnliche Drittfirma“ | −7,6 | −6,4 | −5,2 | 4,5 % |
+
+- **Urteil (29.09.):** Im Hauptfall bringt MFFU Pro **keine Zeit** und hebt den Plan-Tod um 8 bis 20 pp. Ein Plus gibt es nur unter Zusatzannahmen (Live beendet nichts, Rabatt auf 4 Käufe, lockere Payout-Lesart), und selbst dann bleibt es hinter einer FN-ähnlichen Drittfirma. Nulldrift-Kontrolle bestanden (0 % Erreichung ohne Edge).
+- **Warum so schwach:** Eval braucht bei k2 im Median rund 14,6 Monate, erster Payout 7 bis 9 Monate danach, und nach dem 3. Payout droht der Live-Wechsel, der alle Sim-Konten stilllegt. Ohne Keep-alive-Trade töten die 2 bis 3 Buch-Lücken pro Jahr (≥ 7 Tage ohne Trade) fast jede Eval.
+- **Was es kippen könnte:** Live-Regeln aus der Primärquelle (größter Hebel, rund 6 Monate), Payout-Lesart (rund 3 Monate), CLUB-Rabatt-Details, Erlaubnis für einen Keep-alive-Trade. Nicht gerechnet: News-Flat ±2 Min im Funded, Kombination CLUB4 + loose.
+
 ## ~~Alle 4 Pläne (50k, Target immer $3K, Max DD immer $2K!)~~ Stand 04.08., veraltet
 
 > ⚠️ Preise hier waren **Monats-Abo** (heute Einmalzahlung, siehe oben), **Flex gibt es nicht mehr**, Builder-Regeln haben sich geändert.
