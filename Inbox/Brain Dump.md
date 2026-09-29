@@ -11,4 +11,4 @@ tags:
 
 ---
 
-- 
+- **[Auftrag Max 29.09., für die nächste PC-Session]** Gründungs-Tickets in die Sprints der passenden Woche eintragen. Fertiger Plan mit Befehlen: [[Tickets Gründung Sprints]]. Danach diese Zeile löschen.
