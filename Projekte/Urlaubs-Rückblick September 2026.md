@@ -49,7 +49,7 @@ Gesamtübersicht über alles, was in den zwei Urlaubswochen auf der Box passiert
 
 **Kontostände / Puffer**
 - E8 `E61803453048` (50k): 08.09. 48.872 $ (Puffer 880 $), 12.09. 48.732,90 $, 14.09. 48.757,10 $. Seit 25.08. ~ −557 $, 2 %-Perzentil gegen MC-Erwartung, nach AP107 noch kein Alarm.
-- FundedNext FN1/FN2 (je 50k Flex, Konten 964331151 / 964331145): 50.000 $, nie gehandelt seit 02.09., Inaktivitätszähler läuft (30 Tage, Verfall Anfang Oktober ohne Trade). Regeln: 1.500 $ EOD-Trailing, kein Daily Loss, Target 2.500 $, 40 % Consistency (RiskGuard kennt sie nicht).
+- FundedNext FN1/FN2 (je 50k Flex, Konten 964331151 / 964331145): 50.000 $, nie gehandelt seit 02.09., Inaktivitätszähler läuft (30 Tage, Verfall Anfang Oktober ohne Trade). Regeln: 1.500 $ EOD-Trailing, kein Daily Loss, Target 2.500 $, 40 % Consistency (RiskGuard kannte sie damals nicht, seit 22.09. eingebaut, AP205).
 
 **Vorfälle (alle behoben, außer Markierung)**
 - RiskGuard ohne Bust-Schutz 07. bis 09.09. auf drei Konten (Session-Start nie erreicht). AP138 + AP135 deployt 09.09., Telegram bestätigt.

@@ -15,11 +15,12 @@ erstellt: 2026-09-21
 
 | Firma/Phase | Regel | Konsequenz wenn gerissen |
 |---|---|---|
-| **E8 (Eval + Funded)** | keine Consistency-Rule | — |
-| **FundedNext — Challenge** | Tagesgewinn ≤ **40%** des `EvalProfitTarget` | Überschuss zählt nicht zur Passquote / gefährdet den Pass |
+| **E8 Eval** | keine Consistency-Rule | — |
+| **E8 Funded** | **35-%-Best-Day-Regel**: bester Tag ≤ 35 % des Zyklusgewinns, Reset nach jedem Payout | kein Bust, nur Auszahlungssperre, bis die Regel erfüllt ist. Kein RiskGuard-Deckel nötig ([[Funded-Phase]]) |
+| **FundedNext — Challenge** | Tagesgewinn ≤ **40%** des Profit Targets | kein Bust: das **Target steigt auf höchster Tagesgewinn / 0,40** (50k: Tag 1.500 $ → Target 3.750 $) |
 | **FundedNext — Funded** | keine Consistency-Rule | — |
 
-Quelle: `fn_lib.py` Kopf-Kommentar (`_scratch_box_urlaub/1e3478e2/qm/fn_lib.py`, `day_cap_frac=0.40`), primärquellenbestätigt lt. Research-Cache-Eintrag vom 21.08.2026 (FN-Käfig-Recherche).
+Quelle: `fn_lib.py` Kopf-Kommentar (`_scratch_box_urlaub/1e3478e2/qm/fn_lib.py`, `day_cap_frac=0.40`), primärquellenbestätigt lt. Research-Cache-Eintrag vom 21.08.2026 (FN-Käfig-Recherche). **Konsequenz primärquellenbestätigt 29.09.2026** (FN Help Center 14298275 / 14878851 über die FN-Wissensbasis): „New Profit Target = Highest Daily Profit / 40 %", gleiche Formel wie `tempo_plan.run_eval_fn`. E8-Best-Day: E8-Support-Mail 18.08.2026 ([[Research-Cache]]). Korrigiert 29.09.: vorher stand hier „E8 (Eval + Funded): keine Consistency-Rule" und als FN-Konsequenz „Überschuss zählt nicht zur Passquote / gefährdet den Pass".
 
 **Umsetzung (AP205 = AP202, gebaut 21./22.09.2026, Deploy-Skript `engine/_deploy_consistency/deploy.ps1`):** `MaxRiskGuard.cs` hat `DailyProfitCapFrac` (0 = aus, Default) und `DailyProfitCapMarginUsd` (Default 100). Auslöser = `DailyProfitCapFrac × EvalProfitTarget − Abstand` (FN Flex 50k: 0,40 × 2.500 − 100 = **900 $** Tagesgewinn, alle Beine, realisiert + offen). Dann flatten und für den Rest der Session kein Entry mehr (Nachbrenner alle 30 s), Reset bei der nächsten Session, Stand pro Konto in `maxlab_consistency_<Konto>.txt` (überlebt NT8-Neustart). Werte kommen aus der cfg-Datei `maxlab_riskguard.cfg` (`<konto>.dailyprofitcap`, `<konto>.dailyprofitcapmargin`), die cfg gewinnt vor der UI: FN-Challenge-Konten 71491/89622 → ~~0.40 / 100~~ **seit 24.09.2026: 0.36 / 0** (Entscheidung Max 22.09., 90 % der Kante; 50k löst weiter bei 900 $ aus, FN 150k mit Target 8.000 bei 2.880 $), E8 + FN-Funded → keine Zeile (aus). cfg-Backup `maxlab_riskguard.cfg.bak-20260924`. Live seit 24.09.2026 23:17 (beide Guards neu gestartet, Log bestätigt). Neue Konten: cfg-Block anlegen, dann Instanz neu starten (cfg wird nur beim Start gelesen). Wichtig: gebaut auf der **Box-Fassung** (50.259 B, 09.09.); die Repo-Kopie war veraltet (43.547 B) und darf nie direkt deployt werden.
 
