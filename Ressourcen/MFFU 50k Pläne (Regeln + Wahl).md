@@ -54,6 +54,17 @@ Kalender-Modus, Gerüst vom Bulenox-Check (`engine/_scratch_mffu_2909/`, golden(
 - **Warum so schwach:** Eval braucht bei k2 im Median rund 14,6 Monate, erster Payout 7 bis 9 Monate danach, und nach dem 3. Payout droht der Live-Wechsel, der alle Sim-Konten stilllegt. Ohne Keep-alive-Trade töten die 2 bis 3 Buch-Lücken pro Jahr (≥ 7 Tage ohne Trade) fast jede Eval.
 - **Was es kippen könnte:** Live-Regeln aus der Primärquelle (größter Hebel, rund 6 Monate), Payout-Lesart (rund 3 Monate), CLUB-Rabatt-Details, Erlaubnis für einen Keep-alive-Trade. Nicht gerechnet: News-Flat ±2 Min im Funded, Kombination CLUB4 + loose.
 
+### Support-Antworten zu den Kipp-Punkten (29.09.2026, Oliver)
+
+| Punkt | Antwort | Welche Rechen-Variante gilt |
+|---|---|---|
+| Live-Wechsel | nur 1 Live-Konto, Sim-Konten werden zusammengelegt, **während Live kein Sim/Eval-Handel** | Hauptfall „Live beendet die MFFU-Konten“ bestätigt (Live-Konto selbst bringt evtl. etwas, Regeln unbekannt) |
+| Payout-Buffer | nur Betrag über der Buffer-Zone abrufbar, min. 1.000 $ | **strict** bestätigt (loose fällt weg) |
+| Mini-Trade gegen Inaktivität | nur Größe reduzieren, Strategie muss gleich bleiben | reiner Keep-alive-Trade **nicht freigegeben** → Variante „ohne Keep-alive“ (+12,6 Monate) ist näher an der Realität, außer das Buch handelt von selbst oft genug |
+| CLUB-Rabatt | unbegrenzt, auf beliebig viele Evals | Rabatt auf alle Käufe (bisher nur 4 gerechnet, günstiger als gerechnet) |
+
+**Stand:** Zwei Punkte bestätigen den Hauptfall, der Inaktivitäts-Punkt verschlechtert ihn, nur der Rabatt verbessert ihn. Neu zu rechnen wäre: strict + Live beendet Konten + CLUB auf alle Käufe, mit und ohne Inaktivitätsregel.
+
 ## ~~Alle 4 Pläne (50k, Target immer $3K, Max DD immer $2K!)~~ Stand 04.08., veraltet
 
 > ⚠️ Preise hier waren **Monats-Abo** (heute Einmalzahlung, siehe oben), **Flex gibt es nicht mehr**, Builder-Regeln haben sich geändert.
