@@ -5,7 +5,7 @@ tags:
   - strategy-lab
   - tickets
 erstellt: 2026-09-28
-status: am PC eingespielt (29.09.2026), Box-Migration offen (AP267)
+status: am PC eingespielt, Jira-Umbau fertig (29.09.2026), Box-Migration offen (AP267)
 ---
 # 🗂️ Ticket-Board im Strategy Lab (Jira-Stil)
 
@@ -261,6 +261,33 @@ Gebaut in der Cloud gegen das GitHub-Backup `trading-data`, Branch `claude/aweso
 **Schon passiert:** `ticket_tool new` gleicht mit der Box ab. Beim ersten Anlegen gingen 25 Tickets hoch, die am PC neuer waren (lokale Änderungen, die vorher nicht gepusht waren). Die Box-`tasks.json` ist also schon im neuen Abgleich, aber noch nicht migriert. Auch `auto_check.py` am PC läuft ab jetzt mit dem neuen Code (Auto-Tickets, Abgleich beim Pull).
 
 **Folge-Tickets (29.09.):** AP267 Box einspielen (Max) · AP268 tasks.json vom Engine-Sync ausnehmen · AP269 Auto-Tickets auf der Box · AP270 Box-seitig atomar/unter Sperre · AP271 `updated` mit Zeitzone (vor 25.10.) · AP272 Wiedervorlagen als maschinenlesbare Liste.
+
+## Jira-Umbau 29.09.2026: der ganze Tab als „Jira 2.0“ (Session baa48c56)
+
+**Auftrag Max:** Tickets öffnen mit einem Board, links die Boards, oben Backlog/aktiver Sprint, Sprints planen und Tickets Wochen zuweisen, so nah an Jira wie möglich. Die alten Ansichten (Reihenfolge, Abläufe, Nach Zeitfenster) fliegen raus, die Tickets bleiben.
+
+**Vorlage:** `research-scout` (Atlassian-Doku, 15 Claims im Research-Cache) plus die echten Atlassian-Produktbilder (Scrum-Board, Backlog mit Sprint-Container und Insights, Sprint-Board mit Insights, Burndown-Report), angesehen am 29.09.
+
+**Entscheidungen Max (29.09.):** vier Boards + „Alle“ links, **ein** Sprint für alles (Mo–So), Dark-Theme des Labs (Struktur von Jira, Farben vom Lab), alle Extras rein (Insights, Übersicht, Timeline, Swimlanes + Epic-Filter), Prio-Farben wie bisher, neuer Token `--violet` für Epics, Design zuerst mit einer migrierten Kopie testen.
+
+| Teil | Was |
+|---|---|
+| Sidebar | Projektkopf, Boards (Alle, Trading/Alpha, Infra/Box/NT8, Hub/Lab/Tools, Gründung/Privat) mit Zähler, Ansichten Übersicht, Timeline, Backlog, Board, Reports, Box-Abgleich unten, einklappbar |
+| Kopf | Pfad „Tickets / Board / Ansicht“, Titel (auf dem Board der Sprintname + Ziel), rechts „noch X Tage“, Insights, **Sprint abschließen**, **+ Erstellen** |
+| Filter | Suche (auch `prio:rot sprint:aktuell col:doing`), Zuständig-Avatare M/C/–, Epic ▾, Typ ▾, Dringend/Wartet/Auto, „Filter löschen“, auf dem Board **Gruppieren** (Keine/Epic/Zuständig) |
+| Board | Spalten mit Zähler und Stunden, Karten wie Jira (Titel, Epic-Etikett, Typ-Icon, Key, Stunden, Prio-Pfeil, Avatar, Haken bei erledigt), Swimlanes, Ziehen zwischen Spalten und Lanes (Lane-Wechsel ändert Epic/Zuständig), ohne Sprint: Kanban über alles Offene mit Hinweis |
+| Insights | rechts einblendbar: Sprint-Fortschritt (Stunden, sonst Anzahl), Mini-Burndown, Arten, Boards. Schließt sich mit dem Ticket-Panel aus |
+| Backlog | einklappbare Sprint-Container (Datum, Zähler offen/in Arbeit/erledigt, Stunden gegen Kapazität mit „über“, **Sprint starten**/**abschließen**, ••• bearbeiten), Backlog darunter, „+ Ticket erstellen“ direkt in jedem Container (Enter legt an, Fokus bleibt), Häkchen + „In Sprint verschieben“, Ziehen zum Einplanen und Sortieren |
+| Dialoge | Sprint starten (Name, Ziel, Kapazität, Zeitraum Mo–So fest), Sprint abschließen (offene Tickets in den nächsten Sprint, einen **neuen** Sprint oder den Backlog, danach Sprint-Report) |
+| Übersicht | Kacheln erledigt/aktualisiert/angelegt (7 Tage) und fällig, Status-Donut, letzte Aktivität, Priorität, Arten, Epic-Fortschritt, Zuständig, Fällig-Liste |
+| Timeline | 12 Wochen, Sprint-Zeile, Epics mit Kind-Tickets, Balken aus Start/Fällig, sonst Sprint-Zeitraum, nur Fällig = Raute, Heute-Linie, ◀ Heute ▶ |
+| Reports | Sprint-Report, Burndown (rote Ist-Linie, graue Ideallinie), Velocity mit Schnitt-Linie |
+| Ticket-Panel | Jira-Aufbau: Titel, Status + Erledigt oben, links Beschreibung, Fertig wenn, Schritte, Epic-Kinder, Wartet auf/Blockiert/Verknüpft, Aktivität mit Tabs Alle/Notizen/Verlauf; rechts Details (Zuständig, Sprint, Prio, Schätzung, Gebraucht, **Start**, **Fällig**, Epic, Labels, Board, Typ, Wann) |
+| Backend | `ticket_lib`: Felder `start`/`due` (Datum, Start nicht nach Fällig), `sprint_close(carry_to="new")` legt den Folgesprint an; `app_server`: `/api/tickets/activity`, Sprint umbenennen, Test-Schalter `MAXLAB_TICKET_NOSYNC=1` (kein Box-Abgleich) |
+
+**Geprüft:** Test-Instanz (Port 8766) auf einer migrierten Kopie im Scratchpad, echte `tasks.json` unberührt (Hash-Vergleich). Alle Ansichten bei 800 und 1440 px ohne Konsolenfehler, Status-Wechsel, Esc je Ebene, Epic-Filter, Inline-Create, Swimlanes, Insights/Panel-Ausschluss, Mehrfach-Verschieben, Sprint starten per Enter, Sprint abschließen in einen neuen Sprint, Ziehen Board/Lane/Backlog/Sortieren (per DragEvent, weil die Test-Maus im Browserfenster kein natives Ziehen auslöst). `test_ticket_lib` (neue Fälle: Datum, Abschluss „neu“, Umbenennen), `test_ticket_sync`, `lab_selftest` komplett gegen Test- und echtes Lab grün. `design-guard` vorab (17 Pflichtpunkte) und Abnahme (13 Befunde, alle eingearbeitet: Poll verschluckte Änderungen, Reports flackerten, aktive Filter nur per Farbe, Kartenfuß zu breit, Sprint abschließen sah aus wie Erstellen, Enter im Abschluss-Dialog, schmales Fenster, Timeline-Status, Klickflächen, Hover, Ellipsis).
+
+**Bis zur Box-Migration (AP267)** zeigt das echte Lab die vier Boards mit 0 Tickets und keinen Sprint, alles steht unter „Alle Tickets“. Nach der Migration sind Boards, Epics und Sprint S2026-41 da.
 
 ## Start-Prompt für die Bau-Session (PC oder Laptop)
 
