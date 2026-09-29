@@ -167,6 +167,17 @@ Fünf Skills bündeln länger bestehende Abläufe als aufrufbare Kurzbefehle —
 
 ---
 
+## 🗂️ Wir arbeiten in Sprints, Max plant sie selbst (Regel Max, 29.09.2026)
+
+Tickets laufen seit 29.09. im Strategy Lab → Tickets im Jira-Aufbau (Boards, Backlog, Board, Reports), Sprint = eine Woche **Mo bis So**. Details: [[Ticket-Board (Jira-Stil)]].
+
+- **Max plant jeden Sprint selbst.** Er holt sich die Tickets aus dem Backlog und entscheidet, was in welche Woche kommt. Die Prio ist die Bewertung, mehr braucht es dafür nicht.
+- **Neue Tickets landen immer im Backlog**, egal ob von Claude, `ticket_tool.py`, Auto-Check oder Box. Claude plant nie von sich aus Tickets in einen Sprint, startet oder schließt keinen Sprint und schlägt kein Planning vor.
+- **`/sprint` nur auf Zuruf.** Ruft Max ihn auf, darf Claude einen Vorschlag machen, geschrieben wird erst nach seinem OK.
+- Ein leerer Sprint-Container (z.B. S2026-41 aus der Migration) ist kein Planning und bleibt leer, bis Max ihn füllt.
+
+---
+
 ## 🖥️ Portfolio-Tab immer mitziehen (Regel Max, 10.08.2026)
 
 Sobald sich am Portfolio etwas ändert (neues Bein, Bein raus, andere Parameter, neue Firma/Frac, andere Kontogröße, anderer Betriebspunkt, andere Kaufpolitik, anderer Bust-Check-Modus), **im selben Zug**: `book_state.json` anpassen (einzige Quelle der Wahrheit für Buch + Käfig + Betriebspunkt) → `python funded_finalize.py` (Engine-Ordner) → **im selben Zug `python discovery/inbox_tool.py --push-next`**. `portfolio_tab.py` nicht mehr benutzen (veraltet).
