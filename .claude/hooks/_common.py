@@ -42,8 +42,15 @@ HUB = next((Path(p) for p in [os.environ.get("MAXLAB_HUB"), r"C:\Users\maxlk\Pro
 STATE = (ENGINE / ".claude_hooks") if ENGINE else (VAULT / ".claude" / "hooks" / ".state")
 
 # Engine-Kern: Änderung hier → engine-regression-tester vor jedem Box-Sync.
-ENGINE_CORE = ["sigcore.py", "controls.py", "overfit.py", "qbt.py", "tsmom.py", "maband.py",
-               "discovery/hypothesis_bank.py"]
+# EINE Liste für die Sync-Sperre (newest_engine_core) und den Hinweis in after_change.py. Deckt die
+# fingerprint_files aus discovery/golden_masters.json ab plus die Mess-/Käfig-Schicht (AP246,
+# pipeline-auditor 29.09.2026: eval_plan, cage_policy_lib, operating_point fehlten, und "controls.py"
+# lag nie im Engine-Root, der Eintrag griff also nie).
+ENGINE_CORE = ["sigcore.py", "overfit.py", "qbt.py", "tsmom.py", "maband.py", "vwap_pullback.py",
+               "asian.py", "rv.py", "developer_run.py", "developer/firstbar_core.py",
+               "discovery/controls.py", "discovery/hypothesis_bank.py", "discovery/discovery_lib.py",
+               "discovery/discovery_runner.py",
+               "eval_plan.py", "cage_policy_lib.py", "operating_point.py"]
 # Discovery-Code, den der laufende Runner nur nach Neustart neu lädt.
 RUNNER_CODE_DIR = "discovery"
 BOOK_FILES = ["book_state.json", "book_state_next.json"]

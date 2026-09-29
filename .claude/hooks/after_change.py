@@ -40,7 +40,8 @@ def main():
                      "Denk an funded_finalize (+--next) und `inbox_tool.py --push-next`.")
 
     # Engine-Kern: Regressionstest vor Sync; Discovery-Code: Runner-Neustart
-    if any_re([r"/(sigcore|controls|overfit|qbt|tsmom|maband)\.py\b", r"/discovery/hypothesis_bank\.py\b"], touched):
+    # Dieselbe Liste wie die Sync-Sperre (_common.ENGINE_CORE), seit AP246 (29.09.2026) keine eigene Regex mehr.
+    if any_re([r"/" + re.escape(rel) + r"\b" for rel in ENGINE_CORE], touched):
         notes.append("Hook: Engine-Kern geaendert. Vor dem naechsten `box_provision_discovery.ps1 -SyncOnly` "
                      "laeuft `engine-regression-tester` (der Sync-Hook blockt sonst). Danach Runner neu starten.")
     elif re.search(r"/discovery/[a-z_]+\.py\b", touched) or re.search(r"/(job_generator|vix_bias)\.py\b", touched):
