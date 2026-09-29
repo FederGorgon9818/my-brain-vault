@@ -1,0 +1,32 @@
+risk k1 (median |dw|<0): 45.5  -> sz>1 erst ab bal-floor >= 9100
+Tage mit dc1 > 900: 8  > 1000: 6  von 1580
+FN 50k k1 IS            lock0: A 81.79 B 80.99 C 80.04 C-B -0.95 | lock100: A 81.30 B 80.41 C 79.49 C-B -0.92
+    B lock100: bust 19.38 offen 0.21 E[Dauer] 8.84 M | Nachkauf: P(funded<=6M) 24.72 <=12M 65.91 <=24M 94.71  E[T] 10.98 M  E[Kaeufe] 1.24
+    C lock100: bust 20.47 offen 0.04 E[Dauer] 8.13 M | Nachkauf: P(funded<=6M) 27.86 <=12M 70.00 <=24M 96.15  E[T] 10.20 M  E[Kaeufe] 1.26
+FN 50k k1 shrink058     lock0: A 59.46 B 56.85 C 56.06 C-B -0.79 | lock100: A 58.64 B 56.05 C 55.40 C-B -0.65
+    B lock100: bust 42.62 offen 1.33 E[Dauer] 10.23 M | Nachkauf: P(funded<=6M) 13.80 <=12M 40.54 <=24M 75.62  E[T] 18.23 M  E[Kaeufe] 1.78
+    C lock100: bust 44.33 offen 0.27 E[Dauer] 9.25 M | Nachkauf: P(funded<=6M) 16.38 <=12M 44.74 <=24M 79.07  E[T] 16.69 M  E[Kaeufe] 1.80
+FN 50k k1 recent3y      lock0: A 76.98 B 76.10 C 73.41 C-B -2.69 | lock100: A 76.29 B 75.29 C 72.75 C-B -2.54
+    B lock100: bust 24.70 offen 0.01 E[Dauer] 5.99 M | Nachkauf: P(funded<=6M) 43.83 <=12M 82.25 <=24M 98.56  E[T] 7.93 M  E[Kaeufe] 1.33
+    C lock100: bust 27.25 offen 0.00 E[Dauer] 5.28 M | Nachkauf: P(funded<=6M) 49.22 <=12M 85.91 <=24M 99.09  E[T] 7.24 M  E[Kaeufe] 1.37
+FN 50k k1 shrink_recent lock0: A 53.49 B 51.04 C 47.84 C-B -3.20 | lock100: A 52.58 B 50.06 C 47.09 C-B -2.97
+    B lock100: bust 49.81 offen 0.14 E[Dauer] 6.30 M | Nachkauf: P(funded<=6M) 26.16 <=12M 59.31 <=24M 88.83  E[T] 12.59 M  E[Kaeufe] 2.00
+    C lock100: bust 52.91 offen 0.01 E[Dauer] 5.36 M | Nachkauf: P(funded<=6M) 31.06 <=12M 64.82 <=24M 91.26  E[T] 11.38 M  E[Kaeufe] 2.12
+FN 50k k1 null          lock0: A 21.29 B 17.02 C 17.43 C-B +0.41 | lock100: A 20.91 B 16.72 C 17.01 C-B +0.29
+    B lock100: bust 82.52 offen 0.76 E[Dauer] 7.79 M | Nachkauf: P(funded<=6M) 5.45 <=12M 16.53 <=24M 36.75  E[T] 46.64 M  E[Kaeufe] 5.98
+    C lock100: bust 82.97 offen 0.02 E[Dauer] 6.97 M | Nachkauf: P(funded<=6M) 7.26 <=12M 20.11 <=24M 41.91  E[T] 41.07 M  E[Kaeufe] 5.89
+FN 150k k3 IS            lock0: A 78.66 B 78.01 C 76.59 C-B -1.42 | lock100: A 78.41 B 77.73 C 76.39 C-B -1.34
+    B lock100: bust 22.08 offen 0.19 E[Dauer] 8.91 M | Nachkauf: P(funded<=6M) 21.88 <=12M 63.12 <=24M 94.09  E[T] 11.45 M  E[Kaeufe] 1.28
+    C lock100: bust 23.58 offen 0.03 E[Dauer] 8.21 M | Nachkauf: P(funded<=6M) 24.67 <=12M 66.83 <=24M 95.51  E[T] 10.74 M  E[Kaeufe] 1.31
+FN 150k k3 shrink058     lock0: A 54.68 B 52.59 C 51.82 C-B -0.78 | lock100: A 54.38 B 52.28 C 51.51 C-B -0.78
+    B lock100: bust 46.42 offen 1.29 E[Dauer] 9.87 M | Nachkauf: P(funded<=6M) 12.16 <=12M 38.14 <=24M 74.11  E[T] 18.88 M  E[Kaeufe] 1.91
+    C lock100: bust 48.20 offen 0.29 E[Dauer] 8.96 M | Nachkauf: P(funded<=6M) 14.28 <=12M 41.87 <=24M 77.32  E[T] 17.40 M  E[Kaeufe] 1.94
+FN 150k k3 recent3y      lock0: A 72.98 B 72.41 C 68.96 C-B -3.44 | lock100: A 72.61 B 72.01 C 68.67 C-B -3.34
+    B lock100: bust 27.98 offen 0.01 E[Dauer] 5.84 M | Nachkauf: P(funded<=6M) 41.83 <=12M 81.80 <=24M 98.54  E[T] 8.09 M  E[Kaeufe] 1.39
+    C lock100: bust 31.33 offen 0.00 E[Dauer] 5.16 M | Nachkauf: P(funded<=6M) 46.34 <=12M 85.13 <=24M 99.00  E[T] 7.49 M  E[Kaeufe] 1.45
+FN 150k k3 shrink_recent lock0: A 48.44 B 46.70 C 43.72 C-B -2.98 | lock100: A 48.07 B 46.32 C 43.38 C-B -2.94
+    B lock100: bust 53.54 offen 0.14 E[Dauer] 5.89 M | Nachkauf: P(funded<=6M) 25.07 <=12M 58.76 <=24M 88.78  E[T] 12.72 M  E[Kaeufe] 2.16
+    C lock100: bust 56.61 offen 0.01 E[Dauer] 5.06 M | Nachkauf: P(funded<=6M) 29.08 <=12M 63.56 <=24M 90.88  E[T] 11.67 M  E[Kaeufe] 2.30
+FN 150k k3 null          lock0: A 17.86 B 14.77 C 14.96 C-B +0.19 | lock100: A 17.74 B 14.66 C 14.83 C-B +0.17
+    B lock100: bust 84.59 offen 0.74 E[Dauer] 7.01 M | Nachkauf: P(funded<=6M) 4.78 <=12M 15.46 <=24M 35.63  E[T] 47.80 M  E[Kaeufe] 6.82
+    C lock100: bust 85.13 offen 0.04 E[Dauer] 6.30 M | Nachkauf: P(funded<=6M) 6.32 <=12M 18.50 <=24M 40.26  E[T] 42.44 M  E[Kaeufe] 6.74

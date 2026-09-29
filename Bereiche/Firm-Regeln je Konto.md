@@ -27,7 +27,37 @@ Quelle: `fn_lib.py` Kopf-Kommentar (`_scratch_box_urlaub/1e3478e2/qm/fn_lib.py`,
 > [!warning] Regel Max 22.09.2026: neues Konto oder neue Firma = Regeln prüfen
 > Wird ein weiteres Konto gekauft (oder wechselt eines die Phase), werden **vor dem ersten Trade** dessen Regeln geprüft, in die Tabellen unten eingetragen und alles Nötige angepasst (RiskGuard-cfg, Größe, Käfig in `book_state.json`/`cage_policy_lib`, Watchdog). Ablauf steht in der CLAUDE.md unter „Neues Konto oder neue Firma". Checkliste je Konto: Consistency/Tagesgewinn · DD-Typ und Einrasten · News-Regel · Inaktivität · Flat-Zeit · Kontraktlimit · Payout-Regeln · Algo-/VPS-Erlaubnis · Haushaltsgrenze.
 
-**Offener Widerspruch zum Tempo-Plan (21.09.2026, Nacht):** dort steht „Tagesgewinn-Stopp: nicht bauen" (harte Kappung im Trailing-Käfig kostet Zeit bis zum Ziel). Das galt für die Tempo-Optimierung; die FN-Consistency-Rule ist ein anderer Mechanismus (Target-Neuberechnung bei > 40 %). Max hat am 22.09.2026 „FN-Deckel bauen" entschieden. Beim nächsten Tempo-Plan-Lauf (`tempo_plan.py`) den Deckel für FN-Challenge-Konten einrechnen.
+**Offener Widerspruch zum Tempo-Plan (21.09.2026, Nacht):** dort steht „Tagesgewinn-Stopp: nicht bauen" (harte Kappung im Trailing-Käfig kostet Zeit bis zum Ziel). Das galt für die Tempo-Optimierung; die FN-Consistency-Rule ist ein anderer Mechanismus (Target-Neuberechnung bei > 40 %). Max hat am 22.09.2026 „FN-Deckel bauen" entschieden. ~~Beim nächsten Tempo-Plan-Lauf (`tempo_plan.py`) den Deckel für FN-Challenge-Konten einrechnen.~~ Stand 29.09.: Der Tempo-Plan rechnet die reine 40-%-Regel (`run_eval_fn`), nicht den Deckel. Die Rechnung dazu steht unten.
+
+### 📊 Rechnung 29.09.2026: was Regel und Deckel an der FN-Passquote ändern
+
+Gerechnet in der Cloud-Session gegen das `trading-data`-Backup vom 29.09. Grundlage: aktuelles 3-Bein-Buch, offizieller Kern `cage_policy_lib.run_account` (reproduziert die 81,8 % aus `funded_finalize`), 3 Seeds × 6.000 Pfade, 36 Monate, Block-Bootstrap Ø 10.
+
+Drei Varianten:
+- **heute** = ohne Regel (Workbench, Buch-Rechnung)
+- **reine Regel** = das Target steigt (so rechnet der Tempo-Plan)
+- **Deckel** = live 0,36 × Target, auf Tagesebene gerechnet. Gegen die Trade-Ebene geprüft ergibt das +0,1 pp, ist also konservativ.
+
+Das Quant-Team hat gegengelesen. Die Klammern sind 90-%-CIs aus einem äußeren Block-Bootstrap der Historie.
+
+| Konto | Regime | gesamt: heute → mit Deckel | bis 12 Monate: heute → mit Deckel | reine Regel bis 12 M |
+|---|---|---|---|---|
+| FN 50k k1 (FN1/FN2) | IS | 81,8 → 80,0 (−1,8 [−3,7; −0,2]) | 66,5 → 63,3 (−3,1 [−6,2; −0,9]) | 60,1 |
+| | letzte 3 J ×0,58 | 53,5 → 47,8 (−5,7 [−12,1; −1,2]) | 50,3 → 44,0 | 42,5 |
+| FN 150k k2 | IS | 85,8 → 85,1 | 40,9 → 39,1 | 38,1 |
+| | letzte 3 J ×0,58 | 60,6 → 58,4 | 39,2 → 35,9 | 35,5 |
+| FN 150k k3 | IS | 78,7 → 76,6 | 62,4 → 59,2 | 56,7 |
+| | letzte 3 J ×0,58 | 48,4 → 43,7 | 45,5 → 40,3 | 39,2 |
+
+FN 150k k1 ändert sich nicht: Mit 1 Micro je Bein kommen 2.880 $ Tagesgewinn nie vor.
+
+- **Die heutigen FN-Zahlen sind zu hoch**, um 2 pp (IS) bis 6 pp (schwaches Regime). Die Größe ist nur auf etwa Faktor 2 genau. Die Richtung ist dagegen sicher, weil die Variante ohne Regel pfadweise nie schlechter abschneidet.
+- **Deckel gegen reine Regel:** Über 36 Monate bestehen mit Deckel 1 bis 3 pp weniger, dafür aber schneller. Innerhalb von 6 Monaten liegt der Deckel in 88 bis 98 % der Bootstrap-Replikate vorn. Die Zeit bis funded mit Nachkauf sinkt bei 50k k1 um 0,7 Monate [−1,5; 0,0], bei 150k k2 ist sie gleich. Für Tempo trägt die Entscheidung vom 22./24.09. also. Der Vorsprung kommt aus der Mechanik (ein gehobenes Target verzögert) und nicht aus Edge: Zu zwei Dritteln steht er auch unter Nulldrift.
+- **Dünne Basis:** Alles hängt an 8 Tagen über 900 $ in 10 Jahren. Allein der 11.06.2026 (+1.852 $, danach −1.403 $ in 15 Tagen) macht zwei Drittel der 36-Monats-Deltas aus.
+- **Nulldrift:** 21,3 → 17,4 % (50k gesamt). Der Deckel nimmt Glückstreffer raus und erzeugt keine, #106 ist sauber.
+- **Mathematiker, offen für Max:** Ein Auslöser bei 0,40 × Target statt 0,36 wäre in allen Regimen etwas besser (+0,4 bis +1,4 pp), liegt aber im Rauschen der Historie. Der Guard flattet per Bar-Close-Nachbrenner und hat keine echte Entry-Sperre (`MaxRiskGuard.cs` ab Z. 540). Überschießen bis etwa +300 $ kostet laut Schranken-Rechnung nichts.
+- **Offene Regelfrage (Statistiker):** Zählt „Deckel aus nach dem Pass" als verbotener Strategie- oder Risikowechsel? Die Futures-Verbotsliste (14298337) nennt so etwas nicht. Der CFD-Artikel 8388896 erwartet aber „the same strategy" über Challenge und Funded. Vor dem ersten FN-Pass beim Support schriftlich klären.
+- Dateien: `Anhänge/2026-09-29 FN-Consistency/`. Die Umsetzung in Workbench, Buch-Rechnung und Tempo-Plan läuft über das Sammelticket ([[PC-Auftrag Sammelticket FN-Consistency]]).
 
 ## 📋 Weitere bekannte Unterschiede je Firma/Phase (Stand 21.09.2026, unvollständig)
 

@@ -1,0 +1,25 @@
+FN 50k k1 IS            A  81.79  B  80.99  C  80.04  C-A  -1.75±0.10  C-B  -0.95±0.14  Tage>Deckel  0.51%
+FN 50k k1 shrink058     A  59.46  B  56.85  C  56.06  C-A  -3.39±0.13  C-B  -0.79±0.28  Tage>Deckel  0.44%
+FN 50k k1 recent3y      A  76.98  B  76.10  C  73.41  C-A  -3.57±0.53  C-B  -2.69±0.28  Tage>Deckel  1.10%
+FN 50k k1 shrink_recent A  53.49  B  51.04  C  47.84  C-A  -5.66±0.53  C-B  -3.20±0.23  Tage>Deckel  1.10%
+FN 50k k1 null          A  21.29  B  17.02  C  17.43  C-A  -3.86±0.22  C-B  +0.41±0.13  Tage>Deckel  0.44%
+FN 150k k1 IS            A  73.73  B  73.73  C  73.73  C-A  +0.00±0.00  C-B  +0.00±0.00  Tage>Deckel  0.00%
+FN 150k k1 shrink058     A  33.91  B  33.91  C  33.91  C-A  +0.00±0.00  C-B  +0.00±0.00  Tage>Deckel  0.00%
+FN 150k k1 recent3y      A  93.58  B  93.58  C  93.58  C-A  +0.00±0.00  C-B  +0.00±0.00  Tage>Deckel  0.00%
+FN 150k k1 shrink_recent A  60.72  B  60.72  C  60.72  C-A  +0.00±0.00  C-B  +0.00±0.00  Tage>Deckel  0.00%
+FN 150k k1 null          A   4.71  B   4.71  C   4.71  C-A  +0.00±0.00  C-B  +0.00±0.00  Tage>Deckel  0.00%
+FN 150k k2 IS            A  85.84  B  85.50  C  85.13  C-A  -0.71±0.05  C-B  -0.37±0.07  Tage>Deckel  0.19%
+FN 150k k2 shrink058     A  61.99  B  60.34  C  60.33  C-A  -1.66±0.12  C-B  -0.01±0.12  Tage>Deckel  0.19%
+FN 150k k2 recent3y      A  84.82  B  84.71  C  83.72  C-A  -1.09±0.23  C-B  -0.98±0.18  Tage>Deckel  0.44%
+FN 150k k2 shrink_recent A  60.61  B  59.83  C  58.42  C-A  -2.19±0.21  C-B  -1.41±0.27  Tage>Deckel  0.44%
+FN 150k k2 null          A  17.85  B  16.04  C  15.93  C-A  -1.92±0.06  C-B  -0.11±0.19  Tage>Deckel  0.19%
+FN 150k k3 IS            A  78.66  B  78.01  C  76.59  C-A  -2.07±0.20  C-B  -1.42±0.13  Tage>Deckel  0.44%
+FN 150k k3 shrink058     A  54.68  B  52.59  C  51.82  C-A  -2.86±0.27  C-B  -0.78±0.37  Tage>Deckel  0.44%
+FN 150k k3 recent3y      A  72.98  B  72.41  C  68.96  C-A  -4.02±0.42  C-B  -3.44±0.22  Tage>Deckel  1.10%
+FN 150k k3 shrink_recent A  48.44  B  46.70  C  43.72  C-A  -4.72±0.39  C-B  -2.98±0.07  Tage>Deckel  1.10%
+FN 150k k3 null          A  17.86  B  14.77  C  14.96  C-A  -2.91±0.17  C-B  +0.19±0.23  Tage>Deckel  0.38%
+Validierung {'konto': 'FN 50k', 'k': 1, 'deckel_usd': 1000, 'tagesebene': 80.37, 'tradeebene': 80.5, 'diff_trade_minus_tag': 0.13, 'diff_sd': 0.08}
+Validierung {'konto': 'FN 150k', 'k': 2, 'deckel_usd': 3000, 'tagesebene': 85.23, 'tradeebene': 85.31, 'diff_trade_minus_tag': 0.08, 'diff_sd': 0.02}
+Validierung {'konto': 'FN 50k', 'k': 1, 'deckel_usd': 500, 'tagesebene': 75.56, 'tradeebene': 75.65, 'diff_trade_minus_tag': 0.09, 'diff_sd': 0.03}
+Checks: {'kern_gleich_run_account': True, 'B_vs_tempo_plan_pp': [81.7, 81.7]}
+geschrieben: /tmp/claude-0/-home-user-my-brain-vault/2b0199f9-58f2-5493-a89c-c32d14a7695f/scratchpad/fn_consistency_results.json
