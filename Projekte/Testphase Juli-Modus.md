@@ -4,7 +4,7 @@ tags:
   - trading/alpha
   - trading/prozess
 erstellt: 2026-09-22
-status: geplant (Start offen, Max liefert 3 Ideen)
+status: läuft (Idee 1 und 2 bis Stufe 2, Idee 3 offen)
 dauer: eine Woche ab Start
 ---
 # 🧪 Testphase Juli-Modus
@@ -222,10 +222,11 @@ Lesart: Das neue Gate hätte LastHour gefunden, das alte keines der drei. Moment
 | # | Idee (Markt, Beobachtung, Warum, Wann) | Stufe erreicht | Ergebnis | Datum |
 |---|---|---|---|---|
 | 1 | ES/NQ/GC. Fr-High < Do-High ⇒ Montag holt in der RTH das Fr-Tief. Why fehlt (Claude-Entwurf vom strategy-auditor verworfen). Montag RTH | 2 (Prämissen-Tafel) | **trägt nicht** für den Short ab Montag-RTH-Open: Treffer 27 bis 34 % (mit Gap-Fällen unter 50 %), Überschuss über Montags-Placebo ES +1,5 %, NQ +5,2 %, GC −4,1 % (alle CI über 0), netto negativ in allen 6 Zellen. Effekt ≥ ~10 pp ausgeschlossen, kleinere nicht auflösbar. Offen: Einstieg Sonntag 18:00 ET (Gap-Fälle). `engine/_scratch_juli_frlh/`, Lab-Tests `20260926_frlh_*`. Stempel im Logbuch noch offen. **Why-Recherche 28.09.:** kein erzwungener Wochentags-Akteur (Chen/Singal widerlegt, externer Backtest ~Zufall), einziger tragfähiger Kandidat Monatsende-Zahlungsdruck (Etula 2020 + Wang/Li/Erickson 1997), ungeprüft | 26.09.2026 |
-| 2 | *(von Max)* | | | |
+| 2 | *(von Max, 29.09.)* NQ und ES. Wenn beide wenig Vola haben, ist ein Bullmarkt wahrscheinlicher. Why aus der Recherche: Vol-Control-Fonds bauen in ruhigen Phasen Hebel auf (asymmetrisch, im Spike ist der Abbau stärker). Tageszeit offen, geprüft wurden RTH und Nacht | 2 (RTH) und 2b (Nacht) | **RTH trägt nicht** (`empirisch-nichts-gefunden`): ruhige Tage −3,4 gegen +6,1 Pkt an volatilen (rollierend +1,6 gegen +8,6). Die These gilt nur gleichzeitig (Bull 90 % gegen 28 %), nicht als Vorhersage (60 Sessions später 58 % gegen 57 %, Folgerendite eher kleiner). **Nacht bei absolut ruhigem Markt unentscheidbar:** Überschuss +4,9 bp je Nacht, aber nur 2020 bis 2026, gemessen ohne das handelbare Fenster. Relative Ruhe zeigt nichts. Nächster Schritt am PC: Nacht-Tafel 18:00 bis 09:30 mit 24h-Daten. Logbuch **#177**, `engine/_scratch_juli_lowvol/` | 29.09.2026 |
 | 3 | *(von Max)* | | | |
 
 **Offene Entscheidungen bei Max, die in diese Woche gehören:** AP183 (Slot-Tabelle umsetzen, Coast-Leg-Schalter, Live-Grade-Karte, Stufe-2-Design), AP211 (Bitcoin-Daten, prescan_gross).
 
 **Log:**
 - 22.09.2026: Analyse und beide Teile festgeschrieben, Trigger-Regel in CLAUDE.md, Teil-B-Prompt fertig. verdict-auditor (Pflichtkette `meta`) hat 12 Punkte geliefert, alle eingearbeitet: Kernaussage „0 neue Beine seit Runner" korrigiert auf „0 neue Mechanismen, Exit-Versionen aus den ersten Runner-Tagen", Slot-Tabelle-Stand, Schwellen-Spannen, Register-Stichtag; Teil A um Null-Schalter-Check, Zufallsdecke, OOS-only, CI-Gate statt Vorzeichen-Konjunktion, GC/CL-Vorschritt und Auftragstypen je Stufe ergänzt; Teil-B-Prompt um k_eff, Trade-Erzeugung, Zwilling-Weg, kanonischen Rechenweg, session-guard und #156-Quervergleich ergänzt. Nicht nachgerechnet vom Auditor: Quant-Zahlen (1.811 $/Jahr, Power 0,24), Coast-Leg-Spanne, ob es noch 670 Bank-Zeilen sind. Start wartet auf Max' drei Ideen und die Teil-B-Session.
+- 29.09.2026: Idee 2 von Max („ruhig → Bull") in einer Cloud-Session bis Stufe 2b gerechnet. Dabei liefen research-scout (21 neue Claims im Research-Cache), verdict-auditor (hält mit Auflagen) und logbook-distiller. Das Urteil steht als #177 im Logbuch. `ein-weg` wurde bewusst ausgelassen, weil die Prämisse in Stufe 2 durchfiel und es damit kein Grid gab. **Vorschlag an Max (Lehre 2 aus #177):** In Stufe 2 bei Richtungs-Thesen die Fenster RTH, Nacht und Schluss zu Schluss als Pflichtspalten vorab festlegen und als Auswahl zählen. Hier lag das einzige Signal in der Nacht, gefunden wurde es erst im Nachgang. Die Stufe-2-Zeile oben ist unverändert, bis Max entscheidet.
