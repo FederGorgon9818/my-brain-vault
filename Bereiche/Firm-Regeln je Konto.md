@@ -48,12 +48,14 @@ Quelle: `fn_lib.py` Kopf-Kommentar (`_scratch_box_urlaub/1e3478e2/qm/fn_lib.py`,
 
 | Regel | E8 | FundedNext **Futures** |
 |---|---|---|
-| Overnight-Halten | offen, **per Mail angefragt 01.10.2026** (support@e8markets.com) | ❌ **verboten** |
-| Wochenend-Halten | offen, **per Mail angefragt 01.10.2026** | ❌ **verboten** |
-| Zwangs-Flat | offen, **per Mail angefragt 01.10.2026** (inkl. Reset-Zeit des Handelstags) | **15:10 CT** (= 16:10 ET), System-Auto-Close aller offenen Positionen |
-| Handel wieder ab | — | 17:00 CT, nach dem Wochenende So 17:00 CT |
+| Overnight-Halten | ❌ **nicht über den Tagesschluss** (Antwort E8 01.10.2026). Innerhalb des Handelstags 18:00 bis 16:10 ET erlaubt, daraus folgt Nacht ab 18:00 bis Open (nicht wörtlich bestätigt) | ❌ **verboten** |
+| Wochenend-Halten | ❌ **verboten**, vor dem Freitags-Cutoff schließen (Antwort E8 01.10.2026) | ❌ **verboten** |
+| Zwangs-Flat | **15:10 CT** (= 16:10 ET), automatische Schließung aller offenen Positionen (Antwort E8 01.10.2026). Reset-Zeit für DD/Tageslimits nicht beantwortet | **15:10 CT** (= 16:10 ET), System-Auto-Close aller offenen Positionen |
+| Handel wieder ab | 17:00 CT (= 18:00 ET), je nach Instrument (Antwort E8 01.10.2026) | 17:00 CT, nach dem Wochenende So 17:00 CT |
 
-Quelle: FundedNext-Wissensbasis, Artikel „Does FundedNext Futures allow overnight and weekend trade holding?" (helpfutures.fundednext.com/en/articles/14268506). **Achtung Verwechslungsgefahr:** für die CFD-/Forex-Konten von FundedNext ist Overnight- und Wochenend-Halten ausdrücklich ERLAUBT (Artikel 11982358). Die Futures-Sparte hat die gegenteilige Regel. Nur die Futures-Regel ist für uns relevant.
+Quelle E8: Mail von support@e8markets.com vom 01.10.2026 (Thread „Signature Futures: holding positions overnight, daily close and weekend“). Gilt für SimFi Challenge und SimFi Performance, für 50k und 150k gleich, nur das Kontraktlimit hängt an der Kontogröße. Damit sind E8 und FN-Futures bei Flat-Zeit und Overnight gleich.
+
+Quelle FN: FundedNext-Wissensbasis, Artikel „Does FundedNext Futures allow overnight and weekend trade holding?" (helpfutures.fundednext.com/en/articles/14268506). **Achtung Verwechslungsgefahr:** für die CFD-/Forex-Konten von FundedNext ist Overnight- und Wochenend-Halten ausdrücklich ERLAUBT (Artikel 11982358). Die Futures-Sparte hat die gegenteilige Regel. Nur die Futures-Regel ist für uns relevant.
 
 **Abgleich mit unserer Umsetzung:** unsere Beine sind alle intraday mit Zwangs-Flat `eod_flat_min=385` (15:55 ET = 14:55 CT), also **75 Minuten vor** dem FN-Auto-Close. Kein Konflikt. Konsequenz für die Strategie-Auswahl: **jedes Mehrtages-/Swing-Bein ist auf FN-Futures strukturell unmöglich**, unabhängig von seiner Edge. Betrifft u. a. den Weg W34 (Mehrtages-Gap-Fill) aus der [[Gap Wege-Karte]] und jede aus Tagesbar-Literatur portierte Strategie.
 
