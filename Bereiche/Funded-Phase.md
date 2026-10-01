@@ -27,7 +27,7 @@ aktualisiert: 2026-09-26
 - [ ] **EvalProfitTarget im UI auf 0.** Wichtigster Punkt: steht dort ein Wert über 0, macht `MaxRiskGuard.cs` das Konto bei +Target **dauerhaft flat** (Z. 477-493). Die cfg-Datei kann das nicht, sie lehnt target=0 ab (Z. 826). Also im UI umstellen.
 - [ ] **MaxTrailingDD** je Tier: E8 50k = 2.000, E8 150k = 4.500, FN Flex 50k = 1.500, FN Flex 150k = 4.000.
 - [ ] **DailyLossLimit nie unter 600 $ × k** (k = Micros je Bein). k1-Konten wie bisher (E8 900, FN 600), E8 150k k2 = 1.200 $. 900 $ bei k2 kostete über die volle Historie rund 13 % Drift.
-- [ ] **FundedNext Funded: keine Consistency-Zeile** (dailyprofitcap aus). Die 40-%-Regel gilt nur in der Challenge. Den cfg-Block des alten Challenge-Kontos nicht aufs neue Konto kopieren.
+- [ ] **FundedNext Funded: keine Consistency-Zeile** (dailyprofitcap aus). Die 40-%-Regel gilt nur in der Challenge. Den cfg-Block des alten Challenge-Kontos nicht aufs neue Konto kopieren. FN hat am 01.10.2026 schriftlich bestätigt, dass das Abschalten erlaubt ist und kein Strategiewechsel ([[Firm-Regeln je Konto]]).
 - [ ] **Telegram:** `TelegramToken` + `TelegramChatId` eintragen (Claude holt die Werte per SSH aus `maxlab_watchdog.json`), sonst schweigt der Guard ohne Fehlermeldung (Vorfall 18.08.).
 - [ ] **Beine mit derselben Größe wie in der Eval** aufs neue Konto legen. Keine anderen Beine, nicht „im Funded aggressiver werden“ (Begründung in Abschnitt 2).
 - [ ] Claude prüft danach per SSH: CONFIG-Zeile im RiskGuard-Log (target 0, maxdd, dailyloss, Telegram an), Zahl der aktiven Strategien, News-Flat-Einstellung.
