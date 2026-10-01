@@ -185,7 +185,7 @@ Neue Strategien/Versionen/Parameter-Änderungen gehen NIE direkt in `book_state.
 
 Voller Ablauf (Dateien, Chat mit zweitem Claude, Charts, Ziel-Banner): [[Strategy Developer]].
 
-**Seit 25.09.2026 heißt der Tab „Workbench“** ([[Strategy Lab Workbench]]): alle Trades im Chart, Patterns, Filter mit Trial-Zähler und verdecktem OOS, Ampel nach dem neuen Lineal (Gate v2), P(Pass) E8/FN, NT8-Overlay. Oberfläche liegt in `engine/lab_ui/` (nicht mehr im HUB-String von `app_server.py`), nach jeder Änderung `python lab_selftest.py`. **Jeder Test aus einer Session mit Trades gehört per `workbench.publish(...)` in den Sub-Tab „Tests“** (`on_stop.py` Teil 5 prüft das).
+**Seit 25.09.2026 heißt der Tab „Workbench“** ([[Strategy Lab Workbench]]): alle Trades im Chart, Patterns, Filter mit Trial-Zähler und verdecktem OOS, Ampel nach dem Buch-Gate (Gate v4, siehe Abschnitt Gate v4), P(Pass) E8/FN, NT8-Overlay. Oberfläche liegt in `engine/lab_ui/` (nicht mehr im HUB-String von `app_server.py`), nach jeder Änderung `python lab_selftest.py`. **Jeder Test aus einer Session mit Trades gehört per `workbench.publish(...)` in den Sub-Tab „Tests“** (`on_stop.py` Teil 5 prüft das).
 
 ---
 
@@ -211,18 +211,27 @@ Kern in einem Satz: Alpha-Suche wieder wie im Juli, eine Idee von Max → Prämi
 
 ---
 
-## ⚖️ Gate v2: das Buch-Gate für neue Strategien (Max, 24./25.09.2026, AP250)
+## ⚖️ Gate v4: wie eine Strategie ins Buch kommt (Max, 28.09.2026, ersetzt Gate v2/v3)
 
-**Anlass:** Teil B der [[Testphase Juli-Modus]]. Das alte Gate hätte keines unserer drei eigenen Buch-Beine aufgenommen (Power für einen echten 3-pp-Effekt nur 0,10 bis 0,16, Messung gegen die falsche Null). Seit 25.09. gilt in Discovery-Runner, Developer-Tab und jeder manuellen Buch-Prüfung:
+**Grundsatz (Max):** Was Geld bringt, nicht overfittet ist und schneller zu 50k führt, kommt ins Buch. Ein Gate, durch das nicht mal das eigene Buch kommt, ist falsch gebaut. Herkunft: Teil B [[Testphase Juli-Modus]] → [[Latte-Audit (25.09.2026)]] (Kette hatte ~0,1 % Power je Job) → Gate v3 (Zwillinge, z 2,5, Schrumpfen) fiel an der eigenen Abnahme durch (0 von 3 eigenen Beinen). Zwei Stufen, zwei verschiedene Fragen:
 
-1. **Vor-Gates je Config:** mindestens 30 Trades (10 im OOS). **Kein Frequenz-Filter mehr** (Trades/Jahr ist ein Proxy, keine Statistik). Stattdessen **Sharpe-Beleg** t = SR_ann·√Jahre ≥ 2. Tail-Test: Gewinn ohne die besten 1 % der Trades > 0 (an den Buch-Beinen kalibriert).
-2. **Stufe 1, Edge:** der Kandidat muss **10 Nulldrift-Zwillinge von sich selbst** schlagen (gleiche Trades, Richtung per Münzwurf), gepaart auf demselben Bootstrap, **α 0,02 je Mechanismus/Job**, Šidák über die bewerteten Picks. Das ist #106 je Kandidat eingebaut.
-3. **Stufe 2, Buch:** Δ Passquote im Punkt **≥ 0** (Buch wird nicht schlechter), bei Ersatz besser als das Original. Bewertet auf der **vollen Historie** (OOS-Fenster allein ist zu kurz, pro Job `gate_window: "oos"` möglich).
-4. **Kontrolle:** je Job ein **Placebo** (Zwilling als Kandidat) durch dieselbe Funktion, `discovery/placebo_log.json`, Inbox-Alarm wenn mehr als α + 2 SE durchkommen.
+**Stufe 1: Discovery-Gate (automatisch auf der Box, je Kandidat) → Next-Week-Buch**
+1. **Bringt Geld:** alleine profitabel nach Kosten, auch ab 2024 (Vor-Gates `GATES_HARD`: Sharpe-t ≥ 2, n ≥ 30 / 10 OOS, Trim 1 %, Kosten-Stress).
+2. **Overfit-Bremse = Walk-Forward mit Neuauswahl:** 2 Jahre Training, 1 Jahr Test, rollierend ab 2016. In jedem Trainingsfenster wird aus dem Job-Grid neu ausgewählt, im Folgejahr getestet, die Test-Stücke werden zusammengesetzt. Bestanden: OOS-Kurve nach Kosten profitabel UND Mehrheit der Test-Jahre positiv (nicht jedes Jahr).
+3. **Verbessert das Buch auf der OOS-Kurve:** Buch-Sharpe steigt (roh). Feste Leitplanke statt freiem Abwägen: Passquote nicht mehr als −3 pp (die Max-DD-Leitplanke wurde am 29.09. gestrichen, sie verbot Zusatzbeine schon rechnerisch; dMaxDD nur Info). Ersatz: besser als das Original auf derselben Basis. Tages-Korrelation > 0,7 zu einem Buch-Bein → wird als Ersatz für dieses Bein bewertet, nicht als Zusatz.
+4. **Nur Info, keine Sperre:** Gate v3 (Zwillinge), Zufallsdecke, PBO, Schrumpfen, Kontroll-Batterie (symbols, periods, sides) und der **Delay-Test als reine Info-Zahl** (keine Warnlampe, Max 29.09.). Long-Drift ist erlaubt („Hauptsache Profit"), Korrelation an schlechten Tagen wird angezeigt.
+4a. **Look-ahead ist eine Eigenschaft des Modus-Codes, nicht der Strategie:** Schutz über ehrliche Modi und Code-Prüfung, nicht über Tests je Strategie. ORB wird nie ausgeschlossen, aber ohne ehrlichen Modus (`orb_exec` fehlt oder „book") automatisch in `close` UND `stop_honest` gerechnet, Prämisse auf beiden. Neuer Modus oder Engine-Änderung → einmaliger Code-Check (`pipeline-auditor`, Golden Master, Modus-Check in `weekend_check`).
+5. Bestanden → **nur ins Next-Week-Buch**, nie direkt live.
 
-- Code: `discovery_lib.book_gate_v2()`, Vor-Gates `DEFAULT_GATES`/`GATES_HARD`. Null-Schalter (`tm_null`) haben ts_reversal, last_hour, asian, tsmom, maband, vwap_pullback, orb, cal; andere Modi werden sichtbar geblockt, nicht durchgewunken.
-- Referenz (eigene Beine): **LastHour besteht**, Momentum (Edge +4,4 pp, nicht belegt) und Asia-Dir nicht. Seltene Strategien scheitern am Sharpe, nicht an der Frequenz.
-- **Gleiches Maß für Bestandsbeine:** wer das Gate nicht besteht, wird mit derselben Latte gegen Zeit bis 50k geprüft (Asia-Dir zuerst, AP183). Details: [[Discovery-Runner v2]] Abschnitt Gate v2, [[Testphase Juli-Modus]] Abschnitt 3.
+**Stufe 2: Wochenend-Prüfung (Claude + Max, einmal pro Woche) → echtes Buch**
+- Frage fürs **ganze** Buch: holen wir mehr raus, wenn wir ein Bein **ersetzen**, eins **hinzufügen** oder die Zusammensetzung ändern?
+- Rechnung: tempo_plan Zeit bis 50k (Kalender-Modus, Nulldrift-Zwilling 0 %, Auslage p90), simuliert **mit dem echten RiskGuard-Tages-Stopp** (heute 600 $ × k, E8 150k k2 = 1.200 $), dazu einmal ein dynamischer Stopp (Anteil vom Rest-Puffer zur DD-Grenze) im Vergleich. Korrelation und gemeinsame Verlusttage aller Beine werden gezeigt.
+- Korrelation: keine starre Grenze. So niedrig wie möglich, aber nichts deswegen hart ausschließen. Bei gleicher Zeit bis 50k gewinnt die weniger korrelierte Variante. Hart nur: kein simulierter Tag darf das Konto killen.
+- Übernahme ins echte Buch = Max' Wochenend-Entscheidung, danach Live-Tracking (raus bei expR < 0 nach 50 Live-Trades).
+- **Überoptimierungs-Prüfung (Herkunft):** für neue Beine zählt `weekend_check`, in wie vielen Varianten/Runden die Idee schon optimiert wurde; bei auffälliger Zahl zusätzlich eine glücksbereinigte Variante. **Stand 29.09.: noch unkalibriert** (würde auch die eigenen Beine anmahnen), Empfehlung daraus nur Hinweis, nicht entscheidungsrelevant, bis die Kalibrierung steht (Ticket). Dazu Regime-Spalten `shrink058` und `recent3y` für die Top-Varianten.
+- **Werkzeug:** `engine/weekend_check.py`, Kurzbefehl **`/wochenende`**. Nach jedem Box-Sync mit grünem Golden Master einmal `python weekend_check.py --stand-setzen` (Referenz für den Modus-Check).
+
+Details, Zahlen und Abnahme: [[Latte-Audit (25.09.2026)]] Abschnitt „Beschluss Gate v4". **Stand 29.09.2026: live auf der Box.** Abnahme bestanden (eigene Beine 2/3: Momentum + LastHour, Asia nur an der Passquote; Nieten 1/9), Null-Kampagne 0 von 69 Zufalls-Such-Läufen durch (obere 90-%-Grenze 4,2 %, erwartet realistisch ein Rauschkandidat alle 3 bis 5 Wochen), Golden Master grün. Code: `discovery_lib.walk_forward`/`gate_v4`, Test `discovery/test_gate_v4.py` (160 Prüfungen). Offene Punkte (ORB-Whitelist, Herkunft kalibrieren, Hook-Abdeckung) in den Tickets.
 
 ---
 
@@ -355,6 +364,25 @@ Auslöser: FundedNext-Challenge hat eine Consistency-Rule (Tagesgewinn ≤ 40 % 
 
 ---
 
+## 🐙 GitHub: Account, Repos, Schlüssel (Umzug Max, 28.09.2026)
+
+**GitHub-Account seit 28.09.2026: `FederGorgon9818`.** Der alte Account `mkmeboss` ist nicht mehr zugänglich (Grund bei Max offen: vergessen oder gehackt? Bei gehackt Secrets neu ziehen). Dort liegen noch Kopien aller drei Repos mit Stand 28.09., erst löschen, wenn der Zugang zurück ist.
+
+| Repo | Lokal (PC) | Branch | Inhalt |
+|---|---|---|---|
+| `FederGorgon9818/my-brain-vault` | dieser Vault | `master` (Standard) | Obsidian-Vault |
+| `FederGorgon9818/hub` | `C:\Users\maxlk\Projects\hub` | `master` | Hub-App |
+| `FederGorgon9818/trading-data` | `C:\Users\maxlk\Projects\trading-data` | `main` | Engine, Discovery, Lab, verschlüsselte Notfall-Secrets |
+
+- **Remotes am PC:** `origin` = neuer Account, `alt` = `mkmeboss` (über den SSH-Host `github-alt`).
+- **Schlüssel:** GitHub erlaubt jeden SSH-Key nur auf einem Account. PC nutzt `~/.ssh/id_ed25519_github_neu` für `github.com`, der alte `id_ed25519_github` hängt nur noch an `github-alt` (Backup der alten Config: `~/.ssh/config.bak-20260928`). Der Box-Zugang `id_ed25519` hat mit GitHub nichts zu tun.
+- **Box (umgestellt 28.09.):** eigener Vault-Klon unter `C:\Users\Administrator\Projects\my-brain-vault`, zieht **und pusht** selbst. Deploy-Key `~/.ssh/id_ed25519_vault_neu` mit Schreibrecht im Repo `my-brain-vault`, `origin` = `FederGorgon9818`, `alt` = `mkmeboss` über `github-alt`. Falle beim Testen per SSH von außen: `ssh -T git@github.com` ohne Eingabe-Umleitung hängt in der nicht-interaktiven Sitzung, immer `-o ConnectTimeout=10` und `< NUL` mitgeben. Mehrzeilige Here-Strings kommen über `powershell -Command -` nicht an, Skripte per `scp` kopieren und mit `-File` starten.
+- **Laptop:** trackt ebenfalls `origin/master`. **Umstellung offen:** eigener neuer Schlüssel am Laptop, im neuen Account eintragen, Remote auf `FederGorgon9818` umstellen.
+- **Cloud-Sessions** sehen nur, was gepusht ist: vorher pushen, dann Repo `my-brain-vault` mit Branch `master` wählen. Die Claude-GitHub-App braucht Zugriff auf den neuen Account.
+- **trading-data ist ein Backup-Repo, kein laufend gepflegtes Git:** nur so aktuell wie der letzte Push. Rohmarktdaten (NT8-Exporte, Parquet-Caches und deren Backups) sind per `.gitignore` ausgenommen, weil sie aus NT8 neu erzeugbar sind. `registry.json` und `registry_box.json` liegen bei rund 82 MB. Ab 100 MB lehnt GitHub den Push ab, dann Git LFS oder aus dem Backup nehmen.
+
+---
+
 ## 🖥️ Hub — Max' Desktop-Cockpit (Regel Max, 19.08.2026 — WICHTIG)
 
 Eigene Desktop-App (`C:\Users\maxlk\Projects\hub\`, `dist\Hub\Hub.exe`), Discord-artiges Layout mit frei verschieb-/größenbaren Fenstern. **Das ist Max' Hauptarbeitsweg.**
@@ -436,7 +464,7 @@ Max fährt regelmäßig mehrere Claude-Sessions gleichzeitig, die alle auf dense
 **Einschalten:** wenn Max fragt „überschreibe ich gerade was?" / „läuft noch eine andere Session?", wenn eine Änderung unerklärlich weg ist, und **von selbst**, bevor eine größere Änderung an einer geteilten Datei ansteht (`app_server.py`, `developer_run.py`, `report.py`, `book_state.json`, `portfolio.json`, `developer/state.json`).
 
 **Zwei harte Fakten:**
-- `C:\Users\maxlk\Projects\trading-data` ist **kein Git-Repo**. Ein Überschreiber ist dort endgültig. Der Vault selbst ist versioniert.
+- `C:\Users\maxlk\Projects\trading-data` ist nur ein **Backup-Repo** (Stand = letzter Push, lokal nicht laufend committet, siehe Abschnitt GitHub). Ein Überschreiber seit dem letzten Push ist dort endgültig. Der Vault selbst ist versioniert.
 - Claude Codes `file-history` wird seit ~15.08. nicht mehr befüllt. `session_conflicts.py --recover <datei>` durchsucht sie trotzdem, falls doch was da ist.
 
 **Die eigentliche Gefahr sind nicht die Edits**, sondern parallele Bash-Schreiber: zwei gleichzeitige `funded_finalize.py`- oder `developer_run.py`-Läufe schreiben dieselben JSONs ohne Sperre. Vor jedem solchen Lauf: erst schauen, ob eine andere Session gerade dasselbe tut.
