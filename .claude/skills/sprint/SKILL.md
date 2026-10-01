@@ -1,11 +1,13 @@
 ---
 name: sprint
-description: Sprint Planning und Sprint-Abschluss fürs Ticket-Board (Jira-Stil) - Backlog lesen, Sprint für die kommende Woche vorschlagen (Ziel, Tickets, Stunden gegen Kapazität), nach Max' OK einplanen und starten; am Sprint-Ende Report, Übertrag, Daily-Note-Zeile. Nutzen, wenn Max /sprint aufruft oder sagt "Sprint Planning", "plan die Woche", "welche Tickets diese Woche?", "Sprint abschließen", "wie lief der Sprint?". Sonntags zum Wochenend-Review von selbst anbieten.
+description: Sprint Planning und Sprint-Abschluss fürs Ticket-Board (Jira-Stil) - Backlog lesen, Sprint für die kommende Woche vorschlagen (Ziel, Tickets, Stunden gegen Kapazität), nach Max' OK einplanen und starten; am Sprint-Ende Report, Übertrag, Daily-Note-Zeile. Nutzen NUR, wenn Max /sprint aufruft oder ausdrücklich sagt "Sprint Planning", "plan die Woche", "welche Tickets diese Woche?", "Sprint abschließen", "wie lief der Sprint?". Nie von selbst anbieten (Regel Max 29.09.2026: Max plant seine Sprints selbst).
 ---
 
 # Skill: Sprint Planning (Wochen-Sprint Mo bis So)
 
 Regeln von Max (28.09.2026, [[Ticket-Board (Jira-Stil)]]): Sprint = 1 Woche, **Mo bis So**, Planning **sonntags** nach dem Wochenend-Review fürs Buch. **Schätzung in Stunden.** Auto-Tickets der Box landen immer im Backlog und kommen nur über dieses Planning in einen Sprint.
+
+**Regel Max 29.09.2026: Max plant jeden Sprint selbst** und holt sich die Tickets aus dem Backlog (Prio reicht als Bewertung). Dieser Skill läuft nur auf seinen Zuruf, schlägt dann vor und schreibt erst nach seinem OK. Ohne Aufruf plant Claude nie Tickets in Sprints und startet oder schließt keinen Sprint.
 
 Werkzeug: `engine/ticket_tool.py` (Engine-Ordner, `PYTHONIOENCODING=utf-8`). Außerhalb der Box vorher `python discovery/inbox_tool.py --pull`.
 
@@ -37,4 +39,4 @@ Werkzeug: `engine/ticket_tool.py` (Engine-Ordner, `PYTHONIOENCODING=utf-8`). Au�
 
 ## Im Lab
 
-Dasselbe geht per Hand im Strategy Lab → Tickets → **Backlog** (Ziehen in den Sprint, Starten/Abschließen) und **Sprints** (Burndown, Velocity, Report zum Kopieren).
+Dasselbe geht per Hand im Strategy Lab → Tickets (Jira-Aufbau seit 29.09.2026) → **Backlog** (Ziehen oder Häkchen „In Sprint verschieben“, Sprint starten/abschließen) und **Reports** (Sprint-Report, Burndown, Velocity, Report zum Kopieren).

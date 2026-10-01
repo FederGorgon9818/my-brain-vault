@@ -43,7 +43,7 @@ def scan(path):
     s = {"sid": path.stem, "project": path.parent.name, "title": None, "first_prompt": None,
          "start": None, "end": None, "agents": Counter(), "workflows": Counter(), "skills": Counter(),
          "direct_tools": Counter(), "hits": {}, "turns": 0, "changed": set(),
-         "workflow_types": set()}
+         "workflow_types": set(), "workflow_agents": Counter()}
     try:
         fh = path.open("r", encoding="utf-8", errors="replace")
     except Exception:
@@ -120,7 +120,83 @@ def scan(path):
                             p = str(inp.get("file_path") or inp.get("notebook_path") or "").replace("\\", "/")
                             s["changed"].add(p)
                             _collect(s, "file", p)
+    s["workflow_agents"] = workflow_agents(path)
     return s
+
+
+def session_dir(path):
+    """Ordner mit den Nebendaten einer Session (<projekt>/<sid>/: subagents/, workflows/).
+
+    Der Hook bekommt auch in einem Subagent das HAUPT-Transkript (gemessen 26.09.2026,
+    Claude Code 2.1.281; fuer Workflow-Agents 28.09.2026). Kaeme doch einmal ein Subagent-Transkript
+    (<sid>/subagents/.../agent-*.jsonl), fuehrt das hier zum selben Ordner."""
+    p = Path(path)
+    low = [x.lower() for x in p.parts]
+    if "subagents" in low:
+        return Path(*p.parts[:low.index("subagents")])
+    return p.with_suffix("")
+
+
+def workflow_agents(path):
+    """Agent-Typen, die ein Workflow dieser Session gestartet hat (Regel Max, 21.09.2026:
+    Agents in Workflows sind die durchgesetzte Form der Pflichtkette).
+
+    Das Haupt-Transkript kennt nur den `Workflow`-Aufruf. Fuer ein-weg/konzept-weg/kette
+    gibt es in used_agent_names eine feste Zuordnung, ein Ad-hoc-Workflow (inline, eigener
+    meta.name) blieb dagegen unsichtbar. Folge am 25./26.09.2026: der research-scout in
+    `eval-vs-funded` und `bulenox-check` bekam bei jedem WebSearch "research-scout ist in
+    dieser Session noch nicht gelaufen". Quelle ist deshalb das Workflow-Journal
+    (<sid>/subagents/workflows/<wf>/journal.jsonl) plus agent-<id>.meta.json (agentType).
+
+    Gezaehlt wird erst ab `result` (Agent hat geliefert). `started` allein reicht nicht:
+    es gibt abgebrochene Laeufe ohne `result` und ohne `failed` (strategy-auditor b2317f99,
+    quant-statistician 4accbffd), und die wuerden sonst Gate 4 (book_state) und das
+    Quittungs-Gate freigeben (Fund verdict-auditor, 26.09.2026). Der laufende Scout selbst
+    braucht das nicht, den erkennt guard_chain am agent_type."""
+    out = Counter()
+    try:
+        root = session_dir(path) / "subagents" / "workflows"
+        journals = list(root.glob("*/journal.jsonl")) if root.is_dir() else []
+    except Exception:
+        return out
+    for j in journals:
+        done = set()
+        try:
+            with j.open("r", encoding="utf-8", errors="replace") as fh:
+                for line in fh:
+                    try:
+                        rec = json.loads(line)
+                    except Exception:
+                        continue
+                    if rec.get("type") == "result" and rec.get("agentId"):
+                        done.add(rec["agentId"])
+        except Exception:
+            continue
+        for aid in done:
+            typ = _meta_agent_type(j.parent / f"agent-{aid}.meta.json")
+            if typ:
+                out[typ] += 1
+    return out
+
+
+def _meta_agent_type(meta_path):
+    try:
+        return json.loads(Path(meta_path).read_text(encoding="utf-8")).get("agentType") or None
+    except Exception:
+        return None
+
+
+def subagent_type(path, agent_id):
+    """agentType eines Subagents dieser Session aus seiner meta.json (Agent-Tool oder
+    Workflow). Rueckfall fuer Hooks, falls die Hook-Eingabe kein agent_type traegt."""
+    if not agent_id:
+        return None
+    sub = session_dir(path) / "subagents"
+    for cand in [sub / f"agent-{agent_id}.meta.json", *sub.glob(f"workflows/*/agent-{agent_id}.meta.json")]:
+        typ = _meta_agent_type(cand)
+        if typ:
+            return typ
+    return None
 
 
 def _collect(s, scope, text):
@@ -139,8 +215,11 @@ def used_agent_names(s):
     vollstaendigen Workflow-Lauf eine leere Agent-Liste -- und ein Gate, das darauf
     prueft, blockt danach weiter. Genau dieser Bug steckte am 21.09.2026 im neuen
     `kette`-Workflow (Fund: verdict-auditor), deshalb hier die Zuordnung fuer alle drei.
+    Seit 26.09.2026 zaehlen zusaetzlich alle fertigen Agents aus dem Workflow-Journal
+    (workflow_agents), das deckt auch Ad-hoc-Workflows ab. Die feste Zuordnung oben
+    bleibt unveraendert.
     """
-    names = set(s["agents"])
+    names = set(s["agents"]) | set(s.get("workflow_agents") or ())
     if "ein-weg" in s["workflows"]:
         names |= {"variant-scout", "strategy-auditor"}
     if "konzept-weg" in s["workflows"]:
@@ -197,7 +276,7 @@ def main():
     total_used = Counter()
     rows = []
     for s in sessions:
-        for n, c in s["agents"].items():
+        for n, c in (s["agents"] + s["workflow_agents"]).items():
             total_used[n] += c
         g = gaps(s)
         for tid, missing, n, scopes, why, snip in g:
@@ -221,8 +300,10 @@ def main():
         title = s["title"] or s["first_prompt"] or "(ohne Titel)"
         used = ", ".join(f"{k}x{v}" for k, v in s["agents"].most_common()) or "keine"
         wf = ", ".join(f"{k}x{v}" for k, v in s["workflows"].items())
+        wfa = ", ".join(f"{k}x{v}" for k, v in s["workflow_agents"].most_common())
         P(f"\n### {fmt_day(s['start'])} bis {fmt_day(s['end'])} | {title[:90]}")
-        P(f"- Prompts: {s['turns']}, Agents: {used}{(', Workflows: ' + wf) if wf else ''}, Dateien geaendert: {len(s['changed'])}")
+        P(f"- Prompts: {s['turns']}, Agents: {used}{(', Workflows: ' + wf) if wf else ''}"
+          f"{(' (darin: ' + wfa + ')') if wfa else ''}, Dateien geaendert: {len(s['changed'])}")
         if not g:
             P("- Luecken: keine")
         for tid, missing, n, scopes, why, snip in g:
