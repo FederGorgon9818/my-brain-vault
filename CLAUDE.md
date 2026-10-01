@@ -353,6 +353,15 @@ Auslöser: FundedNext-Challenge hat eine Consistency-Rule (Tagesgewinn ≤ 40 % 
 2. Jede Regel gegen die Umsetzung abgleichen und **alles Nötige anpassen**: `MaxRiskGuard.cs` (cfg-Datei `maxlab_riskguard.cfg` pro Konto, nie nur die UI), Strategie-Instanzen/Größe (k), `book_state.json`/Käfig (`cage_policy_lib`, `evaluate_v2`), Watchdog/Telegram. Was noch nicht als Property existiert, wird als Ticket angelegt und vor dem Trade gebaut oder das Konto handelt bis dahin nur mit Handaufsicht.
 3. Konten-Liste, Regel-Tabelle und die aktiven Deckel (Werte je Konto) in [[Firm-Regeln je Konto]] festhalten und Max ansagen, was angepasst wurde. Ein Konto gilt erst als startklar, wenn diese Prüfung durch ist. Der Dauer-Check bei Statuswechsel (Challenge zu Funded) hängt an AP203.
 
+### 🤐 Mails an Firmen: nur sagen, was die Firma wissen muss (Regel Max, 01.10.2026)
+
+Was eine Firma nichts angeht, steht auch nicht in der Mail. Jede Anfrage an eine Prop-Firma, einen Broker oder einen Anbieter enthält **nur die Daten, die für genau diese Frage nötig sind**.
+
+- **Nie nennen:** andere Prop-Firmen oder dass wir dort Konten haben (weder Namen wie E8/FundedNext noch „two other prop firms“), Kontonummern anderer Firmen, Anzahl und Größe unserer Konten woanders, Payouts, Ergebnisse, Buch-Details, Strategie-Logik, Märkte über das Nötige hinaus.
+- **Regeln neutral fragen statt uns offenzulegen:** z. B. „Does your firm have any exclusivity requirement for automated strategies?“ statt „my strategy also runs at other prop firms“.
+- **Setup nur so weit wie für die Regelfrage nötig** (eigene NinjaScript-Strategie, vollautomatisch, VPS, unbeaufsichtigt mit Handy-Alerts). Eigene Kontonummer nur bei derselben Firma, wenn die Frage ein bestehendes Konto betrifft.
+- **Vor jedem Versand** die Mail einmal auf Fremd-Firmen, Kontonummern und Ergebnisse durchsehen. Auslöser: Mails an FTMO (25.09. und 01.10.2026) und MFFU (28.09.2026) erwähnten „two other futures prop firms“.
+
 ---
 
 ## 🖥️ Hub — Max' Desktop-Cockpit (Regel Max, 19.08.2026 — WICHTIG)
