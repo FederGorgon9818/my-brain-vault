@@ -72,6 +72,19 @@ def _is_ui_config(tool, ti, path):
     return False
 LOGBOOK_FILE = r"strategie-logbuch\.md$"
 BOOK_FILE = r"book_state(_next)?\.json$"
+
+# Subagents, die SELBST ins Web duerfen (Gate 1 greift fuer sie nicht). research-scout
+# und alpha-scout tragen die Cache-Pflicht in ihrer eigenen Definition (Research-Cache
+# zuerst, neue Claims zurueckschreiben) -- das Gate schuetzt dort nichts, es blockt nur.
+# claude-code-guide recherchiert Claude-Code-Doku, nichts fuer den Research-Cache.
+# Entscheidung Max 26.09.2026 (bestaetigt 28.09.), Anlass: research-scout in den Ad-hoc-
+# Workflows eval-vs-funded (25.09.) und bulenox-check (26.09.) sowie alpha-scout (21.09.)
+# bekamen JEDEN WebSearch/WebFetch geblockt und lieferten nur Cache-Wissen.
+WEB_AGENTS = {"research-scout", "alpha-scout", "claude-code-guide"}
+# Ihr Rueckschreib-Ziel. Das Quittungs-Gate (B) hat den research-scout am 23.09.2026
+# (Session d954c57e, Typ `buch`, Kette offen) genau beim Eintrag in den Cache gesperrt --
+# die Cache-Pflicht, fuer die Gate 1 existiert, war damit unerfuellbar.
+CACHE_FILE = r"/ressourcen/research-cache\.md$"
 _NEW_ENTRY = re.compile(r"^#{1,4}\s*#?\d{1,4}\b|^\|\s*#?\d{1,4}\s*\|", re.M)
 
 # --- B) Freiliste: das darf auch bei offener Kette geschrieben werden ------
@@ -206,6 +219,15 @@ def _adds_new_entry(tool, ti):
     return False
 
 
+def _log_error(where, e):
+    try:
+        STATE.mkdir(parents=True, exist_ok=True)
+        with open(STATE / "hook_errors.log", "a", encoding="utf-8") as f:
+            f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')} guard_chain.{where}: {e!r}\n")
+    except Exception:
+        pass
+
+
 def _used(transcript_path):
     """(Agents dieser Session, in dieser Session geaenderte Dateien).
     None = unbekannt -> nie blockieren."""
@@ -219,13 +241,30 @@ def _used(transcript_path):
         # komplette Gate abschalten, ohne dass es jemand merkt ("das Gate ist tot und
         # niemand weiss es" -- Fund verdict-auditor, 21.09.2026). Der Hook laesst die
         # Aktion weiterhin durch (er darf nie kaputt blockieren), sagt es aber laut.
-        try:
-            STATE.mkdir(parents=True, exist_ok=True)
-            with open(STATE / "hook_errors.log", "a", encoding="utf-8") as f:
-                f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')} guard_chain._used: {e!r}\n")
-        except Exception:
-            pass
+        _log_error("_used", e)
         return "ERROR"
+
+
+def _caller(inp, transcript_path):
+    """Agent-Typ des Aufrufers, None = Hauptthread.
+
+    Gemessen 26.09.2026 (Claude Code 2.1.281, Dump-Hook): in einem Subagent traegt die
+    Hook-Eingabe `agent_id` + `agent_type`, `session_id` und `transcript_path` sind die
+    der ELTERN-Session. Deshalb sah Gate 1 bisher nur das Haupt-Transkript und hielt den
+    research-scout fuer "nicht gelaufen", waehrend er selbst anfragte. Workflow-Agents
+    (agent(..., {agentType})) tragen dieselben Felder -- live gemessen 28.09.2026 mit
+    Mini-Workflow (research-scout + Explore). Fehlt agent_type (aeltere Version), kommt
+    der Typ aus der meta.json des Subagents."""
+    typ = inp.get("agent_type")
+    if typ or not inp.get("agent_id"):
+        return typ or None
+    try:
+        sys.path.insert(0, str(VAULT / ".claude" / "scripts"))
+        from agent_usage_audit import subagent_type
+        return subagent_type(Path(transcript_path), inp["agent_id"]) if transcript_path else None
+    except Exception as e:
+        _log_error("_caller", e)
+        return None
 
 
 def _sid(inp):
@@ -236,13 +275,22 @@ def _skipped(rec, name):
     return name in (rec.get("skipped") or {}) if rec else False
 
 
-def _deny_action(tid, agent, sid, detail):
+def _sub_hint(caller):
+    # Ein Subagent kann den Override meist nicht selbst setzen (oft ohne Bash) und hat am
+    # 25.09.2026 dann still nur Cache-Wissen geliefert. Er soll die Sperre zurueckmelden.
+    return (f"\n\nDu laeufst als Subagent `{caller}`: den Override setzt der Hauptthread. "
+            f"Melde zurueck, welche Aktion gesperrt war und wofuer du sie gebraucht haettest, "
+            f"statt still ohne sie weiterzuarbeiten.") if caller else ""
+
+
+def _deny_action(tid, agent, sid, detail, caller=None):
     deny(
         f"STOP (Hook, Kette `{tid}`): {detail} "
         f"`{agent}` ist in dieser Session noch nicht gelaufen. {WT.what_of(tid)} "
         f"\n\nEntweder jetzt `{agent}` einschalten und die Aktion wiederholen -- oder die "
         f"Ausnahme begruenden:\n"
         f"  python .claude/hooks/receipt.py --sid {sid} --skip {agent} --why \"<ein Satz>\""
+        + _sub_hint(caller)
     )
 
 
@@ -255,6 +303,12 @@ def main():
     sid = _sid(inp)
     tp = inp.get("transcript_path")
     rec = R.load(inp.get("session_id"))
+    caller = _caller(inp, tp)
+
+    # Gate 1 gilt nicht fuer den, der die Cache-Pflicht selbst traegt -- vor dem
+    # Transkript-Scan, damit ihn auch ein Scan-Fehler nicht trifft.
+    if tool in ("WebSearch", "WebFetch") and caller in WEB_AGENTS:
+        sys.exit(0)
 
     scanned = _used(tp) if tp and Path(tp).is_file() else None
     if scanned == "ERROR":
@@ -271,7 +325,7 @@ def main():
     # 1. Externe Recherche ohne research-scout (Cache-Pflicht)
     if tool in ("WebSearch", "WebFetch") and "research-scout" not in used and not _skipped(rec, "research-scout"):
         _deny_action("research", "research-scout", sid,
-                     f"{tool} ist ein direkter Zugriff aufs Web, aber")
+                     f"{tool} ist ein direkter Zugriff aufs Web, aber", caller)
 
     # 2. Oberflaeche ohne design-guard
     # Beim Neuladen (hot_reload/build_exe) nur blocken, wenn diese Session wirklich
@@ -288,12 +342,12 @@ def main():
     )) or reload_after_ui
     if is_ui and "design-guard" not in used and not _skipped(rec, "design-guard"):
         was = "Oberflaechen-Datei geaendert" if tool != "Bash" else "Hub/Lab wird neu geladen"
-        _deny_action("ui", "design-guard", sid, f"{was}, aber")
+        _deny_action("ui", "design-guard", sid, f"{was}, aber", caller)
 
     # 3. Neue Lehre im Logbuch ohne logbook-distiller (schlechteste Quote: 3 von 33)
     if tool != "Bash" and path and re.search(LOGBOOK_FILE, path) and _adds_new_entry(tool, ti) \
             and "logbook-distiller" not in used and not _skipped(rec, "logbook-distiller"):
-        _deny_action("logbuch", "logbook-distiller", sid, "Neuer Logbuch-Eintrag, aber")
+        _deny_action("logbuch", "logbook-distiller", sid, "Neuer Logbuch-Eintrag, aber", caller)
 
     # 3b. Todesurteil ohne Pflichtfelder (Regel Max, 22.09.2026)
     if tool != "Bash" and path and re.search(LOGBOOK_FILE, path) and _adds_new_entry(tool, ti):
@@ -324,17 +378,20 @@ def main():
         for agent in ("quant-statistician", "strategy-auditor"):
             if agent not in used and not _skipped(rec, agent):
                 _deny_action("buch", agent, sid,
-                             "Das aendert direkt, was live gehandelt wird, aber")
+                             "Das aendert direkt, was live gehandelt wird, aber", caller)
 
     # ---------------- B) Quittungs-Gate -----------------------------------
     # Typ gesetzt, Kette offen, Gate-Typ -> schreibende Aktionen gesperrt.
     if rec and rec.get("type") and WT.has_gate(rec["type"]):
+        def free(p):
+            return _free(p) or (caller in WEB_AGENTS and bool(re.search(CACHE_FILE, p or "")))
+
         # Bash zaehlt mit, aber nur wenn es wirklich ausserhalb der Freiliste schreibt --
         # sonst waere jede Rechnung ins Scratchpad blockiert.
         if tool == "Bash":
-            gated = next((x for x in (norm(y) for y in _bash_write_targets(cmd)) if not _free(x)), None)
+            gated = next((x for x in (norm(y) for y in _bash_write_targets(cmd)) if not free(x)), None)
         elif tool in ("Edit", "Write", "MultiEdit"):
-            gated = None if _free(path) else path
+            gated = None if free(path) else path
         else:
             gated = None
         if gated:
@@ -353,6 +410,7 @@ def main():
                     f"Schritt bewusst auslassen:\n"
                     f"  python .claude/hooks/receipt.py --sid {sid} --skip {WT.step_name(miss[0])} "
                     f"--why \"<ein Satz>\""
+                    + _sub_hint(caller)
                 )
     sys.exit(0)
 
