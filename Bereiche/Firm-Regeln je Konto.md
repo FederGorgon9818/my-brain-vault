@@ -48,9 +48,9 @@ Quelle: `fn_lib.py` Kopf-Kommentar (`_scratch_box_urlaub/1e3478e2/qm/fn_lib.py`,
 
 | Regel | E8 | FundedNext **Futures** |
 |---|---|---|
-| Overnight-Halten | offen, nicht geprüft | ❌ **verboten** |
-| Wochenend-Halten | offen, nicht geprüft | ❌ **verboten** |
-| Zwangs-Flat | offen, nicht geprüft | **15:10 CT** (= 16:10 ET), System-Auto-Close aller offenen Positionen |
+| Overnight-Halten | offen, **per Mail angefragt 01.10.2026** (support@e8markets.com) | ❌ **verboten** |
+| Wochenend-Halten | offen, **per Mail angefragt 01.10.2026** | ❌ **verboten** |
+| Zwangs-Flat | offen, **per Mail angefragt 01.10.2026** (inkl. Reset-Zeit des Handelstags) | **15:10 CT** (= 16:10 ET), System-Auto-Close aller offenen Positionen |
 | Handel wieder ab | — | 17:00 CT, nach dem Wochenende So 17:00 CT |
 
 Quelle: FundedNext-Wissensbasis, Artikel „Does FundedNext Futures allow overnight and weekend trade holding?" (helpfutures.fundednext.com/en/articles/14268506). **Achtung Verwechslungsgefahr:** für die CFD-/Forex-Konten von FundedNext ist Overnight- und Wochenend-Halten ausdrücklich ERLAUBT (Artikel 11982358). Die Futures-Sparte hat die gegenteilige Regel. Nur die Futures-Regel ist für uns relevant.
