@@ -1,22 +1,39 @@
 ---
 name: ticket
-description: Ticket aus dem Tracker tasks.json lesen oder die offenen Tickets nach Dringlichkeit listen. Aufruf /ticket AP150 (eine AP-Nummer), /ticket <id> (Slug wie riskguard-eod-telegram-report) oder /ticket ohne Argument (Liste). Nutzen auch, wenn Max fragt "was steht in AP…?" oder "welche Tickets sind offen?".
+description: Ticket aus dem Tracker tasks.json lesen, anlegen, verschieben oder die offenen Tickets nach Dringlichkeit listen. Aufruf /ticket AP150 (eine AP-Nummer), /ticket <id> (Slug wie riskguard-eod-telegram-report), /ticket ohne Argument (Liste), /ticket neu "Titel" … oder /ticket AP150 nach doing. Nutzen auch, wenn Max fragt "was steht in AP…?", "welche Tickets sind offen?", "leg ein Ticket an", "schieb AP… auf erledigt".
 ---
 
-# Skill: Ticket lesen / listen
+# Skill: Ticket lesen, anlegen, verwalten
 
-Tracker: `C:\Users\maxlk\Projects\trading-data\engine\tasks.json` (JSON-Liste, Felder u.a. `ap_id`, `id`, `prio`, `status`, `when`, `title`, `why`, `guide`, `blocked_by`, `progress_notes`, `auto_notes`, `done_when`). **Die Box ist die Quelle der Wahrheit** (Regel Max, 06.09.2026).
+Tracker: `C:\Users\maxlk\Projects\trading-data\engine\tasks.json`. **Die Box ist die Quelle der Wahrheit** (Regel Max, 06.09.2026). Seit 28.09.2026 gibt es dazu das Ticket-Board im Jira-Stil ([[Ticket-Board (Jira-Stil)]]): Boards, Sprints, Schätzung in Stunden.
 
-## Schritte
+**Alles läuft über `engine/ticket_tool.py`**, nie tasks.json von Hand editieren (das Tool hält die Sperre, schreibt Backup + Verlauf und gleicht mit der Box ab). Aufruf im Engine-Ordner mit `PYTHONIOENCODING=utf-8`.
 
-1. Läuft die Session nicht auf der Box (Hostname ungleich `vmd202078`): zuerst im Engine-Ordner `python discovery/inbox_tool.py --pull`. Auf der Box entfällt das.
+## Lesen
+
+1. Läuft die Session nicht auf der Box (Hostname ungleich `vmd202078`): zuerst `python discovery/inbox_tool.py --pull`. Auf der Box entfällt das.
 2. Argument `$ARGUMENTS`:
-   - leer → Liste aller Tickets mit `status` nicht in `done`/`erledigt`/`closed`, sortiert nach `prio` (rot, orange, gelb, gruen) und dann `when`. Je Ticket eine Zeile: `AP-Nr | prio/status | when | Titel (gekürzt)`. Tickets ohne `ap_id` mit ihrer `id` zeigen.
-   - `AP123` → das Ticket mit dieser `ap_id`; sonst Slug-Match auf `id`.
-3. Für ein einzelnes Ticket alle gefüllten Felder ausgeben, in dieser Reihenfolge: Titel, Prio/Status, When (+ `when_note`), Why, Guide (als nummerierte Liste), Blocked_by, Progress-/Auto-Notes (neueste zuletzt), Done_when, Files, Source, Created.
+   - leer → `python ticket_tool.py find "" --n 60` (offene Tickets nach Prio und Rang). Eine Zeile je Ticket: AP | Prio | Spalte | Board | Stunden | Sprint | Titel.
+   - `AP123` oder Slug → `python ticket_tool.py show AP123` (alle Felder, Schritte mit Haken, wartet auf / blockiert, letzte Notizen).
+   - Suche → `python ticket_tool.py find "board:trading prio:rot sprint:aktuell"`. Filter: `board: prio: status:offen|erledigt|alle col:todo|doing|review|waiting|done sprint:aktuell|backlog|S2026-41 type: label: who:max|claude epic:AP… auto:ja blockiert:ja` plus freier Text.
+   - Board-Überblick → `python ticket_tool.py board [--board lab]`.
 
-Lesen per kurzem Python-Snippet mit `encoding="utf-8"` und `PYTHONIOENCODING=utf-8`, nicht die ganze Datei (230 KB) in den Kontext ziehen.
+## Ändern (nur nach Ansage von Max, oder wenn eine Regel es verlangt)
 
-## Wenn Max danach etwas ändern will
+- Anlegen: `python ticket_tool.py new "Titel" --board trading|infra|lab|privat --prio rot|orange|gelb|gruen [--type story|task|bug|epic|subtask] [--hours 3] [--why "..."] [--epic AP198] [--assignee max|claude] [--guide "Schritt"]…`. Das Tool pullt vorher selbst (Nummernkollision 03./06.09.2026) und pusht danach.
+- Verschieben: `python ticket_tool.py move AP123 doing` (Spalten: todo, doing, review, waiting, done).
+- Felder: `python ticket_tool.py edit AP123 --hours 5 --spent 4 --labels gate,v3 --epic AP198` (`-` löscht ein Feld).
+- Notiz: `python ticket_tool.py note AP123 "Zwischenstand"`.
+- Abhängigkeit: `python ticket_tool.py link AP123 blocks AP124` (auch `blocked_by`, `relates`, `duplicates`, `--remove`).
+- Alles mit `--who max`, wenn Max die Änderung diktiert hat, sonst steht `claude` im Verlauf.
 
-Status/Notes ändern nur nach Ansage. Vorher `.bak` anlegen (Muster `tasks.json.bak-YYYYMMDD-<ap>`), dann schreiben, dann außerhalb der Box `python discovery/inbox_tool.py --push-tasks`. Neue Nummer nur nach `--pull` vergeben (Kollisions-Vorfall 03./06.09.2026).
+## Board-Zuordnung
+
+| Board | Inhalt |
+|---|---|
+| `trading` | Alpha, Discovery, Buch, Gates, Strategien, Evals |
+| `infra` | Box, Runner, NT8, Deploy, RiskGuard, Telegram |
+| `lab` | Hub, Strategy Lab, Workbench, Agents, Hooks, Tools |
+| `privat` | Gründung, Steuer, BOS, Finanzen, Social Media |
+
+Sprints plant der Skill `/sprint`.

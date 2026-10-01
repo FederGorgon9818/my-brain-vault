@@ -3582,3 +3582,189 @@ Die offenen Regelfragen (Stufe 2 Tempo statt Passquote, k_hi statt k_lo, Kontrol
 1. Ersatz-Sicht für die 6 Momentum-Grenzfälle.
 2. Null-Schalter für regime_cell und vix_bias (oder ES_TOM auf `cal` abbilden), dann ES_TOM_F1 und FH_VIX_spike_rev_NQ als vorab festgelegte Einzelvertreter.
 3. Null-Schalter für noise_orb, i2, rv und flip, dann je Wette ein Vertreter mit k nach Register plus Placebo.
+
+## #177: Juli-Modus Idee 2 (Max) „ruhig → Bull": gilt gleichzeitig, nicht als Vorhersage; RTH ohne Edge, Nacht-Signal nur 2020 bis 2026 und unentscheidbar (29.09.2026)
+
+**These (Max, 29.09.):** „Wenn NQ und ES wenig Volatilität haben, ist ein Bullmarkt wahrscheinlicher." Verfahren: [[Testphase Juli-Modus]] Teil A. Gruppen aus der [[State Classification (Marktzustands-Karte)]], Recherche im [[Research-Cache]] (Abschnitt 29.09.).
+
+**Stufe 1:** Verwandte Trials gibt es: AR-17 (#139, Vola als Tages-Gate). Dessen Wiedervorlage „mehrere Kontrakte je Bein" ist seit dem k2-Beschluss vom 21.09. erfüllt, die Sizing-Achse ist damit wieder offen. Dazu TV-03, VT-01 und AR-15 (#136). Eine reine Long-Tendenz an ruhigen Tagen ist nicht registriert. Kein Modus bildet „immer long an Tag X" mit Null-Schalter ab. Für Stufe 3 bräuchte es den `gate_cells`-Weg vom 25.09. oder `asian`/tsmom mit Nachtbasis.
+
+**Stufe 2, Prämissen-Tafel RTH** (vorab festgelegt, 0 Trials): Gruppen G1 beide ruhig, G0 beide hoch, gemischt und alle. Zwei Vola-Definitionen (Rang expandierend wie Karte v1, Rang rollierend 250 Tage). Fenster Open bis Close, erste Stunde und letzte 60 Minuten, NQ und ES, also 12 Zellen.
+
+| NQ Open bis Close, Punkte | expandierend | rollierend |
+|---|---|---|
+| G1 beide ruhig | −3,4 [−11,2; +3,3], 355 Tage | +1,6 [−4,7; +7,2], 810 Tage |
+| G0 beide hoch | +6,1 [−1,5; +13,6], 978 Tage | +8,6 [−1,2; +19,1], 702 Tage |
+| alle | +2,0 [−2,8; +6,7] | +2,0 |
+
+Stopp-Regel:
+- **Expandierend:** Das Mittel liegt unter den Kosten, und die Gegengruppe ist höher. Dass 2020-23 nur 50 Tage hat, ist eine Power-Bedingung und allein kein Todesgrund.
+- **Rollierend:** Die Bedingungen (a) bis (c) sind erfüllt, aber die Gegengruppe zeigt mehr. Einschränkungen:
+  - (d) hängt an 2024-26. Für 2016-23 allein liegt G1 vorn: +4,0 gegen −0,1 Punkte.
+  - (c) hängt an einer einzigen Episode (Nov 2022 bis Mär 2023).
+- **Auflösung:** Ausgeschlossen ist ein Vorteil von G1 gegenüber allen Tagen nur oberhalb von +1,9 Punkten (expandierend) bzw. +5,4 Punkten (rollierend).
+
+Erste Stunde, letzte Stunde und ES zeigen dasselbe Bild.
+
+**Die These selbst** (Mehrtages-Halten, im Käfig nicht handelbar):
+- **Gleichzeitig hängen Ruhe und Bull zusammen.** Das Bull-Etikett liegt heute bei 90 % gegen 28 % und in 20 Sessions bei 86 % gegen 30 %. Das Fenster in 20 Sessions teilt aber 40 von 60 Sessions mit heute.
+- **Nach vorn löst es sich auf.** 60 Sessions später sind es 58 % [38; 73] gegen 57 % [40; 80], bei 17 bis 21 Episoden nicht auflösbar.
+- **Folgerendite 20 Sessions:** +1,18 % gegen +1,60 %, Episoden-Bänder [−0,3; +2,1] und [−0,1; +3,8].
+- **Die Trefferquote** von 70 % gegen 62 % ist Max' These wörtlich, gilt aber nur bei überlappenden Fenstern. An Eintrittstagen sind es 57 % gegen 67 %.
+- **Rendite je Schwankung:** 0,33 gegen 0,23. Das ist vereinbar mit Moreira/Muir 2017, hier aber nicht getestet (F60 expandierend 0,47 gegen 0,52).
+
+**Literatur** (research-scout, Abstract-Ebene):
+- Gleichzeitig ja (Maheu/McCurdy 2000).
+- Nach vorn eher schwächer: Giot 2005, und die schwächsten Folgemonate kommen nach sehr niedriger 20-Tage-Vola.
+- Prognosekraft hat die Variance Risk Premium, nicht die realisierte Vola (Bollerslev et al. 2009).
+- Vola-Timing ist out-of-sample instabil (Cederburg et al. 2020).
+- Das Why über Vol-Control-Fonds (bis 2 Bio. USD, Exposure = Ziel/Vola) ist real, aber asymmetrisch: Der Abbau im Spike ist stärker als der Aufbau in Ruhe. Zur Uhrzeit der Kaufseite gibt es keine Quelle.
+
+**Stufe 2b, Nacht:** Gewählt wurde das Fenster nach Ansicht der Daten (verdict-auditor fand den Schluss-zu-Schluss-Überschuss), festgelegt wurde es danach vorab. Gemessen ist RTH-Schluss bis RTH-Open, Di bis Fr, rollbereinigt.
+- **Expandierend:** NQ G1 +15,3 Punkte [+9,1; +21,9], also +10,2 bp je Nacht gegen +5,3 bp an allen Tagen. Überschuss +4,9 bp [+3,1; +6,9] über 15 Episoden.
+- **Je Epoche:** 2016-19 +1,4 bp [−1,3; +2,7], 2020-23 +6,1 [+1,3; +13,5] (41 Nächte), 2024-26 +8,6 [+5,4; +13,5].
+- **ES** ist schwächer: +1,7 bp gesamt, das Band berührt 0.
+- **Rollierend:** kein Überschuss (−0,4 bp [−3,2; +3,3]).
+- **Stopp-Regel:** Formal fällt die Nacht-Tafel nur an N 2020-23 durch (41 statt 60).
+- **Fenster:** Das gemessene Fenster enthält 16:00 bis 17:00 ET, also After-Hours und Earnings. Handelbar wäre 18:00 bis 09:30 ET. Das verträgt sich bei FN-Futures mit der Zwangs-Schließung um 16:10 ET.
+
+**Urteil: Long-Tendenz an ruhigen Tagen als RTH-Intraday-Bein.**
+Reichweite: NQ und ES, reguläre Handelszeit (Open bis Close, erste Stunde, letzte 60 Minuten), long, Rolle Signal für ein neues Bein, 1 Micro, Engine-Kosten, Vola = 20-Tage-RTH-RV bis Vortag (Rang expandierend und rollierend 250), 19.01.2017 bis 10.08.2026. Nicht geprüft: Mittagsfenster, Vola über VIX, andere Märkte.
+Kategorie: **empirisch-nichts-gefunden**, N = 12 Zellen (2 Definitionen × 3 Fenster × 2 Märkte) in einer Prämissen-Tafel, 0 Trials registriert. Vorteile unter +1,9 bzw. +5,4 Punkten je Session sind nicht auflösbar.
+Wiedervorlage: sobald die Zustandskarte v2 mit VIX-Achse steht (State Classification, nächster Schritt 7). Dann dieselbe Tafel mit VIX-Definition.
+Stempel: Engine-Fingerprint `b143ff69b84caae5961efe2e8611aa36`, Karte `regime_map.py` (md5 beede37a), RTH-Daten GitHub-Backup bis 10.08.2026, Kriterium Juli-Modus Stufe 2 (CI-Gate, N ≥ 60 je Epoche, Mittel über Kosten, Gegengruppe), Kosten Engine-Standard NQ 1,01 und ES 0,70 Punkte.
+
+**Urteil: Long-Nachtdrift bei absolut ruhigem Markt.**
+Reichweite: NQ (ES schwächer), RTH-Schluss bis RTH-Open Di bis Fr, long, Vola-Definition expandierend. Nur als Näherung gemessen, die Stunde 16:00 bis 17:00 ET steckt mit drin.
+Kategorie: **unentscheidbar**, und zwar aus genau zwei Gründen: 2020-23 hat nur 41 ruhige Nächte, und das handelbare Fenster (18:00 bis 09:30 ET) ist ungemessen. Gegenbefund mit guter Power: 2016-19 mit 151 Nächten zeigt keinen Überschuss (+1,4 bp [−1,3; +2,7]). Das Signal stammt aus 2020 bis 2026 (11 Episoden).
+Wiedervorlage: am PC mit 24h-Daten die Prämissen-Tafel für 18:00 bis 09:30 ET, dazu getrennt 16:00 bis 17:00 ET als Earnings-Test, mit gleichen Regeln. Trägt es, folgt Stufe 3 über `asian` oder tsmom mit Nachtbasis (beide mit Null-Schalter), danach das Ersatz-Marginal. Das Ticket wird am PC angelegt, weil die Box die Quelle der Wahrheit ist.
+Stempel: wie oben, Nacht-Skript `praemisse_nacht.py`.
+
+**Urteil: Long-Nachtdrift bei relativ ruhigem Markt (Rang gegen das letzte Jahr).**
+Reichweite: NQ und ES, RTH-Schluss bis RTH-Open Di bis Fr, long, Vola-Definition rollierend 250, 646 Nächte in G1.
+Kategorie: **empirisch-nichts-gefunden**, N = 2 Zellen (NQ, ES). Der Überschuss gegen alle Nächte liegt bei −0,4 bp [−3,2; +3,3] (NQ) und −1,6 bp [−4,6; +1,4] (ES), beides über Episoden.
+Wiedervorlage: zusammen mit der 24h-Nacht-Tafel am PC (Urteil davor), dieselbe Zeile mit rollierender Definition.
+Stempel: wie oben.
+
+**Nebenbefund:** Die Wiedervorlage von #139 (Vola-Sizing unter Bedingung „mehrere Kontrakte je Bein") ist seit dem 21.09. fällig und steht noch aus. Keine der Wiedervorlagen hier hat eine AP-Nummer, und `auto_check.py` führt keine. Die Tickets legt die nächste PC-Session an (Box = Quelle der Wahrheit für `tasks.json`).
+
+**Lehren (logbook-distiller geprüft):**
+1. **Ein Zustands-Etikett aus einem Fenster überlappt mit dem Vorhersage-Horizont.** „P(Bull in 20 Sessions)" nach einem 60-Tage-Drift-Etikett ist zu zwei Dritteln dieselbe Stichprobe. Vorhersage-Aussagen deshalb nur mit Horizont ≥ Fensterlänge oder an Eintrittstagen. Status: nur Text. Gate-Vorschlag: `regime_map.forward_label(states, col, h, entry_only=False)` mit Prüfung h ≥ Fensterlänge oder nur Eintrittstage, etwa 8 Zeilen. Der Helfer wirkt erst, wenn Tafel-Skripte ihn nutzen (`praemisse.py` rechnet den Versatz heute von Hand). Verwandt: #113 (Entscheidungs- getrennt vom Ergebnisfenster), #139 (Episoden statt Tage).
+2. **Bei Richtungs-Thesen beide Fenster vorab festlegen.** RTH, Nacht und Schluss zu Schluss gehören in die Auswahl und werden als Auswahl gezählt. Nachträglich Gefundenes braucht einen vorab festgelegten Nachtest (#174 Lehre 4). Hier ist das mit Stufe 2b geschehen, gilt aber als Auswahl über 2 Fenster. Status: nur Text. Vorschlag für die Stufe-2-Zeile in [[Testphase Juli-Modus]] (Pflichtspalten RTH, Nacht, Schluss zu Schluss), die Entscheidung liegt bei Max. Verwandt: #165 Lehre 6, #173.
+3. Keine neue Lehre, siehe **#108 (Lehre 90)**, **#163 (Lehre 168)** und die Kategorientabelle in der CLAUDE.md. Neu ist nur, dass das feste „N ≥ 60 je Epoche" der Juli-Modus-Tafel ein Proxy ist, wie das gestrichene `min_tpy`. Gate-Vorschlag: `kategorie()` in einem Tafel-Helfer mit Power über `overfit.feasibility_gate` (das bisher keinen Aufrufer hat).
+
+**Buch-Lücke:**
+- **RTH-Variante:** hängt an der Prämisse (Stufe 2).
+- **Nacht-Variante:** hängt an der Prämisse mit 24h-Daten. Danach fehlen Grid und Gates, PBO, Zufallsdecke und Ersatz-Marginal. Das Buch ist im Bull am schwächsten, ein Bein für ruhige Bull-Nächte würde deshalb diversifizieren. Dann Next-Week-Buch, Review und Deploy.
+
+Belege: trading-data `engine/_scratch_juli_lowvol/` (`praemisse.py`, `praemisse_nacht.py`, Ergebnisse als JSON und CSV), research-scout und verdict-auditor vom 29.09. (hält mit Auflagen, eingearbeitet).
+
+## #178: Juli-Modus Idee 3 (Max) „NQ steigt nachts bei niedriger Vola": unentscheidbar, auch mit absehbaren Daten; die Why-Proben zeigen nur „Risiko fällt, Drift flach", das Muster der Null (29.09.2026)
+
+**These (Max, 29.09. abends):** „In der Nachtsession (18:00 bis 09:30 ET, bei FundedNext erlaubt) steigt NQ im Schnitt bei niedriger Volatilität." Wiedervorlage von #177 (Urteile 2 und 3, Nacht), jetzt ohne die Stunde 16:00 bis 17:00 ET. Verfahren [[Testphase Juli-Modus]] Teil A, Gruppen aus der [[State Classification (Marktzustands-Karte)]], Why-Recherche im [[Research-Cache]] (Abschnitt 29.09. abends).
+
+**Daten:** Die Cloud hat 24h-Minuten nur für Jul/Aug 2026. Die Nacht ist deshalb rekonstruiert: UTC-Tagesbars (ratio-bereinigt) geteilt durch einen Faktor je Vertragsabschnitt, der aus dem Schnitt der Hoch- und Tief-Verhältnisse zur RTH folgt. Gemessen wird das Kern-Fenster 00:00 UTC (19:00 ET Winter, 20:00 ET Sommer) bis 09:30 ET, Mo bis Fr (die Sonntagnacht zählt als Montag). Mit Etikett sind es 2.385 Nächte ab 19.01.2017 (expandierend) bzw. 2.405 ab 20.12.2016 (rollierend), bis 06.08.2026. Validierung: 27 Tage in einem Vertragsabschnitt 2026 stimmen auf 0,00 Punkte, die Korrelation mit 18:00 bis 09:30 ET liegt dort bei 0,96. Ältere Abschnitte sind nur über gleiche Hoch/Tief-Faktoren geprüft. ES fällt raus (Ratio-Kette 2019 kaputt, #075), YM ist Kontrolle. **Ungemessen bleibt 18:00 bis 19:00/20:00 ET.** Keine unabhängige Bestätigung von #177: Das Kern-Fenster korreliert auf denselben Nächten mit 0,88 mit dem #177-Fenster, die Familie steht bei rund 24 Zellen plus rund 30 explorativen Vergleichen.
+
+**Stufe 1:** Kein Trial für Nacht-Halten mit Vola-Bedingung im Register. Die Overnight-Treffer (TN-01/04/10/12, TS-05, Gap-Fades) sind RTH-Signale.
+
+**Stufe 2, Prämissen-Tafel** (vorab festgelegt im Kopf von `praemisse_globex.py`, 0 Trials): NQ Kern long, Gruppen nach NQ-Vola (ruhig = unteres Rang-Drittel, Etikett zum RTH-Schluss t−1 bekannt), zwei Definitionen, eine reicht (deshalb 95 %), Stopp-Regel (a) bis (e), (e) = 95-%-Episoden-Band des Überschusses über 0.
+
+| NQ Kern, bp je Nacht | expandierend (absolut ruhig) | rollierend 250 (relativ ruhig) |
+|---|---|---|
+| G1 ruhig | +5,47 (412 Nächte), +7,01 Pkt [+4,5; +9,8], Treffer 61 % | +2,07 (875) |
+| normal | +1,88 | +2,09 |
+| G0 hoch | +2,71 | +4,34 |
+| alle | +2,87 | +2,88 |
+| Überschuss G1, vorregistriertes Episoden-Band 95 % | +2,60 [+0,32; +5,22], 15 Episoden | −0,80 [−4,06; +3,07] |
+| Überschuss je Epoche 2016-19 (Etiketten ab 2017) / 2020-23 / 2024-26 | +0,7 / +3,4 / +2,2 (223 / 51 / 138 Nächte) | −1,6 / −2,0 / +3,7 |
+| Stopp-Regel | (b) verfehlt (2020-23: 51 statt 60), (e) methodenabhängig | (d) und (e) verfehlt, (b) erfüllt |
+
+- **VORN** (16:00 ET bis 00:00 UTC, nur zur Zerlegung): ruhig −1,51 bp Überschuss [−3,13; +0,28].
+- **YM** (Kontrolle, NQ-Etikett): +0,23 bp [−2,45; +2,76], kein Effekt.
+- **(e) hält nur vorregistriert und knapp.**
+  - Es hält mit CR1 und t(14) (p 0,019) und mit Quartals-Clustern.
+  - Knapp daneben liegen CR2 mit Satterthwaite (0,027), Wild-Cluster (0,032), studentisierte Etikett-Rotation (0,028) und Monats-Cluster (0,035).
+  - Klar nicht hält es mit Basis-Unsicherheit (iid, 0,107, Band [−1,5; +6,7]), Jahres-Clustern (t 1,6), unstudentisierter Rotation (0,16) und dem Münzwurf auf ΔSR ruhig minus jede Nacht (0,19).
+  - Grund: 15 Episoden, 6 Phasen tragen 80 % der Nächte, effektiv rund 7,6 Freiheitsgrade.
+- **Innerhalb der Jahre bleiben +0,8 bp**, innerhalb der Epochen +1,7 bp. Das meiste heißt also „ruhige Jahre hatten gute Nächte" (2017, 2019, 2024, 2025), nicht Timing. Die Top-5-Nächte tragen 46 % der Überschuss-Summe (ohne sie +1,4 bp), symmetrisch 5 % getrimmt bleiben +3,1 bp, der Median-Abstand liegt bei −0,2 bp.
+- **Auflösung:**
+  - Die ehrliche SE liegt bei 2,1 bp (iid mit Basis-Unsicherheit). Daraus folgt eine MDE80 von 5,9 bp (Normalquantil) bis 6,7 bp (t mit 7,6 df), die Power bei +2,6 bp liegt bei rund 0,24.
+  - Die SESOI liegt bei rund 1,5 bp (ab da schlägt „nur ruhig" den 1/Vola-Nacht-Long) bzw. rund 0,6 bp (gegen jede Nacht). Dafür bräuchte es rund 6.000 bis 40.000 ruhige Nächte, bei rund 45 je Jahr.
+  - 24h-Daten 2011 bis 2026 gäben rund 700 ruhige Nächte (MDE 4,5 bp), frische Daten bis Herbst 2027 rund 43 (MDE rund 18 bp).
+- **Brücke zu #177:** Von +4,9 auf +2,6 bp fällt es vor allem wegen der Montage (Sonntagnacht), nicht wegen VORN. Ruhige Kern-Nächte Mo −3,4, Di −3,2, Mi +13,7, Do +13,5, Fr +5,9 bp (je rund 80). Di bis Fr allein ergibt +5,4 bp Überschuss (iid t 2,3). Explorativ und eine Gabelung, **nicht als neue Idee nachtesten**.
+
+**Explorativ** (nicht vorregistriert, nach der Tafel, `why_check.py` und quant-statistician; rund 30 Vergleiche, keiner übersteht Bonferroni bei |z| ≥ 2,9, auch nicht bei 10 effektiven Tests):
+- **Ruhe, nicht Bull:** innerhalb Bull ruhig +5,1 bp, normal +1,1, hoch −4,2. Bull ist insgesamt der schwächste Zustand (+0,9 bp).
+- **Risiko fällt, Drift flach:**
+  - Die Streuung je Nacht halbiert sich in Ruhe (36,9 gegen 72,5 bp), die Drift je Vola-Quintil ist flach (3,1 / 4,3 / 1,3 / 2,5 / 2,1 bp).
+  - Nacht-Long mit Größe proportional zu 1/Vola: SR/Jahr 0,59 auf 0,78. Davon sind 74 % mechanisch (entsteht auch bei flacher Drift), der Rest liegt bei +0,05 [−0,14; +0,24] (90 %). YM Rest −0,11.
+  - Das ist das Muster der Null zu Max' These.
+- **Blue Ocean / „Drift seit 2021 weg": weder bestätigt noch widerlegt.** Ab 06/2021 liegen alle Nächte bei +0,65 ± 2,0 bp (ohne 2022 +2,63), der Unterschied vor gegen nach bei −4,9 ± 3,0 bp (t −1,6). Der Ruhe-Überschuss liegt vor 06/2021 bei +0,2 bp (241 Nächte), danach bei +4,5 bp (171, ohne 2022 +2,5).
+- **Boyarchenko:** Nach einem Minus-Tag ist die Nacht stärker (−3,4 bp je +100 bp Vortag, 90 % [−7,6; +0,6]). Ruhig gegen normal bleibt nach dieser Kontrolle bei +3,7 bp (90 % [+0,7; +6,8]), das ist derselbe Effekt wie in der Tafel.
+- **Buch:** Die ruhige Nacht ist zum Buch und zu Asia-Dir praktisch unkorreliert (ρ 0,02). Die +0,28 zu Asia-Dir gelten für jede Nacht.
+
+**Why** (research-scout, Snippet-Ebene):
+- Keine Studie testet die Nachtrendite von ES/NQ nach Vola-Klassen. Die belegten Nacht-Mechanismen laufen eher gegen die These: Boyarchenko et al. finden die Drift größer nach Abverkäufen und bei Unsicherheit, im Europa-Fenster ist sie laut Fed-Notiz seit 2021 ungefähr null.
+- Einzige Literatur-Stütze mit Vola-Bezug ist Moreira/Muir 2017 (Cache Z. 704/854): Vola sagt das Risiko voraus, nicht die Rendite. Das ist gerade die Null zu Max' These und würde höchstens Vol-Sizing begründen, das hier mechanisch ist und im Buch nicht hilft (siehe unten). Gegenbefund Cederburg et al. 2020.
+- Asia-Retail über Blue Ocean (20:00 bis 04:00 ET, seit 06/2021, 70 % APAC) passt zur Uhrzeit und zu NQ statt YM, die Kopplung an Ruhe ist unbelegt. Vanna/Charm nur Praktiker.
+
+**Urteil: Long-Nachtdrift NQ bei absolut ruhigem Markt (Ruhe-Filter), Kern-Fenster der Nacht.**
+Reichweite: NQ, Kern-Fenster 00:00 UTC bis 09:30 ET, Mo bis Fr, long, Rolle Filter für ein neues Nachtbein, 1 Micro, Engine-Kosten 1,01 Punkte, FN-Käfig (Auslegung, siehe Offen), Vola = 20-Tage-RTH-RV bis Vortag, ruhig = unteres Rang-Drittel mit Rang expandierend, 19.01.2017 bis 06.08.2026 (2.385 Nächte, 412 ruhig). Nicht gemessen: 18:00 bis 19:00/20:00 ET, Teilfenster Asia und Pre-Market, VIX/VXN und Nacht-RV als Zustand, ES. Das Europa-Fenster (02:00 bis 03:00 ET) liegt schon in #028 (Overnight-Drift 2-3h, 3 Varianten, tot, mit Doku-Auflage aus der Friedhof-Prüfung).
+Kategorie: **unentscheidbar** (Power, auch mit absehbaren Daten), MDE80 5,9 bis 6,7 bp. Wörtlich stimmt der Satz trivial (ruhig +7,0 Punkte, 90 % [+4,5; +9,8], über den Kosten), das gilt aber für jede Nacht (+2,9 bp). Ob Ruhe mehr bringt, ist offen: Überschuss +2,6 bp, 95 % je nach Fehlerschätzung [+0,4; +5,2] bis [−1,5; +6,7], innerhalb der Jahre nur +0,8 bp (Ära-vermischt, Lehre 4). Formal verfehlt die vorregistrierte Regel nur N 2020-23 (51 statt 60), (e) ist methodenabhängig. Zählt nicht als Friedhof.
+Wiedervorlage: ohne Termin. (1) Ein Nacht-Bein ohne Filter besteht Gate v2 und das Buch-Marginal. Dann kommt das Ruhe-Etikett nur als Pflichtzeile mit rotiertem Etikett dazu. (2) Sonst erst bei einer MDE unter 0,6 bis 1,5 bp (rund 6.000 bis 40.000 ruhige Nächte), mit absehbaren Daten nie. Bedingung (1) ist über `book_state.json` prüfbar und gehört in `auto_check.py` (Ticket am PC).
+Stempel: Engine-Fingerprint `b143ff69b84caae5961efe2e8611aa36`, Karte `regime_map.py` (md5 beede37a), `praemisse_globex.py` (md5 f4c651a9, Seed 2909202603) und `nachtreihe.py` (md5 84d26cd9), beide als Export-Fassung, RTH-Daten GitHub-Backup bis 10.08.2026, UTC-Tagesbars `orderflow/v2` bis 06.08.2026, Kriterium Juli-Modus Stufe 2 mit (e) 95 %, MDE-Basis iid mit Basis-Unsicherheit (SE 2,09 bp), SESOI 0,6 bis 1,5 bp, Kosten NQ 1,01 und YM 4,04 Punkte.
+
+**Urteil: Long-Nachtdrift NQ bei relativ ruhigem Markt (Rang gegen das letzte Jahr), Kern-Fenster der Nacht.**
+Reichweite: wie oben, ruhig = unteres Rang-Drittel mit Rang rollierend 250, 20.12.2016 bis 06.08.2026 (2.405 Nächte, 875 ruhig). Löst #177 Urteil 3 für das Kern-Fenster ab.
+Kategorie: **unentscheidbar**, Richtung gegen die These. Vorregistriert heißt es „trägt nicht" an (d) und (e) bei erfülltem (b): Überschuss −0,8 bp, CR2 [−5,6; +4,0], Jahres-FE −1,9 bp, hoch schlägt ruhig (+4,34 gegen +2,07 bp). Plausible Effekte von 1 bis 3 bp sind damit nicht ausgeschlossen (MDE rund 5 bis 7 bp).
+Wiedervorlage: wie oben.
+Stempel: wie oben.
+
+**Was man bauen könnte** (quant-mathematician, in-sample, 1 MNQ; zum heutigen Preis je Zelle voll / letzte 3 Jahre / Drift ×0,58):
+- **Kosten spielen keine Rolle:** 0,34 bp je Runde. Netto je Jahr nur ruhig 1.320 / 1.620 / 730 $, jede Nacht 3.770 / 4.120 / 1.970 $, 1/Vola 3.950 / 4.100 / 2.080 $. Gate-v2-Vorchecks mit t = SR·√Jahre:
+  - ruhig 2,8, aber das enthält den unentscheidbaren Überschuss (ohne ihn SR 0,45, t rund 1,4)
+  - 1/Vola 2,3
+  - jede Nacht 1,7, dazu fällt der Tail-Test durch
+  - 2020 bis 2023 trägt keine Variante (SR 0,1 bis 0,3).
+- **Allein im FN-Flex-50k-Käfig ist die Nacht kein Vehikel:** DD/σ je Nacht liegt bei 3,5 bis 6,8 gegen die Faustregel 6. 1/Vola glättet bei gleicher Mittelgröße nur. Hebelung entsteht beim Hochziehen der Mittelgröße (#106) und bei einem Schock unter Ruhe-Etikett (03.01.2020: 1,8-fache Größe kostete −1.528 $, mehr als der DD).
+- **Im Buch als viertes Bein, ruhig, 1 MNQ je Buch-Einheit** (beide Skalen gleichrangig):
+  - Engine-Konvention (historische $): ΔSR +0,09 [0,00; +0,19], Monate bis 50k 56,7 auf 52,8, geschrumpft 128 auf 117.
+  - Heutige Preisskala: +0,19 [+0,08; +0,31], 48,5 Monate, geschrumpft 106.
+  - Ohne den Ruhe-Überschuss liegt „nur ruhig" (SR 0,45) unter „jede Nacht" (0,55), der Filter lebt komplett vom unentscheidbaren Teil. Der Münzwurf-Zwilling prüft nur Drift ≠ 0 (Lehre 5).
+  - Jede Nacht k0,5: roh −0,21 (67,8 Monate), heute +0,01. 1/Vola k0,5: roh −0,09.
+  - Der Ersatz von Asia-Dir ist nicht robust (heute +0,14 [−0,21; +0,43], roh −0,10).
+- **Offen:**
+  - 18:00 bis 09:30 ET bei FN ist eine Auslegung. Overnight-Halten ist bei FN-Futures verboten, der Auto-Close liegt bei 16:10 ET, gehandelt wird wieder ab 18:00 ET. Wörtlich belegt ist das Nachtfenster nicht.
+  - Die E8-Regel ist ungeprüft ([[Firm-Regeln je Konto]]), der Start am 02.10. läuft auf E8 150k.
+  - Dazu die FN-Ereignisregel (08:30-ET-Daten liegen im Fenster), der Exit-Fill um 09:30 und die RiskGuard-DLL von 600 $.
+  - Die Faustformel ist an rechtsschiefen Buch-Tagen kalibriert, die Nacht ist linksschief (Schiefe −0,75).
+
+**Lehren (logbook-distiller geprüft):** Keine ist ganz neu, jede ergänzt ein Geschwister im Logbuch. Codiert ist keine, L5 halb. Rangfolge nach Schaden: L1, L5, L2, L4, L3. Bündelbar ist alles in einer Datei `engine/tafel_lib.py` (rund 110 Zeilen, gehoben aus `_scratch_juli_nacht/quant_stat/q1_cluster.py` und `q3_explor.py`) mit `episode_band()`, `year_fe()`, `label_null()`, `vol_flat_null()` und `kategorie()` (#177 Lehre 3). Der Selbsttest reproduziert die #178-Tafel (se_cr2 1,145, df 7,64, Jahres-FE +0,84). Das wirkt erst, wenn Juli-Modus Stufe 2 und `quant-statistician.md` darauf verweisen, sonst bleibt es Text.
+1. **Ein Episoden-Bootstrap mit wenigen, ungleich großen Clustern ist zu eng.** Hier sind es 15 Episoden, 6 Phasen tragen 80 % der Nächte (df_eff 7,6), die SE liegt bei 1,2 bp gegen 1,8 iid bei Autokorrelation 0.
+   - Regel: SE = max(iid mit Basis-Unsicherheit, CR2). Das df gehört zur siegenden SE, die MDE kommt aus dieser SE, iid nur bei |ACF| unter 0,1. Ein Band, das nur mit einer Methode über 0 liegt, heißt „methodenabhängig".
+   - Status: nur Text (`regime_book.boot_mean_clusters` ohne Kleine-G-Schutz, jede Tafel kopiert `boot()`).
+   - Gate-Vorschlag: `tafel_lib.episode_band()`, rund 30 Zeilen, Kriterium (e) liest `se_used`.
+   - Verwandt: #136 Lehre 3, #139, Lehre 90. Neu ist die Kleine-G-Korrektur.
+2. **Ein `unentscheidbar` braucht einen rechnerischen Ausweg, sonst ist es ein Scheinabschluss.** Die #177-Wiedervorlage „am PC mit 24h-Daten" hätte 1 bis 3 bp nicht entscheiden können (MDE 4,5 bp).
+   - Regel: Die Wiedervorlage nennt die Datenmenge, bei der die MDE unter der SESOI liegt, oder sie lautet „entfällt, kein Testdesign" (Vorbild #173 Urteil 2). Ein Termin, bis zu dem die MDE sicher nicht fällt, ist keine Bedingung.
+   - Status: nur Text. `overfit.feasibility_gate` hat keinen Aufrufer, `guard_chain` prüft nur, dass „Wiedervorlage:" dasteht, `auto_check.py` hat keinen Kalender.
+   - Gate-Vorschlag: `tafel_lib.kategorie()` (rund 25 Zeilen) liefert Kategorie und Pflichtsatz, dazu `wiedervorlagen.json` und rund 10 Zeilen in `auto_check.auto_tickets`. Ein Hook-Regex taugt nicht, er würde alle vier bestehenden `unentscheidbar`-Urteile flaggen, zu Recht nur #177.
+   - Verwandt: Lehre 168 (#163), #164, #139, #177 Nebenbefund. Neu ist die Pflicht am Urteilsende.
+3. **Vola-Thesen werden gegen die Null „Drift je Vola-Klasse flach" geprüft, nicht über Sharpe je Gruppe.** Bei flacher Drift steigen die Sharpe ruhiger Gruppen und des 1/Vola-Longs von selbst (hier 74 % des Gewinns). Der θ-Vergleich aus #139 Lehre 3 ist unter dieser Null immer erfüllt, belegt werden muss die Drift-Spreizung.
+   - Status: nur Text.
+   - Gate-Vorschlag: `tafel_lib.vol_flat_null()`, rund 15 Zeilen, Pflichtzeile bei Vola-Etikett und Vol-Sizing, kein Stopp.
+   - Verwandt: #139 samt Lehre 3, Lehre 99, #177 „Rendite je Schwankung". Neu ist die Zerlegung.
+4. **Ein Niveau-Etikett vermischt Zustand und Ära, deshalb eine Pflichtzeile mit Jahres-Fixeffekten.** Innerhalb der Jahre blieben +0,8 von +2,6 bp. Ein „mindestens halber Effekt" taugt nicht als Schwelle: Das wäre ein Proxy wie N ≥ 60 und hängt an der Granularität (32 % bei Jahren, 64 % bei Epochen).
+   - Regel: Jahres-FE vorab festlegen, Band nach L1. „Ära-vermischt" heißt es, wenn das Level-Band über 0 liegt und das FE-Band nicht. Dann gibt es höchstens `unentscheidbar`, kein Stopp.
+   - Status: nur Text (`regime_book.year_centered` gibt es nur in der Buch-Diagnose).
+   - Gate-Vorschlag: `tafel_lib.year_fe()`, rund 12 Zeilen, `kategorie()` setzt das Flag.
+   - Verwandt: [[State Classification (Marktzustands-Karte)]] 28.09., #117/#143. Neu ist die Pflichtzeile.
+5. **Für einen Filter ist der Zwilling nicht der Münzwurf.** Der Münzwurf-Zwilling (#106) prüft nur Drift ≠ 0 (hier p < 0,005). Ein Filter gehört gegen seine eigene Null: Filtergrenzen mitwürfeln (Engine-Gates) oder das Etikett mit gleichen Episodenlängen rotieren (Zustands-Etiketten).
+   - Die Statistik wird vorab festgelegt, Standard ist studentisiert (Welch ruhig gegen Rest). Auf denselben Nächten gibt unstudentisiert einseitig p 0,16, iid-studentisiert 0,03 und Welch zweiseitig 0,09, die Wahl entscheidet also mit.
+   - Status: halb codiert. Die Drift-Hälfte des Zwillings v2 steht in `discovery_lib._twin_plong`, die Filter-Hälfte fehlt (Latte-Audit Vorschlag 10).
+   - Gate-Vorschlag: `tafel_lib.label_null()`, rund 15 Zeilen auf Basis `regime_book.stud_test`.
+   - Verwandt: #106, #136 Lehre 2, #139 Lehre 1, [[Latte-Audit (25.09.2026)]] P2.10. Neu ist die Etikett-Variante.
+
+**Buch-Lücke:** Stopp an Stufe 2 (Prämisse). Mit absehbaren Daten ist sie nicht zu nehmen, die späteren Stufen sind für diese Idee gesperrt, und es gibt keinen Werkzeugbau dafür. Ein Nacht-Bein ohne Filter wäre eine eigene Hypothese. Die Engine-Zellen sprechen explorativ schon dagegen: jede Nacht k0,5 im Buch roh −0,21, heute +0,01. Die Wiedervorlagen haben noch keine AP-Nummer, die Tickets legt die nächste PC-Session an (Box = Quelle der Wahrheit für `tasks.json`).
+
+Belege: trading-data `engine/_scratch_juli_nacht/` (`nachtreihe.py`, `praemisse_globex.py`, `why_check.py`, Nachprüfungen `quant_stat/` und `quant_math/`, Ergebnisse als JSON und CSV, in trading-data bitgleich nachgerechnet). Beteiligt waren research-scout, quant-statistician, quant-mathematician, verdict-auditor (hält mit Auflagen, eingearbeitet) und logbook-distiller, alle vom 29.09.
