@@ -1,0 +1,20 @@
+patch-check 3 True True True True
+n=50 IS
+C       rmst   75.6 med 69.0 dead   6.0 | FN-Funded max>=6 in 8% Sims, Zeit>=6 Mittel 0.2 M
+D       rmst   71.5 med 62.2 dead  10.0 | FN-Funded max>=6 in 60% Sims, Zeit>=6 Mittel 7.6 M
+A       rmst   71.5 med 62.8 dead   8.0 | FN-Funded max>=6 in 6% Sims, Zeit>=6 Mittel 0.2 M
+Acap    rmst   71.4 med 63.6 dead   6.0 | FN-Funded max>=6 in 8% Sims, Zeit>=6 Mittel 0.2 M
+C_s80   rmst   78.5 med 71.1 dead   8.0 | FN-Funded max>=6 in 8% Sims, Zeit>=6 Mittel 0.2 M
+D_s80   rmst   72.9 med 65.2 dead  12.0 | FN-Funded max>=6 in 60% Sims, Zeit>=6 Mittel 7.8 M
+C_max5  rmst   75.5 med 69.0 dead   6.0 | FN-Funded max>=6 in 0% Sims, Zeit>=6 Mittel 0.0 M
+D_max5  rmst   71.8 med 62.8 dead  10.0 | FN-Funded max>=6 in 0% Sims, Zeit>=6 Mittel 0.0 M
+  A       - C      : dRMST -4.05 (SE 0.85) M
+  Acap    - C      : dRMST -4.15 (SE 0.67) M
+  A       - Acap   : dRMST +0.10 (SE 0.56) M
+  D       - C      : dRMST -4.06 (SE 1.42) M
+  C_s80   - C      : dRMST +2.93 (SE 0.72) M
+  D_s80   - D      : dRMST +1.36 (SE 0.38) M
+  D_s80   - C_s80  : dRMST -5.62 (SE 1.54) M
+  C_max5  - C      : dRMST -0.04 (SE 0.03) M
+  D_max5  - D      : dRMST +0.26 (SE 0.19) M
+  D_max5  - C_max5 : dRMST -3.76 (SE 1.40) M

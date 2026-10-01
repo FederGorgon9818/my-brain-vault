@@ -73,7 +73,16 @@ aktualisiert: 2026-09-26
 - **Den 5. FN-Payout nie nehmen:** er schließt alle FN-Challenge-Konten (Live-Programm, Sim-Profit verfällt). Konto nach dem 4. Payout aufgeben.
 - Regeln: 5 Benchmark-Tage (50k ≥ 200 $, 150k ≥ 250 $), mindestens 500 $ Profit je Zyklus, Auszahlung bis 50 % des Profits **seit dem letzten Payout**, Cap je Zyklus 1.500 $ (50k) bzw. 4.000 $ (150k), Mindestabruf 250 $.
 - Split: **ungeklärt**, 95 % (Help-Artikel) oder 80 % plus kaufbares 95-%-Add-on (Support-Mail 20.08.). Im Dashboard von FN1/FN2 nachsehen.
-- **Für ein späteres FN-150k-Konto** („erst nach Lock, dann nur volle Caps“): die Richtung trägt (2,7 bis 5,2 Monate schneller bis 50k), die Monate sind aber mit einer falschen Auszahlungsformel im Modell gerechnet. Entscheidung erst nach Kernel-Fix und FN-Antwort, zusammen mit AP248.
+- ~~Für ein späteres FN-150k-Konto („erst nach Lock, dann nur volle Caps“): die Richtung trägt (2,7 bis 5,2 Monate schneller bis 50k), die Monate sind aber mit einer falschen Auszahlungsformel im Modell gerechnet.~~ **Neu gerechnet 01.10.2026** (Cloud gegen `trading-data`-Backup, Auszahlungsformel korrigiert, Kalender-Modus wie die Wochenend-Prüfung, aktuelles 3-Bein-Buch, Quant-Team gegengelesen, Dateien `Anhänge/2026-10-01 FN-Tempo/`). Gilt für alle FN-Konten (FN1/FN2 und 150k-Lane):
+
+| FN-Auszahlung im Funded | schneller bis 50k (RMST, IS / ×0,58 / letzte 3 J / letzte 3 J ×0,58) | Plan-Tod (C → Variante, gleiche Spalten) |
+|---|---|---|
+| sofort, sobald erlaubt (Referenz C) | — | 2,7 / 15,0 / 4,2 / 25,0 % |
+| erst ab halbem Cap (50k ≥ 750 $, 150k ≥ 2.000 $), Floor eingerastet | −5,4 / −4,0 / −4,7 / −3,5 Monate | 3,3 / 18,8 / 4,5 / 29,0 % |
+| nur volle Caps | −5,9 / −5,6 / −4,9 / −5,0 Monate | 5,2 / 22,5 / 5,8 / 33,8 % |
+
+  Mechanik: Je FN-Konto gibt es höchstens 4 Auszahlungen (die 5. schließt alle Challenges), jeder Slot soll also möglichst viel tragen. Zu langes Warten verzögert aber die Liquidität unter dem 2.500-$-Deckel. Die zusätzlichen Plan-Tode von „nur volle Caps" liegen zu zwei Dritteln in Monat 7 bis 25, also im BOS-Jahr. „Erst nach Floor-Lock" allein bringt nur 0,4 bis 1,7 Monate und ist bei vollen Caps überflüssig. **Empfehlung Quant-Team: halber Cap** (bester Tausch Tempo gegen Plan-Tod). **Entscheidung Max offen.** Nulldrift: 0 % Erreichung in allen Varianten.
+- **FN 150k mit k3 statt k2 (AP248):** 1,3 bis 4,8 Monate schneller, im schwachen Regime aber +7 pp Plan-Tod, und dort früh (Monat 13 bis 15). Das ist dasselbe Muster wie #175, spricht also für **k2**.
 
 ---
 
@@ -102,14 +111,14 @@ Quellen und Status je Zeile: [[Research-Cache]], Abschnitt „FundedNext/E8: Gr�
 ---
 
 ## 6. Offen, bevor der erste Pass kommt
-- [ ] **FN-Support-Mail abschicken.** Entwurf im [[Research-Cache]] (Abschnitt 26.09.), dazu diese drei Fragen ergänzen:
+- [ ] **FN-Support-Mail abschicken.** Die drei Fragen unten sind am 01.10.2026 verschickt, als Antwort im Thread „Futures Flex accounts 964331151 / 964331145 …". Antwort ausstehend. Der Entwurf vom 26.09. im [[Research-Cache]] ist damit nicht mehr nötig.
   - "Is the 50 % payout limit calculated on profit since the last payout or on total account profit?"
   - "What exactly happens to the Max Loss Limit with the first payout (does it reset or lock at a fixed level)?"
   - "Does the 5th Performance Reward really close all active Futures Challenge accounts?"
 - [ ] **RiskGuard-cfg E8 150k vor dem 02.10.:** dailyloss 1.200, maxdd 4.500, target 9.000 (AP214).
 - [ ] **AP203:** RiskGuard beim Statuswechsel automatisch umstellen, dazu Guard-Patches: target=0 in der cfg zulassen, Auszahlungen im Tagesverlust nicht als Verlust zählen, FN-Floor bei Start + 100, News-Flat prüfen (E8 hat laut Support keine News-Regel).
 - [ ] **[[Firm-Regeln je Konto]] korrigieren:** Z. 18 (E8-Funded hat die 35-%-Regel), Z. 38 (FN-Split ungeklärt), Z. 39 (Auszahlungsbasis seit letztem Payout), Z. 66 (FN-Verbot „Wechsel nach dem Pass“ nicht belegt).
-- [ ] **`tempo_plan`:** FN-Auszahlungsformel fixen (Z. 287, rechnet 50 % vom ganzen Kontogewinn) und den Marken-Fehler (Messzeitpunkte sind zugleich Kaufzeitpunkte, Z. 405/616), danach FN-Lock und FN-150k-Lane neu rechnen.
+- [ ] **`tempo_plan`:** FN-Auszahlungsformel fixen (heute in `run_funded_fn`, rechnet 50 % vom ganzen Kontogewinn) und den Marken-Fehler (Messzeitpunkte sind zugleich Kaufzeitpunkte, Z. 405/616). **Gemessen 01.10.:** Allein die Formel macht die Zeit bis 50k um etwa 4 Monate zu optimistisch (Mathematiker, 50 Sims). Zusammen mit dem Eval-Modell sind es 2,6 bis 4,9 Monate je Regime, und das betrifft auch die Wochenend-Prüfung. Eine korrigierte Fassung zum Übernehmen liegt als `run_funded_fn_x(fix=True)` in `Anhänge/2026-10-01 FN-Tempo/fn_tempo_check.py` (bit-gleich bei ausgeschaltetem Fix). FN-Lock und FN-150k-Lane sind damit schon neu gerechnet (siehe Abschnitt 3).
 - [ ] Optional, nur falls „Eval k3, Funded k2“ doch gewollt ist: E8-Support-Mail (Entwurf im Research-Cache).
 
 ---

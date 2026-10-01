@@ -1,0 +1,9 @@
+n=50 IS, Verzoegerung 4 Buchtage = 0.32 M
+C       rmst   75.6 dead   6.0
+C_wait  rmst   75.6 dead   6.0
+D       rmst   71.5 dead  10.0
+D_wait  rmst   71.8 dead  10.0
+  C_wait - C: +0.01 (SE 0.27) M
+  D_wait - D: +0.32 (SE 0.05) M
+  D - C: -4.06 (SE 1.42) M
+  D_wait - C_wait: -3.75 (SE 1.38) M
