@@ -1,7 +1,7 @@
 ---
 tags: [projekt, trading, gate-v4, stufe-2, buch]
 date: 2026-10-02
-status: gerechnet, Entscheidung Max am Wochenende
+status: entschieden (7er-Buch), Umstellung Schritt für Schritt über AP310
 ---
 
 # Kombi-Suche Next-Week-Buch (02.10.2026)
@@ -73,7 +73,14 @@ Nulldrift überall 0 %, Auslage p90 überall ≤ 1.560 $. Median unter shrink058
 - **7 Beine gegen die 5 echten/knappen:** trägt roh (−4,9 M), recent3y (−8,8 M) und shrink058 (+10,7 pp), bereinigt nicht (7,0 gegen 6,7 %). Der Vorsprung hängt also genau daran, dass ORB2 und RTY-Gap echt sind. Wette mit kaum Abwärtsrisiko, Kosten nur zwei Beine mehr in NT8.
 - **Winner's Curse:** MC-Teil durch frischen Seed abgefangen. Historien-Teil nicht: alle Läufe wählen auf denselben ~10 Jahren, Fehler des Niveaus grob ±10 M (Überschlag, kein Bootstrap). Unterschiede von 1 M sind nicht trennbar.
 
-## Empfehlung (Entscheidung Max)
+## Entscheidung Max (02.10.2026, Wochenend-Prüfung)
+
+- **Zielbuch: 7 Beine** LastHour, Asia, PB3, NQ-OpenDrive, VWAP-PB, ORB2, RTY-Gap.
+- **Umstellung Schritt für Schritt:** jedes neue Bein kommt erst ins echte Buch, wenn NT8-Code und Paritäts-Prüfung grün sind ([[Ticket-Board (Jira-Stil)|Ticket]] AP310, Prozess-Schritt AP290). Bis dahin bleibt das echte Buch (Momentum alt, LastHour, Asia) unverändert, Momentum alt läuft, bis PB3 bereit ist.
+- **Next-Week-Buch aufgeräumt:** LD01, ES-OpenDrive, ES-AC06d und OpEx raus, jetzt 7 Beine (= Zielbuch), auf die Box gepusht (Hash `419e76fe`), Backup `book_state_next.json.bak_20261002_kombi`. AP295 erledigt.
+- **Vorfall beim Umsetzen:** Um 23:03 wurde `book_state_next.json` am PC auf den alten 11er-Stand zurückgesetzt, zeitgleich mit dem Git-Push/Merge aller Repos in Session ac0439b9 (trading-data mit 5 Remote-Commits gemergt). Der anschließende `--push-next` schob den alten Stand wieder auf die Box. Neu eingespielt, sofort gepusht, Hash PC = Box geprüft. Lehre: trading-data-Git (Merge/Checkout) kann Buch-Dateien zurücksetzen. Nach einer Buch-Änderung zuerst `--push-next`, dann finalize, am Ende Hash PC gegen Box vergleichen, und kein Git-Merge in trading-data parallel zu einer Buch-Änderung.
+
+## Empfehlung (vor der Entscheidung)
 
 1. Kopien raus: LD01, ES-OpenDrive, ES-AC06d.
 2. Kandidat fürs Buch: **7 Beine** LastHour, Asia, PB3, NQ-OpenDrive, VWAP-PB, ORB2, RTY-Gap. Konservative Variante: die 5 echten/knappen ohne ORB2 und RTY-Gap.
