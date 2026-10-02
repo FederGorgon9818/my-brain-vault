@@ -163,3 +163,57 @@ Die Kette hat für eine echte Edge in Buch-Bein-Größe eine Power von ≈ 0,1 %
 - **Nicht registrierte Diagnose-Läufe:** Die Gegenprüfung hat rund 30+ Prüf-Configs gerechnet (Nachbarn, andere Märkte, Varianten). Werden sie weiterverwendet, müssen sie per registry_pending_add nachgetragen werden.
 - **Nebenwirkung:** Ein Strang hat eine Zeile "Buch geladen" an die lokale `discovery/runner.log` angehängt. Sonst wurde keine Engine- oder Buch-Datei geändert.
 - **Nebenbefund für das Quant-Team:** Die Short-Hälfte des Momentum-Beins trägt kaum (t 0,46), macht das Bein aber schneller (281 statt 309 Tage). Das ist eine #106-Frage, kein Urteil.
+
+---
+
+## Beschluss Gate v4 (Max, 28.09.2026)
+
+**Anlass:** Gate v3 (Zwillinge, z 2,5, Schrumpfen 0,58) ist gebaut und lokal getestet (AP257), die Abnahme fiel aber durch: 0 von 3 eigenen Beinen kamen durch, 0 von 9 Nieten. Max: „Es bringt nichts, wenn nichts mehr durchkommt. Was Geld bringt, nicht overfitted ist und mich schneller zum Ziel bringt, kommt ins Buch." Gate v3 bleibt im Code als Info-Wert, entscheidet aber nicht mehr.
+
+**Das Gate:**
+1. **Bringt Geld:** alleine profitabel, nach Kosten, auch ab 2024. Vor-Gates wie heute: Sharpe-t ≥ 2, n ≥ 30 (10 OOS), Trim 1 %, Kosten-Stress.
+2. **Overfit-Bremse = Walk-Forward mit Neuauswahl:** 2 Jahre Training, 1 Jahr Test, rollierend 2016 bis 2026 (~8 Fenster). In jedem Trainingsfenster wird aus dem Job-Grid die beste Config nach festem Kriterium neu gewählt, im Folgejahr getestet, die Test-Stücke werden aneinandergehängt. Bestanden: die zusammengesetzte OOS-Kurve ist nach Kosten profitabel UND die Mehrheit der Test-Jahre ist positiv (nicht jedes Jahr).
+3. **Verbessert das Buch (auf der OOS-Kurve):** Buch-Sharpe steigt (roh, ohne Schrumpfen, ohne Zwillinge). Leitplanken fest vorab: Max-Drawdown intraday wächst nicht um mehr als 20 %, Passquote fällt nicht um mehr als 3 pp. Ersatz: besser als das Original auf derselben Walk-Forward-Basis. Kein freies Abwägen je Kandidat.
+4. **Korrelation, gesunde Mitte:**
+   - keine harte Korrelations-Sperre, Korrelation kostet schon über Schritt 3,
+   - Tages-Korrelation > 0,7 zu einem Buch-Bein → wird als Ersatz-Kandidat für dieses Bein behandelt, nicht als Zusatz,
+   - **einzige harte Regel:** schlimmster historischer Buch-Tag (intraday, Betriebspunkt 150k k2) mit dem Kandidaten ≤ fester Anteil vom Trailing-DD (Startwert 50 %, an den 3 Beinen kalibrieren),
+   - Info im Wochenend-Review: gemeinsame Verlusttage, Tail-Korrelation, Markt/Uhrzeit/Mechanismus; bei gleicher Zeit bis 50k gewinnt der weniger korrelierte Kandidat.
+5. **Bestätigung vor dem Next-Week-Buch:** tempo_plan Zeit bis 50k kürzer (Kalender-Modus, Nulldrift-Zwilling 0 %, Auslage p90).
+6. **Nur noch Info:** Zwillinge/Gate v3, Schwelle, Schrumpfen, Zufallsdecke, PBO, Delay, symbols. Look-ahead-Schutz über Engine-Regeln (orb_exec usw.) und Test-Kanarie. Long-Drift ist erlaubt (Max: „Hauptsache Profit"), Korrelation an schlechten Tagen wird angezeigt.
+7. **Danach:** Next-Week-Buch, Wochenend-Entscheidung Max, Live-Tracking (raus bei expR < 0 nach 50 Live-Trades).
+
+**Einmalige Gegenprobe (kein Dauer-Gate):** 50 reine Null-Grid-Jobs durch Gate v4. Mehr als ~5 % Durchlass = Bremse zu weich.
+**Abnahme:** mindestens 2 von 3 eigenen Beinen kommen als neues Bein zum Rest-Buch durch, von den 9 Nieten höchstens 2 (AS-07 als reiner Long-Drift ist nach Max' Regel erlaubt und zählt nicht als Fehler).
+
+### Start-Prompt für die neue Session (opus, vorher `/clear`)
+
+```text
+Auftrag: Gate v4 bauen (Max-Beschluss 28.09.2026). Zuerst lesen: Vault "Projekte/Latte-Audit (25.09.2026).md" Abschnitt "Beschluss Gate v4" (die Regel), Ticket AP257 (tasks.json, erst --pull), Daily Notes 2026-09-26 bis 28. Stand: AP257/Gate v3 ist LOKAL gebaut und getestet, NICHT auf der Box (Box läuft noch Gate v2). Backups: engine/_scratch_latte/bak_ap257/ und bak_ap257_rest/. Werkzeuge: engine/_scratch_latte/own_chain_v3.py (Abnahme-Skript), placebo_out/ (Null-Grids), math_v3_* (Power), discovery_lib.book_gate_v3 (bleibt als Info).
+Auftragstyp: deploy (Engine + Box). Ablauf als Workflow:
+1. Walk-Forward mit Neuauswahl als Bibliotheksfunktion (discovery_lib), Job-Grid je Fenster neu auswählen, OOS-Stücke zusammensetzen.
+2. Stufe "verbessert das Buch" auf der OOS-Kurve: Buch-Sharpe roh + Leitplanken (Max-DD intraday +20 %, Passquote -3 pp), Ersatz vs Original.
+3. Korrelations-Mitte: Klon > 0,7 -> Ersatz-Pfad; harte Tages-Tail-Regel (schlimmster Buch-Tag intraday bei 150k k2 <= 50 % Trailing-DD, an den 3 Beinen kalibrieren); Info-Felder fürs Wochenend-Review.
+4. Runner, promote_next (nur Next-Week-Buch), developer_run, inbox_tool, summarize umstellen; Gate v3, Zwillinge, Decke, PBO, Delay, symbols nur Info.
+5. tempo_plan-Bestätigung für Next-Week-Kandidaten (Claude, nicht im Runner).
+6. Einmalige Gegenprobe 50 Null-Grid-Jobs (Durchlass <= ~5 %), Abnahme 3 Beine (>= 2/3) + 9 Nieten (<= 2/9, AS-07 erlaubt).
+7. Fester Test discovery/test_gate_v4.py, pipeline-auditor, engine-regression-tester, verdict-auditor, CLAUDE.md-Abschnitt "Gate" neu schreiben, Box-Sync + Runner-Neustart, Folge-Ticket Workbench-Anzeige.
+Nichts an book_state*.json. Engine ist nur Backup-Repo: vor Änderungen Backups. Am Ende Kurzfassung für Max.
+```
+
+### Präzisierung 28.09.2026 abends (Max): zwei Stufen
+- **Stufe 1 = Gate v4 (Discovery, automatisch, je Kandidat) → Next-Week-Buch:** Punkte 1 bis 3 oben plus Klon-Regel (> 0,7 → Ersatz-Pfad). Die harte Tages-Regel („schlimmster Tag ≤ 50 % Trailing-DD") und die tempo_plan-Bestätigung wandern aus Stufe 1 raus.
+- **Stufe 2 = Wochenend-Prüfung (Claude + Max) → echtes Buch:** fürs ganze Buch prüfen, ob Ersetzen, Hinzufügen oder andere Zusammensetzung mehr bringt. tempo_plan Zeit bis 50k mit dem echten RiskGuard-Tages-Stopp (600 $ × k) und im Vergleich ein dynamischer Stopp (Anteil vom Rest-Puffer). Korrelation so niedrig wie möglich, aber nichts deswegen hart ausschließen; hart nur: kein simulierter Tag killt das Konto.
+- Umsetzungsdetails Stufe 1 (für den Bau): Auswahl im Trainingsfenster über ALLE Grid-Configs nur mit Trainingsdaten (die Vor-Gates rechnen auf der vollen Historie und dürfen deshalb nicht in die WF-Auswahl), Kriterium Sharpe im Trainingsfenster; eingesetzt wird die Config, die im jüngsten Trainingsfenster gewählt wurde; Einzel-Config (Developer-Tab, feste Beine) = rollierendes OOS ohne Neuauswahl.
+
+### Umsetzung und Stand 29.09.2026 (Gate v4 live)
+- **Änderungen gegenüber dem Beschluss vom 28.09. (Max 29.09.):** Max-DD-Leitplanke gestrichen (sie verbot Zusatzbeine schon rechnerisch, +22 % allein durch ein drittes Bein gleicher Vola); Passquote −3 pp bleibt. Delay-Test ohne jede Wirkung, nur Info-Zahl (Entscheidung A: Look-ahead ist eine Eigenschaft des Modus-Codes; Schutz über ehrliche Modi und Code-Check bei neuen Modi). ORB wird nie ausgeschlossen, sondern ohne ehrlichen Modus automatisch in close + stop_honest gerechnet. Überoptimierungs-Prüfung (Herkunft) in Stufe 2 (Entscheidung B), noch unkalibriert.
+- **Abnahme:** eigene Beine 2/3 (Momentum, LastHour; Asia nur an der Passquote −5,2 pp), Nieten 1/9 (GAPFADE-RT), Selbst-Ersatz 3/3 korrekt nicht durch.
+- **Null-Kampagne:** 0 von 69 reinen Zufalls-Such-Läufen (10.169 Configs, 24 Grids > 200 Configs, 22 dünne Grids) durch Gate v4, obere 90-%-Grenze 4,2 %. Walk-Forward allein lässt 23 % Nullen durch, die Hauptlast tragen Vor-Gates und „Buch-Sharpe steigt". Nebenbefund: Null-Schalter in tsmom/maband war undicht (Würfel vor den Richtungsfiltern), repariert.
+- **GAPFADE-RT (strategy-auditor):** Filterspitze (52 % der R-Summe aus 0,50 bis 0,60 ATR), ≥ 252 Configs über 11 Jobs, Sharpe 0,92 ≈ Zufallsdecke der Familie; Kategorie `unentscheidbar`. Genau dafür die Herkunfts-Prüfung in Stufe 2.
+- **Offen (Tickets):** ORB-Whitelist nach (Seite, Modus) statt Blacklist, Herkunft kalibrieren (eigene Beine müssen unauffällig sein, N_eff statt N_family, symmetrisch, 2×SE) vor dem 03.10., `job_generator` „break"-Tippfehler (5 Jobs rechneten Fade), ENGINE_CORE-Hook um discovery_lib/runner/promote_next/job_generator/developer_run erweitern, Look-ahead-Code-Kanarie im Golden Master, Workbench-Anzeige Gate v4.
+
+### Nachtrag 01.10.2026 (Session fcf296d9, AP283-Abgleich)
+- **Gebaut (Review):** ORB-Whitelist + Netz je Config + harter Abbruch bei unbekannter Seite/Ausführung (AP276), „break"-Vorlage repariert (Generator reiht die 4 Breakout-Jobs selbst neu ein, Hand-Job `hf_orb_scalp_breakout_NQ` mit ehrlichem Why), Kanarie `gm_gate_v4_canary.py` + AST-Hash im Modus-Check (AP277), ENGINE_CORE inkl. Altfehler `controls.py` (AP278), Workbench auf Gate v4 (AP279), B6-Annahme + Placebo-Dauerkontrolle (AP280), last_hour-Zwilling = echte Null (AP281, Option B), Hub-Roster (AP282). Golden Master grün, `pipeline-auditor` sauber mit Auflagen (alle umgesetzt).
+- **Neu gefunden, Tickets im Backlog:** AP290 NT8-Port + Paritäts-Prüfung als fester Schritt vor der Übernahme, AP291 Kaufpolitik in `weekend_check` fest verdrahtet (E8 + FN 150k statt beschlossenem E8 150k), AP292 Live-Ausstieg „expR < 0 nach 50 Trades" steht gegen die Edge-Health-Ampel (Entscheidung Max), AP293 dynamischer Tages-Stopp nur simuliert. AP260 (Marken-Bug tempo_plan) trifft auch Stufe 2, hochgestuft.
+- **Offen:** AP275 (Herkunft nach Konzept „Was konnte die erste Fassung?"), wartet auf die zwei Entscheidungen in [[Überoptimierungs-Prüfung Stufe 2 (Konzept)]].

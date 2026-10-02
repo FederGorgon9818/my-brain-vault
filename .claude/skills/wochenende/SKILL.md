@@ -1,0 +1,36 @@
+---
+name: wochenende
+description: Gate v4 Stufe 2 als fester Ablauf - Wochenend-Prüfung echtes Buch gegen Next-Week-Buch mit weekend_check.py (Zeit bis 50k mit RiskGuard-Tages-Stopp und dynamischem Stopp, Nulldrift-Zwilling, Korrelation, gemeinsame Verlusttage, Modus-Check auf Look-ahead, Überoptimierungs-Prüfung der Herkunft mit glücksbereinigter Variante, Regime-Spalten shrink058/recent3y), strategy-auditor nur bei neuem oder geändertem Modus, Quant-Team bei knappen Fällen, Bericht mit Empfehlung. Nutzen, wenn Max /wochenende aufruft oder fragt "was machen wir mit dem Next-Week-Buch?", "Wochenend-Review", "übernehmen wir die neuen Beine?".
+---
+
+# Skill: Wochenende (Gate v4 Stufe 2)
+
+Stufe 1 (Discovery, Developer) legt Kandidaten nur ins Next-Week-Buch. Ob etwas davon ins echte Buch kommt, entscheidet Max am Wochenende. Dieser Skill bereitet die Entscheidung vor, er ändert kein Buch.
+
+## Schritte
+
+1. **Quittung:** `python .claude/hooks/receipt.py --sid <id> --type rechnen` (Pflichtkette Quant-Team). Erst wenn Max übernehmen will, auf `buch` umstellen (siehe Schritt 7).
+2. **Stand holen:** im Engine-Ordner `C:\Users\maxlk\Projects\trading-data\engine` `python discovery/inbox_tool.py --pull` (Next-Buch, Inbox, Tickets, Register von der Box; auf der Box selbst `--local`). Danach kurz prüfen, ob eine andere Session gerade an `book_state*.json` schreibt (`session-guard`, nur bei Verdacht).
+3. **Rechnen:** `python weekend_check.py` im Engine-Ordner, als Hintergrundlauf (voller Lauf rund 25 bis 45 Minuten, 600 Sims je Variante, 5 Prozesse). Zum Ausprobieren `--quick` (rund 5 bis 8 Minuten, Zahlen nur Orientierung). Ergebnis: `engine/weekend_check/<datum>.md` plus `.json`. Nur den Bericht lesen, nie Rohlogs.
+   - Varianten automatisch: echtes Buch, Next-Week-Buch, je neuem Bein "hinzufügen" und "ersetzt Bein X", "Next ohne Bein X", "echt ohne X" bei entfernten Beinen.
+   - Je Variante: Median-Monate bis 50k, P(50k) 12/24/36 M, ökonomischer Tod, Auslage p90, Netto 9 M, mit RiskGuard-Tages-Stopp (600 $ × k, E8 50k k1 900 $) und mit dynamischem Stopp (der engere aus RiskGuard und 50 % Rest-Puffer). Nulldrift-Zwilling muss 0 % zeigen, sonst ist die Variante gesperrt.
+   - Abschnitt 5 **Modus-Check**, Abschnitt 6 **Herkunft (Überoptimierung)**, Abschnitt 7 **Regime-Spalten**, Abschnitt 8 Empfehlung.
+4. **Modus-Check (einzige Code-Check-Pflicht, Max 29.09.):** Look-ahead ist eine Eigenschaft des Modus-Codes, nicht der einzelnen Strategie. Modi, die schon im echten Buch oder in Discovery laufen, gelten als geprüft. Den `strategy-auditor` nur ansetzen, wenn Abschnitt 5 **Code-Check-Pflicht** zeigt: neuer Modus, Engine-Änderung am Modus-Code seit dem letzten Stand (`weekend_check/modus_stand.json`), oder ORB ohne `orb_exec` close/stop_honest. Einmaliger Check auf Look-ahead im Modus-Code (Signal- und Einstiegs-Timing, Fill-Bar), nicht je Strategie. Ohne grünen Code-Check kommt das Bein nicht ins echte Buch; die Variante "Next ohne X" zeigt, was dann übrig bleibt. Der Delay-Wert aus Stufe 1 ist nur eine Info-Zahl ohne Wirkung, Warnlampen gibt es nicht mehr. Allgemeine Engine-Änderungen deckt der Golden Master (engine-regression-tester) plus pipeline-auditor ab.
+5. **Herkunft und knappe Fälle:**
+   - **Überoptimierung (Abschnitt 6):** je neuem Bein zählt der Bericht die Familie (gleicher Modus + Symbol + Seite long/short/beide) im Discovery-Register: Configs, Jobs, Runden, n_configs des eigenen Jobs. Auffällig bei mehr als 3 × n_configs oder mehr als 100 Configs. Dann steht eine glücksbereinigte Variante daneben (Sharpe des Beins minus der Sharpe, den der beste Zufallsfund bei so vielen Versuchen erwarten lässt; Drift runter, Vola gleich). Gewinnt das Bein nur roh und nicht bereinigt: Empfehlung "nicht übernehmen, einfrieren und beobachten (Live/Forward)". Nichts wird automatisch ausgeschlossen, Max entscheidet.
+   - **Regime-Spalten (Abschnitt 7):** Top-2-Varianten, Regel-Wahl und echtes Buch zusätzlich unter shrink058 (Drift × 0,58) und recent3y (nur die letzten 3 Jahre). Eine Empfehlung gibt es nur, wenn der Vorsprung in allen Spalten trägt; sonst steht dort ein Hinweis.
+   - `quant-mathematician` und `quant-statistician` parallel, wenn die Empfehlung auf einem Gleichstand beruht (Differenz unter 2 × MC-SE), wenn der Vorsprung nicht in allen Regime-Spalten trägt, wenn die Herkunft auffällig ist und bereinigt nur knapp etwas übrig bleibt, wenn der dynamische Stopp einen belegten Unterschied zeigt oder wenn eine Variante beim ökonomischen Tod deutlich schlechter ist.
+6. **Bericht für Max:** kurz, Deutsch, ohne Code-Namen, die er nicht kennt:
+   - Empfehlung nach Regel (Variante, Monate bis 50k gegen echtes Buch mit ± MC-SE, P in 36 M, ökonomischer Tod, Auslage p90) und ob der Vorsprung in allen Regime-Spalten trägt.
+   - Was sich ändern würde (welches Bein rein, welches raus) und die Buch-Lücke je Bein (was vor Live noch fehlt: Code-Check bei neuem Modus, NT8-Umbau).
+   - Herkunft je neuem Bein: Familiengröße, roh gegen bereinigt, Empfehlung (übernehmen oder einfrieren und beobachten).
+   - Modus-Check mit Ergebnis des Code-Checks, falls einer nötig war.
+   - Pfad zum Bericht. **Die Entscheidung trifft Max.** Nichts übernehmen, bevor er es sagt.
+7. **Nur wenn Max übernehmen will:** Quittung auf `buch` (`receipt.py --sid <id> --type buch`), dann der Buch-Workflow aus der CLAUDE.md, alles im selben Zug: `book_state.json` anpassen (einzige Quelle der Wahrheit) → `python funded_finalize.py` → `python discovery/inbox_tool.py --push-next`. Danach `python weekend_check.py --stand-setzen` (hält den Code-Stand aller bekannten Modi fest, Referenz für den nächsten Modus-Check). Übernommene Beine im Next-Buch sauber nachziehen, Ticket für NT8-Umbau/Deploy anlegen (vorher `--pull`), Daily Note ergänzen. Deploy auf die Box ist ein eigener Schritt (engine-regression-tester, box_deploy.ps1).
+
+## Regeln
+
+- `weekend_check.py` ändert keine Bücher, keine Tasks, keine Queue, kein Register (das Register wird nur gelesen). Für Tests mit veränderten Büchern nur Kopien im Scratch nutzen: `python weekend_check.py --quick --next <scratch-kopie> --tag test`. Einzige Datei außerhalb des Berichts: `weekend_check/modus_stand.json`, und die nur per `--stand-setzen`.
+- Die Regel im Bericht ist ein Vorschlag: kürzeste Median-Zeit bis 50k mit RiskGuard-Stopp, bei Gleichstand die weniger korrelierte (mittlere Paar-Korrelation über alle Tage), gesperrt bei Nulldrift-Alarm oder wenn ein einzelner Tag trotz Guard ein Konto killen kann, Empfehlung nur, wenn der Vorsprung auch unter shrink058 und recent3y trägt.
+- Code-Check-Pflicht gibt es nur über den Modus (neu, geändert, unehrliche ORB-Ausführung), nie wegen eines Delay-Werts einer einzelnen Strategie. Herkunft und Regime-Spalten blocken nichts, sie ändern nur die Empfehlung.
+- Zum Schluss der übliche Modell-/`/clear`-Hinweis und die Daily-Note-Bestätigung.

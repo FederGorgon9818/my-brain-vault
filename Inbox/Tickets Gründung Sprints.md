@@ -12,6 +12,8 @@ status: auszuführen in der nächsten PC- oder Laptop-Session
 > [!important] Auftrag von Max, schon freigegeben
 > Max am 29.09.2026: die nächsten Gründungsschritte jeweils in den Sprint der passenden Woche eintragen, damit sie automatisch in Arbeit kommen. Die Cloud-Session kam weder auf den PC noch auf die Box und konnte es deshalb nicht selbst tun. **Die nächste Session mit Engine-Zugriff führt das aus, ohne nochmal zu fragen.** Nur die Stundenschätzungen sind Vorschläge, die darf Max im Lab ändern. Danach diese Notiz löschen, die Zeile im [[Brain Dump]] entfernen und das Ergebnis in die Daily Note schreiben.
 
+**Zur Sprint-Regel vom 29.09. (CLAUDE.md, „Max plant seine Sprints selbst“):** Das hier ist kein Planning von Claude aus eigenem Antrieb. Max hat ausdrücklich angesagt, diese Schritte in die Sprints der jeweiligen Woche einzutragen, das ist also auf Zuruf. Ist S2026-41 inzwischen von Max selbst gefüllt, nur ergänzen und nichts herausnehmen.
+
 **Voraussetzung:** AP267 (Box-Migration des Ticket-Boards) ist erledigt, sonst gibt es S2026-41 noch nicht. Ist AP267 offen, zuerst Max fragen, ob jetzt migriert wird. Alles läuft über `ticket_tool.py` mit `--who max`, nie `tasks.json` von Hand bearbeiten. Vorher `sprint list` und `show` für jedes AP, damit nichts doppelt entsteht. Weicht ein Ticket von dieser Beschreibung ab, kurz Max fragen.
 
 ## Stand

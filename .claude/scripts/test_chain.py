@@ -5,7 +5,10 @@ import sys
 from pathlib import Path
 
 VAULT = Path(r"C:\Users\maxlk\Documents\Obsidaian\My Brain\My Brain")
-HOOKS = VAULT / ".claude" / "hooks"
+# Die Hooks neben diesem Skript, nicht fest die des Vaults: so prueft eine Kopie des
+# .claude-Ordners (Staging) ihre EIGENEN Hooks. VAULT bleibt fest, weil die Testpfade
+# echte Vault-Pfade sein muessen -- unter Temp/ griffe sonst die Freiliste.
+HOOKS = Path(__file__).resolve().parents[1] / "hooks"
 SID = "testsess-0000-0000-0000-000000000001"
 
 ok = fail = 0
@@ -138,6 +141,101 @@ res, err = hook("guard_chain.py", dict(b2, tool_name="Edit", tool_input={
     "file_path": r"C:\Users\maxlk\Projects\hub\hub_config.json",
     "old_string": '"apps": [', "new_string": '"apps": [ {"name": "neu"},'}))
 check("hub_config Layout-Aenderung blockt", decision(res) == "deny", res)
+
+print("\n== 3b. guard_chain: Subagents und Workflows (Befund 25.09.2026) ==")
+# Gemessen 26.09.2026 (Claude Code 2.1.281, Agent-Tool) und 28.09.2026 (Workflow-Agents):
+# im Subagent traegt die Hook-Eingabe agent_id + agent_type, transcript_path ist das
+# HAUPT-Transkript. Hier: tr, ohne
+# jeden Agent-Aufruf -- genau die Lage des research-scouts im Workflow eval-vs-funded.
+WEB = [("WebSearch", {"query": "x"}), ("WebFetch", {"url": "https://example.org", "prompt": "x"})]
+for typ in ("research-scout", "alpha-scout", "claude-code-guide"):
+    decs = [decision(hook("guard_chain.py", dict(b2, tool_name=t, tool_input=ti,
+                                                 agent_id="a0000000000000001", agent_type=typ))[0])
+            for t, ti in WEB]
+    check(f"{typ} im Workflow darf ins Web", decs == [None, None], decs)
+res, err = hook("guard_chain.py", dict(b2, tool_name="WebSearch", tool_input={"query": "x"},
+                                       agent_id="a0000000000000001", agent_type="quant-mathematician"))
+check("anderer Subagent ohne research-scout blockt weiter", decision(res) == "deny", res)
+check("Sperre sagt dem Subagent, dass er zurueckmelden soll",
+      "Subagent `quant-mathematician`" in str(res), str(res)[:200])
+res, err = hook("guard_chain.py", dict(b2, tool_name="Write", agent_id="a0000000000000001",
+                agent_type="research-scout",
+                tool_input={"file_path": r"C:\Users\maxlk\Projects\hub\static\app.js", "content": "x"}))
+check("Web-Freiheit gilt nur fuer Web: research-scout auf Hub-Datei blockt", decision(res) == "deny", res)
+
+# Workflow-Journal: <sid>/subagents/workflows/<wf>/journal.jsonl + agent-<id>.meta.json
+import shutil
+tr_wf = tdir / "fake_transcript_wf.jsonl"
+tr_wf.write_text(tr.read_text(encoding="utf-8"), encoding="utf-8")
+wf_root = tdir / "fake_transcript_wf" / "subagents" / "workflows"
+
+
+def fake_wf(wf, aid, typ, events):
+    d = wf_root / wf
+    d.mkdir(parents=True, exist_ok=True)
+    (d / f"agent-{aid}.meta.json").write_text(json.dumps({"agentType": typ, "spawnDepth": 1}), encoding="utf-8")
+    with (d / "journal.jsonl").open("a", encoding="utf-8") as f:
+        for ev in events:
+            f.write(json.dumps({"type": ev, "agentId": aid, "key": "v2:x", "label": f"{typ}: Test"}) + "\n")
+
+
+bw = {"session_id": SID, "transcript_path": str(tr_wf)}
+fake_wf("wf_fail", "afa11ed0000000001", "research-scout", ["started", "failed"])
+res, err = hook("guard_chain.py", dict(bw, tool_name="WebSearch", tool_input={"query": "x"}))
+check("gescheiterter Workflow-Agent zaehlt nicht als gelaufen", decision(res) == "deny", res)
+fake_wf("wf_run", "a4c0000000000001", "research-scout", ["started"])
+res, err = hook("guard_chain.py", dict(bw, tool_name="WebSearch", tool_input={"query": "x"}))
+check("laufender/abgebrochener Workflow-Agent zaehlt noch nicht", decision(res) == "deny", res)
+res, err = hook("guard_chain.py", dict(bw, tool_name="WebSearch", tool_input={"query": "x"},
+                                       agent_id="afa11ed0000000001"))
+check("ohne agent_type: Typ kommt aus der meta.json", decision(res) is None, res)
+# Abgebrochener Auditor darf das Buch nicht freigeben (Fund verdict-auditor, 26.09.2026)
+fake_wf("wf_buch", "a5a0000000000001", "strategy-auditor", ["started"])
+fake_wf("wf_buch", "a5a0000000000002", "quant-statistician", ["started"])
+res, err = hook("guard_chain.py", dict(bw, tool_name="Write", tool_input={
+    "file_path": r"C:\Users\maxlk\Projects\trading-data\engine\book_state.json", "content": "{}"}))
+check("abgebrochener Workflow-Auditor gibt book_state nicht frei", decision(res) == "deny", res)
+# Gemessene Eingabe eines LAUFENDEN Workflow-Agents (Mini-Workflow hook-probe, 28.09.2026):
+# agent_id + agent_type, transcript_path = Haupt-Transkript, im Journal nur `started`.
+# Genau die Lage des research-scouts in bulenox-check (26.09.).
+fake_wf("wf_live", "aeb2d06d9fc2dd7df", "research-scout", ["started"])
+fake_wf("wf_live", "ad1c171bce5db0d77", "Explore", ["started", "result"])
+res, err = hook("guard_chain.py", dict(bw, tool_name="WebSearch", tool_input={"query": "x"},
+                                       agent_id="aeb2d06d9fc2dd7df", agent_type="research-scout"))
+check("laufender research-scout im Workflow (gemessene Eingabe) darf ins Web", decision(res) is None, res)
+res, err = hook("guard_chain.py", dict(bw, tool_name="WebSearch", tool_input={"query": "x"},
+                                       agent_id="ad1c171bce5db0d77", agent_type="Explore"))
+check("Explore im selben Workflow bleibt gesperrt", decision(res) == "deny", res)
+fake_wf("wf_adhoc", "a5c0070000000001", "research-scout", ["started", "result"])
+res, err = hook("guard_chain.py", dict(bw, tool_name="WebSearch", tool_input={"query": "x"}))
+check("research-scout aus Ad-hoc-Workflow zaehlt als gelaufen", decision(res) is None, res)
+SIDW = "wfwf0000-0000-0000-0000-000000000005"
+R.path_for(SIDW).unlink(missing_ok=True)
+R.ensure(SIDW, prompt_hint="t")
+R.set_type(SIDW, "research")
+check("Ad-hoc-Workflow schliesst Kette `research`", R.missing_steps(R.load(SIDW), str(tr_wf)) == [],
+      R.missing_steps(R.load(SIDW), str(tr_wf)))
+R.path_for(SIDW).unlink(missing_ok=True)
+shutil.rmtree(tdir / "fake_transcript_wf", ignore_errors=True)
+tr_wf.unlink(missing_ok=True)
+
+# Quittungs-Gate: der Scout muss in den Research-Cache zurueckschreiben koennen, auch wenn
+# die Kette eines anderen Typs offen ist (Session d954c57e, 23.09.2026, Typ `buch`).
+SIDB = "cacb0000-0000-0000-0000-000000000006"
+R.path_for(SIDB).unlink(missing_ok=True)
+R.ensure(SIDB, prompt_hint="t")
+R.set_type(SIDB, "buch")
+bb = {"session_id": SIDB, "transcript_path": str(tr), "tool_name": "Edit", "tool_input": {
+    "file_path": str(VAULT / "Ressourcen" / "Research-Cache.md"), "old_string": "a", "new_string": "b"}}
+for typ in ("research-scout", "alpha-scout"):
+    res, err = hook("guard_chain.py", dict(bb, agent_id="a0000000000000003", agent_type=typ))
+    check(f"{typ} darf bei offener Kette `buch` in den Research-Cache", decision(res) is None, res)
+res, err = hook("guard_chain.py", bb)
+check("Hauptthread bleibt beim Research-Cache gesperrt", decision(res) == "deny", res)
+res, err = hook("guard_chain.py", dict(bb, agent_id="a0000000000000003", agent_type="quant-mathematician"))
+check("anderer Subagent bleibt gesperrt, mit Rueckmelde-Hinweis",
+      decision(res) == "deny" and "Subagent `quant-mathematician`" in str(res), str(res)[:200])
+R.path_for(SIDB).unlink(missing_ok=True)
 
 print("\n== 4. guard_chain: Quittungs-Gate ==")
 R.set_type(SID, "urteil")
