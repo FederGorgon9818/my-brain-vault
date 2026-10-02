@@ -3768,3 +3768,96 @@ Stempel: wie oben.
 **Buch-Lücke:** Stopp an Stufe 2 (Prämisse). Mit absehbaren Daten ist sie nicht zu nehmen, die späteren Stufen sind für diese Idee gesperrt, und es gibt keinen Werkzeugbau dafür. Ein Nacht-Bein ohne Filter wäre eine eigene Hypothese. Die Engine-Zellen sprechen explorativ schon dagegen: jede Nacht k0,5 im Buch roh −0,21, heute +0,01. Die Wiedervorlagen haben noch keine AP-Nummer, die Tickets legt die nächste PC-Session an (Box = Quelle der Wahrheit für `tasks.json`).
 
 Belege: trading-data `engine/_scratch_juli_nacht/` (`nachtreihe.py`, `praemisse_globex.py`, `why_check.py`, Nachprüfungen `quant_stat/` und `quant_math/`, Ergebnisse als JSON und CSV, in trading-data bitgleich nachgerechnet). Beteiligt waren research-scout, quant-statistician, quant-mathematician, verdict-auditor (hält mit Auflagen, eingearbeitet) und logbook-distiller, alle vom 29.09.
+
+
+## #179 — Friedhof-Nachlauf durch Gate v4 (Teil 1 aus #176, Teil 2 diversifizierende Karten, Wege-Karten): 188 Karten gemessen, 6 DURCH im Rausch-Band, alle 6 ins Next-Week-Buch (Max), keine belastbare neue Edge (01.10.2026)
+
+**Anlass:** Max, 01.10. (AP257 abgenommen): Friedhof mit Gate v4 nachziehen. (a) Teil 1 aus #176 (113 Kandidaten, damals Gate v2), Teil 2 neu: die 16 Karten ohne Null-Schalter (VIX_spike_rev, NOISE_ORB, ES_TOM_F1, VOLBRK, ONREV, OR_DELTA, RV-Lead-Lag) plus 2 FLIP. (c) Wege-Karten (ADX, ADX x VWAP, ES-NQ-Divergenz, Fibonacci, Gap, Overnight-Bias ORB, RVOL, Rundzahlen, Session Momentum, VWAP-Offensive): nur Wege mit schon gemessenem Kandidaten. (b) alles nach den 5 Familien gruppiert, Buch-Beine aus der v4-Abnahme übernommen. Session c04b2326.
+
+**Vorbedingungen:** Teil B fertig (eadffd5a, 24.09.), Gate v4 seit 29.09. live, session-guard frei, Golden Master frisch grün (01.10.), Box hashgleich mit dem PC (16 Kerndateien).
+
+**Max' Entscheidungen vor dem Lauf:** Referenz = **Next-Week-Buch mit 4 Beinen** (PB3, LastHour_v3, Asia-Dir, OpenDrive_maband2050). WF-Grid = **Mini-Grid wie in der Abnahme** (Basis ±25 % je numerischer Achse, Stern, max. 8 Achsen). Karten ohne Null-Schalter **normal durch v4** (nur die Placebo-Spalte steht auf „nicht messbar“). Die zwei ORB-Karten mit #068-Stempel **mitrechnen**. Nach dem Lauf: **alle 6 DURCH ins Next-Week-Buch**.
+
+**Methode:** Je Kandidat dieselbe Kette wie die v4-Abnahme (`own_chain_v4`): Prämisse auf BASE (nur IS), Stern-Grid mit `evaluate_config(GATES_HARD)` + Plateau, `walk_forward` mit Neuauswahl (2 J / 1 J ab 2016), `gate_v4` als Sicht „neu“ (Klon-Regel automatisch) und „Ersatz“, wo `replaces_leg` auf ein Next-Bein zeigt. Info: PBO/RC, Placebo-Zwilling (nur NULL_MODES), Residual-Alpha gegen das Next-Buch (quant-mathematician: t_alpha, IR, dSR bei optimalem Gewicht). Gerechnet auf der Box, 3 Worker, BELOW_NORMAL, 1.514 Configs, 0 Lauf-Fehler. Skript und Daten: `engine/_scratch_friedhof_v4/` (Box) bzw. Session-Scratchpad `fv4/` (Auswertung). **Lese-Regeln vorab festgelegt** (quant-statistician + quant-mathematician, `prereg.md`, vor dem ersten Ergebnis): Erwartung unter Null, ernst vs. Rauschverdacht, Endstand → Kategorie.
+
+**Umfang:** 240 Karten. **188 verschieden gemessen**, 23 Dubletten (erben das Urteil ihres Zwillings), 29 nicht gemessen (28 ohne lauffähige Params: Event-Studien, Prescans, Swing-Wege, Altstudien nur mit Namen; ES_TOM_F1 ohne Engine-Modus, nur Scratch-Zellen). 245 offene Wege der Wege-Karten nur aufgelistet (`cands_wege_offen.json`), nichts neu gebaut.
+
+**Ergebnis:**
+
+| Endstand (erste blockierende v4-Stufe) | Anzahl |
+|---|---|
+| Prämisse | 41 |
+| Vor-Gates | 46 |
+| Walk-Forward | 1 |
+| Buch | 94 |
+| **DURCH** | **6** |
+
+- **6 DURCH bei Null-Erwartung 1,5 bis 5 (q90 3 bis 8).** Sie sind untereinander kaum korreliert (max. r 0,33), also 6 Wetten. Das Ergebnis passt zu Rauschen. Bester z ≈ 1,0.
+- **Maßstab aus der v4-Abnahme:** die echten Buch-Beine als Neuzugang dSR **+0,20** (Momentum) und **+0,31** (LastHour). Die 6 DURCH liegen bei **+0,002 bis +0,065**, eine Größenordnung darunter.
+- **Buch-Durchfälle (94):** keiner mit eigenem Alpha gegen das Next-Buch (t_alpha max. 1,28, bei 66 ≤ 0). Das ist kein Skalierungsproblem, sie liefern nur, was das Buch schon hat.
+- **Alle 6 DURCH senken die Passquote** leicht (−0,4 bis −3,0 pp).
+
+**Die 6 DURCH (Vorab-Lesart, strategy-auditor):**
+
+| Bein im Next-Buch | Familie | dSR | Bootstrap P(dSR>0) | z | t_alpha | Lesart | Warnung |
+|---|---|---|---|---|---|---|---|
+| NQ_OPEXMOM_fv4 | Intraday Bias | +0,048 | 0,93 | 1,0 | 1,5 | ernst (knapp) | Tail-Bein ~7 Tr/J, Stop-Median 135 Pkt (k2 ≈ Tagesstopp), Same-Bar-Entry (Wirkung 0) |
+| NQ_LD01_vix16_fv4 | Trend Following | +0,065 | 0,89 | 1,0 | 1,7 | knapp | faktisch Momentum ohne Pullback + VIX < 16 (r 0,89 an gemeinsamen Tagen) |
+| ES_OpenDrive_maband2050_fv4 | Trend Following | +0,021 | 0,66 | 0,4 | 1,0 | Rauschverdacht | ES-Zwilling von OpenDrive (r 0,90 an gemeinsamen Tagen) |
+| ES_AC06d_legstop_fv4 | Trend Following | +0,034 | 0,71 | 0,6 | 1,2 | Rauschverdacht | Symbol-Selektion 1 von 4, $-Risiko schwankt Faktor 10 |
+| NQ_VWAP-Pullback_v8BE_fv4 | Mean Reversion | +0,018 | 0,56 | 0,2 | 1,3 | Rauschverdacht | Widerspruch zu #153, dPass −2,95 an der Leitplanke |
+| NQ_REFINE_ORB2_close_fv4 | Trend Following | +0,002 | 0,34 | −0,2 | 0,6 | Rauschverdacht | widerspricht #068, PBO 0,86, nachgerechnet dSR < 0 |
+
+Die Aufnahme aller 6 ist Max' Entscheid und eine **bewusste Abweichung von der Vorab-Regel** („Rauschverdacht nur auf die Liste, nicht ins Next-Week-Buch“). strategy-auditor: hält mit Auflagen, live heute keiner. Alle 6 tragen ein **Selektions-Leck**: die Basis wurde früher auf voller Historie gewählt, der WF wählt nur noch im Stern.
+
+**Beinahe-Treffer (bestehen WF und Buch-Stufe, fallen an Prämisse oder Vor-Gates), ausdrücklich nicht im Friedhof-Topf:**
+- **FH_NQ_ORB-fade_nr7_honest:** höchstes dSR aller 240 Karten (+0,141, t_alpha 2,46, r 0,00), WF 7/9, OOS +8.076 $. BASE im IS expR −0,17. IS und WF widersprechen sich.
+- **FH_RTY_Gap-fade_retune_RT:** dSR +0,083, t_alpha 2,32, scheitert nur an sharpe_t 1,85.
+- **OPEXMOM als Familie:** NQ DURCH, ES (+0,043, t 1,58), YM (+0,020), RTY (+0,008) bestehen alle die Buch-Stufe, scheitern an Power-Vor-Gates. Interessantester Befund des Laufs.
+- Dazu FH_EVENT_ES_primary (+0,035), ORB_nr7_close (+0,026), WK_ONORB_W17_fadeus (+0,049, t 1,94), FH_CAL_fomcpost_ES, maband_wide_atr_ES.
+
+**Familien (Kategorie je Karte, 240):**
+
+| Familie | DURCH | unentscheidbar | empirisch-nichts-gefunden | echt-aber-zu-klein | kein Tod (Klon) | Dublette | nicht gemessen | gesamt |
+|---|---|---|---|---|---|---|---|---|
+| Trend Following | 5 | 25 | 79 | 0 | 16 | 9 | 16 | 150 |
+| Mean Reversion | 0 | 5 | 11 | 0 | 0 | 7 | 5 | 28 |
+| Intraday Bias | 1 | 8 | 19 | 0 | 4 | 4 | 4 | 40 |
+| Swing | 0 | 0 | 0 | 0 | 0 | 1 | 3 | 4 |
+| Relative Value | 0 | 3 | 12 | 0 | 0 | 2 | 1 | 18 |
+| **Summe** | **6** | **41** | **121** | **0** | **20** | **23** | **29** | **240** |
+
+Buch-Beine aus der v4-Abnahme (übernommen, nicht neu gerechnet, Referenz 2-Bein-Restbuch): NQ_Momentum_d260818 (Trend Following) DURCH, dSR +0,20, dPass −0,9; NQ_LastHour_v3 (Intraday Bias) DURCH, dSR +0,31, dPass +0,3; NQ_Asia-Dir-USopen_d260820 (Intraday Bias) Buch-Stufe, dSR +0,20, aber dPass −5,2. Volle Tabelle Familie × Kandidat × v4-Stufe × Buch-Lücke: [[Friedhof-Nachlauf Gate v4 (01.10.2026)]].
+
+**Urteil:** (je Gruppe)
+**Reichweite:** 188 Einzel-Configs, je Config nur Basis ±25 % je numerischer Achse (max. 8 Achsen, keine Kombinationen, Richtung/Basis/Symbol nicht variiert). Rolle Signal als Zusatzbein, Ersatz nur wo `replaces_leg` gesetzt. Intraday, 1 Micro je Bein, Engine-Kosten inkl. 2-Tick-Stress. Gegen das Next-Week-Buch mit 4 Beinen (legs-md5 14f59c90). Leitplanke Passquote E8 50k k1. Prämisse nur auf BASE im IS. **Nicht beurteilt:** 150k k2 (gekaufter Betriebspunkt), tempo_plan / Zeit bis 50k, Live-Buch, Original-Job-Grids, Filter- und Exit-Rollen.
+**Kategorie:**
+- **empirisch-nichts-gefunden (121):** 56 Buch-Durchfälle mit dSR ≤ −1 SE (Rolle Zusatzbein, kein eigenes Alpha gegen das Next-Buch, allein WF-positiv ist kein Effektbeleg); 34 Prämisse (N = 1, BASE im IS); 31 Vor-Gates mit Nicht-Power-Fails (N = 1, WF-deploy-Config).
+- **unentscheidbar (41), zählt nicht als Friedhof:** 18 Buch mit |dSR| < 1 SE; 15 Vor-Gates nur an Power-Fails (sharpe_t, n, OOS-n; MDE nicht gerechnet, Annahme); 4 Prämisse n < 60; 2 IS widerspricht WF (ORB-fade_nr7_honest, ONORB_W17_fadeus); 1 WF nur Mehrheit verfehlt; TS-21 mit 0 Trades (Mapping-Verdacht, kein Power-Problem).
+- **kein Tod (20):** Klon-Ersatz verliert, also Variante eines Buch-Beins, nicht besser.
+- **echt-aber-zu-klein (0).**
+- **strukturell-tot (0) in diesem Lauf.** ORB_maxwin_close jetzt empirisch, N = 1 (#068 als Prior); ORB_nr7_close unentscheidbar (Power, besteht WF und Buch). Das Etikett aus #068/#176 gilt weiter, aber nur für den ungefilterten bzw. trendgefilterten Close-Breakout auf NQ. Rechnung dazu (#068): Zerlegung über 2.685 NQ-Ausbruchstage, nach dem Break bis EOD −0,6 Pkt bei 51 % Trefferquote, auch mit Trend-/Spike-Kondition; das verbietet die Klasse Close-Breakout-ORB mit EOD-Exit auf NQ, ungefiltert und trendgefiltert. Gefilterte Teilmengen (NR7, Vol, VWAP) deckt der Beweis nicht ab; REFINE_ORB_2_close liegt aus genau dieser Teilmenge im Next-Buch.
+**Wiedervorlage:**
+- Buch-Durchfälle und Klon-Fälle: sobald ein Bein des Referenzbuchs (Momentum_PB3, LastHour_v3, Asia-Dir, OpenDrive_maband2050) Next- oder Live-Buch verlässt. Neue Beine lösen nichts aus.
+- Alle Karten: Wechsel des md5 von discovery_lib (06300600), qbt (d8c96aeb) oder controls (7ae609d6).
+- Power-Unentscheidbare: Datenende + 12 Monate (August 2027).
+- Prämissen-Tote: nur bei neuem Why oder neuer Basis.
+- Beinahe-Treffer: siehe Tickets.
+- Die prüfbaren Bedingungen gehören in `auto_check.py`. Der Mechanismus dafür fehlt dort noch → Ticket.
+**Stempel:** Engine `eval_plan.engine_fingerprint` 9cc1bcffa899a2a4, discovery_lib 06300600, controls 7ae609d6, qbt d8c96aeb, eval_plan aa6d8eba, Golden Master grün 01.10. (d238c56d). Next-Buch zum Laufzeitpunkt 4 Beine (14f59c90), Live-Buch 91c972fe. Gate v4 (`GATE_V4_*` Stand 29.09.), Passquote primary_tier 50k (E8), 1 Kontrakt je Bein. Daten bis 04. bis 10.08.2026 (Ende der OOS-Fenster), Lauf 01.10.2026. Register n wie PC-Register plus Pending `cc58b785…` (1.514 Trials, keine Zwillinge).
+
+**Nicht tot:**
+- Alle 41 unentscheidbar, darunter die Beinahe-Treffer.
+- Die 29 nicht gemessenen Karten: deren alte Urteile gelten unverändert.
+- Die 245 offenen Wege der Wege-Karten.
+- OPEXMOM als Familie über vier Indizes.
+
+**Lehren:**
+1. **Ein v4-DURCH aus dem Friedhof ist kein Fund, sondern ein Kandidat mit Selektions-Leck.** Die Basis war vorher auf voller Historie ausgewählt, der WF wählt nur noch im Stern. Unter der Null bestehen solche Basen v4 mit 4 bis 14 % statt der 4,2 % der Null-Kampagne. Bestätigen kann nur ein Runner-Job mit vollem Original-Grid.
+2. **Größe des Buch-Plus mit dem eigenen Buch vergleichen.** Echte Beine bringen als Neuzugang dSR 0,2 bis 0,3. Ein DURCH mit dSR 0,02 ist formal durch, aber eine andere Liga.
+3. **Residual-Alpha trennt „falsch skaliert“ von „nichts Eigenes“.** Bei fester Größe kann ein echtes, schwächeres Bein den Buch-Sharpe senken. Hier hatte das aber keiner der 94 Buch-Durchfälle (t_alpha ≤ 1,28). Die Info-Spalte gehört in `gate_v4` (nur Info) → Ticket.
+4. **Prämisse nur auf BASE/IS widerspricht manchmal dem WF.** ORB-fade_nr7_honest ist an der Prämisse tot, hat aber das beste dSR des Laufs. Prämisse und WF messen verschiedene Fenster; ein Widerspruch ist „unentscheidbar“, kein Tod.
+5. **Ein Strukturbeweis hat eine Reichweite.** #068 verbietet den ungefilterten NQ-Close-Breakout, nicht jede gefilterte Teilmenge. Wer `strukturell-tot` erbt, muss prüfen, ob die Karte im bewiesenen Objekt liegt.
+6. **Eigene Lauf-Fehler:** eine Wege-cid mit `/` brach Welle 2 ab (Dateiname), nach Bereinigung neu gestartet, 0 Verlust. Der Kategorie-Mapper setzte drei Vorab-Regeln erst nach dem verdict-auditor um (|dSR| < 1 SE, IS/OOS leer, N = 1 bei Prämisse).
+
+**Buch-Lücke:** Alle 6 DURCH stehen im Next-Week-Buch (seit 01.10. 10 Beine), Ticket AP295. Es fehlen: Wochenend-Prüfung `/wochenende` (Zeit bis 50k, Nulldrift-Zwilling, RiskGuard-Stopp; LD-01 und ES-OpenDrive dort als Ersatz/Verdopplung rechnen, nicht als Zusatzbein), dann Runner-Job mit vollem Original-Grid (Selektions-Leck), dann NT8-Bein. Beinahe-Treffer: Nachtest (ORB-fade: Fill-Ehrlichkeit Fade + stop_honest prüfen) bzw. OPEXMOM als gepoolter Familien-Job.

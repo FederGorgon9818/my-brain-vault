@@ -42,8 +42,12 @@ HUB = next((Path(p) for p in [os.environ.get("MAXLAB_HUB"), r"C:\Users\maxlk\Pro
 STATE = (ENGINE / ".claude_hooks") if ENGINE else (VAULT / ".claude" / "hooks" / ".state")
 
 # Engine-Kern: Änderung hier → engine-regression-tester vor jedem Box-Sync.
-ENGINE_CORE = ["sigcore.py", "controls.py", "overfit.py", "qbt.py", "tsmom.py", "maband.py",
-               "discovery/hypothesis_bank.py"]
+ENGINE_CORE = ["sigcore.py", "discovery/controls.py", "overfit.py", "qbt.py", "tsmom.py", "maband.py",
+               "discovery/hypothesis_bank.py",
+               # Gate v4 (AP278, 01.10.2026): Gate-, Runner- und Uebernahme-Code entscheidet genauso
+               # ueber das Buch wie die Engine selbst.
+               "discovery/discovery_lib.py", "discovery/discovery_runner.py", "discovery/promote_next.py",
+               "discovery/job_generator.py", "developer_run.py", "weekend_check.py"]
 # Discovery-Code, den der laufende Runner nur nach Neustart neu lädt.
 RUNNER_CODE_DIR = "discovery"
 BOOK_FILES = ["book_state.json", "book_state_next.json"]
