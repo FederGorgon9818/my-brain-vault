@@ -3711,7 +3711,7 @@ Belege: trading-data `engine/_scratch_juli_lowvol/` (`praemisse.py`, `praemisse_
 **Urteil: Long-Nachtdrift NQ bei absolut ruhigem Markt (Ruhe-Filter), Kern-Fenster der Nacht.**
 Reichweite: NQ, Kern-Fenster 00:00 UTC bis 09:30 ET, Mo bis Fr, long, Rolle Filter für ein neues Nachtbein, 1 Micro, Engine-Kosten 1,01 Punkte, FN-Käfig (Auslegung, siehe Offen), Vola = 20-Tage-RTH-RV bis Vortag, ruhig = unteres Rang-Drittel mit Rang expandierend, 19.01.2017 bis 06.08.2026 (2.385 Nächte, 412 ruhig). Nicht gemessen: 18:00 bis 19:00/20:00 ET, Teilfenster Asia und Pre-Market, VIX/VXN und Nacht-RV als Zustand, ES. Das Europa-Fenster (02:00 bis 03:00 ET) liegt schon in #028 (Overnight-Drift 2-3h, 3 Varianten, tot, mit Doku-Auflage aus der Friedhof-Prüfung).
 Kategorie: **unentscheidbar** (Power, auch mit absehbaren Daten), MDE80 5,9 bis 6,7 bp. Wörtlich stimmt der Satz trivial (ruhig +7,0 Punkte, 90 % [+4,5; +9,8], über den Kosten), das gilt aber für jede Nacht (+2,9 bp). Ob Ruhe mehr bringt, ist offen: Überschuss +2,6 bp, 95 % je nach Fehlerschätzung [+0,4; +5,2] bis [−1,5; +6,7], innerhalb der Jahre nur +0,8 bp (Ära-vermischt, Lehre 4). Formal verfehlt die vorregistrierte Regel nur N 2020-23 (51 statt 60), (e) ist methodenabhängig. Zählt nicht als Friedhof.
-Wiedervorlage: ohne Termin. (1) Ein Nacht-Bein ohne Filter besteht Gate v2 und das Buch-Marginal. Dann kommt das Ruhe-Etikett nur als Pflichtzeile mit rotiertem Etikett dazu. (2) Sonst erst bei einer MDE unter 0,6 bis 1,5 bp (rund 6.000 bis 40.000 ruhige Nächte), mit absehbaren Daten nie. Bedingung (1) ist über `book_state.json` prüfbar und gehört in `auto_check.py` (Ticket am PC).
+Wiedervorlage: ohne Termin. (1) Ein Nacht-Bein ohne Filter besteht das Buch-Gate (seit 28.09. Gate v4, ersetzt Gate v2) und das Buch-Marginal. Dann kommt das Ruhe-Etikett nur als Pflichtzeile mit rotiertem Etikett dazu. (2) Sonst erst bei einer MDE unter 0,6 bis 1,5 bp (rund 6.000 bis 40.000 ruhige Nächte), mit absehbaren Daten nie. Bedingung (1) ist über `book_state.json` prüfbar und gehört in `auto_check.py` (Ticket am PC).
 Stempel: Engine-Fingerprint `b143ff69b84caae5961efe2e8611aa36`, Karte `regime_map.py` (md5 beede37a), `praemisse_globex.py` (md5 f4c651a9, Seed 2909202603) und `nachtreihe.py` (md5 84d26cd9), beide als Export-Fassung, RTH-Daten GitHub-Backup bis 10.08.2026, UTC-Tagesbars `orderflow/v2` bis 06.08.2026, Kriterium Juli-Modus Stufe 2 mit (e) 95 %, MDE-Basis iid mit Basis-Unsicherheit (SE 2,09 bp), SESOI 0,6 bis 1,5 bp, Kosten NQ 1,01 und YM 4,04 Punkte.
 
 **Urteil: Long-Nachtdrift NQ bei relativ ruhigem Markt (Rang gegen das letzte Jahr), Kern-Fenster der Nacht.**
@@ -3768,6 +3768,22 @@ Stempel: wie oben.
 **Buch-Lücke:** Stopp an Stufe 2 (Prämisse). Mit absehbaren Daten ist sie nicht zu nehmen, die späteren Stufen sind für diese Idee gesperrt, und es gibt keinen Werkzeugbau dafür. Ein Nacht-Bein ohne Filter wäre eine eigene Hypothese. Die Engine-Zellen sprechen explorativ schon dagegen: jede Nacht k0,5 im Buch roh −0,21, heute +0,01. Die Wiedervorlagen haben noch keine AP-Nummer, die Tickets legt die nächste PC-Session an (Box = Quelle der Wahrheit für `tasks.json`).
 
 Belege: trading-data `engine/_scratch_juli_nacht/` (`nachtreihe.py`, `praemisse_globex.py`, `why_check.py`, Nachprüfungen `quant_stat/` und `quant_math/`, Ergebnisse als JSON und CSV, in trading-data bitgleich nachgerechnet). Beteiligt waren research-scout, quant-statistician, quant-mathematician, verdict-auditor (hält mit Auflagen, eingearbeitet) und logbook-distiller, alle vom 29.09.
+
+**Nachtrag 01.10.2026: Gate v4 auf Ansage Max.** Nachdem E8 und FN das Halten innerhalb des Handelstags (18:00 bis 16:10 ET) bestätigt hatten, hat Max die Nacht-Varianten trotz Stopp an Stufe 2 durch Gate v4 Stufe 1 geschickt. Bei Bestehen sollten sie ins Next-Week-Buch, aber nur drawdown-unkritische.
+- **Vorab festgelegt:**
+  - Kandidaten, je höchstens 1 MNQ im Kern-Fenster: jede Nacht, ruhig absolut, ruhig relativ, Vola unter dem bisherigen Mittel.
+  - Nacht-Tief über eine Brownsche Brücke, 3 Seeds, das Urteil war überall gleich.
+  - Buch: das Live-Buch mit 3 Beinen. Momentum habe ich frisch gerechnet, bitgleich zum Cache.
+  - Max' Zusatzregel: Passquote nicht schlechter, Max-DD des Buchs nicht größer, schlechteste Nacht höchstens 300 $ je MNQ.
+- **Als ein Job (der Walk-Forward wählt je Fenster neu): nicht bestanden.** 2022 wählte er „jede Nacht" und verlor 5.638 $ je MNQ. Die Deploy-Wahl „ruhig relativ" fällt an den Vor-Gates (Sharpe-t 1,0, IS). Buch-Sharpe −0,49, Passquote −27 pp.
+- **Jede Variante einzeln (4 Jobs, Mehrfachtest): keine besteht.**
+  - jede Nacht: Vor-Gates (Sharpe-t 0,86, IS, Trim), Passquote −34 pp, Max-DD +116 %, schlechteste Nacht −1.725 $.
+  - ruhig absolut: Sharpe-t knapp verfehlt (1,92 statt 2,0). Walk-Forward 5 von 7, Buch-Sharpe +0,06, Passquote −0,6 pp, schlechteste Nacht −695 $.
+  - ruhig relativ: Vor-Gates (Sharpe-t 1,0, IS), Passquote −9,9 pp.
+  - Vola unter Mittel: Vor-Gates bestanden, Walk-Forward 5 von 7, Buch-Sharpe +0,02, aber Passquote −4,5 pp (Grenze −3 pp).
+- **Max' Drawdown-Regel** fällt bei allen vier: Die schlechteste Nacht liegt bei 695 bis 1.725 $ statt höchstens 300 $, die Passquote ist überall schlechter.
+- **Folge:** nichts ins Next-Week-Buch. Die 4 Trials stehen im Register (Pending-Datei `b664a0d2…`), die Skripte unter `engine/_scratch_juli_nacht/gate4/`. Die Kategorie von #178 bleibt `unentscheidbar`. Dazu kommt der Befund, dass mit den rekonstruierten Nächten keine Variante das Buch-Gate besteht.
+- **Stempel:** Engine-Fingerprint `dbf2cf0fdcc82eab7ac0548664862d55` (nach dem Null-Schalter-Fix tsmom/maband vom 01.10.), Gate v4 Stand trading-data main `3708011`, GATES_HARD aus `hypothesis_bank.py`, Buch-Zellen-Cache legs_key `91c972fe`, Kosten NQ 1,01 Punkte.
 
 
 ## #179 — Friedhof-Nachlauf durch Gate v4 (Teil 1 aus #176, Teil 2 diversifizierende Karten, Wege-Karten): 188 Karten gemessen, 6 DURCH im Rausch-Band, alle 6 ins Next-Week-Buch (Max), keine belastbare neue Edge (01.10.2026)
