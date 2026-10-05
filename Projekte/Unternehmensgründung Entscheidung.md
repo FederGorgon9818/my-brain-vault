@@ -98,7 +98,7 @@ Wechselkurs für die Rechnung: 1 $ ≈ 0,87 €. Zeitraum „bis Juli" = Okt. 20
 | **Neuer PC** | Annahme 1.200 bis 2.000 € | Mittel, kommt ohnehin | wie Monitor. Kaufzeitpunkt 2026 vs. 2027 ist steuerlich relevant (siehe 4.5) | 🟡 mittel | Lokales Rechnen, Entwicklung |
 | **Domain** | ≈ 15 €/Jahr | Niedrig jetzt, wichtig ab öffentlicher Doku (Ziel Schritt 2) | Betriebsausgabe | 🟢 niedrig | Marke für späteres Publikum/Mentorship |
 | **Hosting** | 0 € jetzt (Artifacts/GitHub Pages reichen) | Niedrig | Betriebsausgabe, falls später | 🟢 niedrig | erst mit Mentorship |
-| **Software** (NT8, Tradovate) | bisher keine Kosten bekannt, Lizenz kommt über die Prop Firms (prüfen) | Kern, aber kostenlos | Betriebsausgabe falls Kosten | ⚪ prüfen | Handelsplattform |
+| **Software** (NT8, Tradovate) | keine Kosten: NT8 läuft mit Max' eigener kostenloser NinjaTrader-Lizenz (bestätigt 05.10.2026), Daten zahlen die Prop Firms | Kern, aber kostenlos | Betriebsausgabe falls Kosten | ✅ geklärt | Handelsplattform |
 | **Weitere KI-Abos** | keine | Nicht nötig, Claude deckt es ab | nur geschäftlicher Anteil | ⚪ nein | kein Mehrwert erkennbar |
 | **Cloud** (Tailscale, GitHub) | 0 € | Kern, kostenlos | keine | ⚪ | Fernzugriff, Versionierung |
 | **Gründungskosten** | Gewerbeanmeldung ≈ 20 bis 60 €, Geschäftskonto 0 bis 10 €/Monat | Pflicht bzw. empfohlen | Betriebsausgabe | 🔴 hoch | sauberer Start |
