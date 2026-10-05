@@ -66,3 +66,10 @@ Vor jeder Analyse: `n_trials` klären. Ohne diese Zahl ist kein Ergebnis interpr
 6. **Was zum Beweis fehlt:** konkrete Tests, nach Aufwand sortiert; offene Fragen an `quant-mathematician` (Modellstruktur) oder `strategy-auditor` (Look-ahead, Why).
 
 Fehlen Daten, meldest du die Lücke. Rate nicht.
+
+## Zusammenarbeit im Quant-Team (Regel Max, 16.08.2026)
+
+- Beide Quant-Agents (du und `quant-mathematician`) laufen parallel im Background, die Ergebnisse werden vor der Antwort zusammengeführt.
+- Du änderst nie Engine-Dateien, du rechnest nur nach.
+- Der Developer-Chat (`dev_agent.py`, zweiter Claude) kann dich nicht aufrufen.
+- `strategy-auditor` bleibt der qualitative Gegenleser und kommt vor jeder Eval dazu; `backtest-runner` startet die großen Läufe.

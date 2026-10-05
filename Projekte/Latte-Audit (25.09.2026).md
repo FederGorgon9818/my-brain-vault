@@ -173,11 +173,11 @@ Die Kette hat für eine echte Edge in Buch-Bein-Größe eine Power von ≈ 0,1 %
 **Das Gate:**
 1. **Bringt Geld:** alleine profitabel, nach Kosten, auch ab 2024. Vor-Gates wie heute: Sharpe-t ≥ 2, n ≥ 30 (10 OOS), Trim 1 %, Kosten-Stress.
 2. **Overfit-Bremse = Walk-Forward mit Neuauswahl:** 2 Jahre Training, 1 Jahr Test, rollierend 2016 bis 2026 (~8 Fenster). In jedem Trainingsfenster wird aus dem Job-Grid die beste Config nach festem Kriterium neu gewählt, im Folgejahr getestet, die Test-Stücke werden aneinandergehängt. Bestanden: die zusammengesetzte OOS-Kurve ist nach Kosten profitabel UND die Mehrheit der Test-Jahre ist positiv (nicht jedes Jahr).
-3. **Verbessert das Buch (auf der OOS-Kurve):** Buch-Sharpe steigt (roh, ohne Schrumpfen, ohne Zwillinge). Leitplanken fest vorab: Max-Drawdown intraday wächst nicht um mehr als 20 %, Passquote fällt nicht um mehr als 3 pp. Ersatz: besser als das Original auf derselben Walk-Forward-Basis. Kein freies Abwägen je Kandidat.
+3. **Verbessert das Buch (auf der OOS-Kurve):** Buch-Sharpe steigt (roh, ohne Schrumpfen, ohne Zwillinge). Leitplanken fest vorab: Max-Drawdown intraday wächst nicht um mehr als 20 %, Passquote fällt nicht um mehr als 3 pp. **(überholt seit 29.09.: Max-DD-Leitplanke gestrichen, nur Passquote −3 pp bleibt, siehe Abschnitt „Umsetzung und Stand 29.09.2026" und „Aus der CLAUDE.md (05.10.2026)" unten.)** Ersatz: besser als das Original auf derselben Walk-Forward-Basis. Kein freies Abwägen je Kandidat.
 4. **Korrelation, gesunde Mitte:**
    - keine harte Korrelations-Sperre, Korrelation kostet schon über Schritt 3,
    - Tages-Korrelation > 0,7 zu einem Buch-Bein → wird als Ersatz-Kandidat für dieses Bein behandelt, nicht als Zusatz,
-   - **einzige harte Regel:** schlimmster historischer Buch-Tag (intraday, Betriebspunkt 150k k2) mit dem Kandidaten ≤ fester Anteil vom Trailing-DD (Startwert 50 %, an den 3 Beinen kalibrieren),
+   - **einzige harte Regel:** schlimmster historischer Buch-Tag (intraday, Betriebspunkt 150k k2) mit dem Kandidaten ≤ fester Anteil vom Trailing-DD (Startwert 50 %, an den 3 Beinen kalibrieren), **(überholt: wanderte am 28.09. abends aus Stufe 1 raus; in Stufe 2 gilt heute „kein simulierter Tag darf das Konto killen", siehe unten)**,
    - Info im Wochenend-Review: gemeinsame Verlusttage, Tail-Korrelation, Markt/Uhrzeit/Mechanismus; bei gleicher Zeit bis 50k gewinnt der weniger korrelierte Kandidat.
 5. **Bestätigung vor dem Next-Week-Buch:** tempo_plan Zeit bis 50k kürzer (Kalender-Modus, Nulldrift-Zwilling 0 %, Auslage p90).
 6. **Nur noch Info:** Zwillinge/Gate v3, Schwelle, Schrumpfen, Zufallsdecke, PBO, Delay, symbols. Look-ahead-Schutz über Engine-Regeln (orb_exec usw.) und Test-Kanarie. Long-Drift ist erlaubt (Max: „Hauptsache Profit"), Korrelation an schlechten Tagen wird angezeigt.
@@ -203,7 +203,7 @@ Nichts an book_state*.json. Engine ist nur Backup-Repo: vor Änderungen Backups.
 
 ### Präzisierung 28.09.2026 abends (Max): zwei Stufen
 - **Stufe 1 = Gate v4 (Discovery, automatisch, je Kandidat) → Next-Week-Buch:** Punkte 1 bis 3 oben plus Klon-Regel (> 0,7 → Ersatz-Pfad). Die harte Tages-Regel („schlimmster Tag ≤ 50 % Trailing-DD") und die tempo_plan-Bestätigung wandern aus Stufe 1 raus.
-- **Stufe 2 = Wochenend-Prüfung (Claude + Max) → echtes Buch:** fürs ganze Buch prüfen, ob Ersetzen, Hinzufügen oder andere Zusammensetzung mehr bringt. tempo_plan Zeit bis 50k mit dem echten RiskGuard-Tages-Stopp (600 $ × k) und im Vergleich ein dynamischer Stopp (Anteil vom Rest-Puffer). Korrelation so niedrig wie möglich, aber nichts deswegen hart ausschließen; hart nur: kein simulierter Tag killt das Konto.
+- **Stufe 2 = Wochenend-Prüfung (Claude + Max) → echtes Buch:** fürs ganze Buch prüfen, ob Ersetzen, Hinzufügen oder andere Zusammensetzung mehr bringt. tempo_plan Zeit bis 50k mit dem echten RiskGuard-Tages-Stopp (600 $ × k, **überholt: Soll ist der Stopp je Konto aus der cfg, siehe unten**) und im Vergleich ein dynamischer Stopp (Anteil vom Rest-Puffer). Korrelation so niedrig wie möglich, aber nichts deswegen hart ausschließen; hart nur: kein simulierter Tag killt das Konto.
 - Umsetzungsdetails Stufe 1 (für den Bau): Auswahl im Trainingsfenster über ALLE Grid-Configs nur mit Trainingsdaten (die Vor-Gates rechnen auf der vollen Historie und dürfen deshalb nicht in die WF-Auswahl), Kriterium Sharpe im Trainingsfenster; eingesetzt wird die Config, die im jüngsten Trainingsfenster gewählt wurde; Einzel-Config (Developer-Tab, feste Beine) = rollierendes OOS ohne Neuauswahl.
 
 ### Umsetzung und Stand 29.09.2026 (Gate v4 live)
@@ -217,3 +217,46 @@ Nichts an book_state*.json. Engine ist nur Backup-Repo: vor Änderungen Backups.
 - **Gebaut (Review):** ORB-Whitelist + Netz je Config + harter Abbruch bei unbekannter Seite/Ausführung (AP276), „break"-Vorlage repariert (Generator reiht die 4 Breakout-Jobs selbst neu ein, Hand-Job `hf_orb_scalp_breakout_NQ` mit ehrlichem Why), Kanarie `gm_gate_v4_canary.py` + AST-Hash im Modus-Check (AP277), ENGINE_CORE inkl. Altfehler `controls.py` (AP278), Workbench auf Gate v4 (AP279), B6-Annahme + Placebo-Dauerkontrolle (AP280), last_hour-Zwilling = echte Null (AP281, Option B), Hub-Roster (AP282). Golden Master grün, `pipeline-auditor` sauber mit Auflagen (alle umgesetzt).
 - **Neu gefunden, Tickets im Backlog:** AP290 NT8-Port + Paritäts-Prüfung als fester Schritt vor der Übernahme, AP291 Kaufpolitik in `weekend_check` fest verdrahtet (E8 + FN 150k statt beschlossenem E8 150k), AP292 Live-Ausstieg „expR < 0 nach 50 Trades" steht gegen die Edge-Health-Ampel (Entscheidung Max), AP293 dynamischer Tages-Stopp nur simuliert. AP260 (Marken-Bug tempo_plan) trifft auch Stufe 2, hochgestuft.
 - **Offen:** AP275 (Herkunft nach Konzept „Was konnte die erste Fassung?"), wartet auf die zwei Entscheidungen in [[Überoptimierungs-Prüfung Stufe 2 (Konzept)]].
+
+## Aus der CLAUDE.md (05.10.2026)
+
+Aus der CLAUDE.md übernommen (05.10.2026): aktueller Stand von Gate v4, soweit er nur dort stand. Wo oben ältere Leitplanken stehen (Max-DD 20 %, „einzige harte Regel" 50 % vom Trailing-DD, 600 $ × k), gilt dieser Abschnitt.
+
+**Stufe 2: Rechnung und Regeln (Stand 05.10.2026)**
+- Frage fürs **ganze** Buch: holen wir mehr raus, wenn wir ein Bein **ersetzen**, eins **hinzufügen** oder die Zusammensetzung ändern?
+- Rechnung: `tempo_plan` Zeit bis 50k im Kalender-Modus, Nulldrift-Zwilling 0 %, Auslage p90, simuliert **mit dem echten RiskGuard-Tages-Stopp**. Stopp je Konto aus der cfg: **E8 50k 900 $, FN 600 $, E8 150k 2.500 $ bei k1 (seit 05.10. abends, vorher 1.500)**. 600 $ × k ist beim 7er-Buch zu eng (Quant-Team 04./05.10.). Dazu einmal ein **dynamischer Stopp** (Anteil vom Rest-Puffer zur DD-Grenze) im Vergleich. Stand: `tempo_plan`/`weekend_check` rechnen noch fest 600 × k, bis AP323 gefixt ist (Stufe 2 rechnet bis dahin einen falschen Betriebspunkt).
+- Korrelation und gemeinsame Verlusttage aller Beine werden gezeigt. **Keine starre Grenze:** so niedrig wie möglich, aber nichts deswegen hart ausschließen. Bei gleicher Zeit bis 50k gewinnt die weniger korrelierte Variante. **Hart nur: kein simulierter Tag darf das Konto killen.**
+- Übernahme ins echte Buch = Max' Wochenend-Entscheidung.
+
+**Live-Tracking nach der Übernahme (Max 03.10.2026, AP292)**
+- Zwei Regeln zusammen: Edge-Health-Ampel als Frühwarnung (**gelb: Size halbieren, rot: pausieren**) plus **harter Ausstieg bei expR < 0 nach 50 Live-Trades**.
+- Umsetzung: `app_server._edge_health`, Feld `exit_rule`, Alarm in `auto_check`.
+
+**Überoptimierungs-Prüfung (Herkunft)**
+- Für neue Beine zählt `weekend_check`, in wie vielen Varianten/Runden die Idee schon optimiert wurde. Bei auffälliger Zahl zusätzlich eine glücksbereinigte Variante.
+- **Stand 29.09.: noch unkalibriert** (würde auch die eigenen Beine anmahnen). Die Empfehlung daraus ist nur Hinweis, nicht entscheidungsrelevant, bis die Kalibrierung steht (Ticket AP275).
+- Dazu Regime-Spalten `shrink058` und `recent3y` für die Top-Varianten.
+
+**Werkzeug**
+- `engine/weekend_check.py`, Kurzbefehl `/wochenende`.
+- Nach jedem Box-Sync mit grünem Golden Master einmal `python weekend_check.py --stand-setzen` (Referenz für den Modus-Check).
+
+**Stand 29.09.2026 (live auf der Box)**
+- Abnahme bestanden: eigene Beine 2/3 (Momentum + LastHour, Asia nur an der Passquote), Nieten 1/9.
+- Null-Kampagne: 0 von 69 Zufalls-Such-Läufen durch, obere 90-%-Grenze 4,2 %. **Erwartet realistisch ein Rauschkandidat alle 3 bis 5 Wochen.** Golden Master grün.
+- Code: `discovery_lib.walk_forward`/`gate_v4`, Test `discovery/test_gate_v4.py`, Golden-Master-Kanarie `discovery/gm_gate_v4_canary.py`.
+
+**Stand 01.10.2026**
+- **ORB-Whitelist (AP276):** ehrlich nur `close`, `stop_honest`, breakout+`retest`, fade+`return`. ORB wird nie ausgeschlossen, aber alles außerhalb der Whitelist wird automatisch in `close` UND `stop_honest` gerechnet, Prämisse auf beiden. **Unbekannte `orb_side`/`orb_exec` brechen hart ab.** Vorfall: `orb_side "break"` rechnete sechs Wochen lang einen Fade.
+- Look-ahead ist eine Eigenschaft des Modus-Codes, nicht der Strategie: Schutz über ehrliche Modi und Code-Prüfung. Neuer Modus oder Engine-Änderung → einmaliger Code-Check (`pipeline-auditor`, Golden Master, Modus-Check in `weekend_check`).
+- ENGINE_CORE-Hook-Abdeckung, Kanarie, Workbench-Anzeige Gate v4.
+- **Placebo-Dauerkontrolle: ~5 % der Generator-Jobs.**
+- **Nulldrift-Zwilling ist jetzt überall eine echte Null** (auch last_hour long_only, AP281).
+
+**Offen (Stand 05.10.2026)**
+- AP275: Herkunft (zwei Entscheidungen Max).
+- AP290: NT8-Port + Paritäts-Prüfung vor der Übernahme.
+- AP291: Kaufpolitik in `weekend_check` fest verdrahtet.
+- AP292: Live-Ausstiegsregel klären (Ampel gegen harten Ausstieg).
+- AP260: Marken-Bug `tempo_plan` trifft auch Stufe 2.
+- AP323: `tempo_plan`/`weekend_check` mit Tagesstopp je Konto statt fest 600 × k.

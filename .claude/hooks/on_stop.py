@@ -173,6 +173,29 @@ def main():
         except Exception:
             pass
 
+    # --- 6. Schlusszeilen fehlen (beschlossen Max, 05.10.2026) ----------------
+    # Modell-Empfehlung, /clear ja/nein, bei Aenderung Daily-Note-Bestaetigung.
+    # Einmal je Prompt (Key enthaelt einen Hash des Prompts), Logik in schlusszeilen.py.
+    if tp and Path(tp).is_file():
+        try:
+            import schlusszeilen as SZ
+            with Path(tp).open("r", encoding="utf-8", errors="replace") as fh:
+                prompt6, final6, changed6 = SZ.last_turn(fh)
+            # "" heisst: Hintergrund-Agent laeuft noch (Zwischenmeldung) -> nicht ueberschreiben
+            if final6:
+                final6 = str(inp.get("last_assistant_message") or final6)
+            miss6 = SZ.missing(final6, changed6) if prompt6 else []
+            if miss6:
+                h6 = hashlib.md5(prompt6.encode("utf-8", "replace")).hexdigest()[:10]
+                SZ.log(STATE, inp.get("session_id"), prompt6, miss6,
+                       blocked=f"schluss:{h6}" not in _load_seen(inp) and not inp.get("stop_hook_active"))
+                issues.append((f"schluss:{h6}",
+                    "die Antwort endet ohne Schlusszeilen: " + ", ".join(miss6) + ". Regel CLAUDE.md "
+                    "(Token-Disziplin + Daily-Note-Bestaetigung): kurz nachreichen, je eine Zeile, dann erneut beenden."
+                ))
+        except Exception:
+            pass
+
     if not issues:
         sys.exit(0)
     msg = "Hook: " + " | ".join(t for _, t in issues)

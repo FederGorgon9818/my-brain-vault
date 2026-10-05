@@ -315,6 +315,28 @@ Interne Schlüssel bewusst kompatibel gelassen (Box, `auto_check`, `promote_next
 
 **Offen:** Box-seitiger Code (`ticket_lib` auf der Box) kennt die neuen Stufen erst nach dem nächsten Engine-Sync, bis dahin zeigt nur das PC-Lab sie richtig an. Die Charta (Abschnitt Tickets) nennt die Prio-Skala noch nicht, Regel trägt Max selbst ein.
 
+## Aus der CLAUDE.md (05.10.2026): Sprint-Regeln und Ticket-Tracker
+
+Aus der CLAUDE.md übernommen (Regel Max, 29.09.2026 und 06.09.2026), damit der Abschnitt dort auf einen Einzeiler schrumpfen kann.
+
+### Wir arbeiten in Sprints, Max plant sie selbst (Regel Max, 29.09.2026)
+
+Tickets laufen seit 29.09. im Strategy Lab im Jira-Aufbau (Boards, Backlog, Board, Reports), Sprint = eine Woche **Mo bis So**.
+
+- **Max plant jeden Sprint selbst.** Er holt sich die Tickets aus dem Backlog und entscheidet, was in welche Woche kommt. Die Prio ist die Bewertung, mehr braucht es dafür nicht.
+- **Neue Tickets landen immer im Backlog**, egal ob von Claude, `ticket_tool.py`, Auto-Check oder Box. Claude plant nie von sich aus Tickets in einen Sprint, startet oder schließt keinen Sprint und schlägt kein Planning vor.
+- **`/sprint` nur auf Zuruf.** Ruft Max ihn auf, darf Claude einen Vorschlag machen, geschrieben wird erst nach seinem OK.
+- Ein leerer Sprint-Container (z.B. S2026-41 aus der Migration) ist kein Planning und bleibt leer, bis Max ihn füllt.
+
+(Überholt seit 29.09.2026, siehe oben: die Formulierung in Abschnitt 5, Planning gehöre sonntags zum Ablauf und `/sprint` schlage von sich aus einen Sprint vor. Heute gilt: Max plant selbst, `/sprint` nur auf Zuruf.)
+
+### Ticket-Tracker: zweiseitig, Box ist die Quelle der Wahrheit (seit 06.09.2026)
+
+- Ablage: `C:\Users\maxlk\Projects\trading-data\engine\tasks.json` (Feld `ap_id`).
+- **Seit 06.09.2026 zweiseitig:** Max legt Tickets auch direkt auf der Box an. `tasks.json` wird bei jedem `inbox_tool.py --pull` mitgezogen und mit `--push-tasks` zurückgeschrieben, **die Box ist die Quelle der Wahrheit**.
+- Der Abgleich überschreibt nie blind: `.bak` vorher, eine Nummernkollision wird gemeldet statt aufgelöst.
+- **Vor dem Anlegen eines neuen Tickets immer erst `--pull`.** Vorfall 03. bis 06.09.2026: Nummernkollision AP121 bis AP127 (siehe [[Strategie-Logbuch]]).
+
 ## Start-Prompt für die Bau-Session (PC oder Laptop)
 
 > Baue das Ticket-Board im Strategy Lab nach `Projekte/Ticket-Board (Jira-Stil).md`, Phase 0 und 1. Auftrags-Typ `ui` (Kette design-guard). Vorher `session-guard`, `inbox_tool.py --pull`. Erst Phase 0 (Statuswerte, alle Leser/Schreiber von `tasks.json`), Ergebnis kurz zeigen und Spalten-Zuordnung mit mir abstimmen, dann bauen. Nichts umbenennen, nur additive Felder. Danach `lab_selftest.py`, `--push-tasks`, Daily Note.

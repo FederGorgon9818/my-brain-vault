@@ -36,6 +36,10 @@ Der Portfolio-Tab zeigt dann automatisch: Kaufplan (beide Konten mit Frac, Solo-
 
 **Betriebspunkt seit 16.08.2026 = Min-Size** ([[Strategie-Logbuch]] #106): unter der v2-Zielfunktion (Passquote je Eval / $ pro funded) ist die Passquote streng monoton fallend in der Größe, also 1 Kontrakt je Bein, frac ist ausgereizt und **die Kontogröße ist der Sizing-Hebel** (25k schlechtester Käfig, 50k billigster $/funded, 100k/150k höchste Passquote). Der frühere Paar-Betriebspunkt (#089, „P(funded) pro Zeit") gilt nur noch, wenn Max ausdrücklich wieder auf Tempo optimieren will — dann zuerst klären: einzelnes Konto oder Kauf-Rate?
 
+> [!warning] Überholt seit 18.09.2026, siehe unten (Stand 05.10.2026)
+> Der Absatz „Betriebspunkt seit 16.08.2026 = Min-Size" gilt nicht mehr. Die Zielfunktion ist seit 18.09.2026 die Zeit bis 50.000 $ Eigenkapital aus Payouts, Größe wird gerechnet, nicht mehr fest auf Min-Size gesetzt.
+> **Aktueller Betriebspunkt (05.10.2026): k1 (1 Micro je Bein) auf allen Konten, E8 150k und FFN 150k mit RiskGuard-Tagesstopp 2.500 $.** Hochstufen auf k2 nur per Vola-Regel. Begründung, Deckel und Kriterium: [[Eval-Passing]].
+
 Die Rechenlogik dafür liegt in `eval_plan.py` (gemeinsame Quelle für `funded_finalize.py` und den Analyse-Lauf `frac_pair_budget.py`) — Änderungen an der Passquoten-Mathematik gehören dorthin, nicht in eine Kopie.
 
 > [!warning] Buch-Marginals nie addieren (AP185, Lehre 169, 21.09.2026)

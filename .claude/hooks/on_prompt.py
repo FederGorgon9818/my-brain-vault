@@ -29,15 +29,32 @@ import work_types as WT  # noqa: E402
 def main():
     inp = read_input()
     prompt = str(inp.get("prompt") or "")
+
+    # --- 0. Wissens-Router (Plan 05.10.2026) --------------------------------
+    # Laeuft VOR dem Laengen-Filter: "Juli-Modus" oder "AP73" sind kurz und
+    # muessen trotzdem zuenden. Subagent-Rueckmeldungen und System-Benachrichtigungen
+    # kommen ebenfalls als Prompt an, sind aber nicht von Max: die routen nicht und
+    # loesen auch den Agent-Reflex unten nicht aus (05.10.: sechs Fehlalarme).
+    router_text = ""
+    try:
+        import knowledge_router as KR
+        if KR.is_not_max(prompt):
+            sys.exit(0)
+        _, _, _, router_text = KR.route(prompt, inp.get("session_id"))
+    except SystemExit:
+        raise
+    except Exception:
+        router_text = ""
+
     if len(prompt.strip()) < 12 or prompt.lstrip().startswith("/"):
-        sys.exit(0)
+        context(router_text, "UserPromptSubmit")
 
     sugg = [t for t, _ in WT.suggest(prompt)]
     rec, _ = R.ensure(inp.get("session_id"), prompt_hint=prompt, suggested=sugg)
     sid = rec["sid"]
     tp = inp.get("transcript_path")
 
-    lines = []
+    lines = [router_text] if router_text else []
 
     # --- 1. Typ-Router ----------------------------------------------------
     if not rec.get("type"):

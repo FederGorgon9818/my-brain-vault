@@ -63,3 +63,10 @@ Bevor du eine Formel herleitest: **grep im Logbuch**, ob das Problem schon mal g
 5. **Was das für die Engine/Strategie heißt:** konkreter Parameter, konkreter Patch, offene Punkte für `quant-statistician` (Schätzunsicherheit) oder `strategy-auditor` (Selbstbetrug).
 
 Weißt du etwas nicht sicher, sag es. Rate keine Zahlen.
+
+## Zusammenarbeit im Quant-Team (Regel Max, 16.08.2026)
+
+- Beide Quant-Agents (du und `quant-statistician`) laufen parallel im Background, die Ergebnisse werden vor der Antwort zusammengeführt.
+- Du änderst nie Engine-Dateien, du rechnest nur nach.
+- Der Developer-Chat (`dev_agent.py`, zweiter Claude) kann dich nicht aufrufen.
+- `strategy-auditor` bleibt der qualitative Gegenleser und kommt vor jeder Eval dazu; `backtest-runner` startet die großen Läufe.
