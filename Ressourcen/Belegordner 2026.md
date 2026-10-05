@@ -34,6 +34,7 @@ Wenn Max einen Beleg gibt (Datei/Screenshot), sortiert Claude ihn **automatisch*
 - [ ] Contabo September (kommt Monatsende)
 - [ ] Claude Zahlungsbeleg September (nur Rechnung da)
 - [ ] E8 150k vom 02.10. (AP214)
+- [ ] FFN STEADY 150K vom 05.10.2026, 292,50 (50 % Rabatt), PayPal-Transaktion 6BE79332K5612151K → `Challenges/`. Original als `.eml` (GoBD) plus PDF nach Konvention; FFN-Rechnung aus web.de-Postfach dazu
 - danach jeden Monat: Contabo, Claude, neue Evals, Payouts → `_Eingang/`, Claude sortiert ein
 
 **Warum:** vorweggenommene Betriebsausgaben vor der Gewerbeanmeldung — realistisch vierstelliger Betrag, verfällt ohne Beleg.
