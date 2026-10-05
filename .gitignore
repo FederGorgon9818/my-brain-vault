@@ -14,3 +14,6 @@ id_ed25519*
 
 # Hook-State ohne Engine-Ordner (Cloud/Laptop), siehe .claude/hooks/_common.py
 .claude/hooks/.state/
+
+# lokale Settings-Backups (enthalten Tokens), nie committen (05.10.2026)
+.claude/settings.local.json.bak*

@@ -13,14 +13,14 @@ Tracker: `C:\Users\maxlk\Projects\trading-data\engine\tasks.json`. **Die Box ist
 
 1. Läuft die Session nicht auf der Box (Hostname ungleich `vmd202078`): zuerst `python discovery/inbox_tool.py --pull`. Auf der Box entfällt das.
 2. Argument `$ARGUMENTS`:
-   - leer → `python ticket_tool.py find "" --n 60` (offene Tickets nach Prio und Rang). Eine Zeile je Ticket: AP | Prio | Spalte | Board | Stunden | Sprint | Titel.
+   - leer → `python ticket_tool.py find "" --n 60` (offene Tickets nach Dringlichkeit: Stufe, nicht blockiert vor blockiert, Faellig-Datum, Rang). Eine Zeile je Ticket: AP | Prio | Spalte | Board | Stunden | Sprint | Titel.
    - `AP123` oder Slug → `python ticket_tool.py show AP123` (alle Felder, Schritte mit Haken, wartet auf / blockiert, letzte Notizen).
    - Suche → `python ticket_tool.py find "board:trading prio:rot sprint:aktuell"`. Filter: `board: prio: status:offen|erledigt|alle col:todo|doing|review|waiting|done sprint:aktuell|backlog|S2026-41 type: label: who:max|claude epic:AP… auto:ja blockiert:ja` plus freier Text.
    - Board-Überblick → `python ticket_tool.py board [--board lab]`.
 
 ## Ändern (nur nach Ansage von Max, oder wenn eine Regel es verlangt)
 
-- Anlegen: `python ticket_tool.py new "Titel" --board trading|infra|lab|privat --prio rot|orange|gelb|gruen [--type story|task|bug|epic|subtask] [--hours 3] [--why "..."] [--epic AP198] [--assignee max|claude] [--guide "Schritt"]…`. Das Tool pullt vorher selbst (Nummernkollision 03./06.09.2026) und pusht danach.
+- Anlegen: `python ticket_tool.py new "Titel" --board trading|infra|lab|privat --prio kritisch|rot|datum|gelb|gruen [--due JJJJ-MM-TT] [--type story|task|bug|epic|subtask] [--hours 3] [--why "..."] [--epic AP198] [--assignee max|claude] [--guide "Schritt"]…`. Prio-Skala seit 02.10.2026 (Max): `kritisch` = Sehr hoch (gefaehrdet den Live-Betrieb innerhalb von 3 Tagen), `rot` = Hoch, `datum` = Wichtig mit Datum (nicht sofort, immer mit `--due`), `gelb` = Mittel, `gruen` = Niedrig; `orange` ist Alt-Alias fuer Hoch, in der Suche gehen auch `prio:hoch|sehrhoch|mittel|niedrig`. Das Tool pullt vorher selbst (Nummernkollision 03./06.09.2026) und pusht danach.
 - Verschieben: `python ticket_tool.py move AP123 doing` (Spalten: todo, doing, review, waiting, done).
 - Felder: `python ticket_tool.py edit AP123 --hours 5 --spent 4 --labels gate,v3 --epic AP198` (`-` löscht ein Feld).
 - Notiz: `python ticket_tool.py note AP123 "Zwischenstand"`.
