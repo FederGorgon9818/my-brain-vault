@@ -85,10 +85,10 @@ Konto `2D-150K394206247048`, gekauft 05.10.2026 für 292,50 $ (50 % + BOGO, Bonu
 | Tageslimit der Firma | keins | eigener Tagesstopp, Wert vom Quant-Team (AP325) |
 | Consistency | Eval 52 %, Funded keine | `dailyprofitcap` 0,52 bzw. mit Abstand; bei k1 praktisch nie berührt |
 | Flat-Zeit | flat bis **16:50 ET**, Wiedereröffnung 18:00 ET, Fr 16:50 bis So 18:00. Verpasst = Konto weg | unsere Beine flat 15:55 ET, Orphan-Flat 15:58 ET. Kein Konflikt |
-| News | Art. 3.3: T1 (FOMC, NFP, CPI) 1 Min vor/nach flat, in Funded Liquidation plus Profit weg, in Eval kein Fail. Landingpage sagt „no blackout windows" | **offen** (Support-Frage). Betrifft Funded: Beine, die über 08:30 oder 14:00 ET halten |
-| Kontraktlimit | Eval 15 Mini / 150 Micros. Funded progressiv: 40 Micros bis 3.000 $ Profit, 80 bis 4.500, dann 150. Überschreiten = Konto weg | k1 = 4 Micros, weit drunter. Für STEADY nur aus Art. 3.5 abgeleitet, Support-Frage |
-| HFT | max. 30 % der Trades mit Round-Trip ≤ 5 s je Session. Verstoß = Konto und Profit weg | Haltedauern der Beine einmal prüfen (Stopps direkt nach Entry) |
-| Inaktivität | ≥ 3 Handelstage (≥ 5 $ realisiert) je 29 Tage | unser Inaktivitäts-Alarm ab Tag 4 reicht |
+| News | Art. 3.3: T1 (FOMC, FOMC Minutes, NFP, CPI) 1 Min vor/nach flat. **Support 05.10.: gilt nur Funded**, dort Liquidation plus Profit weg | Eval frei. Vor dem Funded-Wechsel Entry-Sperre bauen (AP335) |
+| Kontraktlimit | **Support 05.10.: Eval = Maximum, das Rithmic setzt.** Funded skaliert, Erhöhung nur auf Antrag | k1 = 3 Micros (3 Beine). Rithmic-Kontolimit vor dem ersten Trade prüfen (muss ≥ 3 sein, sonst Reject → Sofort-Flatten → HFT-Gefahr) |
+| HFT | max. 30 % der Trades mit Round-Trip ≤ 5 s je Session. Verstoß = Konto und Profit weg. **Support 05.10.: keine Mindestanzahl, 1 schneller Trade bei 1 bis 3 Trades reicht** | PB3 raus (AP328). Asia vorerst raus (AP331, 4 Stop-Berührungen in der 1. Minute). Netting gegenläufiger Beine (AP332) |
+| Inaktivität | ≥ 3 Handelstage (|realisiert| ≥ 5 $) in jedem 29-Tage-Fenster, sonst Kündigung ohne Warnung | **Tages-Alarm reicht NICHT** (3-Bein-Buch historisch genau auf 3, Alarm kennt Fenster und 5-$-Schwelle nicht). Rollfenster-Alarm „< 3 in 22 Tagen" = AP330 |
 | Copy-Trading | eigene FFN-Konten max. 5 gleichzeitig, sonst alle disqualifiziert | Hauptkonto + BOGO = 2 |
 | Kontolimit | 10 Konten, max. 5 funded | |
 | Plattform | NT8 **nur via Rithmic**, eigene NT8-Lizenz, Rithmic-Daten zahlt FFN, nur ein Gerät gleichzeitig eingeloggt | Rithmic-Verbindung auf der Box, kein R Trader parallel. Lizenz + Login macht Max |
@@ -97,9 +97,16 @@ Konto `2D-150K394206247048`, gekauft 05.10.2026 für 292,50 $ (50 % + BOGO, Bonu
 | Live-Review | nach 5 Sim-Payouts, Sim-Profit verfällt beim Wechsel. Betrifft andere Konten nicht (Mail) | |
 | Reset | 480 $ (mit 50 % 240 $) | |
 
-**Betriebspunkt (Entscheidung Max 05.10.2026, Quant-Team):** k1 (1 Micro je Bein), RiskGuard-Tagesstopp **2.500 $** (Katastrophenbremse, in den Daten nie erreicht), `maxcontracts=2`, Consistency-Deckel 4.380 $ nur in der Eval. **FFN handelt ohne PB3** (nur LastHour, Asia, OpenDrive): PB3 hat 10,8 % Stop-outs in derselben Minute, ein einziger Round-Trip unter 5 s kann bei 1 bis 3 Trades je Session die HFT-Regel reißen. PB3 kommt erst mit AP328 dazu (Sekunden-Messung live oder Mindestabstand zum Stop). cfg-Vorlage: `nt8_staging_20261003_riskguard_eod/cfg_vorlage_ffn_150k.txt`, eingespielt wird sie erst, wenn Rithmic in NT8 steht und der Kontoname geprüft ist. BOGO-Konto legt Max selbst an („Start New Evaluation", Support 05.10.).
+**Betriebspunkt (Entscheidung Max 05.10.2026, Quant-Team):** k1 (1 Micro je Bein), RiskGuard-Tagesstopp **2.500 $** (Katastrophenbremse, in den Daten nie erreicht), `maxcontracts=2`, Consistency-Deckel ~~4.380 $~~ **4.212 $** (Nachrechnung unten) nur in der Eval. **FFN handelt ohne PB3** (nur LastHour, Asia, OpenDrive; Asia seit Nachrechnung vorerst auch raus, AP331): PB3 hat 10,8 % Stop-outs in derselben Minute, ein einziger Round-Trip unter 5 s kann bei 1 bis 3 Trades je Session die HFT-Regel reißen. PB3 kommt erst mit AP328 dazu (Sekunden-Messung live oder Mindestabstand zum Stop). cfg-Vorlage: `nt8_staging_20261003_riskguard_eod/cfg_vorlage_ffn_150k.txt`, eingespielt wird sie erst, wenn Rithmic in NT8 steht und der Kontoname geprüft ist. BOGO-Konto legt Max selbst an („Start New Evaluation", Support 05.10.).
 
-**Offene Support-Fragen (Text DE/EN im Research-Cache):** Kontraktlimit STEADY-Funded, News-Sperre für STEADY-Funded, genauer Lock-Punkt, gleiche Box für mehrere Firmen. Bis zur Antwort konservativ: News-Regel in Funded wie T1-Sperre behandeln.
+**Nachrechnung 05.10.2026 spät (Session 016cea93, Quant-Team + strategy-auditor):** Die Rechnung oben lief am 4-Bein-Buch inkl. PB3, FFN handelt aber mit 3 Beinen. Ergebnis am 3-Bein-Buch, vola-normiert:
+- **k1 bleibt, Tagesstopp 2.500 $ bleibt** (Plateau, wirkt wie kein Stopp). P(Pass) ca. 93 % [82; 99], geschrumpft 73 %, Median 12 bis 17 Monate. FFN spart in jedem Regime 3 bis 8 Monate bis 50k, Nulldrift 0 %. k2 wäre nach der Vola-Regel knapp erlaubt (σ60 391 < 400, Daten nur bis 06.08.), kostet geschrumpft aber 10 bis 14 pp mehr Plan-Tod. Hochstufen erst mit frischen Daten (AP313).
+- **Consistency-Deckel 4.212 $** (0,468 / Abstand 0, Max 05.10.), ersetzt die 4.380 $ der Vorlage. Bei k1 nie berührt (größter Tag 3.077 $).
+- **Asia auf FFN: no-go bis AP331.** LastHour und OpenDrive: go mit Auflagen (Netting AP332, Rithmic-Limit, T1-Sperre vor Funded AP335).
+- **Neue Haken:** Inaktivität (AP330), Copy-Trading-Zählung über Firmen hinweg unklar: mit E8 150k wären es 6 Konten mit gleichen Signalen (AP333).
+- **Nicht in book_state:** die Rechenwerkzeuge kennen FFN noch nicht (AP334).
+
+**Support-Antworten 05.10.2026 (20:26 UTC):** DD-Bruch zählt sofort („go to or below drawdown, blown immediately"). HFT „Yes", also ohne Mindestanzahl. T1-News nur Funded. VPS ok, Kontraktlimit Eval = Rithmic-Maximum. **Noch offen:** gleiche IP wie andere Firmen (nur „VPS ok"), Copy-Zählung und HFT-Zählbasis FIFO (AP333).
 
 ### Aus der CLAUDE.md übernommen (05.10.2026): FFN-Ergänzungen
 
