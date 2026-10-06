@@ -105,6 +105,17 @@ Damit du weißt, wo du suchen und ablegen musst (spart Tokens):
 - Bilder in `Anhänge/` ablegen und per `![[...]]` einbetten.
 - Fertige Projekte nach `Archiv/` verschieben.
 - Wenn Max sagt „merk dir das", die Info in die passende Datei schreiben (z.B. neue Regel in [[Schreibstil]]).
+- **„merk dir das": Ort nach Art der Info (Regel Max, 06.10.2026, Teil der [[CLAUDE.md Verschlankung]]).** Claude wählt den Ort und sagt danach in einem Satz, wo es gelandet ist.
+
+  | Art der Info | Wohin |
+  |---|---|
+  | Regel, die **immer** gilt (Verhalten, Nie-Regel, Schlusszeilen) | CLAUDE.md, 1 bis 2 Zeilen |
+  | Wissen zu **einem Thema** | passende Vault-Notiz **plus** Stichwort im Router (`on_prompt.py`), sonst findet sie keiner |
+  | fester **Ablauf** | Skill |
+  | **Reflex**, der nie vergessen werden darf | Hook |
+
+  Max steuert selbst mit **„merk dir das für jede Session"** (→ CLAUDE.md) oder **„merk dir das bei Thema X"** (→ Notiz zu X + Router-Stichwort). „Cloud MD" heißt CLAUDE.md. Im Zweifel nicht in die CLAUDE.md, sondern Notiz + Router.
+- **Vault immer pushen (Regel Max, 06.10.2026):** sobald Claude im Vault relevante Änderungen gemacht hat (Notizen, Daily Note, CLAUDE.md, Skills, Hooks, Agents), am Ende des Auftrags **ohne Rückfrage** committen und pushen (`origin`, `master`). Vorher `git status` ansehen und nur eigene Änderungen committen, fremde aus Parallel-Sessions nicht ungefragt mitnehmen. Bei Konflikt oder abgelehntem Push stoppen und Max fragen, nie `--force`. Grund: Laptop, Box und Cloud-Sessions sehen nur, was gepusht ist. Gilt nur für den Vault, nicht für `trading-data` und `hub`.
 
 ---
 
