@@ -89,12 +89,12 @@ Konto `2D-150K394206247048`, gekauft 05.10.2026 für 292,50 $ (50 % + BOGO, Bonu
 | Flat-Zeit | flat bis **16:50 ET**, Wiedereröffnung 18:00 ET, Fr 16:50 bis So 18:00. Verpasst = Konto weg | unsere Beine flat 15:55 ET, Orphan-Flat 15:58 ET. Kein Konflikt |
 | News | Art. 3.3: T1 (FOMC, FOMC Minutes, NFP, CPI) 1 Min vor/nach flat. **Support 05.10.: gilt nur Funded**, dort Liquidation plus Profit weg | Eval frei. Vor dem Funded-Wechsel Entry-Sperre bauen (AP335) |
 | Kontraktlimit | **Support 05.10.: Eval = Maximum, das Rithmic setzt.** Funded skaliert, Erhöhung nur auf Antrag | k1 = 3 Micros (3 Beine). Rithmic-Kontolimit vor dem ersten Trade prüfen (muss ≥ 3 sein, sonst Reject → Sofort-Flatten → HFT-Gefahr) |
-| HFT | max. 30 % der Trades mit Round-Trip ≤ 5 s je Session. Verstoß = Konto und Profit weg. **Support 05.10.: keine Mindestanzahl, 1 schneller Trade bei 1 bis 3 Trades reicht** | PB3 raus (AP328). Asia vorerst raus (AP331, 4 Stop-Berührungen in der 1. Minute). Netting gegenläufiger Beine (AP332) |
+| HFT | max. 30 % der Trades mit Round-Trip ≤ 5 s je Session. Verstoß = Konto und Profit weg. **Support 05.10.: keine Mindestanzahl, 1 schneller Trade bei 1 bis 3 Trades reicht**. **Support 09.10.: Zählbasis (je Strategie oder Konto-FIFO) nicht beantwortet**, nur Regel wiederholt plus „Adding to a trade still counts as 1 trade“ (deutet auf Zählung der Konto-Position) | PB3 raus (AP328). Asia vorerst raus (AP331, 4 Stop-Berührungen in der 1. Minute). Netting gegenläufiger Beine (AP332) |
 | Inaktivität | ≥ 3 Handelstage (|realisiert| ≥ 5 $) in jedem 29-Tage-Fenster, sonst Kündigung ohne Warnung | **Tages-Alarm reicht NICHT** (3-Bein-Buch historisch genau auf 3, Alarm kennt Fenster und 5-$-Schwelle nicht). Rollfenster-Alarm „< 3 in 22 Tagen" = AP330 |
-| Copy-Trading | eigene FFN-Konten max. 5 gleichzeitig, sonst alle disqualifiziert | Hauptkonto + BOGO = 2 |
+| Copy-Trading | eigene FFN-Konten max. 5 gleichzeitig, sonst alle disqualifiziert. **Support 09.10.: „You can copy trade up to 5 FFN Accounts at a time“**, gezählt werden also FFN-Konten (andere Firmen nicht ausdrücklich ausgeschlossen, aber nicht genannt) | FFN1 + FFN2 = 2 |
 | Kontolimit | 10 Konten, max. 5 funded | |
 | Plattform | NT8 **nur via Rithmic**, eigene NT8-Lizenz, Rithmic-Daten zahlt FFN, nur ein Gerät gleichzeitig eingeloggt | Rithmic-Verbindung auf der Box, kein R Trader parallel. Lizenz + Login macht Max |
-| IP | ein konsistentes IP-Umfeld je Konto, keine IP-Teilung mit anderen Tradern, kein Shared-VPS | Box ist nur unsere. E8/FN/FFN auf derselben Box: Auslegung, Support-Frage |
+| IP | ein konsistentes IP-Umfeld je Konto, keine IP-Teilung mit anderen Tradern, kein Shared-VPS | Box ist nur unsere. E8/FN/FFN auf derselben Box: **Support 09.10. verweist nur auf Art. 3.7** (verbietet IP-Teilung mit anderen FFN-Tradern), keine direkte Antwort. Mit Mail 01.10. („andere Prop-Firmen erlaubt“) gilt: ok nach Auslegung |
 | Payout | alle 5 Profittage (je ≥ 250 $), Buffer 4.700 $, min. 500 $, Cap 2.500 $ (1 bis 3), danach 3.000 $; Net-Rule; Split 90/10 | |
 | Live-Review | nach 5 Sim-Payouts, Sim-Profit verfällt beim Wechsel. Betrifft andere Konten nicht (Mail) | |
 | Reset | 480 $ (mit 50 % 240 $) | |
@@ -108,7 +108,7 @@ Konto `2D-150K394206247048`, gekauft 05.10.2026 für 292,50 $ (50 % + BOGO, Bonu
 - **Neue Haken:** Inaktivität (AP330), Copy-Trading-Zählung über Firmen hinweg unklar: mit E8 150k wären es 6 Konten mit gleichen Signalen (AP333).
 - **Nicht in book_state:** die Rechenwerkzeuge kennen FFN noch nicht (AP334).
 
-**Support-Antworten 05.10.2026 (20:26 UTC):** DD-Bruch zählt sofort („go to or below drawdown, blown immediately"). HFT „Yes", also ohne Mindestanzahl. T1-News nur Funded. VPS ok, Kontraktlimit Eval = Rithmic-Maximum. **Noch offen:** gleiche IP wie andere Firmen (nur „VPS ok"), Copy-Zählung und HFT-Zählbasis FIFO (AP333).
+**Support-Antworten 05.10.2026 (20:26 UTC):** DD-Bruch zählt sofort („go to or below drawdown, blown immediately"). HFT „Yes", also ohne Mindestanzahl. T1-News nur Funded. VPS ok, Kontraktlimit Eval = Rithmic-Maximum. ~~**Noch offen:** gleiche IP wie andere Firmen, Copy-Zählung und HFT-Zählbasis FIFO (AP333).~~ **Antwort 09.10.2026 (03:07 UTC, AP333):** Copy „up to 5 FFN Accounts at a time“ (Zählung über FFN-Konten). HFT nur Regeltext wiederholt plus „Adding to a trade still counts as 1 trade“, Zählbasis FIFO bleibt unbeantwortet. IP: nur Verweis auf Art. 3.7, keine direkte Antwort.
 
 ### Aus der CLAUDE.md übernommen (05.10.2026): FFN-Ergänzungen
 
