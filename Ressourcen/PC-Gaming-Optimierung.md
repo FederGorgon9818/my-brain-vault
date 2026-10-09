@@ -34,6 +34,8 @@ Bewusst drin gelassen: Discord, Steam, FACEIT, LGHUB (Mauseinstellungen), Tailsc
 
 **Wirkt komplett erst nach einem Neustart** (Autostart).
 
+**Nachtrag 09.10. nach dem BIOS-Umbau:** RAM läuft auf **3000 MHz**, 0 Hardware-Fehler (WHEA) nach dem Boot. OneDrive kam trotzdem über eine eigene geplante Aufgabe hoch, die ist jetzt auch aus (Backup `OneDrive_Startup_Task.xml`, Undo-Skript ergänzt). Overwolf startet sich selbst, Autostart dort in den Overwolf-Einstellungen abschalten. Stabilitätstest (Punkt 1, Schritt 8) steht noch aus.
+
 ## 🛠️ Was du selbst machen musst, sortiert nach Wirkung
 
 ### 1. RAM übertakten im BIOS (größter Hebel, ~5 bis 15 % in CPU-lastigen Spielen wie R6, CS, Valorant)
