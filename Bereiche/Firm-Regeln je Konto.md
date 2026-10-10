@@ -55,6 +55,8 @@ Quelle: `fn_lib.py` Kopf-Kommentar (`_scratch_box_urlaub/1e3478e2/qm/fn_lib.py`,
 
 Quelle E8: Mail von support@e8markets.com vom 01.10.2026 (Thread „Signature Futures: holding positions overnight, daily close and weekend“). Gilt für SimFi Challenge und SimFi Performance, für 50k und 150k gleich, nur das Kontraktlimit hängt an der Kontogröße. Damit sind E8 und FN-Futures bei Flat-Zeit und Overnight gleich.
 
+**Primärquelle E8 (geprüft 10.10.2026, AP234):** [Can I hold positions overnight? (Art. 10149596)](https://intercom.help/E8futures/en/articles/10149596-can-i-hold-positions-overnight): „It is not possible to hold positions overnight on the E8 Zero and E8 Signature Futures models." und „All open positions are being forced closed each day at 15:10 CT". Keine Trennung Eval/Funded, kein Unterschied Zero/Signature. Handelszeiten MNQ/MES laut [Art. 13001922](https://intercom.help/E8futures/en/articles/13001922-instrument-list-and-trading-hours-tradovate): „17:00 - 16:00 CT", Sonntag bis Freitag. **Unstimmigkeit im selben Artikel:** Text nennt „between 17:15 to 15:10 CT" (= 18:15 ET). Unsere Nachtbeine steigen später ein, ein Entry kurz nach 18:00 ET wäre betroffen, falls die 17:15 gelten. Details und Wortlaut: [[Research-Cache]], Abschnitt „E8 Futures: Overnight-Halten, Gapped/Illiquid Market Trading ...".
+
 Quelle FN: FundedNext-Wissensbasis, Artikel „Does FundedNext Futures allow overnight and weekend trade holding?" (helpfutures.fundednext.com/en/articles/14268506). **Achtung Verwechslungsgefahr:** für die CFD-/Forex-Konten von FundedNext ist Overnight- und Wochenend-Halten ausdrücklich ERLAUBT (Artikel 11982358). Die Futures-Sparte hat die gegenteilige Regel. Nur die Futures-Regel ist für uns relevant.
 
 **Abgleich mit unserer Umsetzung:** unsere Beine sind alle intraday mit Zwangs-Flat `eod_flat_min=385` (15:55 ET = 14:55 CT), also **75 Minuten vor** dem FN-Auto-Close. Kein Konflikt. Konsequenz für die Strategie-Auswahl: **jedes Mehrtages-/Swing-Bein ist auf FN-Futures strukturell unmöglich**, unabhängig von seiner Edge. Betrifft u. a. den Weg W34 (Mehrtages-Gap-Fill) aus der [[Gap Wege-Karte]] und jede aus Tagesbar-Literatur portierte Strategie.
@@ -63,14 +65,14 @@ Quelle FN: FundedNext-Wissensbasis, Artikel „Does FundedNext Futures allow ove
 
 | Verbot | E8 | FundedNext Futures |
 |---|---|---|
-| **Gapped or Illiquid Market Trading** | offen, nicht geprüft | ❌ ausdrücklich verboten |
+| **Gapped or Illiquid Market Trading** | ❌ **steht auf der Verbotsliste** („strategies that exploit imperfections of the simulated market, such as Gapped, Illiquid Market Trading", geprüft 10.10.2026, AP234). Tatbestand = Ausnutzen der Simulation, keine Uhrzeiten, keine Eröffnungs-Regel, Eval/Funded und Zero/Signature gleich | ❌ ausdrücklich verboten |
 | Arbitrage (jede Form) | offen | ❌ verboten |
 | Strategie-/Risiko-Wechsel nach dem Pass | offen | ❌ verboten |
 
 Wortlaut FN zur Gap-Regel: Orders in „gapped or illiquid market conditions" zu platzieren, um von Preis-Ineffizienzen zu profitieren, sei unzulässig, wegen unvorhersehbarer Ausführung, hoher Slippage und Manipulationsgefahr; ausdrücklich genannt wird Handel in Phasen niedriger Liquidität oder **vor großen Marktereignissen**. Quelle: helpfutures.fundednext.com/en/articles/14298337.
 
 > [!warning] Offene Frage vor jedem Gap-Bein auf FN (22.09.2026)
-> Der Wortlaut zielt auf das Ausnutzen dünner Bücher, nicht auf eine reguläre RTH-Order um 09:30 im liquidesten Moment des Tages. Unser historisches Gap-Bein (`RTY_Gap-fade`, Entry nach 10 Min Bestätigung innerhalb RTH) fällt nach dem Sinn der Regel nicht darunter. **Aber:** bevor ein Bein mit „Gap" im Mechanismus auf FN1/FN2 läuft, gehört das schriftlich vom FN-Support bestätigt. Der Name allein kann bei einer Payout-Prüfung Fragen auslösen. Bei E8 ist die Regellage dazu **noch gar nicht geprüft** — nachholen, bevor dort ein Gap-Bein läuft.
+> Der Wortlaut zielt auf das Ausnutzen dünner Bücher, nicht auf eine reguläre RTH-Order um 09:30 im liquidesten Moment des Tages. Unser historisches Gap-Bein (`RTY_Gap-fade`, Entry nach 10 Min Bestätigung innerhalb RTH) fällt nach dem Sinn der Regel nicht darunter. **Aber:** bevor ein Bein mit „Gap" im Mechanismus auf FN1/FN2 läuft, gehört das schriftlich vom FN-Support bestätigt. Der Name allein kann bei einer Payout-Prüfung Fragen auslösen. Bei E8 ist die Regellage dazu **noch gar nicht geprüft** — nachholen, bevor dort ein Gap-Bein läuft. **Nachgeholt 10.10.2026 (AP234):** E8 hat dieselbe Klausel, aber enger gefasst („exploit imperfections of the simulated market, such as Gapped, Illiquid Market Trading"), zusätzlich „reliance on micro-scalping during illiquid market hours" und die Regel „mindestens 50 % aller Gewinne aus Trades mit Haltedauer ≥ 10 Sekunden" (Art. 10209270). Kein Verbot von Gap-Strategien oder Handel um Eröffnungen als solchem, aber Ermessen des Risk-Teams. News-Trading bei E8 ohne Einschränkung (Art. 10209321, 27.08.2026).
 
 ## 🟦 Funded Futures Network (FFN) STEADY 150K (eingetragen 05.10.2026)
 
