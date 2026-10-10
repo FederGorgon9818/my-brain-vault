@@ -44,7 +44,7 @@ erstellt: 2026-08-18
 | `STOP` (Datei) | sauberer Stopp nach dem laufenden Config; `runner.lock` = eine Instanz je Maschine; `runner_heartbeat.json` |
 
 ## Betrieb (seit 18.08.2026 23:06 auf der Box)
-- **Wo:** Box `VMD202078`, `C:\Users\maxlk\Projects\trading-data\engine\discovery\` (gleicher Pfad wie am PC — `qbt.py`, `asian.py` & Co. haben absolute Pfade), Python 3.11.9 all-users (`C:\Program Files\Python311`), numpy 2.4.6 / pandas 3.0.3 / pyarrow 24 / scipy 1.17. Payload (Engine ohne `.app_profile`/Reports/Caches + `exported_data` inkl. RTH-Cache, 448 MB) als tar-Zip rüber, mit `tar -xf` entpackt (Expand-Archive nimmt tar-Zips nicht). Start job-frei via WMI (`Invoke-CimMethod Win32_Process Create`), **seit 20.08.2026 `pause_hours []` = 24/7-Betrieb** (Max' Ansage; BELOW_NORMAL schützt NT8 — bei Auffälligkeiten im Live-Handel wieder `[[15,22]]` setzen, Config wird je Schleifendurchlauf neu gelesen, kein Neustart nötig), BELOW_NORMAL. Erster Backtest je Symbol dauert länger (Cache-Aufbau, Asian 73 s), danach ~3–7 s je Config.
+- **Wo:** Box `VMD202078`, `C:\Users\maxlk\Projects\trading-data\engine\discovery\` (gleicher Pfad wie am PC — `qbt.py`, `asian.py` & Co. haben absolute Pfade), Python 3.11.9 all-users (`C:\Program Files\Python311`), numpy 2.4.6 / pandas 3.0.3 / pyarrow 24 / scipy 1.17. Payload (Engine ohne `.app_profile`/Reports/Caches + `exported_data` inkl. RTH-Cache, 448 MB) als tar-Zip rüber, mit `tar -xf` entpackt (Expand-Archive nimmt tar-Zips nicht). Start job-frei via WMI (`Invoke-CimMethod Win32_Process Create`) **(überholt seit 16.09.2026: NSSM-Dienst `MaxLabDiscovery`, siehe Abschnitt „Aus der CLAUDE.md (05.10.2026)" unten)**, **seit 20.08.2026 `pause_hours []` = 24/7-Betrieb** (Max' Ansage; BELOW_NORMAL schützt NT8 — bei Auffälligkeiten im Live-Handel wieder `[[15,22]]` setzen, Config wird je Schleifendurchlauf neu gelesen, kein Neustart nötig), BELOW_NORMAL. Erster Backtest je Symbol dauert länger (Cache-Aufbau, Asian 73 s), danach ~3–7 s je Config.
 - **Scheduler-Tasks auf der Box** (Benutzer Administrator, laufen solange die RDP-Session angemeldet ist — dieselbe Bedingung wie NT8, AP86): „MaxLab Discovery Runner" (alle 30 Min `discovery_runner.py`; der Lock lässt nur eine Instanz zu, also reiner Keepalive/Neustart) und „MaxLab Discovery Promote" (alle 30 Min `promote_next.py --box-mode`).
 - **Lokaler Ordner = Spiegel.** `python discovery/inbox_tool.py --pull` holt Heartbeat/Queue/Register/Inbox/results **plus** `book_state_next.json`, `portfolio_next.json`, `live_portfolio_next.json`, die zugehörigen Reports und vorgemerkte Tickets (→ `tasks.json`) von der Box; `--seen-all` (Merge, keine Box-Einträge gehen verloren), `--add-job` und `--push-next` schreiben zurück. Läuft automatisch über `auto_check.py` alle 30 Min, solange der PC an ist. **Manuelle Next-Buch-Änderung am PC → `--push-next`**, sonst promotet die Box in einen alten Stand. `start_discovery.ps1` lokal nur als Notnagel, nie parallel zur Box.
 - **Queue-Race-Falle (20.08.2026 passiert):** Läuft auf der Box gerade ein Job, hält der Runner die Queue im Speicher und schreibt sie beim Job-Abschluss zurück — Jobs, die währenddessen per `--add-job` gepusht wurden, werden dabei still überschrieben und verschwinden. Deshalb nach jedem `--add-job`, während der Runner rechnet, ein paar Minuten später gegenprüfen, ob der neue Job noch in der Box-Queue steht (zwei HF-Jobs mussten am 20.08. neu eingereiht werden).
@@ -152,3 +152,38 @@ Anlass: [[Testphase Juli-Modus]] Teil B. Das alte Buch-Gate hätte keines der dr
 ## Offen / nächste Ausbaustufen
 - Register-Merge Box → PC; Job-Typen „Regime-Conditioning" (Ein/Aus-Schalter für bestehende Beine) und „Event-Bein" (braucht Engine-Modul); Kandidaten-Karten im Strategy Lab (Tab) statt nur `inbox.md`.
 - Ehrlich: mehr Alpha kommt nur mit **neuen Inputs** (Tick/L2, Optionen-Positionierung, Breadth). Der Runner macht die Suche sauber und billig, aber er zaubert keine neuen Mechanismen aus alten Minutenbars.
+
+## Aus der CLAUDE.md (05.10.2026)
+
+Aus der CLAUDE.md übernommen (05.10.2026): Regeln, die nur dort standen.
+
+**Claude reiht neue Funde selbst ein**
+- Ohne dass Max es ansagen muss, sobald Dry-Run + `pipeline-auditor` durch sind.
+
+**Runner-Neustart nach Engine-Änderung**
+- Nach jeder Engine-/`job_generator.py`-Änderung den Runner neu starten (Stop → Sync → Start), sonst läuft er mit altem Code weiter.
+- Vorfall 28.08.2026: 5,5 h Leerlauf.
+
+**Betrieb als NSSM-Dienst (seit 16.09.2026)**
+- Der Runner läuft als NSSM-Dienst `MaxLabDiscovery`. Start über `engine\discovery\start_runner.ps1` (Stop über die STOP-Datei).
+- Nie zusätzlich per WMI starten (AP179).
+- Schutz gegen parallele Instanzen: `runner.lock`, eine Instanz je Maschine.
+
+**Die Queue darf nie leerlaufen**
+- `job_generator.py` füllt selbst nach (Folge-Jobs, Abdeckungs-Vorlagen, Varianten-Vorlagen).
+- Schreibt der Runner `queue_empty`, ist die Vorlagen-Welt ausgereizt. Dann `alpha-scout` einschalten und neue Mechanismen liefern, nicht mehr Grid.
+
+**Session-Start, Punkt 2: PC-Loops übernehmen (Regel Max, 17.08.2026)**
+- Prüfe `C:\Users\maxlk\Projects\trading-data\engine\.claude_loop_heartbeat.json`.
+- Jünger als 50 Minuten: läuft schon in einer anderen Session, nichts starten.
+- Fehlt die Datei oder ist sie älter: diese Session startet den Buch-Sync-Watchdog und den Discovery-Batch-Loop selbst per `/loop` (~35 Min Tick):
+  - `book_state.json` gegen `portfolio.json` abgleichen,
+  - `funded_finalize.py` bei Bedarf,
+  - Discovery-Kadenz-Check,
+  - bei jedem Tick den Zeitstempel in die Heartbeat-Datei zurückschreiben.
+- Grund: mehrere Parallel-Sessions ohne diese Sperre würden sich beim Schreiben von `book_state.json`/`portfolio.json`/`tasks.json` in die Quere kommen (`trading-data` ist nicht versioniert, siehe `session-guard`).
+
+**Session-Start, Punkt 3: Discovery-Inbox lesen (Regel Max, 18.08.2026)**
+- `cd C:\Users\maxlk\Projects\trading-data\engine && python discovery/inbox_tool.py --pull` (Stand von der Box, dort läuft der Runner dauerhaft).
+- Kandidaten mit „besser" bzw. „vs Original besser": Quant-Team + `strategy-auditor` drüberschauen lassen, dann Next-Week-Buch + Ticket, danach `inbox_tool.py --seen-all`.
+- Steht der Runner (Heartbeat > 30 min) und die Queue hat `pending`-Jobs: per SSH `engine\discovery\start_runner.ps1` (NSSM-Dienst `MaxLabDiscovery`, nie zusätzlich per WMI starten, AP179).

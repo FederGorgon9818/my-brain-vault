@@ -289,6 +289,54 @@ Gebaut in der Cloud gegen das GitHub-Backup `trading-data`, Branch `claude/aweso
 
 **Bis zur Box-Migration (AP267)** zeigt das echte Lab die vier Boards mit 0 Tickets und keinen Sprint, alles steht unter „Alle Tickets“. Nach der Migration sind Boards, Epics und Sprint S2026-41 da.
 
+## Stand 02.10.2026: neue Prio-Skala, Dringlichkeits-Sortierung, Backlog-Filter
+
+**Auftrag Max:** Tickets neu bewerten, neue Prios „Sehr hoch“ (Live-Betrieb in den nächsten 3 Tagen gefährdet) und „Wichtig mit Datum“ (nicht sofort, aber mit Datum), Backlog auch gefiltert nach Dringlichkeit sortieren, Filter anpassen.
+
+**Entscheidungen Max (02.10.):** 5 Stufen · Datum-Tickets bleiben fest auf ihrer Stufe (keine automatische Hochstufung, der Chip „Dringend“ fängt fällige ab) · Sortierung als Dringlichkeit immer aktiv, Drag-Rang nur Gleichstand-Brecher · Neubewertung direkt angewendet · Filter: Prio, „Dringend“ neu, Board im Backlog, Fälligkeit.
+
+| Stufe | intern | Symbol | Farbe | heißt |
+|---|---|---|---|---|
+| Sehr hoch | `kritisch` | ⇈ als rote Pille | #e66767 | gefährdet den Live-Betrieb innerhalb von 3 Tagen |
+| Hoch | `rot` (`orange` = Alt-Alias) | ↑ | #e66767 | wichtig, bald angehen |
+| Wichtig (Datum) | `datum` | ◷ | `--blue` | wichtig, aber nicht sofort, braucht `due` (sonst „Datum fehlt“) |
+| Mittel | `gelb` | = | `--accent` | normale Arbeit |
+| Niedrig | `gruen` | ↓ | #4bbf8f | wenn Zeit ist |
+
+Interne Schlüssel bewusst kompatibel gelassen (Box, `auto_check`, `promote_next`, alte Tickets schreiben weiter `rot`/`orange`/`gelb`/`gruen`).
+
+**Dringlichkeit** (`ticket_lib.urgency_key`, gleich im Lab `byUrgency`): Stufe → nicht blockiert vor blockiert → Fällig-Datum aufsteigend (ohne Datum hinten) → manueller Rang. Gilt für Backlog, Sprint-Container, Board-Spalten, `ticket_tool.py backlog/find`. Ziehen in derselben Liste zeigt die Einfügelinie nur bei gleicher Stufe und gleichem Datum, sonst Hinweis.
+
+**Filterzeile:** Suche (jetzt auch `prio:hoch|sehrhoch|datum|mittel|niedrig`), Avatare, **Prio ▾**, Epic ▾, Typ ▾, **Board ▾** (synchron mit der Sidebar), **Fällig ▾** (Überfällig / Diese Woche / Ohne Datum), **Dringend** = Sehr hoch + Hoch + Datum fällig in ≤ 7 Tagen (auch der Zähler am Tab), Wartet, Auto. Backlog-Zeile hat einen festen Fällig-Slot.
+
+**Neubewertung (145 offene Tickets):** 2 Sehr hoch (AP284 RiskGuard-Tagesbasis, AP214 E8-150k-Setup), 21 Hoch, 21 Datum, 78 Mittel, 23 Niedrig. 56 Tickets geändert, auf die Box geschrieben (`--push-tasks`).
+
+**Geändert:** `ticket_lib.py` (PRIOS, `norm_prio`, `urgency_key`, `PRIO_LABEL`), `ticket_tool.py` (`--due/--start`, Labels), `ticket_migrate.py`, `app_server.py`, `auto_check.py` (Glocke: Sehr hoch = rot, Hoch = gelb), `lab_ui/tickets_board.js/.css`, `lab.js` (PRIODEF), Skills `/ticket`, `/sprint`, `/briefing`. Backups `*.bak_prio5`. Lab-Server neu gestartet (job-frei). `lab_selftest` grün, `test_ticket_lib` mit denselben 4 Fehlern wie vorher (datumsabhängig, nicht durch diese Änderung), `test_ticket_sync` grün. `design-guard` vorab (25 Punkte) und Abnahme (4 Befunde, alle eingearbeitet: Alt-`orange` zeigte im Detail-Select „Sehr hoch“, Fällig-Slot zu schmal für „überfällig“, 7-Tage-Fenster über die Zeitumstellung einen Tag zu kurz, Pillen-Padding). Offen für Max: Fälligkeit auch auf den Board-Karten zeigen?
+
+**Offen:** Box-seitiger Code (`ticket_lib` auf der Box) kennt die neuen Stufen erst nach dem nächsten Engine-Sync, bis dahin zeigt nur das PC-Lab sie richtig an. Die Charta (Abschnitt Tickets) nennt die Prio-Skala noch nicht, Regel trägt Max selbst ein.
+
+## Aus der CLAUDE.md (05.10.2026): Sprint-Regeln und Ticket-Tracker
+
+Aus der CLAUDE.md übernommen (Regel Max, 29.09.2026 und 06.09.2026), damit der Abschnitt dort auf einen Einzeiler schrumpfen kann.
+
+### Wir arbeiten in Sprints, Max plant sie selbst (Regel Max, 29.09.2026)
+
+Tickets laufen seit 29.09. im Strategy Lab im Jira-Aufbau (Boards, Backlog, Board, Reports), Sprint = eine Woche **Mo bis So**.
+
+- **Max plant jeden Sprint selbst.** Er holt sich die Tickets aus dem Backlog und entscheidet, was in welche Woche kommt. Die Prio ist die Bewertung, mehr braucht es dafür nicht.
+- **Neue Tickets landen immer im Backlog**, egal ob von Claude, `ticket_tool.py`, Auto-Check oder Box. Claude plant nie von sich aus Tickets in einen Sprint, startet oder schließt keinen Sprint und schlägt kein Planning vor.
+- **`/sprint` nur auf Zuruf.** Ruft Max ihn auf, darf Claude einen Vorschlag machen, geschrieben wird erst nach seinem OK.
+- Ein leerer Sprint-Container (z.B. S2026-41 aus der Migration) ist kein Planning und bleibt leer, bis Max ihn füllt.
+
+(Überholt seit 29.09.2026, siehe oben: die Formulierung in Abschnitt 5, Planning gehöre sonntags zum Ablauf und `/sprint` schlage von sich aus einen Sprint vor. Heute gilt: Max plant selbst, `/sprint` nur auf Zuruf.)
+
+### Ticket-Tracker: zweiseitig, Box ist die Quelle der Wahrheit (seit 06.09.2026)
+
+- Ablage: `C:\Users\maxlk\Projects\trading-data\engine\tasks.json` (Feld `ap_id`).
+- **Seit 06.09.2026 zweiseitig:** Max legt Tickets auch direkt auf der Box an. `tasks.json` wird bei jedem `inbox_tool.py --pull` mitgezogen und mit `--push-tasks` zurückgeschrieben, **die Box ist die Quelle der Wahrheit**.
+- Der Abgleich überschreibt nie blind: `.bak` vorher, eine Nummernkollision wird gemeldet statt aufgelöst.
+- **Vor dem Anlegen eines neuen Tickets immer erst `--pull`.** Vorfall 03. bis 06.09.2026: Nummernkollision AP121 bis AP127 (siehe [[Strategie-Logbuch]]).
+
 ## Start-Prompt für die Bau-Session (PC oder Laptop)
 
 > Baue das Ticket-Board im Strategy Lab nach `Projekte/Ticket-Board (Jira-Stil).md`, Phase 0 und 1. Auftrags-Typ `ui` (Kette design-guard). Vorher `session-guard`, `inbox_tool.py --pull`. Erst Phase 0 (Statuswerte, alle Leser/Schreiber von `tasks.json`), Ergebnis kurz zeigen und Spalten-Zuordnung mit mir abstimmen, dann bauen. Nichts umbenennen, nur additive Felder. Danach `lab_selftest.py`, `--push-tasks`, Daily Note.

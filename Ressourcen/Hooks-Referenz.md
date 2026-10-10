@@ -108,3 +108,49 @@ und `work_types.py` dieselben Ketten tragen). Volle Doku: [[Arbeits-Workflow (Au
 ## Workflow `konzept-weg` (Max, 11.09.2026)
 
 `.claude/workflows/konzept-weg.js`, `args: {concept, date, source?, market?, skip_research?, skip_ein_weg?}`. Kette: `familien-scout` → `verdict-auditor` als Vollständigkeits-Check direkt dahinter (fehlt ein Weg, stimmt ein Stand, toter Verwandter übersehen?) → bei Lücken eine Nachtrag-Runde des Scouts → `research-scout` EIN Call mit allen Research-Fragen → Rückschreiben des Research-Stands in Karte + JSON durch den Scout → Kind-Workflow `ein-weg`. Details und Abnahmetests: [[Familien-Scout Agent]].
+
+## Aus der CLAUDE.md (05.10.2026)
+
+Aus der CLAUDE.md übernommen (05.10.2026): Regeln und Overrides, die nur dort standen.
+
+**Todesurteil-Gate in `guard_chain.py` (Regel Max, 22.09.2026)**
+- Ein Todesurteil im Strategie-Logbuch wird abgelehnt, solange die vier Pflichtfelder fehlen (Reichweite, Kategorie, Wiedervorlage, Stempel).
+- Geprüft wird nur der **Urteilsblock** (`Verdikt:`/`Urteil:`/`Fazit:`), nicht der Fließtext. Rückblicke und Zitate fremder Urteile lösen nichts aus.
+- Fehlalarm-Override: `python .claude/hooks/mark.py urteil_ok`.
+- Selbsttest: `python .claude/scripts/test_urteil_gate.py` (7 Fälle, inklusive der Fehlalarm-Quellen).
+
+**`on_stop.py`, Teil 5 (Workbench-Tests)**
+- Hat die Session Tests mit Trades gerechnet, aber nicht per `workbench.publish(...)` ins Lab gestellt, endet sie einmal nicht (seit 25.09.2026).
+- Ausweg bei reinen Tafeln ohne Trades: `python .claude/hooks/mark.py tests_ok`.
+
+**Umgehungen werden gezählt (`receipt_stats.py`)**
+- `python .claude/scripts/receipt_stats.py --days 7` zeigt, wie oft eine Kette ausgelassen wurde und warum. Der `retro-agent` liest das sonntags.
+- Ein ständig umgangenes Gate ist ein falsches Gate. Dann wird die Kette gekürzt oder das Gate verengt, nicht besser aufgepasst.
+- Auslassen ist nur mit Grund erlaubt: `receipt.py --sid <id> --skip <schritt> --why "<ein Satz>"`. Ein Ein-Wort-`--why` wird abgelehnt, der Grund landet in der Quittung und im Retro.
+
+**Meta-Regeln**
+- Neue Reflex-Regel geplant? Zuerst fragen, ob sie als Hook abbildbar ist (Dateipfad, Kommando-Muster, Dateizeit), statt sie nur als Text abzulegen.
+- Ein Hook blockiert nie die Arbeit, weil er selbst kaputt ist: Fehler werden verschluckt und geloggt, nie geworfen.
+
+## Wissens-Router und Schlusszeilen-Check (Max, 05.10.2026)
+
+Teil des Umbaus [[CLAUDE.md Verschlankung]]. Ziel: die CLAUDE.md schlank machen, ohne dass eine Session etwas nicht mehr weiß.
+
+**Wissens-Router** (`.claude/hooks/knowledge_router.py`, aufgerufen in `on_prompt.py` Abschnitt 0)
+- Erkennt im Prompt das Thema (17 Themen: Juli-Modus, Developer, Hub, Gate, Discovery, RiskGuard, Konto, GitHub, Mail, Sprint, Tot, Box, Buch, Claude, Gründung, Ziel, Werkzeug) und legt Kernzeilen plus „lies Notiz X" hin. Je Thema nur beim ersten Auftauchen in einer Session.
+- Gebaut für Max' echte Sprache (945 Prompts, 30 Tage): „Cloud" = Claude (nie GitHub), „hab" ist nie Hub, „Juni-Modus" = Juli-Modus, „i8" = E8, „Funnet Next" = FundedNext, „Stereolab" = Strategy Lab. Ticketnummern („AP 72", „AP73") holen den Tickettitel aus `tasks.json` und routen ihn mit.
+- Läuft vor dem 12-Zeichen-Filter, damit kurze Prompts wie „Juli-Modus" zünden.
+- Subagent-Rückmeldungen und System-Benachrichtigungen (`<agent-message`, `<task-notification`, „Another Claude session sent a message") sind nicht von Max: kein Routing, kein Agent-Reflex, keine Quittung. Fix für die sechs Fehlalarme vom 05.10.
+- `MODE = "schatten"`: loggt nur nach `<engine>/.claude_hooks/router_log.jsonl`, blendet nichts ein, solange die volle CLAUDE.md geladen ist. Umschalten auf `"live"` erst nach der Abnahme durch Max.
+- Auswertung: `python .claude/scripts/router_report.py --days 3` (Treffer je Thema, Prompts ohne Thema, Hook-Fehler). Tests: `python .claude/scripts/test_router.py` (50 Fälle), Trefferquote auf einem Prompt-Korpus mit `--korpus <datei>`.
+- Neue Lücke aus dem Schattenbetrieb → erst als Fall in `test_router.py`, dann Muster anpassen.
+
+**Schlusszeilen-Check** (`.claude/hooks/schlusszeilen.py`, `on_stop.py` Teil 6)
+- Hat die Antwort im Zug Dateien geändert (Edit/Write oder Bash mit `>>`, Set-Content, `git commit`, `mv`, `cp`, `rm` …), müssen am Ende Modell-Empfehlung, `/clear`-Zeile und Daily-Note-Zeile stehen. Reine Antworten ab 600 Zeichen brauchen Modell + `/clear`.
+- Locker erkannt: „Modell" plus sonnet/haiku/opus/fable, „/clear" oder „frische Session" oder „Kontext weiterverwenden", „Daily Note".
+- Frei bleiben: kurze Antworten ohne Änderung, Rückfragen ohne Änderung (Antwort endet mit „?", Regel „Offene Fragen zuerst"), Zwischenmeldungen. **Läuft im Zug noch ein Hintergrund-Agent** (gestartet, keine task-notification zurück), greift der Check nicht (Live-Fund am ersten Abend). Einmal je Prompt geblockt, nie zweimal hintereinander.
+- Muster nach Gegenprobe an 1.153 echten Zügen gelockert: Modellname reicht (ohne das Wort „Modell"), „Clear: nein", „Kontext kann bleiben", „Session kann weiterlaufen", „heutige Notiz" zählen.
+- Jeder Treffer landet in `<engine>/.claude_hooks/schluss_log.jsonl` (Feld `blocked`), damit die Fehlalarm-Quote abnehmbar ist.
+- Tests: `python .claude/scripts/test_schlusszeilen.py` (23 Fälle, davon 6 echte Schlussblöcke aus alten Antworten).
+- Router- und Schluss-Log stehen in der `.gitignore` von trading-data (Prompt-Auszüge gehören nicht ins Backup-Repo).
+- **Falle beim Bauen (05.10.):** Python-Heredocs über Git Bash haben `\b` als Steuerzeichen geschrieben, der Check blockte dadurch alles. Regex-Zeilen nur mit dem Edit-Tool schreiben, danach auf Steuerzeichen prüfen.

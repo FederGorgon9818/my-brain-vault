@@ -10,6 +10,13 @@ erstellt: 2026-07-04
 - **Beruf:** Fachinformatiker für Anwendungsentwicklung (Ausbildung abgeschlossen)
 - **Stand 23.09.2026:** Junior Fachinformatiker bei GEWO, befristet bis 03.07.2027, danach 2 Monate Vollzeit selbstständig, ab Sept. 2027 BOS (Abitur), Trading als Nebengewerbe. Details: [[Unternehmensgründung Entscheidung]].
 
+## Lebenslage & Zeitplan (aus der CLAUDE.md übernommen, 05.10.2026)
+- **Job:** Junior Fachinformatiker IT bei GEWO Feinmechanik, Vollzeit, **befristet bis 03.07.2027**. Nebentätigkeit (Trading/Gewerbe) am 23.09.2026 von GEWO genehmigt (widerruflich, §8.4 Arbeitsvertrag).
+- **04.07. bis Anfang Sept. 2027:** Vollzeit selbstständig. **Ab Anfang Sept. 2027: BOS** (Abitur nachholen), Trading läuft als Nebengewerbe weiter. Danach Plan Finance-Studium → Quant.
+- **Umsatzquelle:** nur Prop-Payouts, Mentorship später.
+- **Regel für jede Kauf-/Kostenentscheidung:** ab 04.07.2027 kein Gehalt mehr. Jeder Euro, der vorher in Evals/Hardware geht, fehlt in der BOS-Zeit. Bei Käufen immer mitdenken, ob die BOS-Reserve noch steht.
+- Gehalt, Sparraten, laufende Kosten und die Gründungsentscheidung (Okt. 2026, Nebengewerbe, Einzelunternehmen): [[Unternehmensgründung Entscheidung]]. Wofür das alles gebaut wird: [[Großes Ziel]].
+
 ## Hintergrund
 - Ausgebildeter Anwendungsentwickler – programmiert selbst.
 - **Day Trading** seit ~2 Jahren (aktives Hobby/Fokusthema).

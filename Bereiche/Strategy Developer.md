@@ -47,7 +47,7 @@ Rechte Spalte im Developer-Tab: Max redet dort direkt mit Claude über die Anthr
 
 ## 📊 Charts im Developer = Charts im Lab-Report (Max, 15.08.2026)
 
-Equity-Kurve und Monte Carlo im Developer-Tab sind **1:1 dieselbe Darstellung wie in den Lab-Reports**: gleiche Chart.js-Defaults (Mono-Schrift, Achse `#78776f`, Grid `rgba(255,255,255,.05)`), gleiche Kartenhöhen (Equity und Fächer 580 px, Histogramme 300 px), gleiche Farben und Linienstärken. Die Werte sind aus `report.py` kopiert — **ändert sich dort etwas, muss es in der `HUB`-Sektion von `app_server.py` mitgezogen werden**, sonst driften Report und Developer optisch auseinander.
+Equity-Kurve und Monte Carlo im Developer-Tab sind **1:1 dieselbe Darstellung wie in den Lab-Reports**: gleiche Chart.js-Defaults (Mono-Schrift, Achse `#78776f`, Grid `rgba(255,255,255,.05)`), gleiche Kartenhöhen (Equity und Fächer 580 px, Histogramme 300 px), gleiche Farben und Linienstärken. Die Werte sind aus `report.py` kopiert — **ändert sich dort etwas, muss es in der `HUB`-Sektion von `app_server.py` mitgezogen werden**, sonst driften Report und Developer optisch auseinander. **(überholt seit 25.09.2026: die Oberfläche liegt in `engine/lab_ui/`, nicht mehr im HUB-String von `app_server.py`, siehe unten.)**
 
 Dazu Developer-spezifisch: OOS-Fenster in der Equity blau hinterlegt, Perzentil-Kegel und Preis-Chart mit Trade-Markern. Die Chart-Rohdaten sind groß und laufen deshalb über `/api/dev/charts` statt über den 4-Sekunden-Poll.
 
@@ -60,3 +60,22 @@ Dazu Developer-spezifisch: OOS-Fenster in der Equity blau hinterlegt, Perzentil-
 **Buch-Beitrag ist rauschbewusst** (seit 14.08., Vorfall NQ-ORB-Breakout-Demo): ein einzelner MC-Lauf (4000 Sims) schwankt beim Delta locker ±1-2pp allein durchs Sampling — ein Bein mit eindeutig negativer Edge zeigte auf einen Blick "+1,4pp verbessert das Buch". `book_contribution()` in `developer_run.py` rechnet deshalb über **5 unabhängige Seeds**, nimmt die Streuung als Rauschmaß und verlangt vom Delta mindestens das Doppelte davon (min. ±1,5pp), sonst "neutral" statt "besser/schlechter". Gilt bei jeder künftigen Änderung an der Buch-Beitrags-Logik: nie ein einzelner Seed als Entscheidungsgrundlage.
 
 **`mode="orb"`** ([[Strategie-Logbuch]] #066/#067): der Default `orb_exec="book"` hat Look-ahead (Volumen-/VWAP-Filter werten die komplette Ausbruchs-Bar aus, der Fill ist aber schon vorher). Jede Developer-Version mit ORB-Modus braucht **explizit** `orb_exec="close"` (echte Live-Logik) oder `"stop_honest"` (Level-Fill via ruhende Order) — sonst zeigt die Strategie eine Schein-Edge, die live nicht existiert.
+
+## Aus der CLAUDE.md (05.10.2026)
+
+Aus der CLAUDE.md übernommen (05.10.2026): Regeln, die nur dort standen.
+
+**Trigger-Regel „Developer"**
+- Sagt Max **„Developer"** im Zusammenhang mit einer Strategie-Idee, heißt das automatisch: dieser Workflow, ohne Rückfrage.
+- Nach JEDER Änderung sofort `developer_run.py` laufen lassen, nie nur die Datei ablegen.
+- Das rechnet automatisch die komplette Standard-Validierung plus Buch-Beitrag (⭐ das Entscheidungskriterium, rauschbewusst über 5 Seeds).
+
+**Falle `mode="orb"`**
+- `mode="orb"` braucht explizit `orb_exec="close"` oder `"stop_honest"`, sonst Look-ahead ([[Strategie-Logbuch]] #066/#067).
+
+**Workbench (Tab seit 25.09.2026)**
+- Der Tab heißt „Workbench" ([[Strategy Lab Workbench]]).
+- Inhalt: alle Trades im Chart, Patterns, Filter mit Trial-Zähler und verdecktem OOS, Ampel nach dem Buch-Gate (Gate v4), P(Pass) E8/FN, NT8-Overlay.
+- Die Oberfläche liegt in `engine/lab_ui/` (nicht mehr im HUB-String von `app_server.py`).
+- Nach jeder Änderung `python lab_selftest.py` laufen lassen.
+- **Jeder Test aus einer Session mit Trades gehört per `workbench.publish(...)` in den Sub-Tab „Tests".** `on_stop.py` Teil 5 prüft das (Ausweg bei reinen Tafeln ohne Trades: `mark.py tests_ok`, siehe [[Hooks-Referenz]]).

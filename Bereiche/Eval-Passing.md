@@ -20,6 +20,33 @@ erstellt: 2026-07-07
 > **Die Prop-Eval bestehen.** Nichts anderes zählt hier. Optimiert wird ausschließlich auf: **hohe Passchance in kürzester Zeit.** Payouts, Profit-Split, Funded-Management = spätere Phase ([[Funded-Phase]]), spielen für die Strategie-Wahl HIER keine Rolle.
 >
 > **Ziel-Firma: algo-freundlich + EOD-Drawdown** (Tradeify oder MyFundedFutures). **NICHT Apex** (kein Voll-Algo + intraday trailing = härtestes Modell).
+>
+> *(Überholt seit 18.09.2026, siehe „Aus der CLAUDE.md (05.10.2026)" unten: Das Ziel ist jetzt Zeit bis 50.000 $ Eigenkapital aus Payouts, die Funded-Phase zählt mit, gehandelt wird bei E8, FN und FFN.)*
+
+## Aus der CLAUDE.md (05.10.2026): aktueller Stand und Entscheidungskriterium
+
+Aus den Abschnitten „Aktueller Fokus" und „Stehende Trading-Prinzipien" der CLAUDE.md übernommen, damit sie dort gekürzt werden können.
+
+### Stand
+
+- **Aktuelle Phase: Eval-Passing** (Prop-Eval bestehen, **E8**, nicht Apex). **Die erste ECHTE E8 50k Eval läuft live** (Konto `E61803453048`, handelt unbeaufsichtigt von der Box), dazu FN1/FN2 (FundedNext Flex 50k). Neu seit 05.10.2026: Funded Futures Network STEADY 150K, siehe [[Firm-Regeln je Konto]].
+- **Plattform: NinjaTrader 8 / NinjaScript (C#)** auf Tradovate, nicht MultiCharts/PowerLanguage (siehe [[Tech-Stack]]). FFN läuft stattdessen über Rithmic.
+- **ZIEL seit 18.09.2026 (Max, präzisiert 21.09.): 50.000 $ Eigenkapital aus gebündelten Prop-Payouts, um ein eigenes Live-Konto (am liebsten 100k) zu eröffnen.** Zielfunktion ist **E[Zeit bis Zielkapital]** (Netto-Payouts minus alle Eval-Käufe), nicht mehr die Passquote je Eval. Die Funded-Phase zählt mit. Laufende Konten laufen weiter, die Frage ist nur, was dazukommt. Rechnung: `engine/tempo_plan.py` (Bestandskonten, Kaufpolitiken, Haushaltsgrenzen, Regime-Spalten).
+- **Entschieden (AP204/AP214, Update 05.10.2026):** 1× **E8 Signature 150k** (DD 3.999,90, Preis 333 $) mit **k1** (1 Micro je Bein) und **RiskGuard-Tagesstopp 2.500 $** (05.10. abends von 1.500 angehoben, Nachrechnung am 4er-Buch), Kauf nach der ausstehenden E8-Antwort. **Deckel 2.500 $ Netto-Auslage.** FN 150k erst nach AP205, FN-Größe offen (AP248).
+- **Warum k2 vom 24.09. nicht mehr gilt:** k2 galt für das 3-Bein-Buch mit DD 4.500 und alter Vola. Mit 7 Beinen ist k1 schon 7 Micros, und bei heutiger NQ-Vola ist k2 nicht schneller, stirbt aber zehnmal so oft (Quant-Team 04./05.10.). **Hochstufen auf k2 nur per Vola-Regel: 60-Tage-σ des Buchs unter ~400 $ je Micro-Satz.**
+- Details: [[Strategie-Logbuch]] #175, [[Daily Notes/2026-09-18]], [[Daily Notes/2026-09-21]], [[Daily Notes/2026-09-24]].
+- Nächster Schwerpunkt: [[Alpha-Suche]] (First-Passage-Sizing + Cross-Asset-Signale). Werkzeuge: [[Backtest-Engine]], [[Portfolio-Simulator]], [[Strategie-Logbuch]].
+
+### Das einzige Entscheidungskriterium (Max, 10.08.2026, präzisiert 16.08.2026 / Logbuch #106, Zieländerung 18.09.2026)
+
+Bei JEDER Empfehlung/Entscheidung (Bein rein/raus, Parameter, Firma, Kontogröße, Sizing) zuerst fragen: **Verkürzt oder verlängert es die Zeit bis 50.000 $ Eigenkapital aus Payouts, bei begrenzter Auslage?** Nicht Einzel-Edge, nicht Sharpe, nicht Eleganz. Passquote je Eval und Kosten pro funded Konto bleiben Zwischengrößen, nicht das Ziel.
+
+- Die #106-Warnung gilt weiter als Pflichtkontrolle: ein Zeit-Score belohnt Größe und Nachkauf-Lotterie (**Nulldrift-Test: 88 % davon entstanden bei Edge 0**). Deshalb IMMER mit **Nulldrift-Zwilling** rechnen (unter Edge 0 muss jede Politik 0 % Erreichung zeigen) und die **Auslage p90** mitnennen.
+- **Min-Size (1 Kontrakt je Bein) ist als Betriebspunkt nicht mehr gesetzt, Größe wird gerechnet.**
+- **Rechnung auf ehrlicher Basis:** aktuelles Buch, gefixte Engine, Intraday-Bust-Check (#077), Block-Bootstrap, Nulldrift-Kontrolle, Letzte-3-Jahre-Spalte plus geschrumpfte Spalte (Shrinkage 0,58). Bei Bein-Selektion nested OOS/Marginal-Test „Buch + 1, nur OOS".
+- Positive Edge ist notwendig, nicht hinreichend (Lehre 82).
+- **Kernrechnung:** `tempo_plan.py` (Zeit bis Ziel). Es rechnet die Konten unabhängig und ist damit in schwachen Regimen bis Faktor 2 zu optimistisch, bis AP245 den Kalender-Modus einbaut (Vorlage `engine/_scratch_ap204_kal/`). Dazu `eval_plan.evaluate_v2` / `cage_policy_lib.evaluate_v2` (Käfig je Konto), Tiers in `cage_v2_tiers.json`.
+- Kriterium und Betriebspunkt im Zusammenhang mit dem Buch: [[Buch-Workflow]], [[Strategie-Logbuch]] #106 und #175.
 
 ## 📌 Ehrlicher Stand (07.07.2026)
 Von allen Seiten geprüft (3 Objektiv-Läufe + Portfolio + Sizing): **70% in 3 Wochen ist mit den aktuellen Edges nicht erreichbar.** ABER der Firmen-Pivot half stark. Multi-Markt-Buch (5 robuste Zellen, 3 Instrumente):

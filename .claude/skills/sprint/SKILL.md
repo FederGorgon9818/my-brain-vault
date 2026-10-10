@@ -13,11 +13,11 @@ Werkzeug: `engine/ticket_tool.py` (Engine-Ordner, `PYTHONIOENCODING=utf-8`). Au�
 
 ## A. Planning (Standard, sonntags)
 
-1. **Stand holen:** `python ticket_tool.py sprint list`, `python ticket_tool.py backlog --n 60`, `python ticket_tool.py find "prio:rot"`, `python ticket_tool.py find "auto:ja"`.
+1. **Stand holen:** `python ticket_tool.py sprint list`, `python ticket_tool.py backlog --n 60`, `python ticket_tool.py find "prio:kritisch"`, `python ticket_tool.py find "prio:rot"`, `python ticket_tool.py find "prio:datum"`, `python ticket_tool.py find "auto:ja"`.
 2. **Läuft noch ein Sprint?** Dann zuerst Teil B (Abschluss), dann weiter.
 3. **Kapazität bestimmen:** Schnitt der gebrauchten Stunden der letzten 2 bis 3 Sprints (`sprint list` bzw. Report). In den ersten Sprints ohne Historie Max fragen, wie viele Stunden die Woche realistisch sind (Vollzeitjob bis 03.07.2027).
 4. **Vorschlag bauen** (nicht schreiben):
-   - Pflicht zuerst: rot, Fristen in der Woche (`when`), Tickets mit Datum im Sprintzeitraum, Handelsfenster beachten.
+   - Pflicht zuerst: Sehr hoch (`kritisch`), dann Hoch (`rot`), Datum-Tickets mit `due` im Sprintzeitraum, Fristen in der Woche (`when`), Tickets mit Datum im Sprintzeitraum, Handelsfenster beachten.
    - Nie ein Ticket einplanen, das auf ein offenes Ticket außerhalb des Sprints wartet (`⛔wartet`), außer der Blocker kommt mit rein.
    - Tickets ohne Schätzung: Stunden vorschlagen, Max bestätigt.
    - Summe Stunden ≤ Kapazität, Puffer ~20 %.

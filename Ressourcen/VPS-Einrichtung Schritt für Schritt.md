@@ -60,3 +60,19 @@ Die Box (`vmd202078`, Tailscale `100.127.89.9`, Zeitzone = deutsche Zeit) ist vo
 - **SSH von Max' PC:** OpenSSH auf der Box, Key `C:\Users\maxlk\.ssh\id_ed25519`. Claude kann aus jeder Session per `ssh Administrator@100.127.89.9` deployen, kompilieren, Logs lesen. Genutzt auch von `sync_live.ps1` (Task "MaxLab Live Sync", alle 2 Min) und `vps_health.ps1`.
 - **Watchdog auf der Box:** `C:\Users\Administrator\maxlab_watchdog.ps1`, geplante Aufgabe **"MaxLab Watchdog"** (alle 5 Min, SYSTEM). Prüft: NT8-Prozess (immer), Marktdaten-Frische via `bars_MNQ.csv` (Mo-Fr 15:35-22:00), Disk. Alerts per Telegram (Config `C:\Users\Administrator\maxlab_watchdog.json`, Token = gleicher Bot wie RiskGuard), gleicher Alert max. 1×/h. Log: `maxlab_watchdog_log.txt`. Bewusst **nur Alarm, kein Auto-Restart** (kein unbeaufsichtigter Eingriff). Lokale Kopie des Skripts: `engine\maxlab_watchdog.ps1`.
 - **Claude Code auf der Box:** nativ installiert (`C:\Users\Administrator\.local\bin\claude.exe`, v2.1.226, PATH gesetzt). Login einmalig per RDP nötig. Für autonome Health-Checks/Mitdenken direkt auf der Box.
+
+## Aus der CLAUDE.md (05.10.2026): Box-Fernzugriff, Regeln für Claude
+
+Aus dem Abschnitt „Box-Fernzugriff" (Regel Max, 11.08.2026, „nie wieder vergessen") hierher übernommen, damit die CLAUDE.md schlank bleiben kann.
+
+**Claude hat vollen SSH-Zugriff auf die Trading-Box und nutzt ihn immer selbst**, statt zu behaupten, er habe keinen Zugriff oder Max müsse das manuell machen.
+
+- **Zugang:** `ssh Administrator@100.127.89.9` (Tailscale, Key lokal unter `C:\Users\maxlk\.ssh\id_ed25519`, kein Passwort nötig). Box-Hostname `vmd202078`, deutsche Zeitzone.
+- **Laptop seit 03.09.2026 zweites, dauerhaftes Arbeitsgerät:** gleicher Weg wie vom PC, Vault per Git-Remote, Engine-/Box-Arbeit per SSH mit demselben Key. Kein eigener Discovery-Fallback und kein Hub/Lab-Server am Laptop, die Box bleibt die gemeinsame Instanz.
+- **F5/manuelles Kompilieren ist tot.** Deploy läuft extern über `box_deploy.ps1`: NT8 beenden → Backup → Staging → Pre-Flight-Compile → `dotnet build` → DLL setzen → aufräumen. Details/Fallen: [[Strategie-Logbuch]] #084.
+- **Vor jedem Deploy:** NT8-Log des Tages checken, danach `_check_compile.ps1 -SrcDir` in einem Wegwerf-Ordner, bevor NT8 überhaupt gestoppt wird. `box_deploy.ps1` sagt die Deploy-Kandidaten vorab an und warnt bei unbekannten Dateien (neues Bein oder Leiche?). Die Ansage immer lesen.
+- **Wiederanlauf braucht aktuell eine angemeldete RDP-Session** (Autologon fehlt noch, **AP86**). Nach jedem Deploy kurz Bescheid geben.
+- **Lab-Server ist multi-threaded** (`ThreadingTCPServer`). Port per `MAXLAB_PORT` überschreibbar. Wichtig zum Testen, sonst läuft eine zweite Instanz still auf demselben Port.
+- **Geplant:** ein zentraler „Deployer", der Staging, Pre-Flight, Build, Deploy und Restart automatisch macht. Noch nicht gebaut, aber das Zielbild: künftige Deploy-Arbeit soll darauf einzahlen.
+
+Ticket-Tracker (`tasks.json`, `--pull` vor neuen Tickets): siehe [[Ticket-Board (Jira-Stil)]].

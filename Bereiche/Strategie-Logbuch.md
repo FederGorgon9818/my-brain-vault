@@ -3877,3 +3877,47 @@ Buch-Beine aus der v4-Abnahme (übernommen, nicht neu gerechnet, Referenz 2-Bein
 6. **Eigene Lauf-Fehler:** eine Wege-cid mit `/` brach Welle 2 ab (Dateiname), nach Bereinigung neu gestartet, 0 Verlust. Der Kategorie-Mapper setzte drei Vorab-Regeln erst nach dem verdict-auditor um (|dSR| < 1 SE, IS/OOS leer, N = 1 bei Prämisse).
 
 **Buch-Lücke:** Alle 6 DURCH stehen im Next-Week-Buch (seit 01.10. 10 Beine), Ticket AP295. Es fehlen: Wochenend-Prüfung `/wochenende` (Zeit bis 50k, Nulldrift-Zwilling, RiskGuard-Stopp; LD-01 und ES-OpenDrive dort als Ersatz/Verdopplung rechnen, nicht als Zusatzbein), dann Runner-Job mit vollem Original-Grid (Selektions-Leck), dann NT8-Bein. Beinahe-Treffer: Nachtest (ORB-fade: Fill-Ehrlichkeit Fade + stop_honest prüfen) bzw. OPEXMOM als gepoolter Familien-Job.
+
+---
+
+## #180 — Abdeckungs-Jobs CL-EIA und GC-COMEX plus TD-12 auf GC/CL: drei getrennte Urteile, keins trägt ein Bein, TD-12 bleibt echt-aber-zu-klein (05.10.2026)
+
+**Anlass:** AP211 (Max, 03.10.: drei Abdeckungs-Jobs einreihen) und AP224 (Wiederaufnahme #164, Blocker „kein GC/CL im Bestand" seit #165 weg). Ticket AP321. Gegenleser: verdict-auditor (05.10.), logbook-distiller (05.10.).
+
+### #180a CL-EIA (cleia01_wed1030_CL + Kontrolle cleia01_ctl_notwed_CL)
+
+**Verdikt:** Keine Fortsetzung der EIA-Reaktion auf CL nachweisbar. In keiner der 12 Fortsetzungs-Zellen (Momentum, Exit nach 30/60 Min) ist der Mittwoch vom Nicht-Mittwoch-Zwilling unterscheidbar: bester Unterschied +0,067 R (z ca. 0,6), Spanne −0,04 bis +0,07 R. 0 Survivors, Walk-Forward OOS −1.437 $, 2 von 9 Testjahren positiv.
+**Reichweite:** Signal-Fortsetzung nach dem EIA-Bericht auf CL (MCL, 1,6 $ RT). Signal 10-Min-Rendite 10:30 bis 10:40 ET, Schwelle 0,1 bis 0,3 %, Einstieg ab 10:40, Stopp 0,5 oder 0,8 × Fensterrange, Exit nach 30/60 Min oder Tagesende, nur Mittwoch, 2016 bis 07/2026. Die Umkehr-Zellen ab 10:40 sind ebenfalls alle negativ. Die Tagesende-Zellen messen Tagesdrift und sind kein EIA-Beleg.
+**Kategorie:** empirisch-nichts-gefunden, N = 36 im Register (12 Fortsetzung, 12 Umkehr, 12 Tagesdrift), Kontrolle mit eigenen 36 Trials. Auflösung: ein Unterschied Mittwoch gegen Kontrolle unter ca. 0,3 R je Trade ist nicht auflösbar (SE des Unterschieds 0,10 bis 0,12 R). Der Vergleich in R begünstigt den Mittwoch (größere Range, Kosten in R kleiner), „nicht besser" ist also konservativ.
+**Wiedervorlage:** CL-Daten unter 1 Minute im Bestand (Databento) oder eine EIA-Konsensquelle (Lager-Überraschung gegen Erwartung). Termin-Check halbjährlich ab 04.01.2027 über `wiedervorlagen.json` (Eintrag `lb180_bedingungen`).
+**Stempel:** Box VMD202078, Lauf 03.10.2026 20:55, Gate v4, ref_book nwb_20261001, CL 1m NT8 bis 15.07.2026, Kosten 1,6 $ RT plus Stress 2 Ticks, OOS ab 01.01.2024. Engine-Fingerprint im Meta nicht protokolliert; Box heute 181a9aace381c8ec2d5bf42d934b8fef (gleich PC, Fingerprint-Dateien am PC zuletzt 03.10. 19:18 geändert), Stand zur Laufzeit nicht belegt.
+**Nicht tot:** Überraschung gegen Konsens. Einstieg in den ersten Sekunden/Minuten nach 10:30. Nur große Reaktionen über 0,3 % in 10 Min (nie als eigene Schwelle gerechnet, die strengste Zelle handelt noch 64 % der Mittwoche). NG-Bericht Donnerstag 10:30. EIA als Filter für andere CL-Mechaniken. Alle sechs CL-Thesen aus AP195 (TV-02, TV-03, TV-13, TE-14 Makro-Tage, TE-15, TS-15): dieser Job beantwortet keine davon.
+
+### #180b GC-COMEX (gcclk01_comex_dir_GC)
+
+**Verdikt:** Keine Richtungsfortsetzung bis 13:25 ET auf GC, beide Segmente getrennt. london_to_comex: Schwelle 0,8 n = 234 expR −0,093 (IS −0,015, OOS −0,308), Schwelle 0,5 n = 1.096 expR −0,098 (IS −0,093, OOS −0,113). comex_1h_drive: Schwelle 0,8 n = 278 expR −0,044 (IS +0,012, OOS −0,225), Schwelle 0,5 n = 1.165 expR −0,063 (IS −0,059, OOS −0,076). Letzte 3 Jahre überall negativ, Kostenstress überall schlechter. Prämisse an fehlender Edge gescheitert, nicht an n; das 16er-Grid lief nie. Gegenrechnung ohne Stopp (verdict-auditor, Scratch, nicht im Register): brutto +1,3 bis +9,1 $/MGC je Trade, t höchstens 0,86, auch getrennt vor/ab 2024.
+**Reichweite:** Richtungsfortsetzung bei Bewegung ≥ 0,5 oder 0,8 × Fensterrange, aus London 03:00 bis 08:15 (Einstieg 08:20) oder aus der ersten COMEX-Stunde 08:20 bis 09:20 (Einstieg 09:20), Exit 13:25 ET, Stopp 0,5 × Range ohne Target, MGC 1,6 $ RT, 2016 bis 07/2026.
+**Kategorie:** empirisch-nichts-gefunden, N = 4 (Prämissen-Configs im Register; die 12 nie gerechneten Grid-Zellen zählen nicht). Boom-Auflage über den festen IS/OOS-Schnitt 01.01.2024 erfüllt: auch ohne 2024+ trägt kein Segment.
+**Wiedervorlage:** Datentag-Kalender für GC lauffähig (`news_calendar` braucht `exported_data/GC_FUT_1m.parquet`, fehlt heute), dann einmal comex_1h_drive getrennt nach NFP/CPI-Tagen. Termin-Check über `wiedervorlagen.json` (`lb180_bedingungen`).
+**Stempel:** Box VMD202078, Lauf 04.10.2026 01:50, Gate v4 Prämissenstufe, GC_full.parquet Stand 22.09.2026, OOS ab 01.01.2024. Engine-Fingerprint wie 180a (heute 181a9aace381c8ec2d5bf42d934b8fef, Laufzeit-Stand nicht protokolliert).
+**Nicht tot:** Datentage NFP/CPI getrennt. LBMA-Fix-Zeiten. Gold-Zins-Lead. Target-Exit 2,0 R. Andere Anker (Asien nach London). Fades nur eingeschränkt: ohne Stopp ist die Mit-Richtung brutto leicht positiv, ein Fade startet brutto eher im Minus.
+
+### #180c TD-12 Sternzelle auf GC/CL (Wiederaufnahme #164)
+
+**Verdikt:** Die TD-12-Sternzelle (Signal 90 Min, Horizont 60 Min, Handel nach Vorzeichen) repliziert auf GC und CL nicht nach dem vorab festgelegten Kriterium aus #164 (gleiches Vorzeichen und ≥ 50 % der NQ-Größe = 0,0065 ATR): GC +0,0015 ATR (CI90 −0,0077/+0,0105, t 0,28), CL +0,0046 ATR (CI90 −0,0055/+0,0145, t 0,76). Auf keinem Markt Rang 1 von 14, Plateau-Mittel GC t 0,18, CL t 0,06. **Auf GC ist die Information aber da:** Steigung +0,0146 ATR/z (CI90 +0,0049/+0,0243), IC +0,068 (CI90 +0,021/+0,112), so groß wie auf ES. Auf CL nicht.
+**Reichweite:** VWAP-minus-TWAP-Residuum nach 90 Min ab 09:30 ET (RTH-Anker, für GC/CL laut #165 Lehre 6 nicht der native Anker), Haltedauer 60 Min, Handel nach Vorzeichen an jedem Tag, GC und CL mit Micro-Kosten.
+**Kategorie:** GC echt-aber-zu-klein (Information belegt, obere CI90-Grenze des Vorzeichen-Handels +0,0105 ATR brutto liegt unter ca. 0,015 ATR Kosten je RT bei MGC; Kostenhürde Schätzung verdict-auditor, 1 Tick je Seite plus 1,6 $). CL empirisch-nichts-gefunden, N = 1 vorregistrierte Zelle (14 Zellen gemessen, Prämissen-Messung ohne Register-Trials wie #164), obere Grenze +0,0145 unter ca. 0,021 ATR Kosten bei MCL. TD-12 insgesamt bleibt echt-aber-zu-klein wie in #164. Der Satz „dann ist TD endgültig tot" aus AP224 Schritt 2 gilt damit nicht.
+**Wiedervorlage:** Modul mit marktnativem Session-Anker (GC 08:20, CL 09:00) oder Kosten unter ca. 0,01 ATR je RT (Vollkontrakt auf eigenem Konto). Termin-Check über `wiedervorlagen.json` (`lb180_bedingungen`).
+**Stempel:** PC-Lauf 03.10.2026 ca. 19:34, Skript `engine/_archiv_lb180/td13_repl_gccl.py` (Logs daneben), `qbt.load_rth`, RTH 09:30 bis 15:59, GC 26.01.2016 bis 24.07.2026, CL bis 17.07.2026, je Markt 440 Tage übersprungen (unter 380 Bars oder ATR-Vorlauf), Orthogonalisierung per Walk-Forward ab Tag 500, Block-Bootstrap 20 Tage. Engine-Fingerprint 181a9aace381c8ec2d5bf42d934b8fef. DSR bei 14/54/150 Trials: GC 0,09/0,03/0,01, CL 0,27/0,14/0,09. Kriterium `_scratch_box_urlaub/3a1e6b9b/td13_cost.py`.
+**Nicht tot:** Betragsregel statt Vorzeichen (nur große |z|, GC überschlagen ca. 0,03 ATR brutto bei ca. 10 Trades/Jahr, nie gemessen). Marktnativer Anker. 6E und ZN als weitere unkorrelierte Märkte. TD als Filter für andere GC-Mechaniken. GC-Jahresbild instabil (2018/2019 positiv, 2020 bis 2024 negativ).
+
+### Lehren (logbook-distiller 05.10.: 0 voll codiert, 2 halb, 4 nur Text → Ticket AP326)
+
+1. **Der Pflicht-Stempel fehlt in jeder Discovery-Meta.** `discovery_runner.py` schreibt den Engine-Fingerprint an keiner Stelle mit; für Box-Läufe ist der Stempel nachträglich nicht belegbar. Nur Text → Patch: Stempel-Wrapper beim Meta-Schreiben.
+2. **Skripte, auf denen ein Urteil beruht, gehören ins Engine-Archiv, nicht ins Session-Scratchpad** (TD-Skript lag nur dort, jetzt `engine/_archiv_lb180/`). Nur Text, schon mehrfach passiert → Patch: Pflichtfeld „Skript:" mit Archivpfad im Urteils-Gate.
+3. **Ein Job-Why „schließt APxxx" ist eine Behauptung, kein Beleg.** cleia01 hat keine AP195-These getestet (TE-14 = Makro-Tage ausschließen), die Notiz ging trotzdem ins Ticket (korrigiert). Nur Text → Patch: `validate_job` warnt und zeigt die Ticket-Thesen.
+4. **R gegen eine Kontrolle mit anderer Range-Verteilung erzeugt Scheinvorteile.** Für Placebos innerhalb eines Jobs codiert (`_dollar_vs_placebo`, #150), für Geschwister-Kontrolljobs nicht → Patch: $/Trade neben expR bei Jobpaaren.
+5. **Bei Replikationen Information (Steigung/IC) neben dem Handels-PnL nennen**, sonst wird „echt-aber-zu-klein" zu „tot". Halb-codiert (Kategorie-Pflicht), Inhalt Text, niedrige Priorität.
+6. **Datentag-Split auf GC scheitert still an einer fehlenden Datei** (`GC_FUT_1m.parquet`). Patch: sprechender Fehler plus Pre-Flight beim Einreihen; Datenlücke als Ticket.
+
+**Buch-Lücke:** keine der drei Mechaniken ist Kandidat. CL-EIA und GC-COMEX hängen an der Prämisse (Stufe 1, keine Edge), TD-12 GC an der Kostenhürde (Information da, Vorzeichen-Handel unter den Kosten). Weiter geht es nur über die Wiedervorlage-Bedingungen.
