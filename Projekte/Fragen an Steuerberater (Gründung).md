@@ -60,6 +60,20 @@ status: Fragen fertig, Steuerberater wird gesucht
 - Was kostet die Erstberatung, und was würde es kosten, wenn Sie nur die Jahreserklärung machen und ich die Buchhaltung selbst führe (CSV und Belegordner)?
 - Geht alles online (Mail, Video)?
 
+## Kandidaten (research-scout, 10.10.2026, nur Suchzusammenfassungen, keine Kanzleiseite im Volltext gelesen)
+Es gibt keine Kanzlei, die Prop-Trading belegt als Schwerpunkt nennt, und auch keine regionale mit Trader-Bezug. Deshalb zwei Wege gleichzeitig nutzen.
+| Kanzlei | Bezug | Link |
+|---|---|---|
+| Steuern Steuern (Kasper & Köber, David Kasper) | Artikel „Steuerberater Trading“, schreibt für CapTrader | steuernsteuern.de |
+| Stadter Steuerberatung („Tax&Trading“) | Beratung für Trader | stadter.tax |
+| SIROC Steuerberatung | Trading-GmbH, eine Kundenbewertung nennt Prop | siroc-steuerberatung.de |
+| steueragenten.de | Trading-GmbH | steueragenten.de |
+- **Nicht anfragen:** OPTAX, betreut nach eigener Aussage kein Prop-Trading.
+- **Außerdem:** im Steuerberater-Suchdienst der Kammern nach Umsatzsteuer und internationalem Steuerrecht filtern (Steuerberaterkammer München).
+- **Prüffrage in jeder Anfrage:** Haben Sie Mandanten mit Payouts von Prop-Firmen außerhalb der EU, und wie behandeln Sie dabei USt und Vorsteuer?
+- **Kosten:** Erstberatung nach § 21 StBVV ist bei Verbrauchern auf 190 € netto gedeckelt. Ob Max als Gewerbetreibender noch als Verbraucher zählt, vorher fragen. Ein Beispielangebot liegt bei 249,90 € brutto.
+- Blogs widersprechen sich bei der Einkunftsart (§ 15 oder § 22 Nr. 3). Zum Vorsteuerabzug gibt es keine Fachaussage, das ist genau die Frage für die Beratung.
+
 ---
 
 ## Mail an den Steuerberater (Vorlage)
