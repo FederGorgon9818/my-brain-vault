@@ -13,7 +13,10 @@ status: Entwurf, Entscheidung Max offen (Wochenend-Thema)
 > [!summary] In drei Sätzen
 > Heute gilt eine Regel für alle Konten: k1, und hoch auf k2, sobald die Schwankung des Buchs unter etwa 400 $ am Tag fällt. Die Messung vom 12.10.2026 zeigt, dass das je Konto sehr verschieden wirkt: auf den 50k-Konten bringt k2 praktisch nie etwas, auf den 150k-Konten bringt k2 Geld, kostet aber die durchgehende Kurve. Vorschlag: eine Regel je Kontogröße und je Belegung, mit einer Schwelle, die zum Ziel „Track Record schützen“ passt.
 
-Alles hier ist ein **Vorschlag**. Geändert ist nichts, weder am Buch noch am RiskGuard. Zahlen aus `engine/_scratch_trackrecord_1210/` (Quant-Team, 12.10.2026), Daten bis 11.09.2026.
+> [!success] Kernentscheidung Max, 12.10.2026 abends
+> **Schwelle fürs Hochstufen auf k2 ist die Track-Record-Variante: 235 $ Tagesschwankung** (FFN 150k, gemessen am eigenen Buch des Kontos, entspricht Puffer = 10-fache Schwankung bei k2). Die alte Schwelle von 400 $ gilt damit nicht mehr. Für das noch nicht gekaufte E8 150k ergibt dieselbe Rechnung etwa 200 $, das wird beim Kauf bestätigt. Die Fragen 2 bis 6 in Abschnitt 7 sind noch offen. Heute ändert das nichts: alle Konten bleiben auf k1.
+
+Alles andere hier ist ein **Vorschlag**. Geändert ist nichts, weder am Buch noch am RiskGuard. Zahlen aus `engine/_scratch_trackrecord_1210/` (Quant-Team, 12.10.2026), Daten bis 11.09.2026.
 
 ## 1. Worum es geht
 
