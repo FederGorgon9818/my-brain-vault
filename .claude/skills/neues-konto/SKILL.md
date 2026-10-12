@@ -17,6 +17,7 @@ Regel Max, 22.09.2026. Auslöser: FundedNext-Challenge hat eine Consistency-Rule
    - Watchdog und Telegram: **RiskGuard Telegram-Felder prüfen, siehe Skill `riskguard`** (leere `TelegramToken`/`TelegramChatId` heißt stumm).
    - Was noch nicht als Property existiert, wird als Ticket angelegt (vorher `inbox_tool.py --pull`) und **vor dem Trade gebaut**. Bis dahin handelt das Konto nur mit Handaufsicht.
 3. **Festhalten und ansagen.** Konten-Liste, Regel-Tabelle und die aktiven Deckel (Werte je Konto) in [[Firm-Regeln je Konto]] eintragen und Max ansagen, was angepasst wurde. Der Dauer-Check bei Statuswechsel (Challenge zu Funded) hängt an **AP203**.
+4. **Konto-Register und Karte (seit 12.10.2026).** Sobald Host-Datei und RiskGuard-Zeilen des Kontos auf der Box liegen: im Engine-Ordner `python -m konten.account_sync --pull` (liest die Belegung von der Box ins Register `konten/accounts.json`), dort Alias, Firma, Kontotyp, Phase und Kaufpreis von Hand ergänzen, dann `python -m konten.account_card --account all --fleet`. Neue Firma oder neuer Kontotyp: erst den Regelsatz in `konten/firm_kit.py` und die Freigabe-Liste in `konten/rules.json` ergänzen, `python -m konten.test_konten` muss grün sein. Danach `konto-analyst` für die Kurzfassung. Bei Phasenwechsel (Eval zu Funded) das Feld `phase` im Register umstellen und die Karte neu holen.
 
 ## Zugriff
 

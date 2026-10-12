@@ -4,7 +4,7 @@ tags:
   - projekt/infra
   - sizing
 erstellt: 2026-10-12
-status: Konzept, Entscheidung Max offen
+status: gebaut und abgenommen (12.10.2026), offene Punkte siehe Stand-Kasten
 ---
 # Konto-Karten: jedes Konto wird nach demselben Prinzip automatisch gerechnet
 
@@ -12,6 +12,36 @@ status: Konzept, Entscheidung Max offen
 
 > [!summary] In drei Sätzen
 > Heute rechnen wir jede Frage zu einem Konto von Hand neu, weil jedes Konto andere Firmenregeln, eine andere Größe und ein anderes Buch hat. Die Lösung ist kein Agent, der jedes Mal neu rechnet, sondern ein Konto-Register plus ein festes Rechenskript, das je Konto immer dieselbe Karte ausgibt und nur neu rechnet, wenn sich etwas geändert hat. Ein kleiner Agent liest danach nur noch die Karten und fasst zusammen.
+
+> [!success] Stand 12.10.2026 spät: gebaut und abgenommen (Schritte 1 bis 6), mit offenen Punkten
+> **Benutzen:** im Chat einfach nach einem Konto fragen („wie steht FFN2?“, „darf FFN1 auf k2?“), dann liest der Agent `konto-analyst` die Karten. Im Strategy Lab unter Lab → Reiter **Konten**. Von Hand im Engine-Ordner:
+> - `python -m konten.account_sync --check` vergleicht Register und Box, `--pull` übernimmt den Box-Stand
+> - `python -m konten.account_card --account all --fleet` holt alle Karten (rechnet nur bei geändertem Fingerabdruck, kalt rund 3 Minuten, sonst 1 Sekunde) und bündelt sie fürs Lab
+> - `python -m konten.test_konten` ist die Abnahme (6 Tests, frisch rund 5 Minuten)
+>
+> **Wo es liegt:** `engine/konten/` (Register `accounts.json`, Regeln `rules.json`, Karten in `cards/`), Reiter `engine/lab_ui/konten.js`, Agent `.claude/agents/konto-analyst.md`. Der Auto-Check meldet alle 30 Minuten gelb, wenn die Box etwas anderes handelt als im Register steht. `/wochenende` und `/neues-konto` haben je einen Schritt dazubekommen.
+>
+> **Geprüft von:** pipeline-auditor (sauber mit Auflagen, alle eingebaut), verdict-auditor (hält mit Auflagen, alle eingebaut, die Korrekturen selbst hat er nicht noch einmal gegengelesen), design-guard (Reiter, Nacharbeit eingebaut), erster Lauf konto-analyst. Abnahme: 29 Zahlen des Quant-Laufs vom 12.10. auf 5 $ genau nachgestellt, Mutationstest (drei absichtlich verfälschte Regeln fallen auf), Nulldrift in zwei Bauarten auf allen Karten bestanden.
+>
+> **Erste Karten (Daten bis 10.08.2026, also 9 Wochen alt, deshalb alle Hochstuf-Ampeln gelb):**
+>
+> | Konto | Beine | Schwankung 60 Buch-Tage | Puffer ist das …-fache | 12 Monate ohne Bust, ab frischem Start | Netto 36 Monate (Vola heute / normale Vola) |
+> |---|---|---|---|---|---|
+> | E8 50k | 4 | 584 $ | 3,4 | 19 % | 2.092 $ / 1.704 $ |
+> | FN1, FN2 | 4 | 584 $ | 2,6 | 4 % | 1.085 $ / 2.177 $ |
+> | FFN1, FFN2 | 5 | 577 $ | 8,1 | 79 % | 4.796 $ / 943 $ |
+> | Flotte | | | | | 13.474 $ / 7.945 $, Chance auf Minus 23 %, 50.000 $ in 36 Monaten 0,6 % |
+>
+> k2 ist nirgends erlaubt (50k nie, FFN 577 $ gegen Schwelle 235 $).
+>
+> **Offen:**
+> 1. Daten bis Oktober (AP356), erst dann ist „Vola heute“ wirklich heute und die Ampeln können grün werden.
+> 2. Kontostand und Hoch je Konto stehen als leere Felder im Register, gehen aber noch nicht in die Rechnung ein. Die Karte rechnet „ab frischem Start“, nicht ab dem echten Stand der laufenden Eval.
+> 3. Inaktivitätsregel und Firmen-Auflagen stehen als Textzeilen in der Karte, werden aber nicht gerechnet.
+> 4. Die Spalte „geschrumpft bei normaler Vola“ heißt in den Karten-Texten noch „Untergrenze“. Bei FundedNext stimmt das nicht (dort ist normale Vola besser, weil hohe Vola mehr Busts kostet). Die Karte warnt, die Bezeichnung sollte Max entscheiden.
+> 5. FFN-Regel „Consistency“ ist im Test nur dünn abgesichert (fällt nur in einer von sieben Zeilen auf).
+> 6. E8 150k ist im Baukasten und in den Regeln, hat aber noch kein Konto.
+> 7. Engine-Dateien sind nicht im Git (trading-data ist ein Backup-Repo), Sicherungen der geänderten Lab-Dateien liegen als `*.bak_konten` daneben.
 
 ## 1. Was heute schiefläuft (Anlass 12.10.2026)
 
