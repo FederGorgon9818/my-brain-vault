@@ -16,6 +16,7 @@ erstellt: 2026-07-04
 - **Umsatzquelle:** nur Prop-Payouts, Mentorship später.
 - **Regel für jede Kauf-/Kostenentscheidung:** ab 04.07.2027 kein Gehalt mehr. Jeder Euro, der vorher in Evals/Hardware geht, fehlt in der BOS-Zeit. Bei Käufen immer mitdenken, ob die BOS-Reserve noch steht.
 - Gehalt, Sparraten, laufende Kosten und die Gründungsentscheidung (Okt. 2026, Nebengewerbe, Einzelunternehmen): [[Unternehmensgründung Entscheidung]]. Wofür das alles gebaut wird: [[Großes Ziel]].
+- **Einkommensziel (Max, 12.10.2026):** rund 250.000 € im Jahr, etwa 20.000 € brutto und 10.000 € netto im Monat, über Prop-Payouts und danach das eigene Live-Konto.
 
 ## Hintergrund
 - Ausgebildeter Anwendungsentwickler – programmiert selbst.

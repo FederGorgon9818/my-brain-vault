@@ -17,6 +17,10 @@ Gilt als allgemeines Ziel für die Zukunft und steht über allen Teilzielen. Her
 
 **Max arbeitet Vollzeit und will aus dem Trading-System ein Vermögen bauen, das ihn unabhängig macht** (Immobilien, davon leben, „reich werden“), **nicht erst in 30 Jahren, sondern so schnell wie ehrlich möglich.** Prop-Payouts sind dafür nur die Eintrittskarte, nicht das Ziel.
 
+## Die Zahl dazu (Max, 12.10.2026)
+
+**Lebensziel Einkommen: rund 250.000 € im Jahr, also etwa 20.000 € brutto und 10.000 € netto im Monat.** Weg dahin: erst Prop-Payouts, danach das eigene Live-Konto. Das ist die Messlatte hinter „davon leben“. Das Etappenziel 50.000 $ Eigenkapital aus Payouts bleibt der nächste Schritt, nicht das Ende.
+
 ## Das eigentliche Asset
 
 **Der belegte Track Record plus das dokumentierte System**, nicht der einzelne Payout. Sobald Live-Evidenz da ist, dass es funktioniert und regelmäßig Einkommen liefert, öffnen sich mehrere Wege gleichzeitig:
