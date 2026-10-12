@@ -1,7 +1,7 @@
 ---
 tags: [projekt, alpha-suche, research, hypothesen, zwangsfluss]
 erstellt: 2026-10-12
-status: Recherche fertig, nichts gerechnet, Entscheidung Max offen
+status: Recherche fertig, ein-weg durch, als KF-61 bis KF-66 in der Bank, nichts gerechnet
 ---
 
 # Zwangsfluss-Hypothesen (Capacity und Edge)
@@ -289,6 +289,23 @@ Nach Beleglage, Fallzahl und Handelbarkeit sortiert:
 6. **D, Roll.** Weglassen.
 
 **Buch-Lücke für alle sechs:** Stufe null. Es gibt noch keine Prämissen-Tafel, keinen Eintrag in einer Hypothesen-Bank, keinen Job. Nächster Schritt je Hypothese ist `ein-weg` (variant-scout und strategy-auditor), erst danach Rechnen.
+
+## Ergebnis ein-weg (12.10.2026, abends)
+
+Alle sechs sind durch variant-scout und einen strategy-auditor-Batch gelaufen und stehen jetzt als KF-61 bis KF-66 in [[Hypothesen-Bank (Volumen & Flows)]], Block Kalender- und Struktur-Flows. Kein H()-Job, nichts gerechnet.
+
+| Hypothese | Bank-Zeile | Urteil der Prüfer | Was vor einem Test zu tun ist |
+|---|---|---|---|
+| A Rebalancing | KF-61, geparkt | nicht bauen: 8 echte Varianten, vorab unentscheidbar (auflösbar erst rund 30 bp gegen 16 bp Papier-Effekt), gleiche Lage wie #163 | nichts, Wiedervorlage bei neuem Intraday-Beleg |
+| B Turn-of-the-Month | KF-62 | Story hält mit Vorbehalt | nur die Short-Druckphase ist neu; Fenster an die Abwicklungsfrist koppeln und vorab festlegen; Short allein werten |
+| C Gehebelte ETFs am Close | KF-63 | Story hält mit Vorbehalt, ohne neuen Code rechenbar | Terzile rollierend, nur Momentum-Richtung, Ersatz-Vergleich gegen NQ_LastHour_v3; vorbelastet durch #087 |
+| D Roll | KF-64, geparkt | Story fällt durch: Effekt liegt im Spread, gemessen würde der Einzelkontrakt | nichts |
+| E Makro-Vorlauf | KF-65 | Story hält mit Vorbehalt, Risikoprämie ohne Zwangs-Akteur | erst Power-Rechnung, dann entscheiden ob vier fehlende Bauteile lohnen |
+| F Nacht-Drift Europa | KF-66, Beobachtungsposten | beste Story der Gruppe, aber kein Buch-Kandidat | Nachbau 2016 bis 2020, Wiedervorlage-Schwelle festlegen |
+
+**Korrektur zu Abschnitt B (wichtig):** die Frage „Tag oder Nacht“ ist für NQ bei uns schon beantwortet. Der Long von Eröffnung bis Schluss an T−1 bis T+3 ist der bestehende Kalender-Modus `tom` und wurde am 02.10.2026 gerechnet: auf NQ überleben 7 von 36 Configs (bestes PF 1,26, OOS 1,68, Walk-Forward 6 von 9 Jahren positiv), der Tagesanteil trägt also, mit engem Stop. **Das Buch-Gate hat ihn aber abgelehnt** (Buch-Sharpe −0,17, Passquote −9,0 pp). YM 0 Survivors, ES steht als CE-01 in der Queue, RTY wurde nie gerechnet. Die Einordnung „Platz 1“ weiter unten gilt damit nur noch für die neue Short-Druckphase (KF-62), nicht für den Long.
+
+**Reihenfolge der Prüfer nach Aufwand:** KF-63, dann KF-62, dann KF-66, zuletzt KF-65.
 
 ## Aufräumarbeiten, die die Recherche nebenbei gefunden hat
 - Research-Cache Zeile rund 472: „The disappearing pre-FOMC announcement drift“ ist von Kurov/Wolfe/Gilbert, nicht von Cocoma.
