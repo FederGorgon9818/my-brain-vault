@@ -1567,6 +1567,7 @@ Max' Frage: nicht „wie hätte das Buch auf einem Live-Account performt", sonde
 - **Literatur:** kein akademischer Beleg für Makro-News-Fade in Index-Futures auf Minuten/Stunden; Sekunden-Overshoot (ABDV 2003) ist HFT-Domäne; Pre-FOMC-Drift „disappearing"; Straddle/OCO um Release nur Folklore. Details im [[Research-Cache]] (neuer Abschnitt).
 - **Buch-Relevanz:** ~13-32 Events/Jahr → selbst optimistisch 0,5R/Jahr, weit unter MC-Seed-Rauschen. Kategorie wie #034/#049: nicht fürs Buch. Skripte im Session-Scratchpad (Wegwerf), keine Engine-Datei angefasst.
 - **Offen, falls Max weitermachen will:** (a) konditionierter Fade (nur wenn Jump gegen Vortrend/Positionierung, Why vorab), (b) Vorzeichenkurve `sign(J)·r` über 0-1/1-5/5-15/15-30/30-60/60-Close pro Event-Typ, (c) Post-News-Vola-Burst (3-8× normal) als Regime-Filter für bestehende Momentum-Beine statt als eigenes Bein.
+- **Nachtrag 12.10.2026:** (a) und (b) sind in **#181** gemessen (508 Releases plus FOMC, Juli-Modus Idee 5), (c) bleibt offen. Die fehlenden Pflichtfelder zu diesem Eintrag (Reichweite, Kategorie in zwei Teilen, Stempel) stehen dort unter „Einordnung der Vorläufer".
 
 ### Lehre
 79. **„Kommt meistens zurück" ist bei Vola-Bursts die Basisrate, keine Edge.** Bei jeder Retrace-/Touch-Statistik zuerst die Random-Walk-Null (Reflexionsprinzip) und eine Placebo-Kontrolle gleicher Uhrzeit danebenlegen — sonst misst man σ√T und nennt es Mean Reversion.
@@ -1710,6 +1711,7 @@ Was der Befund richtig benennt, bleibt aber offen und geht als **AP101** weiter:
 - **Praxis-Einwand (unbewertet, aber notiert):** 08:30 ET liegt eine Stunde vor RTH, die News-Kerze hat im Median **41,8 NQ-Punkte** Range gegen 6,2 an normalen Tagen. Slippage auf einer ruhenden Limit-Order an einem Level, das in einer 6,7-fach erweiterten Kerze definiert wurde, ist im Backtest nicht abgebildet.
 - **Literatur (research-scout):** keine dedizierte Quelle zu News-Kerzen-Leveln. Aber **Osler 2000 (FRBNY) / Osler 2003 (J. Finance)** liefern den Why-Rahmen: Support/Resistance wirken in FX nur, wenn sie **echte Order-Cluster** (Stop-/Take-Profit-Häufungen) abbilden, nicht bloße Chart-Geometrie — ohne Order-Cluster ist ein Level nur eine Distanzangabe, genau was unser Placebo zeigt. Einschränkung: FX-Dealer-Markt mit Kundenorderdaten, nicht 1:1 auf zentralisierte Futures übertragbar.
 - **Umgesetzt:** `news_calendar.py` (neu) sichert die Eventliste dauerhaft — #105 und #109 hatten sie je im Session-Scratchpad rekonstruiert, das aufgeräumt wird. Modi `core` (FOMC+NFP+CPI, 338 Events, 30,7/Jahr) und `wide` (FOMC + alle 08:30-Kerzen mit volratio ≥3, 591 Events, 53,7/Jahr; Zusatztage clustern auf Donnerstag und Monatstag 14-15/26-28 = Claims, PPI, Retail Sales, PCE — dieselbe Hypothesenklasse, keine Verwässerung). **Nicht `calendar_fx.FOMC` für Event-Studien nehmen**, die Liste beginnt erst 2021.
+- **Nachtrag 12.10.2026:** Folgemessung auf derselben Eventliste in **#181** (Fade der Erstreaktion je Event-Typ und Fenster). Die Level-Frage dieses Eintrags wird davon nicht berührt.
 
 ### Lehre
 93. **Ein Level, das per Auswahl dort liegt wo der Preis gerade war, ist keine Barriere, sondern eine Definition.** Median-Abstand ≈ 0 und Touch-Quote 95,6 % heißen: „wird es getestet" ist beantwortet, bevor man misst. Die einzige sinnvolle Frage ist, ob AM Level etwas anderes passiert als an einem beliebigen Preis derselben Distanz — und das braucht ein distanzgematchtes Placebo, kein Zeitreihen-Placebo.
@@ -3921,3 +3923,48 @@ Buch-Beine aus der v4-Abnahme (übernommen, nicht neu gerechnet, Referenz 2-Bein
 6. **Datentag-Split auf GC scheitert still an einer fehlenden Datei** (`GC_FUT_1m.parquet`). Patch: sprechender Fehler plus Pre-Flight beim Einreihen; Datenlücke als Ticket.
 
 **Buch-Lücke:** keine der drei Mechaniken ist Kandidat. CL-EIA und GC-COMEX hängen an der Prämisse (Stufe 1, keine Edge), TD-12 GC an der Kostenhürde (Information da, Vorzeichen-Handel unter den Kosten). Weiter geht es nur über die Wiedervorlage-Bedingungen.
+
+## #181: Juli-Modus Idee 5 (Max) „Mean Reversion nach News-Release": gepoolter Fade nach 08:30-Releases leer, NFP-Auffälligkeit ist ein Hinweis ohne Beleg, Rest unentscheidbar (12.10.2026)
+
+**Anlass:** Idee Max 12.10.2026 im Juli-Modus ([[Testphase Juli-Modus]], Idee 5). Stufe 1 fand die Vorläufer #105 und #109 (beide 16.08.2026, ohne Stempel) mit den offenen Punkten (a) Fade gegen Vortrend und (b) Vorzeichenkurve je Event-Typ und Fenster. Genau die wurden gemessen, auf doppelter Eventmenge. Die Idee lief als **Messung ohne Why** (strategy-auditor in `ein-weg`: dünnes Buch und Stop-Kaskaden sind ein Sekunden-Effekt, bei T+5 ist die Liquidität zurück; in #105 widerlegt). Kette: `ein-weg` (variant-scout, strategy-auditor), quant-statistician, quant-mathematician, verdict-auditor (hält, acht Auflagen eingearbeitet), logbook-distiller.
+
+**Messung:** NQ 24h-Minutenbars, 508 Releases um 08:30 ET (Volumen der Release-Kerze mindestens 3× 60-Tage-Median, davon 118 NFP, 111 CPI, 279 sonstige) plus 84 FOMC. J = Bewegung T bis T+5, y = −sign(J) × Ertrag von T+5 bis zum Ausstieg in bp (positiv = Fade verdient). J und y überlappen nicht. 23 Zellen vorab gezählt, SESOI vorab 3 bp je Event netto, Kosten rund 1 bp (1,01 NQ-Punkte). Festlegung `engine/_scratch_juli_newsmr/prereg.md`, vor dem Lauf geschrieben.
+
+### #181a Gepoolter Fade nach 08:30-Releases, T+5 bis T+60
+
+**Verdikt:** Kein Fade. Mittel −0,02 bp je Event (n 505, Streuung 33 bp), Treffer 50 %, normale Tage zur selben Uhrzeit −0,01 bp. Obere Grenze 95 % +2,88 bp, 99 % +3,79 bp, nötig wären 3,98 bp brutto (3 netto plus Kosten). iid, Monats-Cluster, Quartals-Cluster, Block-Bootstrap und das je Jahr gewichtete Band bleiben alle darunter, MDE80 3,68 bp. Epochen −0,1 / −1,6 / +2,8 bp. ES gleichgerichtet (−1,43 bp, nicht unabhängig, r 0,88).
+**Reichweite:** Signal. Der **über alle Release-Typen gepoolte** mechanische Fade der Erstreaktion auf NQ, Einstieg 5 Minuten nach dem Release, Halten 55 Minuten ohne Stop, Prop-Micro mit 1,01 Punkten Kosten, 2016 bis 08/2026. Die Null ist eine Mischung (NFP +7,4, sonstige −3,2), die Typen einzeln stehen unter #181b und #181c.
+**Kategorie:** empirisch-nichts-gefunden, N = 1 vorab festgelegte Primärzelle (von 23 gezählten). Altlast im selben Eventsatz: rund 40 Trials aus #105 plus die News-Level-Messung aus #109 (die dort genannten rund 130 enthalten ORB-Retest- und Pivot-Configs, die keine News-Trials sind). Nebenbefund ohne Mehrfachkorrektur: „Jump in Richtung des Nachttrends" −1,79 bp, obere Grenze 95 % +1,92 (konservative SE 1,89), ebenfalls empirisch-nichts-gefunden.
+**Wiedervorlage:** keine für diese Zelle. Nicht gedeckt und je eine eigene Hypothese mit eigener Nummer: Jump sortiert nach echter Überraschung (Ist gegen Konsens), Einstieg in den ersten Sekunden, T+1 oder T+15, Varianten mit Stop oder Ziel, andere Märkte (Zins, FX, Gold).
+**Stempel:** PC-Lauf 12.10.2026, `engine/_scratch_juli_newsmr/tafel.py`, `news_calendar.py` Stand 23.08.2026 (mode wide), `tafel_lib.py` Stand 02.10.2026, Engine-Fingerprint e6f39975fc0e383fb86b59a55edc347f (reine Event-Messung, kein qbt-Lauf), NQ_FUT_1m.parquet bis 10.08.2026 15:09 ET. Dieselben Daten wie #105, also keine unabhängige Bestätigung. Kriterium: SESOI 3 bp netto, Bänder des Statistikers (`stat/p1.py`); das Episoden-Band aus `tafel_lib` ist hier unbrauchbar (siehe Lehre 1).
+
+### #181b NFP, T+5 bis T+60
+
+**Verdikt:** Hinweis, kein Fund. +7,42 bp je Event (n 117, t 2,27, 90 % [+2,0; +12,8]), Epochen +2,9 / +12,4 / +7,1, Fade long +9,4 und short +5,9 (kein Long-Drift-Artefakt). Dagegen: bestes von 23 Zellen, Max-t über alle Zellen p 0,185 (5-%-Schwelle wäre t 2,79); ohne die 6 größten Events +2,35 (t 0,95), sie tragen 70 % der Summe (04.11.2022 und 05.03.2021 allein 2,9 der 7,4 bp); der Effekt sitzt in 2021 bis 2023; Nachbarfenster T+15 +3,0, T+30 +1,5, bis 16:00 +2,2. Geschrumpft plausibel 1 bis 4 bp brutto. Ökonomie roh: rund 350 $ im Jahr je Micro, Jahres-Sharpe 0,65, netto t 1,94 knapp unter dem Vor-Gate; geschrumpft 0 bis 195 $.
+**Reichweite:** Signal. Fade der NFP-Erstreaktion auf NQ, Einstieg T+5, Ausstieg T+60, ohne Stop, rund 11 Events im Jahr, Prop-Micro.
+**Kategorie:** unentscheidbar (MDE rund 8 bp gegen SESOI 3, 1 von 23 Zellen). Zählt nicht als Friedhof.
+**Wiedervorlage:** nur mit NQ-Minutendaten vor 2016 (lokal beginnt NQ am 03.01.2016, Databento hätte sie): unverändert NFP T+5 bis T+60, einseitig 5 %, rund 72 Termine. Die Power liegt dort bei rund 56 % (roh) bzw. 27 % (geschrumpft), ein leerer Nachtest entscheidet also auch nichts, nur ein Treffer ändert etwas. Mit neuen Terminen allein bräuchte es 141 (11,7 Jahre). Termin-Check über `wiedervorlagen.json` (Eintrag `lb181_nfp_vor2016`, halbjährlich ab 04.01.2027).
+**Stempel:** wie #181a, Rechnung `stat/p2.py`, `math/check.py`, `math/mc.py`. Das NFP-Etikett stammt aus dem Volumen-Kalender (größerer von zwei Freitagen, 22 von 118 auf dem zweiten Freitag): Etikett-Look-ahead, vorzeichenneutral, verdünnt eher Richtung null.
+**Nicht tot:** Als Hypothese ohne Beleg notiert: die Rückkehr an NFP-Tagen liegt fast ganz zwischen 09:00 und 09:30 ET, nicht in der ersten halben Stunde. Das wäre eine Drift in die Kassa-Eröffnung, keine Mean Reversion nach dem Release. Das Fenster ist eines von rund 7 nachträglich angesehenen und zählt deshalb nicht als Bestätigung; es bräuchte eine eigene Nummer und frische Daten.
+
+### #181c Übrige Zellen (CPI, sonstige 08:30, FOMC, Jump-Größe, Jump gegen Nachttrend)
+
+**Verdikt:** Nichts unterscheidbar, nichts ausschließbar. CPI bis T+60 +0,09 bp; sonstige 08:30 −3,19 (t −1,66); FOMC +0,83 (Streuung 73 bp); großer Jump (oberstes Drittel, Max' eigentliche These „nach starker News") −1,43; kleiner Jump +0,68; Jump gegen Nachttrend +1,80 (t 0,79). Obere Grenzen 95 % zwischen 4,9 und 39 bp.
+**Reichweite:** Signal. Dieselbe Fade-Konstruktion je Teilgruppe, NQ, Ausstiege T+15, T+30, T+60 und 16:00.
+**Kategorie:** unentscheidbar (MDE 5,9 bis 23 bp gegen SESOI 3). Zählt nicht als Friedhof. FOMC war vorab als unentscheidbar markiert (n 84).
+**Wiedervorlage:** entfällt, kein Testdesign auf den vorhandenen Daten (jeder Nachtest erhöht nur die Zellenzahl). Zur Zelle „sonstige 08:30": das 90-%-Band [−6,34; −0,03] liegt ohne Null, das Vorzeichen ist in allen drei Epochen negativ, die Gegengruppe +0,36. Die vorab festgelegte Regel „Fade widerlegt" wird hier so gelesen, dass das Band in mindestens zwei Epochen **einzeln** ohne Null liegen muss; das ist in keiner der Fall (Quartals-Cluster 95 % bis +1,16). Also kein „widerlegt", und Fortsetzung wäre eine neue Hypothese (Lehre 80).
+**Stempel:** wie #181a.
+
+### Einordnung der Vorläufer
+
+- **#105** maß ein anderes Objekt (316 Kern-Events, Fade T+5 bis Close mit Stop 0,75×ATR, in R). Nachgetragene Felder: (1) Retrace-These „kommt meistens zurück" = Random-Walk-Basisrate: Kategorie empirisch-nichts-gefunden, Reichweite Touch-Quote aufs Pre-News-Niveau bis Close auf NQ/ES, trägt. (2) Handelbarer Fade bis Close mit Stop: Kategorie unentscheidbar nach der eigenen Power-Angabe (Nachweisgrenze 0,15 R bei n 138), nicht „kein Alpha". Die 16:00-Zellen hier (NFP +2,2, CPI +15,7, FOMC +9,2, SE je rund 12) bestätigen oder widerlegen das nicht. Offene Punkte (a) und (b) aus #105 sind mit #181 gemessen, (c) Vola-Burst als Regime-Filter bleibt offen.
+- **#109** (News-Kerzen-Level als Barriere) wird von dieser Messung nicht berührt.
+
+### Lehren (logbook-distiller: alle vier leben nur als Text)
+
+1. **Das Episoden-Band in `tafel_lib` verklebt häufig wiederkehrende Etiketten.** 505 Events wurden zu 6 Episoden, das Band ±17 bp bei einer echten SE von 1,4 bis 1,5 bp, `pruefe()` meldete „unentscheidbar", wo ein Effekt ab der SESOI sauber ausgeschlossen ist. Zweiter Fall nach Idee 4. Kleinstes Gate: Flag „Episoden verklebt" (viele Beobachtungen je Episode) plus Monats-Cluster-SE, bei Uneinigkeit der Bänder „methodenabhängig".
+2. **„trägt" je Zelle ist bei N gezählten Zellen kein „trägt".** `n_varianten` steht in `kategorie()` nur im Text. NFP bekam „trägt" bei Max-t p 0,185. Kleinstes Gate: bei `n_varianten > 1` ohne übergebenes Max-t-p wird „trägt" zu „unentscheidbar" mit Flag „Mehrfachtest fehlt".
+3. **Alte Urteile ohne Pflichtfelder findet nur, wer sucht.** #105 kam über die Logbuch-Suche in Stufe 1 ans Licht. Ein Inventar-Skript (Nummer, Schlagworte, fehlende Felder) würde Stufe 1 die Warnung „schon als #NNN gemessen, ohne Stempel" geben.
+4. **`wiedervorlagen.json` kennt nur Termine, keine Bedingung „Daten vorhanden".** Der NFP-Nachtest hängt an einem Datenkauf. Bis es ein Bedingungsfeld gibt, steht die Prüfung als erster Schritt in der Anleitung des Termin-Eintrags.
+
+**Buch-Lücke:** hängt an der Prämisse (Juli-Modus Stufe 2). Kein Grid, kein Register-Eintrag, nichts fürs Next-Week-Buch.
