@@ -5,7 +5,7 @@ tags:
   - trading/hypothesen
   - trading/gold
 erstellt: 2026-10-12
-status: offen (drei Prämissen gerechnet, keine trägt, nichts auf der Box)
+status: vier Prämissen gerechnet, keine trägt, nichts auf der Box; offen nur Asien-Band-Fade und Daten unter 1 Minute
 ---
 # 🧪 Hypothesen-Bank: Gold & Sessions
 
@@ -39,7 +39,7 @@ Unter 1 heißt: Bewegungen laufen eher zurück als weiter. London ist am deutlic
 | GC-MR-03a | Band-Fade London 03:00 bis 08:19 | Mean Reversion | **Prämisse trägt nicht (12.10.2026)**, kein Box-Job | Ausstieg „zurück zum Schnitt“ ist gebaut (`tm_exit="mid"`, `tm_stop_mode="band"`). Prämissen-Tafel `engine/_scratch_gc_london/premise.py`: 8 rechenbare Configs (Band 20/40, Breite 2,0/2,5, 5-Minuten-Bars, Stop 1 oder 2 Bandbreiten) brutto −0,02 bis +0,01 R (t höchstens 0,7), nicht besser als Zufallslevel und Münzwurf, netto −0,08 bis −0,26 R, Kosten 0,08 bis 0,27 R. Vor 2024 brutto leicht negativ, ab 2024 leicht positiv. 8 Configs mit 15-Minuten-Bars ohne Trades (Band braucht 300 Minuten Vorlauf in 320 Minuten Session). **Nicht gedeckt:** Band mit Vorlauf aus der Asien-Session, andere Auslöser als Bollinger (Kanal, VWAP), Haltedauer über die Session hinaus. Kein Urteil gestempelt. |
 | GC-MR-03b | Band-Fade Asien 18:00 bis 02:59 | Mean Reversion | hält mit Vorbehalt, schwächer | Wie 03a, dazu Nacht-Auflage (Buchungsdatum). Messung oben spricht eher für Spread-Rauschen. |
 | GC-MR-02 | VWAP-Rückkehr in der COMEX-Session, Ziel VWAP | Mean Reversion | **Prämisse trägt nicht (12.10.2026)**, kein Box-Job | Prämissen-Messung `engine/_scratch_gc_vwap/premise.py`: Schwelle 2,0 / 2,5 Sigma, Stop 1 oder 2 Abstände, VWAP und Sigma nur aus Bars bis zum Signal, je mit Zufallszeit-Placebo. Brutto −0,4 bis +1,1 $ je Trade (t höchstens 1,0), nicht besser als das Placebo, netto −2,5 bis −4,0 $, 1 von 11 Jahren positiv. Der Ausstieg wurde im Skript gemessen, nicht in `maband` gebaut. Kein Urteil gestempelt. |
-| GC-NEWS-01 | 08:30-Sprung an Datentagen faden, Ausstieg 10:00 ET | Mean Reversion | hält mit Vorbehalt, **blockiert** (48 Varianten) | Echter Datentag-Kalender für GC (Wiedervorlage aus #180b). Schalter „nur Event-Tage“ im Umkehr-Modus. Prämissen-Messung 08:35 bis 10:00 brutto nach Sprunggröße. Rund 250 Events, dünne Power. |
+| GC-NEWS-01 | 08:30-Sprung an Datentagen: faden oder mitgehen ab 08:35 | Mean Reversion / Trend | **Prämisse trägt nicht (12.10.2026)**, kein Box-Job | Prämissen-Tafel `engine/_scratch_gc_news/premise.py`, 16 Configs. Event ohne Look-ahead: GC-Volumen der 08:30-Kerze mindestens 3-mal der 60-Tage-Median (um 08:31 bekannt), 464 Tage, 44 im Jahr. **Fade bis 10:00 verliert** (netto −7 bis −12 $ je Trade, t −1,7 bis −2,3). Mitgehen bis 10:00 brutto +4,8 $ (große Sprünge +7,9 $), netto +1,2 bzw. +4,3 $ bei t 0,3 bis 0,6, 4 von 11 Jahren positiv, und nicht besser als dieselbe Regel an Nicht-Event-Tagen (+4,4 bzw. +5,5 $). Bis 13:25 alles um null. **Nicht gedeckt:** Trennung nach Art des Termins (NFP, CPI, PCE) und nach Überraschung gegen Konsens, Einstieg in der ersten Minute, FOMC 14:00. Kein Urteil gestempelt. |
 | GC-MR-01 | Umkehr nach großer COMEX-Eröffnungsbewegung | Mean Reversion | **nicht bauen (Story)** | 49 % Fortsetzung ist ein Münzwurf, keine Umkehr. Spiegelbild von #180b, dort war Mitgehen brutto leicht positiv, ein Fade startet also im Minus. |
 | GC-TOD-01 | Mittags-Schwäche 11:30 bis 13:30 ET short | Intraday Bias | **nicht bauen (Story)** | Ein Block aus sieben, nachträglich ausgesucht, kein Akteur. Kehrseite von GC-ON-01, kein zweiter Mechanismus. |
 | GC-RV-01 | Gold gegen Zins- und Dollar-Residuum faden | Relative Value | **nicht bauen (Story)** | Story kennt ihr Vorzeichen nicht. Kein Vorlauf auf 5 Minuten, Zins-Kopplung fällt von 0,46 auf 0,24. Neuer Engine-Modus dafür zu teuer. |
@@ -49,7 +49,7 @@ Unter 1 heißt: Bewegungen laufen eher zurück als weiter. London ist am deutlic
 1. ~~GC-MR-03a London-Band-Fade~~: Prämisse gerechnet, trägt nicht (siehe Tabelle). Das Varianz-Verhältnis 0,79 auf 60 Minuten wird vom Band-Fade auf 5-Minuten-Bars nicht eingefangen.
 2. ~~GC-ON-01 Nacht-Halten~~: Prämisse gerechnet, trägt nicht (siehe Tabelle). Die +42 % „Asien“ aus dem Strukturvergleich waren fast ganz 2024 bis 2026.
 3. ~~GC-MR-02 VWAP-Rückkehr~~: Prämisse gerechnet, trägt nicht (siehe Tabelle).
-4. GC-NEWS-01 erst mit Kalender.
+4. ~~GC-NEWS-01 Datentag~~: Prämisse mit Volumen-Event gerechnet, trägt nicht (siehe Tabelle).
 
 **Buch-Lücke für alle Zeilen:** noch vor Stufe 1. Es gibt keinen Job, keine Prämisse, keinen Trial.
 
