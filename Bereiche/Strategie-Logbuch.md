@@ -3976,3 +3976,46 @@ Explorativ, weil die Prämisse nicht trägt. 12 Varianten vorab festgelegt (`eng
 - **NFP (n 117):** alle sechs Varianten im Plus, +23 bis +202 $ im Jahr, bestes t 2,05 (ohne Stop), mit Stop 1,0 t 1,52. Max-t über die 12 Varianten p 0,09, ohne die besten 5 % der Trades rund 0. Jahre 2016 bis 2019 um null, 2021 bis 2023 und 2025 tragen. Stützt #181b als Hinweis, ändert die Kategorie nicht.
 - **Nebenbefund (Nachher-Schnitt, kein Test):** die vier NQ-Beine des Buchs verdienen an Release-Tagen im Schnitt rund 62 $ je Tag gegen 36 $ an übrigen Tagen, an NFP-Tagen rund 124 $. Korrelation des Fade zum Buch an Event-Tagen −0,13 bis −0,17.
 - Vier Karten im Lab-Sub-Tab Tests (`20261012-2230_juli5_news_fade_*`), Report [[News Mean Reversion Report (12.10.2026)]]. Kein Lauf durch das Discovery-Gate (kein Engine-Modus für 08:30).
+## #182: Juli-Modus Idee 6 (Max) „NFP-Bewegung 09:00 bis 09:30": der Mechanismus überträgt sich auf keine andere Gruppe, NFP bleibt ein Hinweis ohne Test (12.10.2026)
+
+**Anlass:** Idee Max 12.10.2026 nach dem Nachher-Fund aus #181b (an NFP-Tagen läuft NQ zwischen 09:00 und 09:30 ET gegen die Erstreaktion auf den Release, eines von rund 7 angesehenen Fenstern). NFP selbst ist damit In-Sample, frische NFP-Daten gibt es nicht. Getestet wurde deshalb, ob sich der Mechanismus auf Gruppen zeigt, an denen das Fenster nicht ausgesucht wurde. Kette: `ein-weg` (variant-scout, strategy-auditor: Story hält mit Vorbehalt, kein gezwungener Akteur), verdict-auditor (hält mit Auflagen, eingearbeitet), logbook-distiller in derselben Session (#181).
+
+**Messung:** y = −sign(M) × Ertrag 09:00 bis 09:30 in bp (positiv = läuft gegen M), NQ 24h-Minutenbars. Vier Test-Zellen vorab, Bonferroni-Schwelle z 2,5, SESOI netto 3 bp (Release-Gruppen) bzw. 1,5 bp (alle Tage), Kosten rund 1 bp. 95-%-Bänder mit der größeren aus iid- und Monats-Cluster-SE. Festlegung `engine/_scratch_juli_newsmr/prereg6.md`.
+
+| Zelle | n | Mittel bp | 95 % | t | Epochen |
+|---|---|---|---|---|---|
+| R0 NFP gegen Erstreaktion (In-Sample, kein Test) | 117 | +5,86 | +2,30 bis +9,41 | 3,23 | +0,3 / +7,6 / +12,4 |
+| T1 CPI plus sonstige gegen Erstreaktion (Primärtest) | 388 | +0,12 | −1,74 bis +1,98 | 0,13 | −1,5 / +0,4 / +1,4 |
+| T2 CPI plus sonstige gegen 08:30 bis 09:00 | 388 | +0,24 | −1,62 bis +2,09 | 0,25 | +0,5 / +0,1 / +0,2 |
+| T3 NFP gegen 08:30 bis 09:00 (Info) | 118 | +6,72 | +3,24 bis +10,20 | 3,79 | +3,6 / +7,2 / +11,4 |
+| T4 Nicht-Event-Tage gegen 08:30 bis 09:00 | 2.195 | +0,01 | −0,63 bis +0,65 | 0,03 | +0,3 / −0,4 / +0,3 |
+| T5 alle Tage gegen Nacht 18:00 bis 09:00 | 2.697 | +0,86 | +0,12 bis +1,60 | 2,29 | 0,0 / +2,2 / +0,2 |
+| T6 ES NFP (Info, r 0,88) | 119 | +3,91 | +1,40 bis +6,42 | 3,05 | +1,0 / +3,9 / +8,8 |
+
+### #182a Rückkehr vor der Kassa-Eröffnung gegen die Release-Reaktion, andere Releases (T1, T2)
+
+**Verdikt:** Kein Effekt an CPI- und sonstigen Release-Tagen. +0,12 bzw. +0,24 bp, obere Grenzen +1,98 und +2,09 bp gegen nötige rund 3,95 bp vor Kosten. T1 war kein blinder Test: aus der #181-Tafel war eine Zahl nahe null zu erwarten (in der Festlegung offen gelegt).
+**Reichweite:** Signal. NQ, 388 Releases um 08:30 ET ohne NFP (111 CPI, 277 sonstige aus dem Volumen-Kalender, von den kleinen dominiert), Fenster 09:00 bis 09:30, ohne Stop, Prop-Micro, 2016 bis 08/2026. Damit ist das Why „vor der Eröffnung kommt Liquidität zurück und baut die Release-Reaktion ab" **in der vorab formulierten Form** widerlegt: als Effekt, der für alle Release-Gruppen unabhängig von der Größe gilt.
+**Kategorie:** empirisch-nichts-gefunden, N = 2 Zellen (überlappend).
+**Wiedervorlage:** keine. Nicht gedeckt: CPI allein (n 111, allein unentscheidbar), Sortierung nach echter Überraschung, und die Größen-Lesart „nur nach NFP-großem Sprung": nur 142 der 390 Releases haben einen Sprung mindestens so groß wie der NFP-Median (21,5 bp), für einen Test mit 80 % Power bräuchte es rund 260. Diese Lesart ist ohne Lauf unentscheidbar (gezählt, y nicht angesehen).
+**Stempel:** PC-Lauf 12.10.2026, `tafel6.py`, `news_calendar.py` Stand 23.08.2026, Engine-Fingerprint e6f39975fc0e383fb86b59a55edc347f (reine Event-Messung), NQ und ES bis 10.08.2026 15:09 ET.
+
+### #182b Rückkehr vor der Eröffnung ohne Release (T4) und gegen die Nachtbewegung (T5)
+
+**Verdikt:** Nichts Handelbares. T4 exakt null (obere Grenze +0,65 gegen nötige rund 2,6 bp). T5 +0,86 bp: t 2,29 unter der vorab festgelegten Schwelle 2,5, nur 2020 bis 2023 trägt (+2,2), obere Grenze +1,60 unter den nötigen rund 2,55, nach Kosten −0,19 bp.
+**Reichweite:** Signal. NQ, Fenster 09:00 bis 09:30 gegen die Bewegung 08:30 bis 09:00 an Tagen ohne Release bzw. gegen die Nachtbewegung 18:00 bis 09:00 an allen Tagen, unbedingt über 2016 bis 08/2026, ohne Stop, Prop-Micro.
+**Kategorie:** empirisch-nichts-gefunden, N = 2 Zellen. Nicht echt-aber-zu-klein: der Effekt in T5 ist nicht belegt.
+**Wiedervorlage:** keine. Nicht gedeckt: eine an ein Regime gebundene Version (wäre eine Nachher-Hypothese) und die Nachtbewegung als Filter oder Tagesbias für bestehende Beine.
+**Stempel:** wie #182a.
+
+### #182c NFP 09:00 bis 09:30
+
+**Verdikt:** Bleibt ein Hinweis ohne Test. +5,86 bp (t 3,23), gegen 08:30 bis 09:00 +6,72 (t 3,79), auf ES gleichgerichtet (nicht unabhängig). Der Effekt wächst über die Epochen (+0,3 / +7,6 / +12,4). Ohne die 6 größten Events +3,14 (t 2,08), sie tragen 49 % der Summe, Median +1,76. Die unbedingte Drift an NFP-Tagen im Fenster ist +2,2 bp (t 1,19), es ist also kein reiner Long-Effekt. Abweichung von der Vorab-Regel, bewusst: dort stand „Null in T1 macht NFP zum Fenster-Zufall". Ehrlicher ist „NFP-spezifisch ohne bekanntes Why oder Zufall": t 3,23 übersteht eine Korrektur über 7 Fenster (p rund 0,009) und über 7 Fenster mal 4 Gruppen (rund 0,035), Zufall ist also nicht belegt, ein Mechanismus aber auch nicht.
+**Reichweite:** Signal. NQ, NFP-Tage, 09:00 bis 09:30 gegen die Erstreaktion, rund 11 Events im Jahr, ohne Stop.
+**Kategorie:** unentscheidbar (In-Sample, kein unabhängiger Test möglich). Zählt nicht als Friedhof.
+**Wiedervorlage:** ersetzt die aus #181b. Primärfenster ist ab jetzt **09:00 bis 09:30** (kleinere Streuung), T+5 bis T+60 nur Info. Nötig für 80 % Power einseitig 5 %: 72 Termine beim rohen Effekt, rund 214 beim geschrumpften (3,4 bp); 72 Termine haben dann rund 42 % Power. Zwei Wege: neue NFP-Termine ab 09/2026 mitzählen (12 im Jahr, also 6 Jahre für den rohen Effekt), oder NQ-Minutendaten vor 2016. Der Test vor 2016 ist schief: 2016 bis 2019 lag der Effekt bei +0,3, ein leerer Nachtest dort tötet einen Effekt „seit 2020" nicht, nur ein Treffer ändert etwas. Termin-Check über `wiedervorlagen.json` (`lb181_nfp_vor2016`, angepasst).
+**Stempel:** wie #182a.
+
+**Lehre:** Ein nachträglich gefundenes Fenster lässt sich auf denselben Daten nicht bestätigen, aber sein Why lässt sich prüfen: sagt das Why den Effekt auch für Gruppen voraus, an denen nicht gesucht wurde, sind diese Gruppen der Test. Hier hat das eine Session gekostet und das Why erledigt. Kein neues Gate nötig, der Ablauf steht in der Juli-Notiz (Stufe 2).
+
+**Buch-Lücke:** hängt an der Prämisse. Kein Grid, keine Strategie, nichts fürs Next-Week-Buch.

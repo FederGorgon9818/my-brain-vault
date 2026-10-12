@@ -99,3 +99,17 @@ Einstieg 08:35 gegen die Erstreaktion. Stop als Vielfaches der Reaktions-Range. 
 - **Workbench, Sub-Tab Tests:** vier Karten vom 12.10. um 22:30 mit allen Trades im Chart: `juli5_news_fade_alle_stop1_60min`, `juli5_news_fade_alle_stop1_ziel_prenews`, `juli5_news_fade_nfp_stop1_60min`, `juli5_news_fade_nfp_ohne_stop_60min`.
 - **Rechnung:** `engine/_scratch_juli_newsmr/` (`prereg.md` Vorab-Festlegung, `tafel.py` Messung, `strat.py` Strategie, Ergebnisse `tafel_out.txt`, `strat_out.txt`, Quant-Skripte in `stat/` und `math/`).
 - **Nicht gemacht:** kein Lauf durch das Discovery-Gate (es gibt keinen Engine-Modus für 08:30, die Beine laufen nur in der regulären Handelszeit), keine Zeit-bis-50k-Rechnung, weil die Prämisse nicht trägt.
+## 8. Nachtrag: Idee 6, die NFP-Bewegung 09:00 bis 09:30 ([[Strategie-Logbuch]] #182)
+
+Die Rückkehr an NFP-Tagen liegt fast ganz in der halben Stunde vor der Kassa-Eröffnung. Weil das auf diesen Daten nachträglich gefunden wurde, ist NFP selbst kein Test. Geprüft wurde, ob dasselbe an anderen Tagen passiert.
+
+| Gruppe | Tage | Rückkehr 09:00 bis 09:30 | t |
+|---|---|---|---|
+| NFP (Referenz, kein Test) | 117 | +5,9 bp | 3,2 |
+| CPI plus sonstige Releases (Haupttest) | 388 | +0,1 bp | 0,1 |
+| Normale Tage ohne Release | 2.195 | 0,0 bp | 0,0 |
+| Alle Tage, gegen die Nachtbewegung | 2.697 | +0,9 bp | 2,3 |
+
+- Der Mechanismus überträgt sich nicht. Die Erklärung „vor der Eröffnung kommt Liquidität zurück" ist damit in der allgemeinen Form widerlegt.
+- NFP steht allein: deutlich, über die Jahre wachsend (+0,3, +7,6, +12,4 bp), auf ES gleich. Ohne die 6 größten Tage +3,1 bp. Entweder etwas NFP-Eigenes ohne bekannte Erklärung oder Zufall, entscheiden lässt sich das nur mit neuen Terminen.
+- Praktisch: ab jetzt jeden NFP-Termin mitzählen (Fenster 09:00 bis 09:30, Regel steht fest). Bei der rohen Größe reichen 72 Termine, das sind 6 Jahre, oder Daten vor 2016.
