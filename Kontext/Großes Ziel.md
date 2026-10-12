@@ -19,7 +19,7 @@ Gilt als allgemeines Ziel für die Zukunft und steht über allen Teilzielen. Her
 
 ## Die Zahl dazu (Max, 12.10.2026)
 
-**Lebensziel Einkommen: rund 250.000 € im Jahr, also etwa 20.000 € brutto und 10.000 € netto im Monat.** Weg dahin: erst Prop-Payouts, danach das eigene Live-Konto. Das ist die Messlatte hinter „davon leben“. Das Etappenziel 50.000 $ Eigenkapital aus Payouts bleibt der nächste Schritt, nicht das Ende.
+**Lebensziel Einkommen: rund 250.000 € im Jahr, also etwa 20.000 € brutto und 10.000 € netto im Monat.** Weg dahin: erst Prop-Payouts, danach das eigene Live-Konto. Das ist die Messlatte hinter „davon leben“. Das Etappenziel 50.000 $ Eigenkapital aus Payouts bleibt der nächste Schritt, nicht das Ende. Der Ein-Seiten-Plan dazu (Ziele, Wege, Kennzahlen): [[OGSM (10k netto bis 2031)]].
 
 ## Das eigentliche Asset
 
