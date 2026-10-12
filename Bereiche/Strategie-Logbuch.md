@@ -3968,3 +3968,11 @@ Buch-Beine aus der v4-Abnahme (übernommen, nicht neu gerechnet, Referenz 2-Bein
 4. **`wiedervorlagen.json` kennt nur Termine, keine Bedingung „Daten vorhanden".** Der NFP-Nachtest hängt an einem Datenkauf. Bis es ein Bedingungsfeld gibt, steht die Prüfung als erster Schritt in der Anleitung des Termin-Eintrags.
 
 **Buch-Lücke:** hängt an der Prämisse (Juli-Modus Stufe 2). Kein Grid, kein Register-Eintrag, nichts fürs Next-Week-Buch.
+### Nachtrag #181 (12.10.2026 spät): als Strategie mit Trades gerechnet, auf Ansage Max
+
+Explorativ, weil die Prämisse nicht trägt. 12 Varianten vorab festgelegt (`engine/_scratch_juli_newsmr/strat.py`): alle 08:30-Releases oder nur NFP, Einstieg 08:35 gegen die Erstreaktion, Stop 1,0 oder 0,5 × Reaktions-Range oder keiner, Ausstieg 09:30 oder Ziel Pre-News-Preis, 1 Micro, Kosten 1,01 Punkte. Zusammen mit den 23 Tafel-Zellen 35 Versuche. Die Stempel von #181a bis c bleiben unverändert.
+
+- **Alle Releases (n 505):** −252 bis +35 $ im Jahr, t −1,80 bis +0,19, engere Stops durchweg schlechter. Das Ziel Pre-News-Preis hebt die Trefferquote auf rund 60 % und verdient trotzdem weniger (Lehre 79 aus #105 bestätigt sich als Strategie). Stützt #181a.
+- **NFP (n 117):** alle sechs Varianten im Plus, +23 bis +202 $ im Jahr, bestes t 2,05 (ohne Stop), mit Stop 1,0 t 1,52. Max-t über die 12 Varianten p 0,09, ohne die besten 5 % der Trades rund 0. Jahre 2016 bis 2019 um null, 2021 bis 2023 und 2025 tragen. Stützt #181b als Hinweis, ändert die Kategorie nicht.
+- **Nebenbefund (Nachher-Schnitt, kein Test):** die vier NQ-Beine des Buchs verdienen an Release-Tagen im Schnitt rund 62 $ je Tag gegen 36 $ an übrigen Tagen, an NFP-Tagen rund 124 $. Korrelation des Fade zum Buch an Event-Tagen −0,13 bis −0,17.
+- Vier Karten im Lab-Sub-Tab Tests (`20261012-2230_juli5_news_fade_*`), Report [[News Mean Reversion Report (12.10.2026)]]. Kein Lauf durch das Discovery-Gate (kein Engine-Modus für 08:30).
