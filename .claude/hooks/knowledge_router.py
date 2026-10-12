@@ -134,7 +134,7 @@ TOPICS = [
       r"\btrack record\b", r"\breich werden\b", r"\bgrosses ziel\b", r"\bquant\b(?! team)", r"\bwerdegang\b",
       r"\beinkommensziel\b", r"\blebensziel\b", r"\bnetto im monat\b", r"\b250\.?000\b"],
      [],
-     ["Grosses Ziel: erst Live-Beweis, dann Kapital, dann Produkt; nie vor dem Beleg verkaufen; verkaufbar ist der Prozess, nie die Edge. Einkommensziel Max (12.10.2026): rund 250.000 EUR/Jahr, ca. 10.000 EUR netto im Monat."],
+     ["Grosses Ziel: erst Live-Beweis, dann Kapital, dann Produkt; nie vor dem Beleg verkaufen; verkaufbar ist der Prozess, nie die Edge. Einkommensziel Max (12.10.2026): rund 250.000 EUR/Jahr, ca. 10.000 EUR netto im Monat. Track Record schuetzen (12.10.2026): bei jeder Buch-/Groessen-Empfehlung zuerst Bust-Frage, Ueberleben vor Tempo."],
      "Kontext/Großes Ziel.md"),
     ("werkzeug",
      [r"\bpyright\b", r"\blsp\b", r"\bvenv\w*", r"\bpyfolio\b", r"\bpypbo\b", r"\boverfit\w*", r"\bnssm\b", r"\bplugins?\b"],
