@@ -5,7 +5,7 @@ tags:
   - trading/hypothesen
   - trading/gold
 erstellt: 2026-10-12
-status: offen (eine Prämisse gerechnet, nichts auf der Box)
+status: offen (zwei Prämissen gerechnet, beide tragen nicht, nichts auf der Box)
 ---
 # 🧪 Hypothesen-Bank: Gold & Sessions
 
@@ -35,7 +35,7 @@ Unter 1 heißt: Bewegungen laufen eher zurück als weiter. London ist am deutlic
 
 | ID | Idee | Familie | Stand nach ein-weg | Was fehlt bis zum Job |
 |---|---|---|---|---|
-| GC-ON-01 | Nacht-Halten: long ab 18:00 ET, Ausstieg 03:00 oder 05:30 ET, tagsüber flat | Intraday Bias | **hält mit Vorbehalt, stärkste Story** (24 Varianten, grenzwertig) | Buchungsdatum = Ausstiegstag in der Engine. Nulldrift-Zwilling und Schnitt vor 2024 als Pflichtteil im Job. Vola-Filter nur als markierte Zusatzachse (Falle aus #178). Literatur-Beleg in den [[Research-Cache]]. E8-Bestätigung „Nacht ab 18:00“ steht nur abgeleitet in [[Firm-Regeln je Konto]]. |
+| GC-ON-01 | Nacht-Halten: long ab 18:00 ET, Ausstieg 03:00, 05:30 oder 08:15 ET, tagsüber flat | Intraday Bias | **Prämisse trägt nicht (12.10.2026)**, kein Box-Job | Prämissen-Tafel `engine/_scratch_gc_nacht/premise.py`, 6 Configs (3 Ausstiege, je ohne Stop und mit Stop 1 ATR), MGC-Kosten 3,6 $. Netto 1 bis 3 $ je Nacht (t 0,3 bis 0,7, 90-%-Band schließt 0 ein), **4 von 11 Jahren positiv, vor 2024 minus 3 bis 4,5 $ je Nacht**, 2025/26 tragen alles. Überschuss gegen die anteilige Tagesdrift vor 2024 genau null. Größter Rückgang rund −9.000 $ je MGC. Der Datums-Umbau in der Engine wurde deshalb nicht gebaut. **Nicht gedeckt:** Vola- oder Wochentags-Bedingung, Einstieg später als 18:00, Short-Seite tagsüber. Kein Urteil gestempelt. |
 | GC-MR-03a | Band-Fade London 03:00 bis 08:19 | Mean Reversion | **Prämisse trägt nicht (12.10.2026)**, kein Box-Job | Ausstieg „zurück zum Schnitt“ ist gebaut (`tm_exit="mid"`, `tm_stop_mode="band"`). Prämissen-Tafel `engine/_scratch_gc_london/premise.py`: 8 rechenbare Configs (Band 20/40, Breite 2,0/2,5, 5-Minuten-Bars, Stop 1 oder 2 Bandbreiten) brutto −0,02 bis +0,01 R (t höchstens 0,7), nicht besser als Zufallslevel und Münzwurf, netto −0,08 bis −0,26 R, Kosten 0,08 bis 0,27 R. Vor 2024 brutto leicht negativ, ab 2024 leicht positiv. 8 Configs mit 15-Minuten-Bars ohne Trades (Band braucht 300 Minuten Vorlauf in 320 Minuten Session). **Nicht gedeckt:** Band mit Vorlauf aus der Asien-Session, andere Auslöser als Bollinger (Kanal, VWAP), Haltedauer über die Session hinaus. Kein Urteil gestempelt. |
 | GC-MR-03b | Band-Fade Asien 18:00 bis 02:59 | Mean Reversion | hält mit Vorbehalt, schwächer | Wie 03a, dazu Nacht-Auflage (Buchungsdatum). Messung oben spricht eher für Spread-Rauschen. |
 | GC-MR-02 | VWAP-Rückkehr in der COMEX-Session, Ziel VWAP | Mean Reversion | **hält mit Vorbehalt** (144 Varianten) | Ausstieg „Ziel VWAP“ bauen. VWAP und Sigma nur aus Bars bis zum Einstieg. Erst Prämisse auf Schwelle 2,0 und 2,5 Sigma plus Placebo mit Zufallszeit, dann das Grid. Vorbelastung: VWAP-Abstand war auf NQ und in #174 Regime, kein stabiler Filter. |
@@ -47,7 +47,7 @@ Unter 1 heißt: Bewegungen laufen eher zurück als weiter. London ist am deutlic
 ## Reihenfolge (Vorschlag)
 
 1. ~~GC-MR-03a London-Band-Fade~~: Prämisse gerechnet, trägt nicht (siehe Tabelle). Das Varianz-Verhältnis 0,79 auf 60 Minuten wird vom Band-Fade auf 5-Minuten-Bars nicht eingefangen.
-2. **GC-ON-01 Nacht-Halten**: stärkste Story, braucht den Datums-Umbau.
+2. ~~GC-ON-01 Nacht-Halten~~: Prämisse gerechnet, trägt nicht (siehe Tabelle). Die +42 % „Asien“ aus dem Strukturvergleich waren fast ganz 2024 bis 2026.
 3. **GC-MR-02 VWAP-Rückkehr**: nach der Prämissen-Messung.
 4. GC-NEWS-01 erst mit Kalender.
 
