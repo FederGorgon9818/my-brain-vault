@@ -1,12 +1,23 @@
 ---
 tags: [projekt, gate, konzept]
 date: 2026-09-29
-status: Konzept, Entscheidung Max
+status: gebaut (13.10.2026, Regel z ab 1,28), Abnahme durch verdict-auditor läuft
 ---
 
 # Überoptimierungs-Prüfung Stufe 2 (Konzept 29.09.2026)
 
 Auftrag Max: klar erkennen, ob ein Next-Week-Bein nur durch Nachoptimieren gut ist, ohne es wie frühere Gates zu überkomplizieren. Entstanden per Workflow (3 Entwürfe: Statistik, Struktur/Nachbarn, Praktiker; bewertet von verdict-auditor und pipeline-auditor gegen die Fehlerliste; Synthese mit Nachrechnung). Verwandt: [[Latte-Audit (25.09.2026)]], CLAUDE.md Abschnitt Gate v4, Ticket AP275. Skripte: `engine/_scratch_latte/ueberopt/`.
+
+> [!info] Stand 13.10.2026: gebaut, Regel für Prüfung 2 geändert
+> - **12.10.:** Max hat beide offenen Entscheidungen unten bestätigt (Juli-Beine auf Buchstand 09.08. plus Kettenregel; Markierung aus Prüfung 1 löst allein nichts aus). Einbau in `weekend_check.py`, `erstfassung.py`, `book_erstfassung.json`, `test_erstfassung.py`.
+> - **13.10.:** Prüfung 2 urteilt **nicht mehr über die Monate mit 2 SE**, sondern über **z = Drift-Vorsprung der Spalte in $ je Tag geteilt durch den Fehlerbalken aus dem Block-Bootstrap der ersten Fassungen**. Ab 1,28 „trägt“ (Schwelle Max: „nicht zu streng“), 1,0 bis 1,28 „trägt knapp“ (Hinweis), darunter Hinweis. Die Flotten-Sim zeigt nur noch die Größe in Monaten und kontrolliert die Richtung. `shrink058` ist nur noch Info, `recent3y` bleibt als Zerfalls-Hinweis (Punktwert).
+> - **Warum:** am Betriebspunkt k1 (1 Micro je Bein) lagen beide Bücher in der Spalte über der Kappung von 120 Monaten, die alte Regel ließ rund 0 % durch, auch die eigenen Beine nicht. Die naheliegenden Ersatzgrößen (mittlere Zeit, Erreichungsquote mit Sim-Fehlerbalken) lassen ein Bein ohne Edge in rund 30 % der Fälle durch. Bei k1 hängt die Zeit bis 50k praktisch nur an der Dollar-Drift (Median-Monate ≈ 2.655 / (Drift je Tag − 2,5)), deshalb steht der Test auf der Drift.
+> - **Trefferquoten bei 1,28** (Zusatzbein, Korrelation rund 0, rund 10 Jahre Daten; Sharpe meint den wahren Sharpe der **ersten Fassung**, nicht des Beins): Bein ohne Edge rund 10 % (8 bis 13 % je nach Bein), Sharpe 0,5 rund 68 %, Sharpe 0,65 rund 84 %, Sharpe 1,0 rund 98 %. Mit `recent3y` zusammen bei 0,65 rund 78 bis 80 %. Zum Vergleich 1,645: 5 / 54 / 74 / 97 %. Chance, dass bei neuem Datenstand alle vier eigenen Beine wieder tragen: 58 %, mindestens drei: 90 %.
+> - **Was z für ein Zusatzbein wirklich ist:** das t der ersten Fassung mit Bootstrap-Fehlerbalken (rund 1,1 × t). Die Hürde liegt bei t rund 1,17, also Sharpe der ersten Fassung rund 0,40 bei 10 Jahren, 0,57 bei 5, 0,74 bei 3. Ein Bein kann in Prüfung 1 die Markierung tragen und in Prüfung 2 trotzdem „trägt“ bekommen.
+> - **Befunde des verdict-auditor (13.10., FERTIG MIT AUFLAGEN), behoben:** Ersatz in derselben Linie bekommt kein Urteil mehr aus z (dort misst z nur den Unterschied in Dollar je Sharpe-Punkt), Bein ohne positive Edge ist „nicht prüfbar“, „knapper Fall fürs Quant-Team“ steht nur noch bei „trägt knapp“ oder Sim-Widerspruch. **Offen:** `promote_next` schreibt die erste Fassung nicht mit (ohne Eintrag „nicht prüfbar“, nie Empfehlung), Golden Master vor dem nächsten Box-Sync, `erstfassung.py` in die Engine-Kern-Liste der Hooks, Warnung bei k größer 1, Fehlalarm-Test für z in die Suite.
+> - **Abnahme:** eigene Beine 4 von 4 (z Momentum 2,31, LastHour 3,64, Asia 2,28, OpenDrive 2,75), GAPFADE-RT Hinweis (z 0,83). Selbsttest `python test_erstfassung.py --setup heute`.
+> - **Grenzen:** war schon die erste Fassung die beste aus mehreren Varianten, steigt der Fehlalarm (bei 5 Varianten grob aufs Doppelte). Für ein reines Zusatzbein ist z fast das t aus Prüfung 1, Mehrwert bei Ersatz und Umbau. Die Drift als Messgröße ist nur für k1 belegt.
+> - Rechnung und Skripte: `engine/_scratch_latte/ueberopt/ap275_p2/` (`mathe_*`, `stat_*`). Die Abschnitte unten sind der Stand vom 29.09. und gelten für Prüfung 1 und das Stutzen weiter, die 2-SE-Regel in Prüfung 2 ist überholt.
 
 ## Überoptimierungs-Check in Stufe 2: „Was konnte die erste Fassung?"
 
