@@ -62,6 +62,31 @@ status: gebaut und abgenommen (12.10.2026), offene Punkte siehe Stand-Kasten
 >
 > **Weiter offen:** Daten bis Oktober (AP356, 13.10. abends). Funded-Konten ab heutigem Stand (die Rechenkerne kennen dort keinen Startzustand, heute sind alle Konten in der Eval). Consistency-Zähler der laufenden Eval werden nicht übernommen. E8- und FN-Inaktivitätsregel aus der Primärquelle bestätigen. Diese Runde hat kein Gegenleser gelesen, geprüft ist sie über die Tests.
 
+> [!success] Nachtrag 13.10.2026 abends: Funded-Konten ab heutigem Stand
+> Die Karten können ein Funded-Konto jetzt mitten im Lauf starten: mit echtem Kontostand, Hoch, bisherigen Payouts und Gewinntagen seit dem letzten Payout. Dafür gibt es eigene Rechenkerne mit Startzustand (`konten/funded_kernel.py`), die Originale der Engine sind unverändert. **Pflichttest bestanden:** bei einem frischen Konto liefern die Kopien Sim für Sim exakt dieselben Zahlen wie das Original (40 Vergleiche, Abweichung 0). 11 Tests grün, die Quant-Zahlen vom 12.10. weiter auf 5 $ genau.
+>
+> **Von Hand zu pflegen, sobald ein Konto funded ist** (die Box weiß es nicht): im Register `phase` auf funded, `payouts_bisher`, `letzter_payout_datum`, bei FFN `stand_nach_payout`. Fehlt die Zahl der Payouts, rechnet die Karte mit 0 und sagt das rot dazu. `account_sync --check` meldet, wenn der RiskGuard das Eval-Ziel als erreicht sieht, das Register aber noch Eval sagt.
+>
+> **Heute ist kein Konto funded**, deshalb als Beispielrechnung (heutige Vola, geschrumpft, k1, `python -m konten.was_waere`):
+>
+> | Konto | Zustand | Rest-Puffer | 12 Monate ohne Bust | nächster Payout | Netto 36 Monate |
+> |---|---|---|---|---|---|
+> | E8 50k | frisch funded | 2.000 $ | 38 % | 11,8 Monate | 2.481 $ |
+> | | 300 $ über der Grenze | 300 $ | 5 % | 16,0 Monate | 1.794 $ |
+> | | 2 Payouts, am Buffer | 2.125 $ | 58 % | 10,5 Monate | 3.587 $ |
+> | FN 50k | frisch funded | 1.500 $ | 1 % | 6,6 Monate | 1.809 $ |
+> | | 225 $ über der Grenze | 225 $ | 0 % | 18,8 Monate | 1.061 $ |
+> | | 2 Payouts | 400 $ | 0 % | 15,2 Monate | 1.308 $ |
+> | FFN 150k | frisch funded | 4.700 $ | 77 % | 7,8 Monate | 6.369 $ |
+> | | 705 $ über der Grenze | 705 $ | 25 % | 20,3 Monate | 4.452 $ |
+> | | 2 Payouts, am Buffer | 5.100 $ | 82 % | 1,9 Monate | 7.105 $ |
+>
+> „12 Monate ohne Bust“ zählt die ganze Kette samt Nachkauf, deshalb ist FundedNext fast null.
+>
+> **Auch neu:** die Tageszähler der laufenden Eval (größter Gewinntag, Gewinntage) gehen bei FundedNext und FFN als Startzustand in die Rechnung ein, als Näherung aus den Tagesschluss-Ständen.
+>
+> **Offen:** kein echtes Funded-Konto geprüft (ob es eine neue Konto-Nummer bekommt und wie der RiskGuard dort eingestellt wird, ist ungeklärt). Der RiskGuard meldet „Eval-Ziel erreicht“ nach seiner eigenen Rechnung, das ist nicht dasselbe wie „Firma hat freigeschaltet“. Diese Runde hat kein Gegenleser gelesen.
+
 ## 1. Was heute schiefläuft (Anlass 12.10.2026)
 
 | Problem | Beispiel von heute |
