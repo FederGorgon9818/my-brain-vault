@@ -113,6 +113,24 @@ und `work_types.py` dieselben Ketten tragen). Volle Doku: [[Arbeits-Workflow (Au
 
 Aus der CLAUDE.md übernommen (05.10.2026): Regeln und Overrides, die nur dort standen.
 
+**Konto-Sperre in `guard_chain.py` (Regel Max, 13.10.2026)**
+
+Anlass: am 12.10.2026 wurde die Belegung von FFN2 aus dem Kopf falsch angenommen und jede Konto-Frage von Hand neu gerechnet (zwei Quant-Läufe, rund 840.000 Tokens). Seitdem gibt es die [[Konto-Karten (Rechnung je Konto automatisch)]] und den Agenten `konto-analyst`, der sie liest. Damit er wirklich läuft, zwei Stufen:
+
+- **Erinnern (Prompt-Hook, `agent_triggers.py`, Zeile `konto`):** erkennt Konto-Fragen in Max' Wortwahl: Kontoname (FFN, FFN1, FFN2, FN1, FN2, E8 50k/150k, „150k Konten“, „FFN-Accounts“, „das Konto“, „einem der beiden Accounts“) zusammen mit Größe, k1 oder k2, Hochstufen, Bein, Belegung, Nachzug, Payout, Bust, Überleben, Puffer, Drawdown, Inaktivität, Auflage, Deploy, einspielen, drauf spielen, Config, Tagesstopp, „lohnt“, „rechne“. Gemessen an 15 echten Konto-Prompts: 10 Treffer (erste Fassung 1 von 15). Der Stop-Hook lässt die Session einmal nicht enden, wenn der Trigger gefeuert hat und der Agent nie lief.
+- **Blocken (`guard_chain.py`, Aktions-Gate 5, Funktion `_konto_write`):** abgelehnt wird, solange `konto-analyst` in der Session nicht lief:
+  - Edit oder Write auf `maxlab_book_host.live*.json`, `maxlab_riskguard*.cfg`, `cfg_vorlage_*.txt`
+  - Upload per `scp` auf die Box, sobald eine Konto-Datei, der NT8-Ordner oder ein Staging-Ordner im Kommando vorkommt (auch mit Variable, Schleife, Wildcard, ganzem Ordner)
+  - `copy`, `Copy-Item`, `cp`, `mv` mit einer Konto-Datei als Ziel
+  - `sed -i`, `Set-Content`, `Add-Content`, `Out-File`, Python-Schreiben (`open(...,"w")`, `json.dump`, `write_text`) zusammen mit einer Konto-Datei
+  - Einspiel-Skripte (`-File ...einspielen/einrichten...ps1`) und das Anlegen eines Skripts, dessen Inhalt eine Konto-Datei schreibt
+  - **Frei bleibt:** Download von der Box, Kopie oder Umleitung in Scratch/Temp, Backup als `.bak`, `account_sync`, `ticket_tool.py`, `receipt.py`, reines Lesen (`Get-ChildItem`, `type`, `findstr`, `diff`). Sim- und Beispiel-Configs.
+- **PowerShell-Tool (Entscheidung Max 13.10.2026):** `guard_chain.py` ist in `.claude/settings.json` jetzt auch für das PowerShell-Tool angemeldet (Matcher `Edit|Write|MultiEdit|Bash|PowerShell|WebSearch|WebFetch`, Sicherung `settings.json.bak-20261013-konto`). Damit greift die Konto-Sperre auch auf dem Weg, über den der FFN1-Deploy vom 11.10. lief. **Noch offen:** die älteren Sperren in `guard_chain.py` und `guard_bash.py` (Box-Sync ohne Regressionstest, `--enqueue`, `book_state`, Quittungs-Gate) prüfen weiter nur das Bash-Tool, das ist ein eigenes Ticket. Live in einer frischen Session noch nicht provoziert (in der Bau-Session war der Agent schon gelaufen).
+- **Pflichtschritt in der Deploy-Kette (Entscheidung Max 13.10.2026):** Auftrags-Typ `deploy` hat jetzt die Kette `engine-regression-tester`, `konto-analyst` (`work_types.py`, `kette.js`). Reiner Code-Deploy ohne Konto-Bezug: `--skip konto-analyst` mit einem Satz Grund.
+- **Ausweg:** `python .claude/hooks/receipt.py --sid <id> --skip konto-analyst --why "<ein Satz>"`, wird wie jeder Ausweg gezählt.
+- **Selbsttest:** `python .claude/scripts/test_konto_gate.py` (52 Fälle: Prompts, Dateien, Kommandos, mit den echten Wegen vom 04.10., 08.10. und 11.10. als Kanarien und den Fehlalarm-Quellen). Gegengelesen vom verdict-auditor am 13.10.2026: erste Fassung „nicht fertig“ (griff bei 3 von 16 echten Wegen), zweite Fassung greift bei allen 16 nachgestellten.
+- **Grenzen:** der Hook erzwingt, dass der Agent lief, nicht dass seine Karte frisch ist. „Gelaufen“ gilt einmal je Session. Eine Konto-Frage, die nur im Fließtext beantwortet wird, hängt allein am Erinnern. Rechnet ein Subagent ein Konto neu, greift nichts.
+
 **Todesurteil-Gate in `guard_chain.py` (Regel Max, 22.09.2026)**
 - Ein Todesurteil im Strategie-Logbuch wird abgelehnt, solange die vier Pflichtfelder fehlen (Reichweite, Kategorie, Wiedervorlage, Stempel).
 - Geprüft wird nur der **Urteilsblock** (`Verdikt:`/`Urteil:`/`Fazit:`), nicht der Fließtext. Rückblicke und Zitate fremder Urteile lösen nichts aus.

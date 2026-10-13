@@ -99,11 +99,13 @@ TYPES = [
     ),
     dict(
         id="deploy", label="Deploy / Box-Sync / Live",
-        chain=["engine-regression-tester"],
+        chain=["engine-regression-tester", "konto-analyst"],
         also=["strategy-auditor", "box-ops"],
         gate=True,
         what="Ohne Golden-Master rechnet die Box nach dem Sync mit veraenderter Engine weiter, "
-             "ohne dass es jemand merkt (Regel 27.08.2026, Marker regression_ok).",
+             "ohne dass es jemand merkt (Regel 27.08.2026, Marker regression_ok). Ohne konto-analyst "
+             "geht eine Aenderung auf ein Konto, dessen Stand nur aus dem Kopf angenommen wurde "
+             "(Regel Max 13.10.2026; reiner Code-Deploy ohne Konto-Bezug: --skip konto-analyst mit Grund).",
     ),
     dict(
         id="ui", label="Oberflaeche bauen (Hub / Lab / Report)",

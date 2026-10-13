@@ -72,6 +72,91 @@ def _is_ui_config(tool, ti, path):
     return False
 LOGBOOK_FILE = r"strategie-logbuch\.md$"
 BOOK_FILE = r"book_state(_next)?\.json$"
+# Konto-Konfiguration (Regel Max, 13.10.2026): Belegung und Groesse EINES Kontos stehen nicht in
+# book_state, sondern in der Host-JSON und der RiskGuard-cfg je Konto. Wer die schreibt oder auf
+# die Box kopiert, aendert, was das Konto handelt -> vorher liest konto-analyst die Konto-Karten.
+# Anlass: 12.10.2026, FFN-Belegung im Kopf falsch angenommen, zwei Quant-Laeufe von Hand.
+KONTO_FILE = r"(maxlab_book_host\.live[^/]*\.json|maxlab_riskguard[^/]*\.cfg|cfg_vorlage_[^/]*\.txt)$"
+# Kommandos: zweite Fassung nach dem verdict-auditor vom 13.10.2026. Die erste verlangte den
+# Dateinamen im selben Segment wie `scp` und sah nur das Bash-Tool: von 16 echten Wegen griff
+# sie bei 3. Durchgerutscht waeren u.a. der FFN1-Deploy vom 11.10. (PowerShell-Tool), die
+# Schleife vom 04.10. (Dateiname in einer Variable) und die Einspiel-Skripte vom 08.10.
+SHELL_TOOLS = ("Bash", "PowerShell")
+_KONTO_NAME = re.compile(r"maxlab_book_host\.live|maxlab_riskguard[\w.\-]*\.cfg|cfg_vorlage_", re.I)
+_KONTO_SKRIPT = re.compile(r"-file\s+\S*(einspielen|einrichten|kontoname_fix)\S*\.ps1", re.I)
+_KONTO_VERB = re.compile(r"sed\s+-i|set-content|add-content|out-file|json\.dump|write_text|"
+                         r"open\([^)\n]*,\s*[\"'][wa]", re.I)
+_KONTO_COPY = re.compile(r"\b(scp|pscp|copy-item|move-item|copy|move|cp|mv|robocopy)\b([^\n;|&]*)", re.I)
+_REMOTE = re.compile(r"[\w.\-]+@[\w.\-]+:")
+_KONTO_FREI_CMD = re.compile(r"(ticket_tool|receipt|mark)\.py\b", re.I)
+_NT8_ZIEL = re.compile(r"ninjatrader 8|nt8_staging", re.I)
+_ARG = re.compile(r"(?:\"[^\"]*\"|'[^']*'|[^\s\"'])+")
+_KONTO_FREI_ZIEL = re.compile(r"\$\{?temp|\$env:temp|/scratch|\.bak\b", re.I)
+# Einspiel-Skript: Write/Edit einer Skriptdatei, deren INHALT eine Konto-Datei schreibt oder kopiert
+_SKRIPT_FILE = re.compile(r"\.(ps1|py|sh|cmd|bat)$", re.I)
+
+
+def _konto_frei(z):
+    return _free(z) or bool(_KONTO_FREI_ZIEL.search(z))
+
+
+def _konto_skript(tool, ti, path):
+    """Ein Skript ausserhalb von .claude/, das spaeter eine Konto-Datei schreibt (Fund 12.10. `einspielen.py`)."""
+    if not path or not _SKRIPT_FILE.search(path) or "/.claude/" in path or "/engine/konten/" in path:
+        return False
+    if tool == "Write":
+        text = ti.get("content") or ""
+    else:
+        edits = ti.get("edits") if tool == "MultiEdit" else [ti]
+        text = " ".join((e.get("new_string") or "") for e in edits or [])
+    return bool(_KONTO_NAME.search(text)) and bool(
+        _KONTO_VERB.search(text) or re.search(r"\b(scp|pscp|copy-item|move-item)\b", text, re.I))
+
+
+def _konto_write(cmd):
+    """True, wenn ein Shell-Kommando die Konfiguration eines Kontos schreibt oder auf die Box bringt.
+
+    Lesen bleibt frei: Download von der Box, `type ... > scratch`, Backup in den Scratch-Ordner,
+    Ticket-Notizen, die einen Dateinamen nur erwaehnen.
+    """
+    if not cmd or _KONTO_FREI_CMD.search(cmd):
+        return False
+    if _KONTO_SKRIPT.search(cmd):
+        return True
+    name = bool(_KONTO_NAME.search(cmd))
+    for m in _KONTO_COPY.finditer(cmd):
+        verb, rest = m.group(1).lower(), m.group(2)
+        rem = list(_REMOTE.finditer(rest))
+        if verb in ("scp", "pscp"):
+            if not rem:
+                continue
+            # Ziel ist das letzte Argument. Ein Argument darf Anfuehrungszeichen mit Leerzeichen
+            # enthalten (`user@box:'C:/.../NinjaTrader 8/'`). Upload = Ziel ist entfernt.
+            args = [a for a in _ARG.findall(rest) if not re.match(r"-\w", a)]
+            upload = len(args) >= 2 and bool(_REMOTE.search(args[-1]))
+            if upload and (name or _NT8_ZIEL.search(rest) or _NT8_ZIEL.search(cmd)):
+                return True
+            continue
+        # lokales oder entferntes copy/move: Ziel = letzter Pfad im Segment
+        teile = _ARG.findall(rest)
+        if len(teile) >= 2 and name:
+            ziel = norm(teile[-1].strip("\"'"))
+            if _KONTO_NAME.search(ziel) and not _konto_frei(ziel):
+                return True
+            # Quelle ist eine Konto-Datei und das Ziel liegt im NT8-Ordner oder auf der Box
+            if _KONTO_NAME.search(rest) and (_NT8_ZIEL.search(ziel) or "documents" in ziel) and not _konto_frei(ziel):
+                return True
+    if name and _KONTO_VERB.search(cmd):
+        ziele = [norm(x) for x in _bash_write_targets(cmd)]
+        konto_ziele = [z for z in ziele if _KONTO_NAME.search(z)]
+        if konto_ziele:
+            return any(not _konto_frei(z) for z in konto_ziele)
+        return True      # Schreibverb + Konto-Datei, Ziel steckt in einer Variable
+    for z in (norm(x) for x in _bash_write_targets(cmd)):
+        if _KONTO_NAME.search(z) and not _konto_frei(z):
+            return True
+    return False
+
 
 # Subagents, die SELBST ins Web duerfen (Gate 1 greift fuer sie nicht). research-scout
 # und alpha-scout tragen die Cache-Pflicht in ihrer eigenen Definition (Research-Cache
@@ -379,6 +464,25 @@ def main():
             if agent not in used and not _skipped(rec, agent):
                 _deny_action("buch", agent, sid,
                              "Das aendert direkt, was live gehandelt wird, aber", caller)
+
+    # 5. Konto-Konfiguration ohne konto-analyst (Regel Max, 13.10.2026)
+    konto_touched = (tool in ("Edit", "Write", "MultiEdit") and path
+                     and (re.search(KONTO_FILE, path) or _konto_skript(tool, ti, path))) or \
+        (tool in SHELL_TOOLS and _konto_write(cmd))
+    if konto_touched and caller != "konto-analyst" and "konto-analyst" not in used \
+            and not _skipped(rec, "konto-analyst"):
+        deny(
+            "STOP (Hook, Konto-Konfiguration): das aendert, was ein einzelnes Konto handelt "
+            "(Host-JSON oder RiskGuard-cfg), aber `konto-analyst` ist in dieser Session noch "
+            "nicht gelaufen. Regel Max 13.10.2026: vor jeder Groessen- oder Belegungsaenderung "
+            "auf einem Konto liest der Agent die Konto-Karte (Register gegen Box, Rest-Puffer, "
+            "Hochstuf-Ampel, Inaktivitaet, offene Firmen-Auflagen), statt dass der Stand aus dem "
+            "Kopf angenommen wird (12.10.2026: FFN-Belegung falsch angenommen)."
+            f"\n\nEntweder jetzt `konto-analyst` einschalten und die Aktion wiederholen -- oder "
+            f"die Ausnahme begruenden:\n"
+            f"  python .claude/hooks/receipt.py --sid {sid} --skip konto-analyst --why \"<ein Satz>\""
+            + _sub_hint(caller)
+        )
 
     # ---------------- B) Quittungs-Gate -----------------------------------
     # Typ gesetzt, Kette offen, Gate-Typ -> schreibende Aktionen gesperrt.

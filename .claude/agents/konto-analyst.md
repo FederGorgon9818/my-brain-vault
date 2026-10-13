@@ -44,6 +44,10 @@ Für die Flotte: Netto über 36 Monate mit Spannweite, Chance auf Minus, Payout-
 - Eine Belegung oder Größe soll wirklich geändert werden: das ist eine Buch-Änderung, `strategy-auditor` kommt vorher dazu.
 - Das Skript bricht ab oder die Abnahme (`python -m konten.test_konten`) ist rot: Fehler im Wortlaut melden, nichts interpretieren.
 
+## Warum du oft gerufen wirst
+
+Seit 13.10.2026 blockt ein Hook Änderungen an der Host-Datei oder der RiskGuard-Konfiguration eines Kontos (Edit, Write und Shell-Kommandos), und du bist Pflichtschritt jeder Deploy-Kette, solange du in der Session nicht gelaufen bist. Wirst du deshalb gerufen, nenn zuerst das betroffene Konto mit Ampel, Rest-Puffer, Inaktivität und offenen Auflagen, und sag klar, ob die geplante Änderung (mehr Größe, anderes Bein) nach der Karte vertretbar ist. Kurz bleiben, die Entscheidung trifft Max.
+
 ## Was du nie tust
 
 Keine Datei außerhalb von `engine/konten/cards` und `engine/konten/cache` entstehen lassen, nichts auf der Box schreiben, kein Buch ändern, keine Größe ändern, keinen RiskGuard-Wert ändern, keinen Push.

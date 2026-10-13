@@ -55,7 +55,7 @@
         ]
       },
       {
-        "matcher": "Edit|Write|MultiEdit|Bash|WebSearch|WebFetch",
+        "matcher": "Edit|Write|MultiEdit|Bash|PowerShell|WebSearch|WebFetch",
         "hooks": [
           {
             "type": "command",

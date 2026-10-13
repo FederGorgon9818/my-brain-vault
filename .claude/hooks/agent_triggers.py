@@ -61,8 +61,11 @@ TRIGGERS = [
      r"\b(l[aä]uft alles|check die box|box-?status|runner (steht|h[aä]ngt|l[aä]uft)|heartbeat)\b",
      "Box-Frage: box-ops macht den Rundgang"),
     ("konto", ["konto-analyst"], ("user",),
-     r"\b(konto-?karten?|wie steht (das )?(konto|ffn ?[12]|fn ?[12]|e8)|darf \S+ (schon )?auf k[23]|was bringt \S+ auf (ffn ?[12]|fn ?[12]|e8))\b",
-     "Konto-Frage: konto-analyst liest die Konto-Karten statt neu zu rechnen (12.10.2026)"),
+     # Kontoname plus Stichwort, in beiden Reihenfolgen. Wortwahl nach Max' echten Prompts
+     # (verdict-auditor 13.10.2026: die erste Fassung traf 1 von 15, es fehlten u.a. "Account",
+     # "ffn" ohne Ziffer, "150k konten", deploy/einspielen/drauf spielen).
+     r"\b(?:konto-?karten?|wie steh(?:t|en) (?:das |die |mein |meine )?(?:konto|konten|accounts?|ffn ?[12]?|fn ?[12]|e8)|was bringt \S+ auf (?:ffn ?[12]?|fn ?[12]|e8)|darf \S+ (?:schon )?auf k[23]\b|k1 oder k2\b|(?:ffn ?[12]?|fn ?[12]|e8[ -]?(?:50|150) ?k?|(?:150|50) ?k[- ]?(?:ffn[- ])?(?:konto|konten|accounts?)|(?:das|dem|den|welches|welchem|jedes|jedem|pro|je|beiden|einem der beiden|einem) (?:ffn[- ])?(?:konto|accounts?)|die (?:konten|accounts)|ffn[- ]accounts?).{0,80}\b(?:k[123]\b|k1 oder k2|gr[oö](?:ss|ß)e\b|hochstuf\w*|bein\w*|belegung|nachzieh\w*|nachzug|payout\w*|bust\w*|[uü]berleb\w*|puffer|drawdown|inaktiv\w*|auflage\w*|lohnt|rechne\w*|durchrechnen|deploy\w*|einspiel\w*|drauf ?spiel\w*|config\w*|tagesstopp|fixedqty|was machen wir|mit auf)|(?:k[123]\b|k1 oder k2|gr[oö](?:ss|ß)e\b|hochstuf\w*|bein\w*|belegung|nachzieh\w*|nachzug|payout\w*|bust\w*|[uü]berleb\w*|puffer|drawdown|inaktiv\w*|auflage\w*|lohnt|rechne\w*|durchrechnen|deploy\w*|einspiel\w*|drauf ?spiel\w*|config\w*|tagesstopp|fixedqty|was machen wir|mit auf).{0,80}\b(?:ffn ?[12]?|fn ?[12]|e8[ -]?(?:50|150) ?k?|(?:150|50) ?k[- ]?(?:ffn[- ])?(?:konto|konten|accounts?)|(?:das|dem|den|welches|welchem|jedes|jedem|pro|je|beiden|einem der beiden|einem) (?:ffn[- ])?(?:konto|accounts?)|die (?:konten|accounts)|ffn[- ]accounts?))",
+     "Konto-Frage: konto-analyst liest die Konto-Karten statt neu zu rechnen (12.10.2026, erweitert 13.10.)"),
     ("live", ["live-reconciler"], ("user",),
      r"\b(passt das konto|kontostand|live vs\.? backtest|fills? (heute|gestern)|wie lief der tag live)\b",
      "Live-Abgleich: live-reconciler vergleicht NT8-Fills mit dem Backtest"),
