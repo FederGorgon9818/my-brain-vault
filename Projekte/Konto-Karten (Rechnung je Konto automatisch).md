@@ -43,6 +43,25 @@ status: gebaut und abgenommen (12.10.2026), offene Punkte siehe Stand-Kasten
 > 6. E8 150k ist im Baukasten und in den Regeln, hat aber noch kein Konto.
 > 7. Engine-Dateien sind nicht im Git (trading-data ist ein Backup-Repo), Sicherungen der geänderten Lab-Dateien liegen als `*.bak_konten` daneben.
 
+> [!success] Nachtrag 13.10.2026: echter Kontostand, Inaktivität, Firmen-Auflagen
+> **Kontostand:** jede Karte liest vor dem Lauf Kontostand und Hoch je Konto von der Box (RiskGuard-Dateien, nur lesend) und rechnet zwei Sichten: „ab heutigem Stand“ (Lesespalte) und „ab frischem Start“. Gerechnet wird ab Tagesstart-Stand, auf ein Raster gerundet (50k: 100 $, 150k: 250 $), damit nicht jeder Dollar eine Neurechnung auslöst. Die Karte zeigt den exakten Stand daneben.
+>
+> | Konto | Kontostand | Hoch | Rest-Puffer (voll) | in Tagesschwankungen | Rest-Ziel |
+> |---|---|---|---|---|---|
+> | E8 50k | 49.693 $ | 50.403 $ | 1.290 $ (2.000) | 2,2 | 3.307 $ |
+> | FN1 | 50.610 $ | 51.322 $ | 788 $ (1.500) | 1,4 | 1.890 $ |
+> | FN2 | 50.628 $ | 51.335 $ | 792 $ (1.500) | 1,4 | 1.872 $ |
+> | FFN1 | 149.919 $ | 150.000 $ | 4.619 $ (4.700) | 8,0 | 9.081 $ |
+> | FFN2 | 149.880 $ | 150.000 $ | 4.580 $ (4.700) | 8,0 | 9.120 $ |
+>
+> **Inaktivität** (historisch, laufendes Fenster je Konto, Wirkung in der Simulation, eigener Grund in der Ampel): FFN verlangt 3 Handelstage je 29 Tage. FFN1 und FFN2 hatten bis 13.10. noch keinen abgeschlossenen Handelstag, bis 06.11.2026 braucht jedes drei (AP330). FundedNext unkritisch (11 Handelstage im Fenster). E8: falls „1 Trade je Woche“ rollierend über 7 Tage gilt, hätte das Buch historisch 75 von 3.863 Fenstern ohne Handelstag. Ob E8 die Kalenderwoche oder rollierend zählt, ist nicht aus der Primärquelle belegt.
+>
+> **Firmen-Auflagen, gerechnet:** News-Sperre im Funded (FFN kostet rund 550 $ in 36 Monaten, E8 rund 255 $), Tagesgewinn-Deckel des RiskGuard (FFN nie berührt, FN an 19 von 1.621 Tagen), Kontraktlimit (k2 auf FFN handelbar, k3 mit der heutigen RiskGuard-Einstellung nicht), Copy-Zählung FFN (2 von 5). HFT-Regel nur als Obergrenze: 3,3 % der Trades der FFN-Belegung enden in der Einstiegsminute. Als Text bleiben HFT-Zählbasis, IP, Gap-Klauseln.
+>
+> **Abnahme:** 9 Tests grün (drei neue für Kontostand, Inaktivität, News-Sperre), die 29 Zahlen des Quant-Laufs weiter auf unter 1 $ genau.
+>
+> **Weiter offen:** Daten bis Oktober (AP356, 13.10. abends). Funded-Konten ab heutigem Stand (die Rechenkerne kennen dort keinen Startzustand, heute sind alle Konten in der Eval). Consistency-Zähler der laufenden Eval werden nicht übernommen. E8- und FN-Inaktivitätsregel aus der Primärquelle bestätigen. Diese Runde hat kein Gegenleser gelesen, geprüft ist sie über die Tests.
+
 ## 1. Was heute schiefläuft (Anlass 12.10.2026)
 
 | Problem | Beispiel von heute |
