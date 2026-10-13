@@ -5,18 +5,18 @@ tags:
   - agent
   - konzept
 erstellt: 2026-10-13
-status: Konzept, Entscheidung Max offen (nichts gebaut, nichts gerechnet)
+status: Konzept entschieden (Max 13.10.2026), Bau offen, nächster Schritt Machbarkeit (AP358)
 ---
 # Vola-Prognose Agent: wohin läuft die Schwankung, und was heißt das für die Größe?
 
 ⬅️ [[Hochstuf-Regel je Konto (Entwurf)]] · [[Konto-Karten (Rechnung je Konto automatisch)]] · [[Firm-Regeln je Konto]] · [[Großes Ziel]]
 
 > [!summary] In drei Sätzen
-> Heute entscheidet eine Zahl über die Größe: die Schwankung des eigenen Kontobuchs über 60 Buch-Tage. Die ist sicher, aber träge, sie hängt rund 16 Wochen nach. Der Vola-Agent sagt dazu, wie wild die **kommenden** Wochen voraussichtlich werden und wann die träge Zahl die Schwelle erreichen kann, und er darf uns nur vorsichtiger machen, nie mutiger.
+> Heute entscheidet eine Zahl über die Größe: die Schwankung des eigenen Kontobuchs über 60 Buch-Tage. Die ist sicher, aber träge, sie hängt rund 16 Wochen nach. Der Vola-Agent sagt dazu, wie wild die **kommenden** Wochen voraussichtlich werden und wann die träge Zahl die Schwelle erreichen kann, nach demselben Sicherheitsstandard wie die gemessene Zahl. Er darf früher grünes Licht geben und früher warnen, die Größe ändert aber nur Max.
 
 Anlass: Max, 13.10.2026 („Time Series Vola-Prognose können wir machen, um die Sizing-Entscheidung zu erleichtern“). Das Konzept beantwortet die offene Frage 5 aus der [[Hochstuf-Regel je Konto (Entwurf)]]: träge Messung oder schnelle Schätzung?
 
-**Stand:** Entwurf Claude, am 13.10. vom Quant-Team gegengelesen (nur Methode, nichts gerechnet). Deren Korrekturen sind eingearbeitet und in Abschnitt 11 aufgelistet.
+**Stand:** Entwurf Claude, am 13.10. vom Quant-Team gegengelesen (nur Methode, nichts gerechnet), Korrekturen in Abschnitt 11. **Max hat am 13.10. alle sechs Fragen entschieden (Abschnitt 9).** Wichtigste Änderung gegenüber dem Entwurf: die Schätzung darf nicht nur bremsen, sondern auch hochstufen.
 
 ## 1. Welche Frage der Agent beantwortet
 
@@ -28,24 +28,33 @@ Genau drei, immer dieselben:
 
 Er beantwortet **nicht**: ob eine Strategie gut ist, ob ein Bein ins Buch kommt, wie ein Konto insgesamt dasteht (das bleibt `konto-analyst`).
 
-## 2. Die wichtigste Regel: die Prognose darf nur bremsen
+## 2. Die wichtigste Regel: ein Sicherheitsstandard, zwei Wege dorthin
 
-| Richtung | Was entscheidet | Rolle der Prognose |
-|---|---|---|
-| **Hochstufen** (k1 auf k2) | die gemessene 60-Tage-Zahl, wie am 12.10. beschlossen | Veto: hochgestuft wird nur, wenn auch die **Obergrenze** der Prognose (der Wert, der nur in einem von zehn Fällen überschritten wird) unter der Rückstuf-Schwelle liegt |
-| **Zurückstufen** (k2 auf k1) | Messung **oder** Prognose, was zuerst anschlägt | Frühwarnung: darf das Zurückstufen auslösen, bevor die träge Zahl es merkt |
-| **Planung** (wann kommt k2, wann lohnt ein Kauf) | Prognose | hier ist sie die Hauptzahl, weil nichts kaputtgehen kann |
+**Entscheidung Max, 13.10.2026:** die Schätzung darf uns auch mutiger machen, wenn wir damit schneller ans Ziel kommen und das Risiko gleich bleibt.
 
-Grund: eine falsche Prognose nach unten würde uns zu früh groß machen, das kostet den Track Record. Eine falsche Prognose nach oben kostet nur ein paar Wochen Tempo. Die beiden Fehler sind nicht gleich teuer, deshalb zählt beim Hochstufen nicht der erwartete Wert, sondern die Obergrenze.
+**Der Standard:** ein 150k-Konto darf auf k2, solange die Chance auf einen Bust in 12 Monaten **höchstens 30 %** ist. Für FFN 150k entspricht das der beschlossenen Schwelle von 235 $ Tagesschwankung (bei gemessenen 235 $ liegt die Bust-Chance grob bei 25 %, im Pechfall der Messung bei etwa 35 %). Die 235 $ bleiben als Messlatte bestehen. Die genaue Dollar-Schwelle je Konto zu 30 % rechnet das Quant-Team in Schritt 0.
 
-**Fällt die Prognose aus (alte Daten, Modell durchgefallen), ist Hochstufen gesperrt.** Ein stummes Modell darf das Veto nicht heimlich entfernen.
+| Richtung | Was passiert |
+|---|---|
+| **Hochstufen** (k1 auf k2) | Erlaubt, wenn **entweder** die gemessene 60-Tage-Zahl unter der Schwelle liegt (Regel vom 12.10.) **oder** der vorsichtige Wert der Schätzung (so unruhig wird es nur in einem von zehn Fällen) unter der Schwelle liegt. Der zweite Weg spart die rund 16 Wochen Wartezeit der trägen Zahl. |
+| **Warnung** | Zeigt die Schätzung nach oben, meldet das System. Es stellt nichts von selbst kleiner. |
+| **Zurückstufen** | Entscheidet Max. Das System meldet nur. |
+| **Planung** (wann kommt k2, Zeit bis 50k) | Schätzung als Hauptzahl. |
+
+**Zwei Bedingungen, damit der schnelle Weg gilt:**
+1. Die Schätzung hat die Rückrechnung ab 2016 bestanden (Abschnitt 4). Ergibt die Abnahme „unentscheidbar“, bleibt die Schätzung Warnung und Planungshilfe, und es entscheidet allein die gemessene Zahl.
+2. Es zählt immer der vorsichtige Wert, nie der mittlere. Sonst wäre der Standard nicht mehr derselbe.
+
+**Fällt die Schätzung aus** (Daten zu alt, Modell durchgefallen), gilt allein die gemessene Zahl nach der Regel vom 12.10. Der Statistiker hatte für diesen Fall eine Sperre vorgeschlagen. Mit Max' Entscheidung ist die Messung ein eigener, vollwertiger Weg, deshalb keine Sperre.
+
+Einwand, der bleibt: die Konten handeln dieselben Tage. 30 % gilt praktisch für die ganze Flotte auf einmal, nicht je Konto getrennt. Und die Simulation rechnet News-Sperre, Inaktivität und FFN-Sonderregeln nicht mit, echte 30 % sind eher 35.
 
 ## 3. Wie gerechnet wird (drei Schichten, einfach zuerst)
 
 Gleiches Prinzip wie bei den Konto-Karten: **ein festes Skript rechnet, der Agent liest nur.**
 
 Es gibt zwei verschiedene Zielgrößen, die man nicht vermischen darf:
-- **Die kommenden Tage** (wie wild wird es wirklich): daran hängt das Bust-Risiko, also Veto und Frühwarnung.
+- **Die kommenden Tage** (wie wild wird es wirklich): daran hängt das Bust-Risiko, also der schnelle Weg zum Hochstufen und die Warnung.
 - **Der künftige Stand der 60-Tage-Zahl:** reine Planungsgröße („wann kann die Schwelle fallen“).
 
 **Schicht A: Was schon feststeht (reine Arithmetik).**
@@ -64,7 +73,7 @@ Technischer Hinweis für den Bau: B und C rechnen in Varianz (quadrierte Schwank
 ## 4. Woran wir merken, ob die Prognose etwas taugt
 
 > [!warning] Ehrlich vorweg (Statistiker, 13.10.)
-> Die Beweislage ist dünn und wird es bleiben. In knapp 11 Jahren Daten stecken nur etwa 35 unabhängige 16-Wochen-Fenster und 6 bis 8 echte Vola-Phasen. Dass die 235 $ unterschritten wurden, kam vermutlich nur eine Handvoll Mal vor. Ob das Veto „richtig“ bremst, lässt sich damit wahrscheinlich nicht beweisen. Das ist ein weiterer Grund, warum die Prognose nur bremsen darf.
+> Die Beweislage ist dünn und wird es bleiben. In knapp 11 Jahren Daten stecken nur etwa 35 unabhängige 16-Wochen-Fenster und 6 bis 8 echte Vola-Phasen. Dass die 235 $ unterschritten wurden, kam vermutlich nur eine Handvoll Mal vor. Ob das Veto „richtig“ bremst, lässt sich damit wahrscheinlich nicht beweisen. Deshalb bekommt die Schätzung das Recht hochzustufen erst nach bestandener Abnahme. Bei „unentscheidbar“ bleibt sie Warnung und Planungshilfe.
 
 **Der richtige Gegner** ist nicht „bleibt wie es ist“ (den schlägt schon das Herausrollen alter Tage rein mechanisch), sondern:
 
@@ -78,18 +87,18 @@ Schlägt das Modell (B und C) diese beiden nicht, entfallen B und C ersatzlos. D
 **Abnahme, vorab festgelegt:**
 - Rückrechnung ab 2016, immer nur mit Daten, die es zu dem Zeitpunkt schon gab.
 - Festes Fehlermaß und fester Test (QLIKE auf die Varianz, Vergleichstest mit Block-Bootstrap, Blöcke mindestens 16 Wochen), Mindestvorteil 10 % gegenüber dem besseren Gegner. Sonst zählt man überlappende Wochenprognosen als 550 Beobachtungen, obwohl es 35 sind.
-- Die Obergrenze hält: in höchstens rund einem von zehn Fällen lag die echte Schwankung darüber. Nur diese Grenze bremst, also wird nur sie geprüft. Toleranz vorab nennen, bei 35 Beobachtungen sind rund 7 Prozentpunkte Unschärfe normal.
-- Veto-Test: erst zählen, wie viele Hochstuf-Momente es seit 2016 gegeben hätte. Sind es einstellig viele, heißt das Ergebnis „unentscheidbar“ und nicht „bestanden“.
+- Die Obergrenze hält: in höchstens rund einem von zehn Fällen lag die echte Schwankung darüber. An dieser Grenze hängt das Hochstufen, also wird sie geprüft. Toleranz vorab nennen, bei 35 Beobachtungen sind rund 7 Prozentpunkte Unschärfe normal.
+- Hochstuf-Test: erst zählen, wie viele Hochstuf-Momente es seit 2016 gegeben hätte. Sind es einstellig viele, heißt das Ergebnis „unentscheidbar“ und nicht „bestanden“.
 
-**Dauerkontrolle danach:** laufende Fehlerbilanz über 52 Wochen gegen eine Schwelle aus der Rückrechnung. (8 Wochen wären nur zwei unabhängige Prognosen, also Münzwurf.) Fällt das Modell durch: Prognose weg, Hochstufen gesperrt, bis Max entscheidet.
+**Dauerkontrolle danach:** laufende Fehlerbilanz über 52 Wochen gegen eine Schwelle aus der Rückrechnung. (8 Wochen wären nur zwei unabhängige Prognosen, also Münzwurf.) Fällt das Modell durch: Schätzung weg, es gilt allein die gemessene Zahl, Meldung an Max.
 
 ## 5. Der Agent: Ablauf
 
 Name: `vola-analyst`, Modell sonnet, nur Lesen plus das eine feste Skript.
 
 1. **Karte holen.** Skript aufrufen, es rechnet nur bei neuem Fingerabdruck (neue Daten, andere Belegung, neuer Modellstand). Sonst kommt die gespeicherte Vola-Karte sofort.
-2. **Frische prüfen.** Sind die Marktdaten älter als 5 Handelstage, ist das die erste Zeile der Antwort, es gibt keine Prognose und Hochstufen ist gesperrt.
-3. **Fehlerbilanz lesen.** Modell durchgefallen? Dann nur Messung und Schicht A, Hochstufen gesperrt.
+2. **Frische prüfen.** Sind die Marktdaten älter als 5 Handelstage, ist das die erste Zeile der Antwort, es gibt keine Schätzung und es gilt allein die gemessene Zahl.
+3. **Fehlerbilanz lesen.** Modell durchgefallen? Dann nur Messung und Schicht A.
 4. **Feste Aussage liefern** (Abschnitt 6).
 5. **Abgeben**, wenn es knapp wird: Grenzfall geht ans Quant-Team. Soll eine Größe wirklich geändert werden, kommt `konto-analyst` (Pflicht per Hook seit 13.10.) und vor dem Hochstufen der `strategy-auditor`.
 
@@ -104,13 +113,13 @@ Je 150k-Konto genau ein Satz aus sechs festen Zuständen, dazu drei Zahlen:
 | 🔴 hoch, bleibt | „Schwankung hoch, die Schwelle ist in den nächsten 8 Wochen rechnerisch nicht erreichbar.“ | k1, nichts zu tun |
 | 🟡 fällt | „Schwankung fällt, Schwelle frühestens in N Buch-Tagen (etwa Kalenderwoche X bis Y).“ | k1, Termin vormerken |
 | 🟠 Grenzfall | „Messung liegt innerhalb ihrer eigenen Unschärfe um die Schwelle.“ | Quant-Team, nicht selbst entscheiden |
-| 🟢 bestätigt | „Messung samt Unschärfe unter der Schwelle, Obergrenze der Prognose unter der Rückstuf-Schwelle.“ | Hochstufen ist Wochenend-Thema für Max |
-| ⚠️ steigt | „Konto ist auf k2 und die Prognose kreuzt die Rückstuf-Schwelle.“ | Zurückstufen prüfen, sofort melden |
-| ⚫ blind | „Daten zu alt oder Modell durchgefallen.“ | Hochstufen gesperrt |
+| 🟢 frei | „Messung unter der Schwelle, oder vorsichtiger Wert der Schätzung unter der Schwelle.“ (immer dazu, welcher der beiden Wege) | Hochstufen ist Wochenend-Thema für Max |
+| ⚠️ steigt | „Konto ist auf k2 und die Schätzung kreuzt die Schwelle.“ | sofort melden, Max entscheidet |
+| ⚫ blind | „Daten zu alt oder Modell durchgefallen.“ | nur die gemessene Zahl gilt |
 
 Dazu immer: gemessene 60-Tage-Zahl mit Unschärfe, erwartete Schwankung der nächsten 4 und 8 Wochen mit Obergrenze, Fehlerbilanz in einem Halbsatz.
 
-**Der Grenzfall ist breit, und das ist richtig so.** Eine Schwankung aus 60 Tagen ist selbst nur auf grob 15 bis 20 % genau gemessen (wilde Tage kommen gehäuft, Faustformel des Statistikers). Bei 235 $ sind das 35 bis 45 $: alles zwischen etwa 190 $ und 290 $ ist Grenzfall. 🟢 gibt es erst, wenn die Messung samt Unschärfe unter der Schwelle liegt, also grob ab 190 $. Das gilt unabhängig von jeder Prognose und betrifft schon die heutige Regel (siehe Entscheidung 6).
+**Zur Unschärfe der Messung:** eine Schwankung aus 60 Tagen ist selbst nur auf grob 35 bis 45 $ genau (Faustformel des Statistikers). Max hat am 13.10. entschieden, dass die Schwelle trotzdem bei 235 $ bleibt: gemessen 235 $ heißt grob 25 % Bust-Chance, im Pechfall der Messung etwa 35 %, das liegt in seinem Rahmen. Der Zustand 🟠 Grenzfall gilt deshalb nur knapp um die Schwelle herum (Breite legt das Quant-Team in Schritt 0 fest), nicht für den ganzen Bereich von 190 bis 290 $.
 
 50k-Konten bekommen keine Ampel (bleiben laut Entwurf fest auf k1), nur die Zahl zur Info.
 
@@ -135,25 +144,27 @@ Durchsetzung später als Hook, nicht als Text: Größe hoch auf einem Konto nur 
 | Schritt | Was | Wer |
 |---|---|---|
 | 0 | **Machbarkeit zuerst (ein Nachmittag):** (a) erklärt die Marktschwankung die Buch-Schwankung gut genug (Schicht C)? (b) wie viele Hochstuf-Momente und Vola-Phasen gibt es seit 2016 wirklich, ist die Abnahme überhaupt entscheidbar? Wenn nein: nur Schicht A plus 20-Tage-Fenster bauen, Rest entfällt. | Quant-Team |
-| 1 | Schicht A und das 20-Tage-Fenster als Block in die Konto-Karten (trägt in jedem Fall) | Claude |
+| 1 | Täglicher Daten-Export auf der Box, Schicht A und das 20-Tage-Fenster (trägt in jedem Fall) | Claude |
 | 2 | Nur wenn Schritt 0 grün: Schicht B und C, Rückrechnung ab 2016 | Claude |
 | 3 | Abnahme nach Abschnitt 4, Urteil mit Stempel | Quant-Team, `verdict-auditor` |
 | 4 | Agent anlegen, Trigger, Hub-Eintrag, `/wochenende` erweitern | Claude |
 | 5 | 8 Wochen Technik-Probelauf: kommen die Daten täglich, stimmt live mit der Rückrechnung überein? Das belegt nur die Technik, nicht die Güte. Die Güte kommt aus Schritt 3. | läuft von selbst |
-| 6 | Erst danach: Veto und Frühwarnung scharf, Hook | Max entscheidet |
+| 6 | Erst danach: schneller Weg zum Hochstufen und Warnung scharf, Hook | Max entscheidet |
 
 Vorbedingung: Daten bis Oktober (AP356).
 
-## 9. Was Max entscheiden muss
+## 9. Entscheidungen Max (13.10.2026)
 
-| Nr. | Frage | Meine Empfehlung |
+| Nr. | Frage | Entscheidung |
 |---|---|---|
-| 1 | Darf die Prognose nur bremsen (Abschnitt 2)? | Ja. Das ist der Kern, ohne das würde ich es nicht bauen. |
-| 2 | Woher kommen tägliche Marktdaten? Heute enden die Daten am 11.09., ohne tägliche Daten ist jede Prognose alt. Wege: täglicher NT8-Export auf der Box, oder kostenlose Tagesdaten. | Täglicher Export auf der Box, weil dann auch die Buch-Zahl frisch ist. |
-| 3 | Eigener Agent oder nur ein Block in den Konto-Karten, den `konto-analyst` mitliest? | Erst der Block (Schritt 1). Eigener Agent nur, wenn Schritt 0 und 3 zeigen, dass das Modell mehr kann als das 20-Tage-Fenster. |
-| 4 | Darf die Frühwarnung das Zurückstufen **automatisch** auslösen oder nur melden? | Nur melden, bis es überhaupt ein Konto auf k2 gibt. |
-| 5 | Später auch für andere Entscheidungen nutzen (Tagesstopp, Kaufzeitpunkt E8 150k, Vola-Pfad in der Zeit-bis-50k-Rechnung)? | Erst nach der Abnahme. |
-| 6 | **Neu, betrifft die Regel vom 12.10. direkt:** die 235 $ sind als harte Linie beschlossen, die Messung ist aber nur auf 35 bis 45 $ genau. Soll Hochstufen erst gelten, wenn die Messung **samt Unschärfe** unter 235 $ liegt (praktisch ab etwa 190 $)? Und reicht der Rückstuf-Abstand von 1,25 (das ist nur gut eine Unschärfe, das Konto würde hin und her springen)? | Ja zur Unschärfe. Rückstuf-Abstand vom Quant-Team nachrechnen lassen, bevor das erste Konto auf k2 geht. |
+| 1 | Darf die Schätzung nur bremsen? | **Nein, sie darf auch hochstufen.** Deckel: Bust-Chance in 12 Monaten höchstens 30 %, es zählt der vorsichtige Wert, und erst nach bestandener Rückrechnung. |
+| 2 | Tägliche Marktdaten? | **Ja, über die Box** (täglicher Export). |
+| 3 | Eigener Agent oder Block in den Konto-Karten? | **Eigener Agent** (`vola-analyst`). |
+| 4 | Darf das System von selbst kleiner stellen? | **Nein.** Es meldet, kleiner stellt nur Max. |
+| 5 | Schätzung auch für Zeit bis 50k, Kaufzeitpunkt, Tagesstopp? | **Ja, grundsätzlich.** Max ist noch nicht überzeugt, deshalb wird jede Nutzung einzeln mit Zahl vorgelegt. Eigenes Ticket, startet nach der Abnahme. |
+| 6 | Sicherheitsabstand zur Schwelle? | **235 $ bleibt.** Kein Abschlag auf 190 $. |
+
+Offen bleibt aus dem Gegenlesen: der Rückstuf-Abstand von 1,25 ist nur gut eine Unschärfe der Messung. Da das System nur meldet und Max entscheidet, ist das kein Flatter-Risiko mehr, sondern nur die Frage, ab wann gemeldet wird. Klärt Schritt 0.
 
 ## 10. Was dagegen spricht (ehrlich)
 
@@ -162,7 +173,7 @@ Vorbedingung: Daten bis Oktober (AP356).
 - **Vola ist auf Wochen gut vorhersagbar, auf Monate kaum.**
 - **Sprünge sieht keiner kommen.** Ein Schock steht in keiner Prognose. Der Agent ersetzt weder den Tagesstopp noch die Regel „Zurückstufen sofort“.
 - **Heute ändert es nichts.** Alle Konten bleiben k1. Auszahlen kann sich das erst, wenn die Schwankung in die Nähe der Schwelle kommt.
-- **Noch ein Baustein mehr.** Jeder Agent kostet Pflege. Deshalb Empfehlung 3: erst Block, dann vielleicht Agent.
+- **Noch ein Baustein mehr.** Jeder Agent kostet Pflege. Max hat sich trotzdem für den eigenen Agent entschieden.
 
 ## 11. Was das Quant-Team am ersten Entwurf geändert hat (13.10.2026)
 

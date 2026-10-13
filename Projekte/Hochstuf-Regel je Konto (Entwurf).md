@@ -16,6 +16,9 @@ status: Entwurf, Entscheidung Max offen (Wochenend-Thema)
 > [!success] Kernentscheidung Max, 12.10.2026 abends
 > **Schwelle fürs Hochstufen auf k2 ist die Track-Record-Variante: 235 $ Tagesschwankung** (FFN 150k, gemessen am eigenen Buch des Kontos, entspricht Puffer = 10-fache Schwankung bei k2). Die alte Schwelle von 400 $ gilt damit nicht mehr. Für das noch nicht gekaufte E8 150k ergibt dieselbe Rechnung etwa 200 $, das wird beim Kauf bestätigt. Die Fragen 2 bis 6 in Abschnitt 7 sind noch offen. **Gemessen wird in Buch-Handelstagen:** 60 Buch-Tage sind beim heutigen Buch rund 16 Wochen, nicht 60 Kalendertage. Die Regel läuft seit 12.10. als Code in den [[Konto-Karten (Rechnung je Konto automatisch)]] (Hochstuf-Ampel je Konto, bei Daten älter als 14 Tage ist Hochstufen gesperrt). Heute ändert das nichts: alle Konten bleiben auf k1.
 
+> [!success] Ergänzung Max, 13.10.2026
+> **Der Maßstab hinter den 235 $ ist jetzt ausdrücklich festgelegt: Bust-Chance in 12 Monaten höchstens 30 %.** Die 235 $ bleiben, ohne Abschlag für die Mess-Unschärfe (gemessen 235 $ heißt grob 25 %, im Pechfall etwa 35 %). Neben der gemessenen 60-Tage-Zahl darf künftig auch eine Vola-Schätzung grünes Licht geben, sobald sie die Rückrechnung bestanden hat und ihr vorsichtiger Wert unter der Schwelle liegt. Das System meldet nur, die Größe ändert Max. Damit ist Frage 5 in Abschnitt 7 entschieden. Details: [[Vola-Prognose Agent (Konzept)]], Ticket AP358.
+
 Alles andere hier ist ein **Vorschlag**. Geändert ist nichts, weder am Buch noch am RiskGuard. Zahlen aus `engine/_scratch_trackrecord_1210/` (Quant-Team, 12.10.2026), Daten bis 11.09.2026.
 
 ## 1. Worum es geht
