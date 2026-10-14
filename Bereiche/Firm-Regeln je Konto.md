@@ -67,6 +67,34 @@ Quelle FN: FundedNext-Wissensbasis, Artikel „Does FundedNext Futures allow ove
 
 **Abgleich mit unserer Umsetzung:** unsere Beine sind alle intraday mit Zwangs-Flat `eod_flat_min=385` (15:55 ET = 14:55 CT), also **75 Minuten vor** dem FN-Auto-Close. Kein Konflikt. Konsequenz für die Strategie-Auswahl: **jedes Mehrtages-/Swing-Bein ist auf FN-Futures strukturell unmöglich**, unabhängig von seiner Edge. Betrifft u. a. den Weg W34 (Mehrtages-Gap-Fill) aus der [[Gap Wege-Karte]] und jede aus Tagesbar-Literatur portierte Strategie.
 
+## ⏳ Inaktivität je Firma (eingetragen 14.10.2026, AP376 und AP330)
+
+| Firma | Regel (Wortlaut-Kern) | Zählweise | Was zählt | Folge | Quelle |
+|---|---|---|---|---|---|
+| **E8 Futures** (Signature, Eval und Funded) | „After 60 or 7 days of inactivity (Depending on the market), the account will be closed", „7 Day inactivity applies to all Futures accounts", gilt auch für frisch gekaufte Konten ohne Trade | **steht nirgends** (rollierend, Kalenderwoche, Kalender- oder Handelstage: Lücke). **Wir rechnen rollierend über 7 Kalendertage**, das ist die strengere Lesart | ein Round Turn: „place and close at least one trade", kein Mindestvolumen, kein Mindest-PnL genannt | Konto wird geschlossen, keine Warnstufe genannt. Reise: vorher an Support melden | Help Center Art. 9453425 (Primärquelle, 14.10.), Details und Widersprüche im [[Research-Cache]] Abschnitt „E8 Futures: Inaktivitätsregel“ |
+| **FundedNext Futures** | 30 Tage ohne Trade = Verstoß | nicht geprüft, wir rechnen 1 Tag in jedem 30-Tage-Fenster | ein Trade | Breach | Research-Cache (FN-Abschnitt) |
+| **FFN STEADY** | mindestens 3 qualifizierende Handelstage in jeder 29-Tage-Periode | „every 29-day period“, Start nicht genannt. **Wir rechnen rollierend ab Aktivierung** (FFN1 05.10., FFN2 08.10.), die strengste Lesart | Tag mit realisiertem Gewinn oder Verlust von mindestens 5 $ | automatische Kündigung, gilt auch für geblasene Konten | FFN Art. 6.5 (Primärquelle) |
+
+**Zwei Widersprüche bei E8, beide zu unseren Gunsten aufgelöst (strengere Zahl gilt):** der Produktartikel „E8 Signature“ nennt 60 Tage (gemeinsamer Text für Forex und Futures, ohne Markt-Kennzeichnung), die ESPA §9.3 nennt 30 Kalendertage „Dormant“ mit Suspendierung nach Ankündigung. Der Inaktivitätsartikel sagt ausdrücklich 7 Tage für alle Futures-Konten. Betriebsregel bleibt **7 Kalendertage rollierend**. Die E8-Mail vom 12.10. (Thread 1a13026f39da17d7) sagt zur Inaktivität nichts. Offene Fragen an den E8-Support (Zählweise, Kalender- oder Handelstage, ob Eröffnung und Schließung im Fenster liegen müssen, 7 oder 60 Tage für Signature Futures): Ticket, Text siehe Daily Note 14.10.
+
+**Wie die Konto-Karte zählt (seit 14.10.2026):** ein Tag zählt, wenn sich der Tagesend-Kontostand (NetLiq, `maxlab_equity_<Konto>.csv`) gegenüber dem Vortag um mindestens **+5 $** bewegt hat oder um mindestens **−15 $** (FFN; E8 und FN: jede Bewegung). Schief, weil der NetLiq netto ist: ein Gewinntag ab +5 $ netto ist auch brutto über 5 $, ein Verlusttag kann brutto durch die Kommission (rund 1,78 $ je Micro-Round-Turn) unter 5 $ fallen, und ob FFN brutto oder netto zählt, steht nirgends. Eine pauschale 10-$-Schwelle hätte FFN2 am 13.10. (netto +9,88 $, brutto +17 $) einen echten Tag gekostet. Der laufende Tag zählt erst nach Tagesschluss. **Frist** = Tag, an dem spätestens der nächste qualifizierende Tag liegen muss: der drittletzte (FFN) bzw. letzte (E8) Handelstag plus Fenster, solange es noch zu wenige Tage gibt der Tag vor der Aktivierung plus Fenster (bis 14.10. rechnete die Karte hier einen Tag zu spät und ab der ersten Equity-Zeile statt ab Aktivierung). Warum nicht der realisierte PnL vom Broker: auf Tradovate (E8, FN) kommt beim Fill nur die Kommission an (TRADEPNL-Log zeigt −0,95 $), der Trade-PnL hängt eine Execution hinterher. Auf Rithmic (FFN) stimmt er sofort.
+
+**Umsetzung:**
+- **Heute live, alle Konten:** RiskGuard-Alarm AP217 ab Tag 4 ohne Round Turn (`inactivityalarmdays=4`), danach täglich. Max setzt dann einen Hand-Trade (Regel Max 06.10.). Für FFN reicht das allein nicht (3 Tage je 29, Mindestbetrag).
+- **Konto-Karte:** zeigt je Konto Handelstage im Fenster, Frist und fehlende Tage, Ampel gelb, wenn die Frist höchstens 7 Tage (E8: 3) je fehlendem Tag entfernt ist, rot, wenn weniger Tage bleiben als fehlen (Lab, Reiter Konten).
+- **Gebaut, nicht deployt:** einheitliche Inaktivitätsregel im RiskGuard für alle Firmen per cfg (rollierend oder Kalenderwoche, Schwelle, Start, Vorwarnung, optionaler Mini-Trade standardmäßig aus), Auftrag Max an Session 8cbabece, Paket `trading-data/nt8_staging_20261014_inaktivitaet` mit `DEPLOY.md` und `cfg_inaktivitaet_vorschlag.md`. Geht nach dem AP381-Deploy auf dessen neuen Live-Stand (Ticket AP330).
+
+**Stand 14.10.2026 (Konto-Karten, Tage vor heute):**
+
+| Konto | Regel | Tage im Fenster | Frist | fehlen |
+|---|---|---|---|---|
+| E8 50k | 1 in 7 | 2 (09.10., 13.10.) | 20.10. | 1 |
+| FN1, FN2 | 1 in 30 | 11 | 12.11. | 1 |
+| FFN1 | 3 in 29, ab 05.10. | 1 (13.10.) | 02.11. | 2 |
+| FFN2 | 3 in 29, ab 08.10. | 1 (13.10.) | 05.11. | 2 |
+
+Der 14.10. (FFN1 −86 $, FFN2 −87 $) zählt nach Tagesschluss mit, dann fehlt beiden FFN-Konten noch 1 Tag. E8 ist das einzige Konto mit echter Gefahr: die Belegung hatte historisch 75 von 3.863 Sieben-Tage-Fenstern ohne Handelstag (26 Strecken), ohne Hand-Trade kostet das in der Simulation 14 Punkte Überleben.
+
 ## 🚫 Verbotene Strategien (nachgetragen 22.09.2026)
 
 | Verbot | E8 | FundedNext Futures |
@@ -98,7 +126,7 @@ Konto `2D-150K394206247048`, gekauft 05.10.2026 für 292,50 $ (50 % + BOGO, Bonu
 | News | Art. 3.3: T1 (FOMC, FOMC Minutes, NFP, CPI) 1 Min vor/nach flat. **Support 05.10.: gilt nur Funded**, dort Liquidation plus Profit weg | Eval frei. Vor dem Funded-Wechsel Entry-Sperre bauen (AP335) |
 | Kontraktlimit | **Support 05.10.: Eval = Maximum, das Rithmic setzt.** Funded skaliert, Erhöhung nur auf Antrag | **Geklärt 12.10.2026: 15 Minis / 150 Micros je Konto** (Aktivierungs-Mails von FFN an web.de vom 05.10. für FFN1 und 08.10. für FFN2, Zeile „Max Contracts“, deckt sich mit Art. 3.5). Wir handeln höchstens 5 Micros (4 MNQ + 1 M2K). Funded startet laut Art. 3.5 bei 40 Micros, auch das reicht |
 | HFT | max. 30 % der Trades mit Round-Trip ≤ 5 s je Session. Verstoß = Konto und Profit weg. **Support 05.10.: keine Mindestanzahl, 1 schneller Trade bei 1 bis 3 Trades reicht**. **Support 09.10.: Zählbasis (je Strategie oder Konto-FIFO) nicht beantwortet**, nur Regel wiederholt plus „Adding to a trade still counts as 1 trade“ (deutet auf Zählung der Konto-Position) | PB3 raus (AP328). Asia vorerst raus (AP331, 4 Stop-Berührungen in der 1. Minute). Netting gegenläufiger Beine (AP332) |
-| Inaktivität | ≥ 3 Handelstage (|realisiert| ≥ 5 $) in jedem 29-Tage-Fenster, sonst Kündigung ohne Warnung | **Tages-Alarm reicht NICHT** (3-Bein-Buch historisch genau auf 3, Alarm kennt Fenster und 5-$-Schwelle nicht). Rollfenster-Alarm „< 3 in 22 Tagen" = AP330 |
+| Inaktivität | ≥ 3 Handelstage (|realisiert| ≥ 5 $) in jedem 29-Tage-Fenster, sonst Kündigung ohne Warnung | **Tages-Alarm reicht NICHT** (3-Bein-Buch historisch genau auf 3, Alarm kennt Fenster und 5-$-Schwelle nicht). Rollfenster-Alarm = AP330, gebaut 14.10., noch nicht deployt. Fristen und Zählweise: Abschnitt „Inaktivität je Firma“ oben |
 | Copy-Trading | eigene FFN-Konten max. 5 gleichzeitig, sonst alle disqualifiziert. **Support 09.10.: „You can copy trade up to 5 FFN Accounts at a time“**, gezählt werden also FFN-Konten (andere Firmen nicht ausdrücklich ausgeschlossen, aber nicht genannt) | FFN1 + FFN2 = 2 |
 | Kontolimit | 10 Konten, max. 5 funded | |
 | Plattform | NT8 **nur via Rithmic**, eigene NT8-Lizenz, Rithmic-Daten zahlt FFN, nur ein Gerät gleichzeitig eingeloggt | Rithmic-Verbindung auf der Box, kein R Trader parallel. Lizenz + Login macht Max |
