@@ -51,6 +51,10 @@ ENGINE_CORE = ["sigcore.py", "discovery/controls.py", "overfit.py", "qbt.py", "t
 # Discovery-Code, den der laufende Runner nur nach Neustart neu lädt.
 RUNNER_CODE_DIR = "discovery"
 BOOK_FILES = ["book_state.json", "book_state_next.json"]
+# Letzter bekannter Box-Stand je Buch-Datei (md5), geschrieben von inbox_tool.py bei --pull und
+# --push-next (AP366, 14.10.2026). Liegt im Engine-Ordner, weil auch Pulls ausserhalb von
+# Claude (auto_check, Lab) ihn pflegen muessen.
+BOOK_SYNC = "book_sync_state.json"
 
 
 def read_input():
@@ -103,15 +107,32 @@ def newest_engine_core():
     return best
 
 
+def book_in_sync(rel):
+    """True, wenn der Inhalt von rel dem letzten bekannten Box-Stand entspricht (vom Pull
+    geholt oder per --push-next geschrieben). Fehlt der Stand oder ist er kaputt: False,
+    dann gilt wie vorher nur die Dateizeit."""
+    try:
+        import hashlib
+        st = json.loads((ENGINE / BOOK_SYNC).read_text(encoding="utf-8"))
+        want = (st.get(rel) or {}).get("md5")
+        return bool(want) and hashlib.md5((ENGINE / rel).read_bytes()).hexdigest() == want
+    except Exception:
+        return False
+
+
 def book_newer_than_marker(marker):
-    """Liste der Buch-Dateien, die jünger sind als der Marker."""
+    """Liste der Buch-Dateien, die jünger sind als der Marker UND inhaltlich vom letzten
+    bekannten Box-Stand abweichen. Nur die Dateizeit reichte nicht (AP366, 12./13.10.2026):
+    jeder `inbox_tool.py --pull` schreibt book_state_next.json mit gleichem Inhalt neu, danach
+    meldete der Hook in jeder Session einen fehlenden --push-next, und der Marker wurde zum
+    Reflex von Hand gesetzt."""
     if not ENGINE:
         return []
     mt = marker_time(marker)
     out = []
     for rel in BOOK_FILES:
         t = mtime(ENGINE / rel)
-        if t and (mt is None or t > mt + 1):
+        if t and (mt is None or t > mt + 1) and not book_in_sync(rel):
             out.append(rel)
     return out
 
