@@ -233,8 +233,8 @@ Gebaut in der Cloud gegen das GitHub-Backup `trading-data`, Branch `claude/aweso
 - Auto-Tickets entstehen im `auto_check.py` am PC. **Ist der PC aus, legt die Box selbst keine an.** Ein Box-eigener Check wäre ein eigenes Ticket.
 - Wiedervorlagen aus dem Logbuch sind nicht angebunden, es gibt dafür keine maschinenlesbare Liste.
 - Beim Zurückschreiben auf die Box nutzt scp keine Sperre und schreibt nicht atomar. Das Fenster ist ein paar Sekunden lang.
-- `updated` steht ohne Zeitzone. Rund um die Zeitumstellung (25.10.) kann eine Stunde lang die falsche Seite als neuer gelten, das betrifft nur den Fall, dass beide dasselbe Feld geändert haben.
-- Löschen wird nicht synchronisiert, Tickets werden nur erledigt.
+- ~~`updated` steht ohne Zeitzone.~~ Erledigt 15.10.2026 (AP271), siehe Abschnitt „Stand 15.10.2026“.
+- ~~Löschen wird nicht synchronisiert, Tickets werden nur erledigt.~~ Erledigt 15.10.2026 (Grabstein), siehe unten.
 - Noch nicht gebaut: Swimlanes, Cumulative Flow, Epic-Timeline, WIP-Limit im Lab einstellbar (geht nur in `ticket_board.json`, Standard: keins).
 
 **Entschieden (Max, 28.09.2026 abends):** kein WIP-Limit (Commit 08f1eb3 in trading-data). Prio „gelb" heißt jetzt auch in der alten Ansicht „Mittel". Einspielen über eine PC-Session (Aufgaben-Karte in der Claude-App), die Box-Migration darf nach plausiblem Probelauf direkt `--apply` machen.
@@ -314,6 +314,25 @@ Interne Schlüssel bewusst kompatibel gelassen (Box, `auto_check`, `promote_next
 **Geändert:** `ticket_lib.py` (PRIOS, `norm_prio`, `urgency_key`, `PRIO_LABEL`), `ticket_tool.py` (`--due/--start`, Labels), `ticket_migrate.py`, `app_server.py`, `auto_check.py` (Glocke: Sehr hoch = rot, Hoch = gelb), `lab_ui/tickets_board.js/.css`, `lab.js` (PRIODEF), Skills `/ticket`, `/sprint`, `/briefing`. Backups `*.bak_prio5`. Lab-Server neu gestartet (job-frei). `lab_selftest` grün, `test_ticket_lib` mit denselben 4 Fehlern wie vorher (datumsabhängig, nicht durch diese Änderung), `test_ticket_sync` grün. `design-guard` vorab (25 Punkte) und Abnahme (4 Befunde, alle eingearbeitet: Alt-`orange` zeigte im Detail-Select „Sehr hoch“, Fällig-Slot zu schmal für „überfällig“, 7-Tage-Fenster über die Zeitumstellung einen Tag zu kurz, Pillen-Padding). Offen für Max: Fälligkeit auch auf den Board-Karten zeigen?
 
 **Offen:** Box-seitiger Code (`ticket_lib` auf der Box) kennt die neuen Stufen erst nach dem nächsten Engine-Sync, bis dahin zeigt nur das PC-Lab sie richtig an. Die Charta (Abschnitt Tickets) nennt die Prio-Skala noch nicht, Regel trägt Max selbst ein.
+
+## Stand 15.10.2026: Zeitzone, echtes Löschen (Session 2bf2445d)
+
+**Anlass:** Max wollte am 14.10. neun Tickets löschen, es ging nur „Erledigt“. Der Abgleich hätte ein am PC entferntes Ticket beim nächsten Pull ohnehin von der Box zurückgeholt („kennt nur die Box, übernehmen“). Dazu AP271: `updated` ohne Zeitzone, vor der Zeitumstellung am 25.10.
+
+| Teil | Was |
+|---|---|
+| Zeitzone (AP271) | `now_iso()` schreibt Ortszeit mit Zone (`2026-10-15T09:29:11+02:00`). Alle Vergleiche im Abgleich (`updated` im Zwei- und Dreiwege-Merge, Verlauf, `ticket_board.json`, Burndown) laufen über `ts_key` (echte Zeit in UTC), nie mehr als Text. Alte Werte ohne Zone gelten als Ortszeit. Die ersten 19 Zeichen bleiben die Ortszeit, die Lab-Anzeige schneidet dort ab. Auto-Notizen tragen weiter die kurze Form ohne Zone |
+| Löschen | `ticket_tool.py delete AP… [--force]`, `restore AP…`. Grabstein = Ereignis `deleted` im Verlauf (`ticket_events.jsonl`) mit Kopie des Tickets. Der Verlauf wird beim Abgleich auf beiden Seiten vereinigt, deshalb fällt ein gelöschtes Ticket auf PC und Box raus, egal wo gelöscht wurde |
+| Nummern | `next_ap` zählt die Nummern gelöschter Tickets mit, sie werden nie neu vergeben. Vergibt die Box mit altem Code eine Nummer doch neu (andere id), gibt es keinen Kollisionsstopp |
+| Auto-Tickets | `auto_ticket` legt einen gelöschten `source_key` nicht neu an (Belege des Monats, Wiedervorlagen, Vola, Queue leer), `auto_check` legt gelöschte feste ids (Wochen-Review) nicht neu an. Kommt nach dem Löschen des Next-Week-Tickets in derselben Woche eine neue Promotion von der Box, bekommt sie eine freie id (`next-week-2026-42-2`), statt samt Notiz wieder rauszufliegen |
+| Verweise | `blocked_by`, `links`, `epic`, `parent` anderer Tickets werden beim Löschen entfernt und angezeigt. Offene Unter-Tickets und ein laufender oder geplanter Sprint sperren, `--force` geht trotzdem (Sprint-Report und Velocity zählen ein gelöschtes Ticket dann nicht mehr) |
+| Tests | `test_ticket_lib` (Zeitumstellung 25.10. in Zwei- und Dreiwege-Merge, Verlauf, Meta; Löschen, Verweise, Nummern, Zurückholen, Auto-Ticket) und `test_ticket_sync` (Löschen am PC, auf der Box, wieder aufgetauchtes Ticket, neu vergebene Nummer, Zurückholen) grün, `lab_selftest --static` grün. Test-Sprints liegen jetzt in 2030, die vier alten datumsabhängigen Fehler sind weg |
+
+**Hook-Fehlalarm (AP366):** `inbox_tool` merkt sich beim Pull und beim `--push-next` den Box-Stand der Buch-Dateien (md5 in `engine/book_sync_state.json`). Der Buch-Wächter in den Hooks (`_common.book_newer_than_marker`) meldet nur noch, wenn der Inhalt davon abweicht. Selbsttest `.claude/scripts/test_book_sync_hook.py`.
+
+**Eingespielt 15.10.2026:** PC und Box md5-gleich (`ticket_lib` 5a4b1fa1, `ticket_tool` add204d8, `inbox_tool` f195912f), Tests auf beiden Seiten grün, Backups `*.bak-20261015-ap271`. Der Runner lädt beide Dateien nicht, kein Neustart nötig. **verdict-auditor:** Zeitzone und Hook tragen, Löschen trägt mit Auflagen (Next-Week-Ticket, Sprint-Sperre, Meldungstext, Verlauf atomar schreiben), alle eingebaut und getestet. Mit OK von Max gelöscht: AP351, AP365, AP325, AP357, AP296, review-2026-38 bis 41.
+
+**Grenzen:** Das Lab hat noch keinen Löschen-Knopf (nur CLI). Ein laufender Lab-Server lädt den neuen Code erst nach einem Neustart. Box-seitig weiter ohne Sperre geschrieben (AP270, Entwurf im Ticket). Ein gescheiterter `--push-next` schaltet den Buch-Wächter weiter stumm (AP393, gab es schon vorher).
 
 ## Aus der CLAUDE.md (05.10.2026): Sprint-Regeln und Ticket-Tracker
 

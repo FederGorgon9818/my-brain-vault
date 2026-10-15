@@ -25,6 +25,8 @@ Tracker: `C:\Users\maxlk\Projects\trading-data\engine\tasks.json`. **Die Box ist
 - Felder: `python ticket_tool.py edit AP123 --hours 5 --spent 4 --labels gate,v3 --epic AP198` (`-` löscht ein Feld).
 - Notiz: `python ticket_tool.py note AP123 "Zwischenstand"`.
 - Abhängigkeit: `python ticket_tool.py link AP123 blocks AP124` (auch `blocked_by`, `relates`, `duplicates`, `--remove`).
+- **Löschen** (seit 14.10.2026, nur auf Ansage von Max): `python ticket_tool.py delete AP123 [AP124 review-2026-38 …] [--force]`. Schreibt einen Grabstein in den Verlauf, den der Box-Abgleich auf beiden Seiten respektiert: das Ticket kommt beim nächsten Pull nicht zurück, die AP-Nummer wird nie neu vergeben, ein gelöschtes Auto-Ticket (Wochen-Review, Belege des Monats, Wiedervorlage) wird für denselben Schlüssel nicht neu angelegt. Verweise anderer Tickets (blocked_by, links, epic, parent) werden mit entfernt und angezeigt. Offene Unter-Tickets sperren das Löschen, `--force` leert dann deren Verweis. Erledigt bleibt der Normalfall, Löschen ist für Doppel, Irrtümer und Erledigtes, das niemand mehr sehen soll.
+- Zurückholen: `python ticket_tool.py restore AP123` (aus der Kopie im Grabstein, entfernte Verweise bleiben weg). `show` auf ein gelöschtes Ticket sagt, wann und von wem es gelöscht wurde.
 - Alles mit `--who max`, wenn Max die Änderung diktiert hat, sonst steht `claude` im Verlauf.
 
 ## Board-Zuordnung
