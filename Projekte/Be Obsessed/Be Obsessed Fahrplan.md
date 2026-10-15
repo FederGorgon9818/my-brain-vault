@@ -26,8 +26,8 @@ status: Vorschlag Claude v1, Max bestätigt oder ändert
 
 ## Phase 0: Vorbereiten (bis 31.10.2026)
 
-- [ ] **Name sichern:** prüfen, ob „Be Obsessed“ als Name auf Instagram, TikTok und YouTube frei ist, sonst eine Variante mit deinem Namen. Überall gleich.
-- [ ] **Profil:** Bild, Bio in einem Satz (z.B. „19 · Vollzeitjob · baue zwei Business mit KI · Road to 10k“), Link zur Warteliste.
+- [ ] **Account-Name:** dein eigener Name, nicht „Be Obsessed“ (das ist nur der Projekttitel, Max 16.10.). Ein Handle, der auf Instagram, TikTok und YouTube gleich ist. Ideen in [[Be Obsessed Profil]].
+- [ ] **Profil:** Bild, Bio, Link zur Warteliste. Beispiele in [[Be Obsessed Profil]].
 - [ ] **Warteliste:** ein kostenloses Formular (Name, Alter, „Was willst du erreichen?“). Das ist gleichzeitig deine Marktforschung.
 - [ ] **Equipment kaufen** (Liste in [[Be Obsessed Filmstil]]).
 - [ ] **10 Videos auf Vorrat drehen**, damit der Start nicht an einer schlechten Woche hängt: Themen 1, 6, 26, 27, 16, 17, 18 und drei Alltagsclips aus [[Be Obsessed Themen]].
@@ -37,6 +37,7 @@ status: Vorschlag Claude v1, Max bestätigt oder ändert
 ## Phase 1: Kanal live (November 2026)
 
 - **Rhythmus:** 3 Reels pro Woche (z.B. Dienstag, Donnerstag, Sonntag), dazu fast täglich rohe Stories aus dem Alltag.
+- **Plattform:** dasselbe Video auf Instagram, TikTok und YouTube Shorts. Mitte Dezember (nach 6 Wochen) die Zahlen vergleichen und den Schwerpunkt dahin legen, wo es läuft ([[Be Obsessed Profil]]).
 - **Sonntag ist Drehtag:** 2 bis 3 Stunden, mehrere Videos am Stück, dazu Road to 10k.
 - **Lernthemen 1 bis 3** aus dem [[Be Obsessed Lernplan]], jedes wird ein Video.
 - **Jeden Kommentar beantworten, jede DM.** Am Anfang ist jede Person Gold.

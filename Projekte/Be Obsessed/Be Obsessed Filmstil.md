@@ -29,8 +29,8 @@ Wenn deine Vorbild-Links da sind, wird daraus ein fester Stil-Steckbrief, nach d
 
 | Einstellung | Wert | Warum |
 |---|---|---|
-| Format | Hochkant, 4K mit 30 fps (Platz knapp: 1080p mit 30 fps) | sauberes Bild für Reels |
-| Gym-Zeitlupe | Slo-Mo 120 fps | für den schwersten Satz |
+| Format | Hochkant, 4K mit 30 fps (Einstellungen → Kamera → Video aufnehmen). Platz knapp: 1080p mit 30 fps, braucht etwa ein Drittel | sauberes Bild für Reels |
+| Gym-Zeitlupe | 1080p mit 120 fps (Einstellungen → Kamera → Slo-Mo aufnehmen) | für den schwersten Satz |
 | HDR-Video | **aus** (Einstellungen → Kamera → Video aufnehmen) | HDR sieht nach dem Hochladen oft blass oder zu grell aus |
 | Kamera | Rückkamera statt Selfie-Kamera, wenn es geht | deutlich besseres Bild |
 | Belichtung | auf das Gesicht tippen und halten (Belichtung und Fokus sperren) | Bild flackert nicht, wenn du dich bewegst |
@@ -78,6 +78,9 @@ Hände auf der Tastatur · Kaffee · Wecker · Schuhe binden · Gym-Tür · Gewi
 Preise brutto, Stand 15.10.2026, schwanken. Quelle: [[Research-Cache]], Abschnitt „Video-Equipment Be Obsessed (15.10.2026)“ (research-scout, Händlerseiten und Blogtests, keine Labortests).
 
 **Vorher prüfen: welcher Anschluss?** iPhone 15 und neuer haben USB-C, ältere Lightning. Danach richtet sich das Mikro.
+
+> [!tip] Stand Max (16.10.2026): iPhone 13 mit Lightning, neues iPhone ab Black Friday (USB-C)
+> Jetzt nur **Stativ und Licht** kaufen (rund 45 €). Das **Mikro erst mit dem neuen iPhone als USB-C** (44 €), gern gleich im Black-Friday-Angebot. Ein Lightning-Mikro wäre nach sechs Wochen nutzlos. Bis dahin: ruhiger Raum, iPhone nah ran, Rückkamera.
 
 ### Empfohlen: rund 85 bis 95 €
 

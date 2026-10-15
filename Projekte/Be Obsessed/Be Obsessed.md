@@ -47,6 +47,7 @@ status: Idee, OGSM-Entwurf steht, Entscheidungen bei Max offen
 | [[Be Obsessed Video-Aufbau]] | Grundgerüst, Hook-Arten, sechs Vorlagen, Skript schreiben |
 | [[Be Obsessed Filmstil]] | Stil, iPhone-Einstellungen, Licht, Ton, Equipment bis 100 € |
 | [[Be Obsessed Lernplan]] | 8 Lernthemen plus Vorschläge für junge Leute |
+| [[Be Obsessed Profil]] | Account-Name, Bio-Beispiele, welche Plattform |
 | Schnitt-Skripte | eigene Session „Be Obsessed: Schnitt-Skripte ausarbeiten“ (15.10.) |
 
 ---
@@ -85,11 +86,12 @@ Die Idee ist gut und passt zu Max. Das Ziel bis Juli ist sehr sportlich, aber mi
   - Kleinunternehmer-Grenze seit 2025: 25.000 € im Vorjahr und 100.000 € im laufenden Jahr. Sie gilt für das ganze Unternehmen, also Trading und Coaching zusammen. Mit 10.000 € im Monat wäre sie bald gesprengt.
 - [ ] **Minderjährige:** Bezahlprodukt erst ab 18 oder nur mit Zustimmung der Eltern.
 - [ ] **Impressum, Datenschutz, AGB** für Kanal und Bezahlprodukt.
-- [ ] **Name frei?** Handle „Be Obsessed“ auf der Plattform, Domain, Markenrecht kurz prüfen.
+- [ ] **Account-Name:** eigener Name statt „Be Obsessed“ (Max, 16.10.), Handle überall gleich, Ideen in [[Be Obsessed Profil]].
 
 ## Entscheidungen bei Max
 
-- [x] Plattform: Reels zuerst, Instagram, gleiches Video auf TikTok und YouTube Shorts (Max, 15.10.)
+- [x] Format: Reels hochkant, 30 bis 90 Sekunden (Max, 15.10.)
+- [ ] Plattform-Schwerpunkt: Max noch unsicher (16.10.). Vorschlag: dasselbe Video auf Instagram, TikTok und Shorts, Mitte Dezember nach Zahlen entscheiden ([[Be Obsessed Profil]]).
 - [ ] Wochenstunden für Be Obsessed, realistisch neben Job und Trading?
 - [ ] Was bekommt man im Abo für 50 bzw. 100 € (Community, Calls, Anleitungen, Vorlagen)?
 - [ ] Bezahlplattform (Skool, Discord, eigene Seite)? Erst ab dem ersten Kunden.
