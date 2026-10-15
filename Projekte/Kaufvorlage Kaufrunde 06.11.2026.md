@@ -86,7 +86,7 @@ Vor jeder Monatsrunde kurz prüfen, sonst wird diese Runde nicht gekauft:
 - **Weitere Modellfehler gefixt** (Mathematiker): Gratis-Challenge kam im Vorgriff, FN 150k fiel auf 600 $ Tagesstopp zurück, FN-Allokation ohne wartende Konten.
 - **Neu in tempo_plan:** FFN als Firma, Kaufrunde (ein Konto je Monat, abwechselnd), Budget bis Gehaltsende, Deckel ab Gehaltsende, Reset-Preise, E8 150k max. 4 Payouts. Pflichttest `test_tempo_plan.py` (Marken ändern nichts, Nulldrift 0 %).
 - AP245 Schritt 1 (Käfig in Schritt-Kernel zerlegen) bewusst nicht gemacht: der Kalender-Modus rechnet auf den unveränderten Kerneln, und die Konto-Karten führen Zeilen-Kopien davon mit Gleichheitstest.
-- Stand Engine: fertig und getestet, Übernahme nach dem Box-Sync der Session Engine-Fixes, danach Golden Master.
+- Stand Engine (15.10. abends): in der Engine (`tempo_plan.py`, Käfig-Werte inzwischen aus `operating_point.py`), `test_tempo_plan.py` grün und in der Golden-Master-Liste. Golden Master auf diesem Stand grün, der Marker und der Box-Sync kommen mit dem gemeinsamen Lauf der Session AP246, sobald die Gebühren-Umstellung (AP384) durch ist. Wichtig für AP391: die Engine rechnet inzwischen selbst mit 1,90 $, `kauf_0611_v2.py` zieht dann nichts mehr doppelt ab.
 
 Gegengelesen: quant-mathematician, quant-statistician, strategy-auditor (15.10.). Rechnung: Scratch der Session a5e2d0fc, `kauf/kauf_0611_v2.py`, Ergebnis `kauf_0611_v2_result.json` (wird mit dem Engine-Patch nach `engine/_scratch_kaufrunde_1106/` kopiert).
 
