@@ -10,6 +10,8 @@ status: Idee, Entscheidungen bei Max offen
 
 ⬅️ [[Unternehmensgründung Entscheidung]] · [[Gründung Zeitplan]] · [[Eval-Passing]] · [[Strategie-Logbuch]]
 
+Verwandt: [[Be Obsessed]] (KI-Mentorship, eigener Kanal, bewusst getrennt von diesem, 15.10.2026).
+
 > [!info] Anlass (Max, 25.09.2026)
 > 50.000 $ in 5 bis 10 Jahren aus Prop-Payouts sind stabil, aber nichts, wovon man leben kann. Deshalb **parallel** zum Buch einen Social-Media-Kanal aufbauen: anderen beibringen, was ich über systematisches Trading, Quant-Methodik und das Arbeiten mit KI-Agents gelernt habe. Später vielleicht ein Produkt (Mentorship, Kurs, eventuell Algorithmen, noch nicht entschieden). Dafür brauche ich **Beweise**.
 
