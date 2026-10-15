@@ -13,6 +13,9 @@ status: Fragen fertig, Steuerberater wird gesucht
 > [!important] Frist
 > Der ELSTER-Fragebogen zur steuerlichen Erfassung muss bis **Mo 02.11.2026** raus, Ziel ist Ende Oktober. Fragen 1 bis 4 brauche ich **vorher**.
 
+> [!tip] ⭐ = neu am 15.10.2026
+> Sechs Punkte aus dem Steuer-Überblick vom 15.10. (Session 1d436a4b) sind mit ⭐ markiert: Zahlungszeitpunkt (Abschnitt 4), Korrektur 31.12.2027, Homeoffice-Pauschale und Investitionsabzugsbetrag (Abschnitt 5), Verlustrücktrag (Abschnitt 6), Studium als Werbungskosten (Abschnitt 7). Alles Stand meines Wissens, deshalb als Frage formuliert.
+
 ## Kurz zu mir (zum Mitschicken)
 - 19 Jahre, Angestellter (Vollzeit, 3.600 € brutto, befristet bis 03.07.2027), danach ab Sept. 2027 Schule (BOS), Gewerbe läuft weiter.
 - **Einzelunternehmen im Nebenerwerb seit 01.10.2026**, Gewerbeamt VG Oberneuching, Finanzamt Erding.
@@ -41,20 +44,26 @@ status: Fragen fertig, Steuerberater wird gesucht
 ## 4. Payouts in Dollar
 - Welcher Kurs: Tageskurs der Gutschrift oder EZB-Monatskurs? Zufluss am Tag der Gutschrift?
 - Wie viel Prozent soll ich je Payout zurücklegen (bis Juli 2027 mit Gehalt, danach ohne)?
+- ⭐ **Zahlungszeitpunkt:** Zählt der Payout im Jahr der Gutschrift, sodass ich ihn per späterem Antrag ins Folgejahr schieben kann (z. B. Dezember 2027 → Januar 2028, dann ohne Gehalt im selben Jahr)? Und umgekehrt: Kosten, die ich vor dem 31.12. bezahle, zählen im alten Jahr? Worauf muss ich bei der Krankenversicherungs-Grenze in der BOS achten, wenn ich so schiebe?
 
 ## 5. Betriebsausgaben
 - Claude nutze ich überwiegend geschäftlich. Welcher Anteil ist vertretbar?
 - PC und Monitor (ca. 2.950 €, ca. 80 % geschäftlich): im Dezember 2026 oder 2027 kaufen? Wie dokumentiere ich den Privatanteil?
+- ⭐ **Korrektur zu [[Gründung Zeitplan]]:** Dort steht, Kosten zählen nur bis 03.07.2027 gegen das Gehalt. Meine Annahme jetzt: Die Einkommensteuer rechnet pro Kalenderjahr, also werden auch Kosten von August bis Dezember 2027 mit dem Gehalt Januar bis Juli 2027 verrechnet. Dann ist der Unterschied 2026 (≈ 27,5 %) zu 2027 (≈ 26 %) beim PC nur rund 30 €, und ich muss nicht im Dezember 2026 kaufen. Stimmt das? (Nach Bestätigung im Zeitplan nachziehen.)
 - Arbeitsecke bei den Eltern: absetzbar?
+- ⭐ **Homeoffice-Tagespauschale:** 6 € je Tag, höchstens 1.260 € im Jahr. Fürs Gewerbe gibt es keinen anderen Arbeitsplatz: Zählt dann jeder Tag, an dem ich zu Hause am Gewerbe arbeite, auch wenn ich vorher bei GEWO war? Geht das, obwohl ich bei meinen Eltern wohne? Reicht eine einfache Liste der Tage als Nachweis?
+- ⭐ **Investitionsabzugsbetrag (§ 7g):** Lohnt es sich, schon 2026 oder 2027 bis zu 50 % für einen Rechner abzuziehen, den ich erst in der BOS-Zeit kaufe (reiner Rechen- oder Entwicklungsrechner, mindestens 90 % geschäftlich)? Was kostet es, wenn der Kauf dann doch ausfällt (Rückgängigmachung, Zinsen)?
 - Geplatzte Evals und Resets: ganz normale Betriebsausgaben?
 
 ## 6. Verluste und Liebhaberei
 - Wie lange akzeptiert das Finanzamt Verluste ohne Payout? Was soll ich dokumentieren?
+- ⭐ **Verlustrücktrag (§ 10d EStG):** Wenn ich 2028 in der BOS unterm Strich Verlust mache (Kosten laufen weiter, kein Payout), geht der Verlust dann zuerst nach 2027 und danach nach 2026 zurück, also wieder gegen Gehalt? Passiert das automatisch, und sollte ich ihn begrenzen, damit der Grundfreibetrag 2027 nicht verpufft?
 
 ## 7. Später (kurz anreißen)
 - Content und Coaching im selben Gewerbe, was ändert sich dann bei der Umsatzsteuer?
 - Krankenversicherung und Familienversicherung in der Schulzeit ab Sept. 2027, wenn Gewinn kommt?
 - Juli/August 2027: Arbeitslosengeld plus Nebengewerbe möglich?
+- ⭐ **Studium als Werbungskosten:** Meine Fachinformatiker-Ausbildung ist eine abgeschlossene Erstausbildung. Sind die Kosten fürs spätere Finance-Studium (Laptop, Fahrten, Bücher, Semesterbeitrag, ggf. Wohnung) dann volle Werbungskosten mit Verlustvortrag gegen das erste Gehalt danach? Zählen schon die BOS-Kosten (Abitur als Weg zum Studium)? Was muss ich jedes Jahr abgeben, damit der Verlust festgestellt wird, und wie weit geht das rückwirkend?
 
 ## 8. Zusammenarbeit
 - Was kostet die Erstberatung, und was würde es kosten, wenn Sie nur die Jahreserklärung machen und ich die Buchhaltung selbst führe (CSV und Belegordner)?
@@ -104,4 +113,10 @@ Tel. +49 173 7476673
 | Fragebogen-Werte | |
 | Dollar-Kurs, Rücklage | |
 | Claude-Anteil, Hardware | |
+| ⭐ Kalenderjahr 2027 (Korrektur Zeitplan) | |
+| ⭐ Zahlungszeitpunkt | |
+| ⭐ Homeoffice-Pauschale | |
+| ⭐ Investitionsabzugsbetrag | |
+| ⭐ Verlustrücktrag | |
+| ⭐ Studium / BOS als Werbungskosten | |
 | Kosten Steuerberater | |
