@@ -49,4 +49,5 @@ Ein-Seiten-Plan nach OGSM (Objective, Goals, Strategies, Measures, Erklärung im
 - **FundedNext-Obergrenze** für gleichzeitige Konten ist nicht nachgeschlagen, die 5 sind eine Annahme.
 - **G2 gegen die Bierdeckel-Zahl:** 15 Konten mit k1 bringen im Dauerbetrieb grob 5.600 bis 9.700 € brutto im Monat, realistisch im Schnitt eher 4.000 bis 8.000 €. Prop allein reicht für G4 also nicht, G3 muss den Rest tragen.
 - **Zielzahl Publikum** für S4 fehlt.
+- **Zweites Standbein KI-Mentorship (15.10.2026):** eigenes OGSM [[Be Obsessed OGSM]]. Die Regel „keine Mentorship vor G1“ gilt für Trading-Wissen, nicht für KI-Mentorship.
 - **Takt:** OGSM ist ein Jahresplan. Vorschlag: Measures einmal im Quartal durchgehen, Goals einmal im Jahr anpassen.
