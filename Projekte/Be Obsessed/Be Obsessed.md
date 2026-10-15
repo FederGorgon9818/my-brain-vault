@@ -35,7 +35,19 @@ status: Idee, OGSM-Entwurf steht, Entscheidungen bei Max offen
 
 ## Lernplan
 
-→ [[Be Obsessed Lernplan]]: 8 Themen, die jede Firma und jede Person kennen muss, die KI aktiv nutzt. Die Videoliste, die Max sich von Claude hat geben lassen, kommt noch und wird dort geprüft.
+→ [[Be Obsessed Lernplan]]: 8 Themen, die jede Firma und jede Person kennen muss, die KI aktiv nutzt. Eine fertige Lern-Videoliste gibt es noch nicht (Stand 15.10.).
+
+## Alle Notizen im Projekt
+
+| Notiz | Wofür |
+|---|---|
+| [[Be Obsessed OGSM]] | Ziel, Zwischenziele, Strategien, Kennzahlen, Monats-Check |
+| [[Be Obsessed Fahrplan]] | Phasen bis zum ersten Kunden und danach, Wochenrhythmus, Kosten |
+| [[Be Obsessed Themen]] | 30 Video-Themen mit Hook, Format und Phase, drei Serien |
+| [[Be Obsessed Video-Aufbau]] | Grundgerüst, Hook-Arten, sechs Vorlagen, Skript schreiben |
+| [[Be Obsessed Filmstil]] | Stil, iPhone-Einstellungen, Licht, Ton, Equipment bis 100 € |
+| [[Be Obsessed Lernplan]] | 8 Lernthemen plus Vorschläge für junge Leute |
+| Schnitt-Skripte | eigene Session „Be Obsessed: Schnitt-Skripte ausarbeiten“ (15.10.) |
 
 ---
 
@@ -77,7 +89,7 @@ Die Idee ist gut und passt zu Max. Das Ziel bis Juli ist sehr sportlich, aber mi
 
 ## Entscheidungen bei Max
 
-- [ ] Plattform(en): Instagram, TikTok, YouTube Shorts?
+- [x] Plattform: Reels zuerst, Instagram, gleiches Video auf TikTok und YouTube Shorts (Max, 15.10.)
 - [ ] Wochenstunden für Be Obsessed, realistisch neben Job und Trading?
 - [ ] Was bekommt man im Abo für 50 bzw. 100 € (Community, Calls, Anleitungen, Vorlagen)?
 - [ ] Bezahlplattform (Skool, Discord, eigene Seite)? Erst ab dem ersten Kunden.
@@ -87,7 +99,9 @@ Die Idee ist gut und passt zu Max. Das Ziel bis Juli ist sehr sportlich, aber mi
 
 ## Nächste Schritte
 
-1. Max schickt die Videoliste, Claude prüft sie im [[Be Obsessed Lernplan]].
-2. Max schickt das Cheat-Sheet (Text in diesen Ordner, Fotos oder PDF nach `Anhänge/`).
-3. Max entscheidet Plattform und Wochenstunden.
-4. Erstes Video: Wer ich bin, was ich vorhabe, warum „Be Obsessed“.
+Entschieden am 15.10.: Reels zuerst (Instagram, gleiches Video auf TikTok und Shorts), iPhone, Equipment bis 100 €, Schnitt-Skripte in eigener Session.
+
+1. Phase 0 aus dem [[Be Obsessed Fahrplan]] bis 31.10.: Name sichern, Profil, Warteliste, Equipment, 10 Videos auf Vorrat.
+2. Max schickt die Links zu Vorbild-Videos (Schnittstil), daraus wird der Stil-Steckbrief.
+3. Max schickt das Cheat-Sheet (Text in diesen Ordner, Fotos oder PDF nach `Anhänge/`).
+4. Arbeitgeber fragen, Gewerbe mit KI-Coaching anmelden.

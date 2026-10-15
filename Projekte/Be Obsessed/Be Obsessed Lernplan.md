@@ -36,9 +36,9 @@ Die Liste oben ist stark auf Firmen ausgerichtet. Für junge Leute, die etwas ma
 
 Für Firmen fehlt noch: **Einsatzfälle finden und KI im Team einführen.**
 
-## Videoliste (kommt noch)
+## Lern-Videoliste
 
-Max hat sich von Claude eine Liste mit Videos geben lassen. Sobald sie da ist, hier eintragen und prüfen: Quelle seriös, Stand aktuell, passt zum Thema, oder Quatsch.
+Stand 15.10.: noch keine fertige Liste. Sobald es eine gibt, hier eintragen und prüfen: Quelle seriös, Stand aktuell, passt zum Thema, oder Quatsch. Ideen für eigene Videos stehen in [[Be Obsessed Themen]].
 
 ## Cheat-Sheet
 
