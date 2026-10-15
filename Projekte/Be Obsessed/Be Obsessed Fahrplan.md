@@ -32,7 +32,7 @@ status: Vorschlag Claude v1, Max bestätigt oder ändert
 - [ ] **Equipment kaufen** (Liste in [[Be Obsessed Filmstil]]).
 - [ ] **10 Videos auf Vorrat drehen**, damit der Start nicht an einer schlechten Woche hängt: Themen 1, 6, 26, 27, 16, 17, 18 und drei Alltagsclips aus [[Be Obsessed Themen]].
 - [ ] **Kamera-Training:** jeden Tag eine Minute in die Kamera reden, nicht posten. Nach zwei Wochen ist die Unsicherheit deutlich kleiner.
-- [ ] **Formales anstoßen:** Arbeitgeber fragen, ob die Genehmigung Coaching und Content abdeckt. Gewerbe mit KI-Coaching im Gegenstand anmelden ([[Unternehmensgründung Entscheidung]]).
+- [ ] **Formales anstoßen:** Coaching und Content im REX-Portal als zweite Nebentätigkeit anzeigen und Zustimmung abwarten (die Genehmigung vom 23.09. deckt nur die Finanzmarkt-Software, Textvorschlag in [[Be Obsessed]] unter „Checkliste Rahmen“). Live erst nach der Zustimmung. Gewerbe mit KI-Coaching und Content im Gegenstand anmelden ([[Unternehmensgründung Entscheidung]]).
 
 ## Phase 1: Kanal live (November 2026)
 

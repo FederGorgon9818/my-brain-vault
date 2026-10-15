@@ -79,7 +79,7 @@ Die Idee ist gut und passt zu Max. Das Ziel bis Juli ist sehr sportlich, aber mi
 
 ## Checkliste Rahmen (vor dem ersten Euro)
 
-- [ ] **Arbeitgeber:** Deckt die Nebentätigkeits-Genehmigung vom 23.09. (Trading/Gewerbe, widerruflich) auch Coaching, Workshops und Content ab? Sonst nachreichen.
+- [ ] **Arbeitgeber: neue Nebentätigkeit anzeigen und genehmigen lassen, vor dem Live-Start.** Geprüft 16.10.: Die Genehmigung vom 23.09. deckt nur „Entwicklung und Betrieb automatisierter Software zur Analyse von Finanzmarktdaten; Dienstleistungen für ausländische Auftraggeber“ ([[Steuer & Gewerbe (Prop-Payouts)]]). Coaching und Content sind eine andere Art, und laut §8.2/8.3 braucht jede Nebentätigkeit vorher Anzeige **und** Zustimmung. Weg: REX-Portal, Feld „2. Nebentätigkeit (Art)“. Textvorschlag: „Nebenberufliche Schulungen, Coaching und Workshops zur Nutzung von KI-Anwendungen sowie Erstellung von Social-Media-Inhalten; außerhalb der Arbeitszeit, ca. 6 bis 8 Std. pro Woche, ohne Bezug zu Kunden, Produkten oder Interna der GEWO.“
 - [ ] **Gewerbe (Oktober):** KI-Coaching und Beratung gleich mit in den Gegenstand ([[Unternehmensgründung Entscheidung]]).
 - [ ] **Steuer, Frage an die Freundin** ([[Gespräch mit Freundin (Steuer & Gründung)]]):
   - Ist Coaching gewerblich oder freiberuflich (unterrichtende Tätigkeit)?
