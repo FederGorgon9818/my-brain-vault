@@ -57,13 +57,13 @@ Umsatz ist nicht Gewinn: davon gehen Plattformgebühren, je nach Steuerform 19 %
 | **S2 Founder-Kanal „Be Obsessed“.** Eigene Marke, getrennt vom Trading. Kurzfilme: 19, Vollzeitjob, zwei Side-Hustles, jedes Hoch und jedes Tief. Hustle, Get Better, Be the Best, Believe. | Videos je Woche (Vorschlag 3); Wochen ohne Lücke | Follower; Reichweite; Anmeldungen auf der Warteliste |
 | **S3 Mentorship-Abo für junge Leute.** Für alle, die unbedingt etwas machen wollen, aber nicht wissen was: mit KI das eigene Ding finden und bauen. 50 bis 100 € im Monat. Ab 18, Jüngere nur mit den Eltern. | Warteliste; Erstgespräche; Preis und Inhalt stehen | Zahlende Mitglieder; Monatsumsatz Abo; Kündigungen je Monat |
 | **S4 Firmen und Gründer.** KI-Workshops und Beratung, schnellster Hebel zu 10.000 €, weil wenige Kunden reichen. Aufhänger: EU AI Act Art. 4, Firmen müssen seit 02.02.2025 für KI-Kompetenz ihrer Leute sorgen. | Gespräche je Monat; Angebote raus | Aufträge; Monatsumsatz Firmen; Referenzen |
-| **S5 Sauberer Rahmen.** Gewerbe mit KI-Coaching im Gegenstand, Arbeitgeber, Steuer, Recht, Kosten klein halten. | Checkliste in [[Be Obsessed]] abgehakt, bevor der erste Euro kommt | Keine Ausgabe vor dem ersten zahlenden Kunden; BOS-Reserve unberührt |
+| **S5 Sauberer Rahmen.** Gewerbe mit KI-Coaching im Gegenstand, Arbeitgeber, Steuer, Recht, Kosten klein halten. | Checkliste in [[Be Obsessed]] abgehakt, bevor der erste Euro kommt | Vor dem ersten zahlenden Kunden nur das Start-Equipment (bis 100 €); BOS-Reserve unberührt |
 
 ## Was bewusst nicht drin ist
 
 - **Trading-Edge oder Konten im Content.** Getrennter Kanal, keine Kontonummern, keine Strategien, kein Buch.
 - **Arbeitgeber nennen oder Firmen-Interna zeigen.** Die Nebentätigkeits-Genehmigung ist widerruflich.
-- **Ausgaben auf Verdacht.** Kamera, Mikro, Bezahlplattform, Werbung erst, wenn Geld reinkommt. Ab 04.07.2027 gibt es kein Gehalt mehr.
+- **Ausgaben auf Verdacht.** Einzige Ausnahme ist das Start-Equipment bis 100 € (Max, 15.10.2026). Bezahlplattform, Werbung, Upgrades erst, wenn Geld reinkommt. Ab 04.07.2027 gibt es kein Gehalt mehr.
 - **Abo-Verträge mit 16- und 17-Jährigen ohne Eltern.** Rechtlich wacklig, siehe [[Be Obsessed]].
 
 ## Offen
