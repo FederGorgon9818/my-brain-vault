@@ -36,13 +36,16 @@ status: Vorschlag Claude v1, Max bestätigt oder ändert
 
 ## Phase 1: Kanal live (November 2026)
 
-- **Rhythmus:** 3 Reels pro Woche (z.B. Dienstag, Donnerstag, Sonntag), dazu fast täglich rohe Stories aus dem Alltag.
-- **Plattform:** dasselbe Video auf Instagram, TikTok und YouTube Shorts. Mitte Dezember (nach 6 Wochen) die Zahlen vergleichen und den Schwerpunkt dahin legen, wo es läuft ([[Be Obsessed Profil]]).
-- **Sonntag ist Drehtag:** 2 bis 3 Stunden, mehrere Videos am Stück, dazu Road to 10k.
+Details seit 16.10.2026: [[Be Obsessed Content-Plan]].
+
+- **Rhythmus:** 3 Reels pro Woche. Dienstag und Donnerstag je eine KI-Lektion (Talking Head), Sonntag ein Journey-Video (Montage, im Wechsel Road to 10k und Obsessed Day/Gym). Dazu fast täglich rohe Stories aus dem Alltag.
+- **Plattform:** Instagram im Fokus, dasselbe Video auf TikTok und YouTube Shorts. Mitte Dezember (nach 6 Wochen) die Zahlen vergleichen und den Schwerpunkt dahin legen, wo es läuft ([[Be Obsessed Profil]]).
+- **Sonntag ist Drehblock:** 60 bis 90 Minuten, 2 Talking Heads für die Woche plus Voiceover. Journey-Clips nebenbei unter der Woche.
 - **Lernthemen 1 bis 3** aus dem [[Be Obsessed Lernplan]], jedes wird ein Video.
-- **Jeden Kommentar beantworten, jede DM.** Am Anfang ist jede Person Gold.
-- **Aufforderung in jedem Video:** Warteliste oder „Schreib KI“.
-- Ende November: Monats-Check im [[Be Obsessed OGSM]] ausfüllen (Meilenstein M1).
+- **Jeden Kommentar beantworten, jede DM.** Am Anfang ist jede Person Gold, und dort kommen die Ideen her.
+- **Aufforderung in jedem Video:** „Kommentiere KI“, die automatische DM schickt das Prompt-Playbook gegen E-Mail. Die Liste ist zugleich die Warteliste.
+- **Im November jedes Video als Test:** Hook-Arten durchwechseln, Zahlen sammeln (Median erst ab rund 10 Videos), 70/20/10 ab Dezember.
+- Ende November: Monats-Check im [[Be Obsessed OGSM]] ausfüllen (Meilenstein M1), zusammen mit dem Content-Check (beste 10 %).
 
 ## Phase 2: Der erste Kunde (Dezember 2026)
 
@@ -73,10 +76,11 @@ Erst verkaufen, dann bauen. Das Angebot wird getestet, **bevor** es eine Plattfo
 
 | Wann | Was | Zeit |
 |---|---|---|
-| Montag bis Freitag abends | lernen, Kommentare, ein Video fertig machen | 30 bis 45 Min. |
-| nebenbei im Alltag | Alltags- und Gym-Clips, Stories | ein paar Minuten |
-| Sonntag | Drehtag, Road to 10k, Woche planen | 2 bis 3 Std. |
-| **Summe** | | **rund 6 bis 8 Std. pro Woche** |
+| Montag bis Freitag abends | lernen, Kommentare und DMs | 20 bis 30 Min. |
+| nebenbei im Alltag | Journey-Clips (quer), Stories | ein paar Minuten |
+| Sonntag | Drehblock (2 Talking Heads, Voiceover), Woche planen | 60 bis 90 Min. |
+| Sonntagabend | Clips auf den PC, Skript schneidet vor, Feinschnitt mit Claude, hochladen | rund 1 Std. für 3 Videos (Ziel, nach den ersten Videos messen) |
+| **Summe** | | **rund 4 bis 5 Std. pro Woche** (vorher 6 bis 8, das Skript spart den Schnitt) |
 
 ## Kosten bis zum ersten Kunden
 

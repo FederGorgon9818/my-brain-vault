@@ -10,20 +10,18 @@ status: v1, Stil-Feinschliff nach Max' Vorbild-Videos
 
 ⬅️ [[Be Obsessed]] · [[Be Obsessed Video-Aufbau]] · [[Be Obsessed Themen]] · [[Be Obsessed Fahrplan]]
 
-## Der Stil (Vorschlag, bis deine Vorbild-Videos da sind)
+## Der Stil (entschieden 16.10.2026 nach den Vorbild-Videos)
 
-**Be Obsessed heißt: roh, ehrlich, schnell.** Keine Hochglanz-Werbung, sondern echtes Leben eines 19-Jährigen, der mehr will.
+**Be Obsessed heißt: roh, ehrlich, ruhig.** Keine Hochglanz-Werbung, sondern echtes Leben eines 19-Jährigen, der mehr will. Herleitung: [[Be Obsessed Stil-Steckbrief]], Plan: [[Be Obsessed Content-Plan]].
 
-| Element | Vorschlag |
+| Element | Entschieden |
 |---|---|
-| **Gefühl** | dokumentarisch: Alltag und Gym aus der Hand, Talking Head ruhig und sauber vom Stativ |
-| **Tempo** | schnell, alle 2 bis 3 Sekunden etwas Neues im Bild, keine Pausen |
-| **Farben** | immer gleich, eher warm und leicht entsättigt, eine Akzentfarbe für Text |
-| **Schrift** | eine Schriftart, fett, groß, Schlüsselwörter in der Akzentfarbe |
-| **Musik** | treibend, aber leise unter der Sprache, nur aus der Musikbibliothek der Plattform (Lizenz) |
+| **Gefühl** | dokumentarisch: Journey-Clips aus der Hand und **quer** (Kino-Streifen auf Schwarz), Talking Head ruhig vom Stativ und hochkant |
+| **Tempo** | je Format: Talking Head mit Jump Cuts ohne Pausen, Montage rund 1 Clip pro Sekunde |
+| **Farben** | natürlich, eher gedämpft, keine Akzentfarbe für Text |
+| **Schrift** | eine schlichte, fette Schrift, **klein und weiß**, 1 bis 4 Wörter, meist kleingeschrieben |
+| **Musik** | kommt erst beim Hochladen aus der Bibliothek der App drunter (Lizenz), das Skript schneidet ohne Musik |
 | **Wiedererkennung** | gleicher Hook-Aufbau, gleiche Untertitel, gleicher Schluss-Satz („Be Obsessed.“) |
-
-Wenn deine Vorbild-Links da sind, wird daraus ein fester Stil-Steckbrief, nach dem auch die Schnitt-Skripte arbeiten (eigene Session „Be Obsessed: Schnitt-Skripte ausarbeiten“).
 
 ## iPhone richtig einstellen
 

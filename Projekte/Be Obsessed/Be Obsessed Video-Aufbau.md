@@ -10,7 +10,7 @@ status: Vorlagen v1, Feinschliff nach Max' Vorbild-Videos
 
 ⬅️ [[Be Obsessed]] · [[Be Obsessed Themen]] · [[Be Obsessed Filmstil]] · [[Be Obsessed Fahrplan]]
 
-Für Reels hochkant, 30 bis 90 Sekunden. Die Vorlagen sind ein Start. Sobald deine Vorbild-Videos da sind, passen wir Tempo und Stil an.
+Für Reels hochkant, 30 bis 90 Sekunden. **Seit 16.10.2026 gilt der [[Be Obsessed Content-Plan]]:** feste Formate sind Talking Head und Montage, jedes Video ist eine Mini-Story (Hook, Problem, Weg mit Tiefpunkt, Lehre, Aufruf). Die Vorlagen unten bleiben als Ideen-Vorrat.
 
 ## Das Grundgerüst (gilt für jedes Video)
 
@@ -18,7 +18,7 @@ Für Reels hochkant, 30 bis 90 Sekunden. Die Vorlagen sind ein Start. Sobald dei
 |---|---|---|---|
 | **1. Hook** | 0 bis 2 s | Ein Satz, ein starkes Bild, ein Text im Bild, alles gleichzeitig | Entscheidet, ob jemand bleibt. Kein „Hey Leute“, keine Begrüßung, sofort rein. |
 | **2. Versprechen** | 2 bis 8 s | Warum es sich lohnt, dranzubleiben | „In 30 Sekunden weißt du, warum …“ |
-| **3. Hauptteil** | bis 60 s | Eine Idee, höchstens drei Punkte | Alle 2 bis 3 Sekunden passiert etwas Neues im Bild: Schnitt, Zoom, Text, anderer Clip. |
+| **3. Hauptteil** | bis 60 s | Eine Idee, höchstens drei Punkte | Tempo je Format: Talking Head ohne Pausen (Jump Cuts, ab und zu näher ran), Montage rund 1 Clip pro Sekunde. Mindestens ein ehrlicher Tiefpunkt. |
 | **4. Pointe** | 3 bis 5 s | Die eine Sache, die hängen bleibt | Kurz, als eigener Satz, gern mit Text im Bild. |
 | **5. Aufforderung** | 2 s | Genau **eine**: folgen, kommentieren oder Link in der Bio | Bis zum ersten Kunden immer dieselbe: „Schreib KI in die Kommentare“ oder Warteliste. |
 | **6. Loop** | | Der letzte Satz führt zurück zum Anfang | Wer es zweimal schaut, zählt doppelt. |
@@ -84,6 +84,6 @@ Der Hook steht dreimal da: gesprochen, als Text oben im Bild und als Bild selbst
 
 ## Text im Bild
 
-- Untertitel **immer**, groß, mittig im oberen Drittel bis zur Mitte. Viele schauen ohne Ton.
+- Untertitel **immer**, aber **klein, weiß, schlicht**, 1 bis 4 Wörter (entschieden 16.10., wie in allen vier Vorbildern). Talking Head: auf Brusthöhe. Montage: mittig im Bild oder im schwarzen Balken. Viele schauen ohne Ton.
 - Unten rund ein Fünftel und rechts einen Streifen frei lassen: da liegen bei Instagram und TikTok Beschreibung, Buttons und Likes.
-- Eine Schriftart, eine Akzentfarbe für Schlüsselwörter, immer dieselbe. Das wird dein Wiedererkennungszeichen.
+- Eine Schriftart, keine Farb-Hervorhebung. Die Ruhe ist das Wiedererkennungszeichen.

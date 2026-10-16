@@ -48,7 +48,9 @@ status: Idee, OGSM-Entwurf steht, Entscheidungen bei Max offen
 | [[Be Obsessed Filmstil]] | Stil, iPhone-Einstellungen, Licht, Ton, Equipment bis 100 € |
 | [[Be Obsessed Lernplan]] | 8 Lernthemen plus Vorschläge für junge Leute |
 | [[Be Obsessed Profil]] | Account-Name, Bio-Beispiele, welche Plattform |
-| Schnitt-Skripte | eigene Session „Be Obsessed: Schnitt-Skripte ausarbeiten“ (15.10.) |
+| [[Be Obsessed Content-Plan]] | **gilt seit 16.10.:** Wochenplan, Formate, Mini-Story, Messen, 70/20/10, E-Mail-Liste, Schnitt-Ablauf |
+| [[Be Obsessed Stil-Steckbrief]] | Analyse der vier Vorbild-Reels, Look und Untertitel |
+| Schnitt-Pipeline | `C:\Users\maxlk\Projects\be-obsessed-schnitt\` (lokal, nicht im Vault), Session „Be Obsessed: Schnitt-Skripte ausarbeiten“ |
 
 ---
 
