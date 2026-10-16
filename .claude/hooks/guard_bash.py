@@ -17,11 +17,76 @@ jetzt: Heredoc-Koerper vor der Pruefung rausschneiden, Kommando in einzelne
 Segmente (Trenner `; && || |` / Zeilenumbruch) zerlegen und je Segment pruefen
 -- ein Segment, dessen erstes Wort ein reiner Such-/Listbefehl ist, zaehlt fuer
 Rule 1-3 nicht als Ausfuehrung, und `--dry` beim Runner ist ausdruecklich frei.
+
+AP398 (15.10.2026): Rule 1 laeuft jetzt auch fuer das PowerShell-Tool (Matcher
+`Bash|PowerShell`), sonst war das PowerShell-Tool der ungesperrte Weg zum Box-Sync
+(Box-Sync-Teil von AP362; Rule 2-4 bleiben vorerst Bash-only). Und sie feuert nur noch,
+wenn das Segment das Skript wirklich STARTET: das Wort direkt vor dem Skriptpfad ist ein
+Starter (&, ., -File, powershell, pwsh, /c, iex, Start-Process ...) oder der Pfad steht vorne,
+und es ist kein reiner -Stop/-DryRun/-RemoteBase-Testlauf (auch ohne Schalter = Vollmodus
+zaehlt, PowerShell-Praefixe wie -Sy auch). Vorher reichte der Skriptname plus irgendein
+"-sync" danach: ein Ticket-Text mit "Teil-Sync" im --why wurde am 15.10. als Box-Sync
+geblockt, und umgekehrt kamen Vollmodus, `time powershell ...` und `& $p` frei durch. Eine Bash-Umleitung aufs
+PowerShell-Tool gibt es bewusst NICHT: die Git-Bash-Falle (MSYS-scp) ist im Skript selbst
+behoben (fester Pfad aufs Windows-OpenSSH), eine Umleitung haette ohne diese Aenderung nur
+auf das damals ungesperrte PowerShell-Tool geschoben.
 """
 from _common import *  # noqa
 
 _INSPECT_CMDS = {"grep", "rg", "ls", "find", "diff", "select-string", "get-childitem",
                  "dir", "wc", "head", "tail"}
+
+# Rule 1 (AP398): wer startet das Sync-Skript wirklich?
+# verdict-auditor 16.10.: die erste Fassung (Allowlist fuers ERSTE Wort plus Pflicht-Schalter -Sync)
+# liess den gefaehrlichsten Aufruf durch, den Vollmodus OHNE Schalter (synct und startet den Runner),
+# dazu `time`/`timeout`/`VAR=1`/`( )` vor powershell, `Measure-Command {& ...}`, `Start-Job`, `& $p`
+# und die PowerShell-Praefix-Kuerzung `-Sy`. Jetzt: entscheidend ist das Wort DIREKT VOR dem
+# Skriptpfad (oder der Pfad steht vorne), und frei ist nur, was nichts in den Box-Code schreibt.
+_SYNC_SCRIPT = re.compile(r"box_provision_discovery\.ps1\b", re.I)
+_STARTER_PREV = {"&", ".", "-file", "-filepath", "powershell", "powershell.exe", "pwsh", "pwsh.exe",
+                 "/c", "/k", "invoke-expression", "iex", "start-process", "saps", "start"}
+_LIVE_BASE = "c:/users/maxlk/projects/trading-data"
+
+
+def _sync_writes_live(tail):
+    """Schalter hinter dem Skriptpfad: -Stop, -DryRun und -RemoteBase auf ein Nicht-Live-Ziel
+    schreiben nichts in den Box-Code. Alles andere (auch ganz ohne Schalter = Vollmodus) schon.
+    PowerShell nimmt eindeutige Praefixe (-St, -Dr, -R), also per Praefix vergleichen."""
+    low = tail.lower()
+    toks = re.findall(r"(?<![\w-])-([a-z]+)", low)
+    if any(len(t) >= 2 and "stop".startswith(t) for t in toks):
+        return False
+    if any("dryrun".startswith(t) for t in toks):
+        return False
+    rb = re.search(r"(?<![\w-])-r[a-z]*\s+[\"']?([^\s\"']+)", low)
+    if rb and "remotebase".startswith(re.match(r"-([a-z]+)", rb.group(0)).group(1)) \
+            and rb.group(1).rstrip("/") != _LIVE_BASE:
+        return False
+    return True
+
+
+def _runs_box_sync(seg, whole=""):
+    """True, wenn das Segment box_provision_discovery.ps1 so STARTET, dass es in den Live-Box-Code
+    schreibt. Nur erwaehnt (Ticket-Text, Get-Content, Write-Host, Array, Zuweisung) zaehlt nicht."""
+    for m in _SYNC_SCRIPT.finditer(seg):
+        i = m.start()
+        while i > 0 and seg[i - 1] not in " \t{(,=":
+            i -= 1
+        delim = seg[i - 1] if i > 0 else ""
+        before = seg[:i].rstrip(" \t")
+        if delim in (",", "="):
+            continue                                  # Array-Element oder Zuweisung
+        if delim == "(" and before[:-1][-1:].isalnum():
+            continue                                  # Methodenaufruf, z.B. ParseFile('...')
+        prev = before.split()[-1].strip("\"'({").lower() if before.split() else ""
+        first = not before or before.endswith(("{", "("))
+        if (first or prev in _STARTER_PREV) and _sync_writes_live(seg[m.end():]):
+            return True
+    # Pfad in einer Variablen: `$p = '...box_provision_discovery.ps1'; & $p -SyncOnly`
+    mv = re.match(r"^\s*[&.]\s*\$\w+", seg)
+    if mv and _SYNC_SCRIPT.search(whole) and _sync_writes_live(seg[mv.end():]):
+        return True
+    return False
 
 
 def _strip_heredocs(c):
@@ -57,10 +122,14 @@ def _exec_segments(c):
 
 def main():
     inp = read_input()
+    tool = inp.get("tool_name") or "Bash"
     cmd = (inp.get("tool_input") or {}).get("command") or ""
+    if tool == "PowerShell":
+        cmd = re.sub(r"`\r?\n", " ", cmd)   # Backtick-Zeilenfortsetzung = eine Zeile
     c_raw = cmd.replace("\\", "/")
     c = _strip_heredocs(c_raw)
     exec_segs = _exec_segments(c)
+    sync_run = any(_runs_box_sync(s, c) for s in exec_segs)
 
     # --- Marker aus dem Kommando ableiten (vor allen Blocks) -----------------
     if re.search(r"inbox_tool\.py.*--push-next", c):
@@ -68,8 +137,8 @@ def main():
     if re.search(r"(funded_finalize|live_finalize)\.py", c):
         touch_marker("finalize_at")
 
-    # --- 1. Box-Sync ohne Regressionstest -----------------------------------
-    if any(re.search(r"box_provision_discovery\.ps1.*-Sync", s, re.I) for s in exec_segs):
+    # --- 1. Box-Sync ohne Regressionstest (Bash UND PowerShell, AP398) ------
+    if sync_run:
         core_t, core_f = newest_engine_core()
         ok_t = marker_time("regression_ok")
         if core_t and (ok_t is None or ok_t < core_t):
@@ -81,6 +150,13 @@ def main():
                 "setzt er selbst den Marker (python .claude/hooks/mark.py regression_ok), "
                 "danach den Sync erneut starten. Meldet er 'Sync STOPPEN': nicht syncen."
             )
+
+    # PowerShell-Tool: bisher nur Rule 1 (Rest von AP362 offen), keine Bash-Regeln auf PS-Syntax.
+    if tool != "Bash":
+        if sync_run:
+            context("Hook: nach dem Sync den Runner neu starten (Stop, Sync, Start), sonst laeuft "
+                    "er mit altem Code weiter (Vorfall 28.08.2026, 5,5 h Leerlauf).", "PreToolUse")
+        sys.exit(0)
 
     # --- 2. Enqueue ohne pipeline-auditor -----------------------------------
     if any(re.search(r"hypothesis_bank\.py.*--enqueue", s) for s in exec_segs):
@@ -146,7 +222,7 @@ def main():
         notes.append("Hook: paralleler Schreiber (finalize/developer_run). Regel session-guard: "
                      "erst pruefen, ob eine andere Session gerade dasselbe JSON schreibt "
                      "(trading-data ist kein Git-Repo, ein Ueberschreiber ist endgueltig).")
-    if any(re.search(r"box_provision_discovery\.ps1.*-Sync", s, re.I) for s in exec_segs):
+    if sync_run:
         notes.append("Hook: nach dem Sync den Runner neu starten (Stop, Sync, Start), sonst laeuft "
                      "er mit altem Code weiter (Vorfall 28.08.2026, 5,5 h Leerlauf).")
     context("\n".join(notes), "PreToolUse")

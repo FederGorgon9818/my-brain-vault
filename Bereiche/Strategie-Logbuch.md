@@ -4019,3 +4019,51 @@ Explorativ, weil die Prämisse nicht trägt. 12 Varianten vorab festgelegt (`eng
 **Lehre:** Ein nachträglich gefundenes Fenster lässt sich auf denselben Daten nicht bestätigen, aber sein Why lässt sich prüfen: sagt das Why den Effekt auch für Gruppen voraus, an denen nicht gesucht wurde, sind diese Gruppen der Test. Hier hat das eine Session gekostet und das Why erledigt. Kein neues Gate nötig, der Ablauf steht in der Juli-Notiz (Stufe 2).
 
 **Buch-Lücke:** hängt an der Prämisse. Kein Grid, keine Strategie, nichts fürs Next-Week-Buch.
+
+## #183: Box-Sync aus Git Bash: MSYS-scp, halber Sync ohne Stempel, und warum jeder Sync 2,7 GB schob (15./16.10.2026, AP398)
+
+**Anlass:** Die Session „Engine-Fixes AP223/AP286/AP303“ startete am 15.10. `box_provision_discovery.ps1 -SyncOnly` aus dem Bash-Tool. `scp` stand im Skript als nackter Name, Git Bash hat `/usr/bin` vorne im PATH, also lief das MSYS-scp. Elf Logdateien in `_scratch_latte/v4_out_abnahme` heißen `log_<Bein>.txt`: ein Bash-Skript mit Windows-Zeilenenden hat ein `\r` in den Namen geschrieben, MSYS legt das als U+F00D auf NTFS ab und macht beim Senden wieder ein echtes `\r` daraus. Der Windows-OpenSSH-Server der Box lehnt das ab, scp endet mit Exit 1, das Skript bricht nach rund 2 Stunden ab, **vor** Stempel und Config. Box-Code gemischt, die Session hat per MD5-Abgleich von Hand vervollständigt. Zweiter Vorläufer derselben Klasse: #131 (25.08., scp-Glob still gescheitert, Skript meldete „fertig“). Der Fix damals prüfte nur das Engine-scp.
+
+### Was der Probelauf zusätzlich fand
+- **Die relativen `/XD`-Ausnahmen griffen nie.** robocopy nimmt bei `/XD` nur Ordnernamen oder volle Pfade. `discovery\results` und `developer\results` waren wirkungslos. Jeder Sync schob 13.572 Dateien (2,7 GB) statt rund 1.750: 3.221 PC-Ergebnisdateien in die Box-results (dort ist die Box die Wahrheit), 3.136 Dateien aus `box_results` (der PC-Spiegel der Box) zurück auf die Box, 5.469 Scratch-Dateien.
+- **Der Sync schob die Bücher an `--push-next` vorbei auf die Box.** `book_state.json` und `book_state_next.json` gingen ohne Hook-Marker, ohne md5-Stand und ohne Drift-Warnung mit. Im Probelauf lag am PC ein ungepushter Arbeitsstand des Next-Buchs von 23:09 (Wochenend-Session), der Box-Stand von 10:17 stammte aus dem halben Sync.
+- **`.claude_hooks` ging mit**, also die Hook-Marker und Quittungen dieses PCs, inklusive `regression_ok`.
+- **Die Daten-Kopie (`exported_data`, 683 MB) lief jedes Mal komplett** und ohne Exit-Prüfung.
+- **Kein eigener Exit-Code.** Im PowerShell-Tool per `&` gestartet erbt der Aufrufer den Code des letzten externen Befehls. Der erste Live-Lauf der neuen Fassung (16.10. 00:33, Queue-Session) war laut Manifest vollständig (1.620 Dateien gleich) und meldete trotzdem „Exit 4“. Im Test nachgestellt: Skript ohne `exit`, letzter externer Befehl gibt 4 zurück, Aufrufer sieht 4.
+- **Am Ende kopierte `scp -r` alle 3.134 Ergebnisdateien (232 MB) zurück** in einen Ordner, den nur noch `registry_backup.py` für zwei Dateien liest. Die Ergebnisse holt `inbox_tool.py --pull` längst inkrementell. Genau dort endete die Queue-Session um 00:40 im Nutzungslimit, der Runner blieb danach bis 15:50 gestoppt.
+
+### Was jetzt Code ist
+| Teil-Lehre | Wo |
+|---|---|
+| scp/ssh fest aus `%SystemRoot%\System32\OpenSSH`, egal aus welcher Shell, Hinweis bei gesetztem `MSYSTEM` | `box_provision_discovery.ps1` |
+| Vorab-Prüfung vor jedem Kopieren: Windows-Python, ssh erreichbar, Runner und Worker stehen (sonst Abbruch, `-Force` als Ausweg), Sperre | `box_provision_discovery.ps1` |
+| `/XD` mit vollen Pfaden; `_scratch*` (mit Ausnahme-Liste für Laufzeit-Dateien, `-WithScratch`), `logs`, `.claude_hooks`, Bücher und `portfolio_next` raus | `box_provision_discovery.ps1` |
+| Ausschlüsse werden geprüft statt geglaubt: liegt einer davon im Staging, Abbruch mit Exit 1 | `box_provision_discovery.ps1` |
+| Namen mit Steuerzeichen, U+F000 bis U+F0FF oder unter Windows verbotenen Zeichen werden gemeldet und ausgelassen | `sync_manifest.py clean`, Test `test_sync_manifest.py` |
+| MD5 auf PC und Box, kopiert wird nur, was abweicht; am Ende Abgleich jeder Datei PC gegen Box | `sync_manifest.py hash/diff` |
+| `.sync_incomplete` auf der Box vor dem ersten Schreiben; Config, Manifest (`.sync_manifest.tsv`) und Stempel nur bei vollem Erfolg | `box_provision_discovery.ps1` |
+| Runner startet nicht nach halbem Sync | `start_runner.ps1` (Ausweg `-Force`) |
+| Feste Exit-Codes 0 ok, 1 Box unverändert, 2 halber Sync, 3 nur Rückholen gescheitert; Schlusszeile `ERGEBNIS: … (Exit N)` | `box_provision_discovery.ps1` |
+| Nach `-SyncOnly` steht da, dass der Runner noch gestoppt ist und wie er startet | `box_provision_discovery.ps1` |
+| Box-Sync-Sperre (`regression_ok`) gilt für Bash- **und** PowerShell-Tool, nur beim echten Skriptstart; Trockenlauf und Testziel frei | `guard_bash.py`, Matcher in `settings.json`, Test `test_sync_gate.py` |
+| Hashing auf der Box im Hintergrund-Modus (CPU und Platte), Hinweis bei Sync in der US-Session | `sync_manifest.py`, `box_provision_discovery.ps1` |
+| Alles, was `inbox_tool.py --pull` holt, und alle Flags/States, die Runner, Generator, `promote_next` und Worker auf der Box schreiben, sind ausgeschlossen (u.a. `generator_state.json`, `pending_tickets.json`, `inbox.md`, `QUEUE_EMPTY_NOTIFIED`, `placebo_log.json`, `nachlauf_par\`) | `box_provision_discovery.ps1`, statischer Test in `test_sync_manifest.py` (schlägt an, sobald eine Box-Datei im Code dazukommt oder der Ausschluss fehlt) |
+| Der Live-Sync setzt vor dem ersten Schreiben selbst STOP: Runner, Worker und `maxlab_watchdog.ps1` (startet den Dienst sonst alle 5 Min neu) halten daran | `box_provision_discovery.ps1` |
+| Scheitert der MD5-Abgleich selbst, wird daraus kein stilles „nichts zu tun“, sondern ein Abbruch | `box_provision_discovery.ps1` (`Get-Todo`) |
+| Ein lebender Sync wird nie übernommen, wiederverwendete PIDs werden über die Startzeit erkannt | `box_provision_discovery.ps1` (Sperre) |
+
+Neue Schalter: `-DryRun` (zeigt, was kopiert würde) und `-RemoteBase <Testordner>` (Sync in einen Testordner auf der Box). Getestet am 16.10.: Trockenlauf live aus Git Bash (Exit 0, 3:18 min), vier Läufe in einen Testordner (Erstlauf 38 Dateien, Wiederholung 2 Dateien, provozierter Schreibschutz-Fehler endet mit Exit 2 und Marker, nach Behebung Exit 0 und Marker weg), Live-Engine dabei unberührt. Während der Testläufe 2 bis 4 (16:13 bis 16:25) meldete NT8 zehn kurze Verbindungsabbrüche (E8 und FN, je 1 bis 2 Sekunden). Lauf 1 mit gleicher Last hatte keine, am 14.10. gab es ohne Sync-Test 23. Zusammenhang nicht belegt, deshalb der Hintergrund-Modus und der Hinweis.
+
+### Hook-Entscheidung
+Keine Umleitung vom Bash- aufs PowerShell-Tool. Die Wurzel ist im Skript behoben und gilt damit auch für Max' eigenes Terminal. Eine Umleitung hätte ohne weitere Änderung auf das PowerShell-Tool geschoben, auf dem die `regression_ok`-Sperre bis zum 16.10. gar nicht galt (AP362). Stattdessen gilt die Sperre jetzt für beide Tools und feuert nur noch, wenn das Segment das Skript wirklich startet. Vorher reichte der Skriptname plus irgendein „-sync“ im selben Befehl: am 15.10. wurde so das Anlegen des Tickets geblockt, weil im Ticket-Text „Teil-Sync“ stand.
+
+### Abnahme (verdict-auditor, 16.10.)
+Erstes Ergebnis „hält mit Auflagen“. Drei Lücken im Skript: Box-eigene Dateien (`generator_state.json`, `pending_tickets.json`, `inbox.md`, `QUEUE_EMPTY_NOTIFIED`) wären beim nächsten Sync auf PC-Stand zurückgedreht worden, der Watchdog hätte den Runner mitten in einen halben Sync gestartet, und ein gescheiterter Abgleich wäre als „vollständig verifiziert“ durchgegangen. Dazu kam die erste Hook-Fassung durch zehn Umgehungen nicht hinterher, darunter der gefährlichste Aufruf überhaupt: das Skript **ohne** Schalter (Vollmodus, synct und startet den Runner), außerdem `time powershell …`, `Measure-Command { & … }`, `& $p` und die PowerShell-Kürzung `-Sy`. Alles umgesetzt (Tabelle oben). Die Hook-Erkennung schaut jetzt auf das Wort direkt vor dem Skriptpfad, frei ist nur `-Stop`, `-DryRun` und `-RemoteBase` auf ein Testziel, auch als Kürzung. Die zehn Umgehungen stehen als Block-Fälle im Selbsttest, die Lese- und Prüfmuster dieser Session als Frei-Fälle. Negativfälle an Skript-Kopien: fehlender Ausschluss bricht mit Exit 1 ab, gescheiterter Abgleich ebenso. Den Exit-Code sieht der Aufrufer nur über `-File` bzw. `&` sicher, maßgeblich ist die `ERGEBNIS`-Zeile.
+
+### Was noch nur Text ist (Folge-Ticket)
+- `promote_next.py` läuft auf der Box als geplante Aufgabe alle 30 Min und liest Engine-Code, auch mitten in einem halben Sync. Ob es STOP oder `.sync_incomplete` beachtet, ist ungeprüft. Runner, Worker und Watchdog halten seit dem 16.10. am STOP, das der Sync selbst setzt.
+- Die Ausnahme-Liste für Scratch-Dateien, die Code zur Laufzeit liest, ist Handpflege (heute nur `_scratch_juli_nacht/praemisse_globex_tage.csv` für `tafel_lib.py`).
+- Bash-Skripte mit Windows-Zeilenenden erzeugen die kaputten Namen weiter. Der Sync filtert sie, verhindert sie aber nicht.
+- Der Sync löscht nie: am PC gelöschte oder umbenannte Dateien bleiben auf der Box liegen. Ein Bericht gegen `.sync_manifest.tsv` würde die Waisen zeigen.
+
+**Lehre 175:** *Ein Kopier-Skript ist erst dann fertig, wenn es am Ende selbst nachweist, dass Ziel und Quelle gleich sind, und wenn sein Exit-Code etwas bedeutet.* Exit-Code-Prüfung je Befehl (#131) reicht nicht: sie sagt nichts über Dateien, die gar nicht erst kopiert werden sollten (Bücher, Box-Wahrheit), und nichts über Ausschlüsse, die still nicht greifen. Darum: Inhalt per MD5 abgleichen, Ausschlüsse im Staging nachprüfen, einen Halb-Zustand auf dem Ziel sichtbar machen, den der Startpfad respektiert, und externe Werkzeuge nie über den PATH auflösen, wenn das Skript aus mehreren Shells gestartet wird.
