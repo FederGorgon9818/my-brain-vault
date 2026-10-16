@@ -47,7 +47,9 @@ ENGINE_CORE = ["sigcore.py", "discovery/controls.py", "overfit.py", "qbt.py", "t
                # Gate v4 (AP278, 01.10.2026): Gate-, Runner- und Uebernahme-Code entscheidet genauso
                # ueber das Buch wie die Engine selbst.
                "discovery/discovery_lib.py", "discovery/discovery_runner.py", "discovery/promote_next.py",
-               "discovery/job_generator.py", "developer_run.py", "weekend_check.py"]
+               "discovery/job_generator.py", "developer_run.py", "weekend_check.py",
+               # AP246 (15.10.2026): Betriebspunkt + Passquote der Gate-v4-Leitplanke (evaluate_v2-Kernel).
+               "operating_point.py", "eval_plan.py", "cage_policy_lib.py"]
 # Discovery-Code, den der laufende Runner nur nach Neustart neu lädt.
 RUNNER_CODE_DIR = "discovery"
 BOOK_FILES = ["book_state.json", "book_state_next.json"]
