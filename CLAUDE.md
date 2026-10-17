@@ -59,6 +59,16 @@ Wenn etwas gebaut, getestet und für gut befunden wurde, gilt es als **fertig un
 
 ---
 
+## 🔢 Rechnen nur in Code (Regel Max, 18.10.2026)
+
+**Jede Berechnung läuft in Python, nie frei im Modell.** Gilt für alles mit Zahlen und Zeiten: Summen, Prozente, Kosten, Steuern, Umrechnungen, Datums- und Zeitabstände, Statistik, auch schnelle Überschläge, und auch für Subagents.
+
+- Jede Zahl in einer Antwort kommt entweder unverändert aus einer Quelle (Datei, Skript-Output, Tool) oder aus Code, der in der Session gelaufen ist. Für Kleinkram reicht `python -c "..."`.
+- Nichts im Kopf nach- oder umrechnen, auch keine Zahl aus einem Output „mal eben" in Prozent, Euro oder Monate.
+- Geht Rechnen gerade nicht, die Zahl als ungerechnet kennzeichnen statt zu schätzen.
+
+---
+
 ## 🧭 Auftrags-Typ zuerst: der feste Ablauf für JEDE Aufgabe (Regel Max, 21.09.2026)
 
 Max' Befund: „ich muss quasi immer selbst sagen, dass alle Agents eingeschaltet werden sollen". Das Audit über 14 Tage (121 Sessions) gab ihm recht — Agents, die nur per Text erinnert wurden, liefen in 9–56 % der Fälle (`logbook-distiller` 3 Aufrufe bei 30 ausgelassenen Sessions), Agents in einem Workflow zu 100 %. **Sessions mit Workflow hatten null Lücken.**
