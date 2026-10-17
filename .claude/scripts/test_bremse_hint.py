@@ -100,6 +100,12 @@ def main():
         mit2 = eng / "_scratch_x" / "mit_pool2.py"; mit2.write_text(POOL_JA[4], encoding="utf-8")
         rc, ctx, _ = hook("guard_bash.py", bash(f'cd "{eng}" && python "{mit2}"', cwd=tmp), eng)
         check("guard_bash: absoluter Pfad in Anfuehrungszeichen hinter cd && -> Hinweis", rc == 0 and "mit_pool2.py" in ctx, ctx[:80])
+        ps = lambda cmd: {"tool_name": "PowerShell", "tool_input": {"command": cmd}, "cwd": str(eng)}
+        mit3 = eng / "_scratch_x" / "mit_pool3.py"; mit3.write_text(POOL_JA[3], encoding="utf-8")
+        rc, ctx, _ = hook("guard_bash.py", ps(f'python -B "{mit3}" --jobs 4'), eng)
+        check("guard_bash: PowerShell-Tool, Skript mit eigenem Pool -> Hinweis", rc == 0 and "mit_pool3.py" in ctx, ctx[:80])
+        rc, ctx, _ = hook("guard_bash.py", ps("python -B _scratch_x/mit_bremse.py"), eng)
+        check("guard_bash: PowerShell-Tool, Pool MIT rechen_bremse -> still", rc == 0 and ctx == "")
         rc, ctx, _ = hook("guard_bash.py", bash("python -B _scratch_x/mit_bremse.py"), eng)
         check("guard_bash: Pool MIT rechen_bremse -> still", rc == 0 and ctx == "")
         rc, ctx, _ = hook("guard_bash.py", bash("grep Pool _scratch_x/mit_pool.py"), eng)

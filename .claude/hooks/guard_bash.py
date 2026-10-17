@@ -120,6 +120,25 @@ def _exec_segments(c):
     return [s for s in _segments(c) if not _is_inspect(s)]
 
 
+def _pool_hinweise(inp, exec_segs):
+    """AP411 (Regel Max 18.10.2026): startet ein Kommando ein Python-Skript mit eigenem Prozess-Pool ohne
+    rechen_bremse, kommt einmal je Datei ein Hinweis (blockt nie). Gilt fuer Bash- und PowerShell-Tool."""
+    out_notes = []
+    cwd = inp.get("cwd")
+    for seg in exec_segs:
+        for ziel in py_ziele(seg):
+            for basis in [b for b in (cwd, ENGINE) if b]:
+                p = Path(ziel) if Path(ziel).is_absolute() else Path(basis) / ziel
+                try:
+                    if p.is_file() and p.stat().st_size < 600_000 and pool_ohne_bremse(p.read_text(encoding="utf-8", errors="replace")):
+                        if hinweis_einmal("pool:" + str(p).lower()):
+                            out_notes.append(bremse_hinweis_text(p))
+                        break
+                except OSError:
+                    pass
+    return out_notes
+
+
 def main():
     inp = read_input()
     tool = inp.get("tool_name") or "Bash"
@@ -153,10 +172,11 @@ def main():
 
     # PowerShell-Tool: bisher nur Rule 1 (Rest von AP362 offen), keine Bash-Regeln auf PS-Syntax.
     if tool != "Bash":
+        ps_notes = []
         if sync_run:
-            context("Hook: nach dem Sync den Runner neu starten (Stop, Sync, Start), sonst laeuft "
-                    "er mit altem Code weiter (Vorfall 28.08.2026, 5,5 h Leerlauf).", "PreToolUse")
-        sys.exit(0)
+            ps_notes.append("Hook: nach dem Sync den Runner neu starten (Stop, Sync, Start), sonst laeuft "
+                            "er mit altem Code weiter (Vorfall 28.08.2026, 5,5 h Leerlauf).")
+        context("\n".join(ps_notes + _pool_hinweise(inp, exec_segs)), "PreToolUse")
 
     # --- 2. Enqueue ohne pipeline-auditor -----------------------------------
     if any(re.search(r"hypothesis_bank\.py.*--enqueue", s) for s in exec_segs):
@@ -225,19 +245,7 @@ def main():
     if sync_run:
         notes.append("Hook: nach dem Sync den Runner neu starten (Stop, Sync, Start), sonst laeuft "
                      "er mit altem Code weiter (Vorfall 28.08.2026, 5,5 h Leerlauf).")
-    # AP411 (Regel Max 18.10.2026): Skript mit eigenem Prozess-Pool ohne Rechen-Bremse starten -> Hinweis
-    cwd = inp.get("cwd")
-    for s in exec_segs:
-        for ziel in py_ziele(s):
-            for basis in [b for b in (cwd, ENGINE) if b]:
-                p = Path(ziel) if Path(ziel).is_absolute() else Path(basis) / ziel
-                try:
-                    if p.is_file() and p.stat().st_size < 600_000 and pool_ohne_bremse(p.read_text(encoding="utf-8", errors="replace")):
-                        if hinweis_einmal("pool:" + str(p).lower()):
-                            notes.append(bremse_hinweis_text(p))
-                        break
-                except OSError:
-                    pass
+    notes += _pool_hinweise(inp, exec_segs)
     context("\n".join(notes), "PreToolUse")
 
 
