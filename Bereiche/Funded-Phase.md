@@ -14,6 +14,9 @@ aktualisiert: 2026-09-26
 > Grundlage: Analyse 25./26.09.2026 (Quant-Team, strategy-auditor, verdict-auditor, research-scout), Zusammenfassung in [[Daily Notes/2026-09-26]] Abschnitt „Eval vs. Funded“.
 > Gilt für jeden Pass: E8 50k (läuft), FN1/FN2 (FundedNext Flex 50k), ab 02.10. E8 150k.
 
+> [!warning] Neubewertung 18.10.2026
+> Neu gerechnet mit 4-Bein-Buch, k1 und FFN: [[Eval vs. Funded Neubewertung (18.10.2026)]]. Kurz: Eval bleibt k1, k2 höchstens im Funded der 150k-Konten nach dem Floor-Lock über die Hochstuf-Regel, FFN-Auszahlungspolitik offen bis zur FFN-Antwort. **Veraltet für E8 150k Neukauf (ab 01.10.):** 4 Payouts, Caps 3.000 / 3.000 / 3.500 / 3.500, DD 4.000 (Abschnitt 3 und 4 unten noch alter Stand). Übernahme ins Playbook erst nach Max' Entscheidung.
+
 ---
 
 ## 1. Checkliste am Pass-Tag (vor dem ersten Funded-Trade)
