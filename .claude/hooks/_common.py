@@ -49,7 +49,10 @@ ENGINE_CORE = ["sigcore.py", "discovery/controls.py", "overfit.py", "qbt.py", "t
                "discovery/discovery_lib.py", "discovery/discovery_runner.py", "discovery/promote_next.py",
                "discovery/job_generator.py", "developer_run.py", "weekend_check.py",
                # AP246 (15.10.2026): Betriebspunkt + Passquote der Gate-v4-Leitplanke (evaluate_v2-Kernel).
-               "operating_point.py", "eval_plan.py", "cage_policy_lib.py"]
+               "operating_point.py", "eval_plan.py", "cage_policy_lib.py",
+               # AP411 (18.10.2026): die Rechen-Bremse liegt im Rechenweg von weekend_check/account_card;
+               # ein Fehler dort stoppt oder verfaelscht jeden Lauf, deshalb gleiche Regression-Pflicht.
+               "rechen_bremse.py"]
 # Discovery-Code, den der laufende Runner nur nach Neustart neu lädt.
 RUNNER_CODE_DIR = "discovery"
 BOOK_FILES = ["book_state.json", "book_state_next.json"]
@@ -156,6 +159,57 @@ def norm(s):
 
 def any_re(patterns, text, flags=re.I):
     return any(re.search(p, text, flags) for p in patterns)
+
+
+# ---- Rechen-Bremse (AP411, Regel Max 18.10.2026) -----------------------------
+# Jedes Skript mit mehreren Prozessen laeuft ueber engine/rechen_bremse.py (niedrige Prioritaet, PC-weit
+# hoechstens 4 Worker). Anlass 16.10.2026: zwei Sessions mit je eigenem mp.Pool(cpu_count()-1) auf normaler
+# Prioritaet legten den 6-Thread-PC lahm. Der Hook weist nur darauf hin, er blockt nie.
+_POOL_RE = re.compile(
+    r"\b(?:mp|multiprocessing)\s*\.\s*(?:get_context\([^)]*\)\s*\.\s*)?Pool\s*\("   # mp.Pool( / mp.get_context("spawn").Pool(
+    r"|\bProcessPoolExecutor\s*\("
+    r"|\bfrom\s+multiprocessing(?:\.pool)?\s+import\s+[^\n]*\bPool\b")               # from multiprocessing import Pool
+_PY_RUN_RE = re.compile(
+    r"""(?:^|\s)(?:python[\d.]*(?:\.exe)?|py)\s+(?:-[WX]\s+\S+\s+|-{1,2}[\w-]+(?:=\S+)?\s+)*"""
+    r"""(?:"([^"]+\.py)"|'([^']+\.py)'|([^\s"']+\.py))(?=\s|$)""", re.I)
+
+
+def pool_ohne_bremse(src):
+    """True, wenn der Quelltext einen eigenen Prozess-Pool baut und rechen_bremse nirgends erwaehnt
+    (auch ein Kommentar `# rechen_bremse: nicht noetig` schaltet den Hinweis fuer die Datei ab)."""
+    return bool(_POOL_RE.search(src or "")) and "rechen_bremse" not in src
+
+
+def py_ziele(segment):
+    """Python-Dateien, die ein Kommando-Segment startet (`python -B pfad/x.py ...`), Anfuehrungszeichen entfernt."""
+    return [next(g for g in m.groups() if g) for m in _PY_RUN_RE.finditer(segment or "")]
+
+
+def bremse_hinweis_text(path):
+    name = Path(path).name
+    return (f"Hook: `{name}` baut einen eigenen Prozess-Pool ohne `rechen_bremse` (Regel Max 18.10.2026, AP411). "
+            "Ohne die Bremse laufen die Worker auf normaler Prioritaet und mehrere Sessions zusammen legen den "
+            "6-Thread-PC lahm (16.10.2026). Besser: `import rechen_bremse as RB` und `RB.pool_map(fn, aufgaben, wunsch=4)` "
+            "bzw. `RB.pool_imap_unordered(...)` (Engine-Ordner im sys.path; Anleitung Projekte/Backtest-Engine.md, "
+            "Abschnitt Rechen-Bremse). Bewusst ohne: einen Kommentar `# rechen_bremse: nicht noetig` in die Datei.")
+
+
+def hinweis_einmal(key, ttl=6 * 3600):
+    """True, wenn zu `key` in den letzten `ttl` Sekunden noch kein Hinweis kam (und merkt sich den Zeitpunkt).
+    Haelt Hinweise bei vielen Edits derselben Datei ruhig. Fehler → True (lieber ein Hinweis zu viel)."""
+    try:
+        p = STATE / "hinweis_einmal.json"
+        d = json.loads(p.read_text(encoding="utf-8")) if p.exists() else {}
+        now = time.time()
+        if now - float(d.get(key, 0)) < ttl:
+            return False
+        d = {k: v for k, v in d.items() if now - float(v) < 24 * 3600}
+        d[key] = now
+        STATE.mkdir(parents=True, exist_ok=True)
+        p.write_text(json.dumps(d), encoding="utf-8")
+        return True
+    except Exception:
+        return True
 
 
 # ---- Session-Transkripte (Cross-Session-Ueberblick, Daily-Note-Pflicht) ----

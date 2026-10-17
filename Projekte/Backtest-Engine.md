@@ -66,7 +66,7 @@ with RB.slot(): grosse_einzelrechnung()                                   # ein 
 
 **Fallen:**
 - Ein gebremster Lauf kriecht, solange daneben noch ein ungebremstes Skript die CPU voll auslastet (Kinder erben die niedrige Priorität, auch ihr Start dauert dann). Gewollt, aber wer einen kurzen Test mit Zeitmessung braucht, setzt `MAXLAB_BREMSE_PRIO=0` (Slots und Obergrenze bleiben). Ein Skript mit eigenem `mp.Pool(cpu_count()-1)` ohne Bremse bringt die ganze Rechnung ins Leere.
-- Die Bremse zieht nur, wo das Skript sie benutzt. Offen als Max-Entscheidung (Ticket AP411): Regel in die CLAUDE.md, Hook-Hinweis bei `Pool(` ohne `rechen_bremse`, `rechen_bremse.py` in `ENGINE_CORE`.
+- Die Bremse zieht nur, wo das Skript sie benutzt. Seit 18.10.2026 (AP411, Max): Regel in der CLAUDE.md, ein Hook weist bei `Pool(` ohne `rechen_bremse` darauf hin (Bash-Start und Schreiben eines Engine-Skripts, nur Hinweis, einmal je Datei; abschalten pro Datei mit dem Kommentar `# rechen_bremse: nicht noetig`), und `rechen_bremse.py` steht in `ENGINE_CORE` (Regressionstest vor dem Box-Sync).
 - Wird ein Lauf abgebrochen (Fehler, Strg+C), kann eine harmlose Meldung `OSError: handle is closed` aus dem Aufgaben-Puffer erscheinen. Das ist kein Fehler im Ergebnis.
 - `konten/account_card.py` gehört zum Karten-Fingerabdruck: die Konto-Karten gelten seit dem 16.10. als veraltet und werden beim nächsten Lauf neu ausgegeben (Simulation kommt aus dem Cache, Zahlen unverändert, nur Datum und Fingerabdruck neu).
 

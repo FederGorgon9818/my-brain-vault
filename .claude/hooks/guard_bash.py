@@ -225,6 +225,19 @@ def main():
     if sync_run:
         notes.append("Hook: nach dem Sync den Runner neu starten (Stop, Sync, Start), sonst laeuft "
                      "er mit altem Code weiter (Vorfall 28.08.2026, 5,5 h Leerlauf).")
+    # AP411 (Regel Max 18.10.2026): Skript mit eigenem Prozess-Pool ohne Rechen-Bremse starten -> Hinweis
+    cwd = inp.get("cwd")
+    for s in exec_segs:
+        for ziel in py_ziele(s):
+            for basis in [b for b in (cwd, ENGINE) if b]:
+                p = Path(ziel) if Path(ziel).is_absolute() else Path(basis) / ziel
+                try:
+                    if p.is_file() and p.stat().st_size < 600_000 and pool_ohne_bremse(p.read_text(encoding="utf-8", errors="replace")):
+                        if hinweis_einmal("pool:" + str(p).lower()):
+                            notes.append(bremse_hinweis_text(p))
+                        break
+                except OSError:
+                    pass
     context("\n".join(notes), "PreToolUse")
 
 
