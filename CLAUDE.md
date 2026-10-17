@@ -65,6 +65,10 @@ Wenn etwas gebaut, getestet und für gut befunden wurde, gilt es als **fertig un
 
 - Jede Zahl in einer Antwort kommt entweder unverändert aus einer Quelle (Datei, Skript-Output, Tool) oder aus Code, der in der Session gelaufen ist. Für Kleinkram reicht `python -c "..."`.
 - Nichts im Kopf nach- oder umrechnen, auch keine Zahl aus einem Output „mal eben" in Prozent, Euro oder Monate.
+- **Bündeln:** alle Zahlen einer Antwort in **einem** Aufruf rechnen, nicht eine Runde je Zahl. Jede Runde liest den ganzen Chat neu, das sind rund 75 % ihrer Kosten (Messung 18.10.: 5 Rechnungen einzeln rund 4,6x so teuer wie gebündelt).
+- **Eingaben mit ausgeben:** Code rechnet richtig, schützt aber nicht vor falsch abgetippten Zahlen oder falscher Formel. Eingaben möglichst direkt aus der Datei lesen und im Output mit anzeigen, damit Max sie sieht.
+- Kein eigener Rechen-Agent: teurer (1,7x bis 5,6x) und nicht sicherer, auch er ist ein LLM. Schwere Rechnungen gehen ans Quant-Team, wiederkehrende bekommen ein festes Skript.
+- Ein Prompt-Hook erinnert bei Rechen-Fragen an diese Regel (`on_prompt.py`, siehe [[Hooks-Referenz]]).
 - Geht Rechnen gerade nicht, die Zahl als ungerechnet kennzeichnen statt zu schätzen.
 
 ---
