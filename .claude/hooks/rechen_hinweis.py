@@ -7,8 +7,9 @@ eine Zeile Erinnerung in den Kontext. Reiner Hinweis, blockt nie.
 
 Locker erkannt, weil Max diktiert ("wie viel", "Prozent", "3600 Euro"). Ein Hinweis zu
 viel kostet eine Zeile, einer zu wenig eine falsche Zahl. Jeder Treffer landet in
-STATE/rechen_hinweis_log.jsonl, damit die Fehlalarm-Quote abnehmbar ist (eine Auswertung
-und ein Wirkungs-Zaehler im Stop-Hook gibt es noch nicht, Befund verdict-auditor 18.10.).
+STATE/rechen_hinweis_log.jsonl, damit die Fehlalarm-Quote abnehmbar ist. Ob der Hinweis wirkt,
+misst rechen_zaehler.py (Stop-Hook, on_stop.py Teil 7) in dieselbe Datei, ausgewertet von
+.claude/scripts/rechen_report.py.
 Tests: python .claude/scripts/test_rechen_hinweis.py
 """
 import json
