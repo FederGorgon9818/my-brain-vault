@@ -1,7 +1,7 @@
 ---
 tags: [projekt, trading, gate-v4, stufe-2, buch, wochenende]
 date: 2026-10-15
-status: vorbereitet, Prüfung mit Max am Samstag 17.10. (/wochenende)
+status: entschieden 18.10. (alle 8 Punkte wie empfohlen), Umsetzung läuft, RTY-Instanzen entfernt Max per RDP (AP419)
 ---
 
 # Wochenend-Prüfung 17.10.2026
@@ -33,6 +33,53 @@ Eine Liste für Samstag: alle offenen Buch-Entscheidungen aus den Ticket-Session
    - Minutenpfad 17.07. ist geprüft (`minutenpfad_1015/`).
    - Erste Fassungen für OpEx und LD01 stehen in `book_erstfassung.json`.
    - Den Lauf fährt die Wochenend-Session (AP209), einen Vorab-Lauf gibt es nicht.
+
+## Entscheidung Max 18.10. und Umsetzung
+
+Max hat alle acht Punkte wie empfohlen entschieden (Popup über die Ticket-Session). Logbuch: [[Strategie-Logbuch]] #185.
+
+| # | Punkt | Umgesetzt | Ticket | Neu rechnen? |
+|---|---|---|---|---|
+| 1 | RTY-Gap aus | Next-Buch ohne RTY (6 Beine, md5 35652bf1, PC = Box, Finalize gelaufen). Host-JSONs auf der Box auf `enabled: false` (Sicherung, Backup `_bak_archiv
+tygap-aus-20261018`). **Offen: Max entfernt die zwei M2K-Instanzen** (Anleitung unten) | AP419, AP424 (Härtung) | nein |
+| 2 | OpEx NT8-Port | Notiz am Ticket | AP394 | nein, nach dem Port nur Parität |
+| 3 | LD01 erst Vergleich | neues Ticket | AP420, AP395 | ja, der Vergleich ist die Rechnung |
+| 4 | Asia nur 150k | Notiz, Umsetzung nach den Auflagen | AP387 | ja, Nachlauf mit Oktober-Vola |
+| 5 | LIVE_EXTRA | EVENT_ES raus, Why-Texte korrigiert (`live_finalize.py`), Live-Buch neu finalisiert | AP286 (nach #185b löschbar) | nein |
+| 6 | AP223, AP303 | gelöscht | | nein |
+| 7 | next-week-2026-40 | gelöscht, dazu next-week-2026-39 und AP338 (RTY entschieden) | | nein |
+| 8 | kein k2 | neues Ticket | AP421 | ja, mit frischen NQ-Daten |
+
+**Zusätzlich:**
+- AP423: Code-Gate „Live-Ausstiegsregel-Pflicht“ (Lehre 176).
+- **Vorfall 18.10. nachmittags:** Nach dem RTY-Rauswurf hat der Auto-Promoter die zurückgestellte Variante `gen_gap_RTY_r1_10122016` als Zusatz ins Next-Buch gesetzt. Ohne offenes RTY-Bein galt sie nicht mehr als Kopie. Noch am selben Tag zurückgenommen: alle 8 Kandidaten der Linie stehen auf Dauersperre, das Next-Buch hat wieder 6 Beine. Gate dafür: AP425 (Lehre 177).
+- Wiedervorlagen `lb185a_rty_gap` und `lb185b_fomc` in `engine/wiedervorlagen.json`.
+
+### Klick-Anleitung für Max: RTY-Instanzen entfernen (bis spätestens Mo 19.10. 15:30 Boxzeit)
+
+Kein NT8-Neustart nötig, der Markt ist bis zur RTH-Eröffnung ruhig. Entfernen statt nur Haken raus: Eine nur deaktivierte Instanz löst rund um die Uhr Watchdog-Alarm aus (strategy-auditor 18.10.).
+
+1. **Per RDP auf die Box**, NinjaTrader Control Center öffnen.
+2. **Tab „Positions“:**
+   - **Prüfen:** Für die Konten 2D-150K394206247048 (FFN1) und 2D-150K010602681476 (FFN2) gibt es keine offene Position in **M2K 12-26**.
+   - **Erwartet:** keine Zeile bzw. Menge 0.
+   - **Fehlerfall:** Position offen → **abbrechen**, nichts entfernen, Claude Bescheid geben.
+3. **Tab „Orders“:**
+   - **Prüfen:** keine Working-Order auf M2K 12-26 für diese Konten.
+   - **Fehlerfall:** Working-Order da → abbrechen, Bescheid geben.
+4. **Tab „Strategies“:**
+   - Die zwei Zeilen **MaxBookHost** suchen, deren Spalte **Instrument = M2K 12-26** ist: eine auf FFN1 (ID 398380548), eine auf FFN2 (ID 398380551).
+   - **Vorsicht:** Auf jedem FFN-Konto hängen zwei MaxBookHost. Die Zeile mit **MNQ** muss bleiben, sonst steht das ganze Buch.
+5. Je Zeile: **Rechtsklick → „Remove“** und bestätigen. Der M2K-Chart darf offen bleiben, der RiskGuard sitzt nicht darauf.
+6. **Erwartet danach:**
+   - Im Tab „Strategies“ je FFN-Konto nur noch der MNQ-Host plus RiskGuard.
+   - Im Tab „Log“ kein roter Fehler.
+7. **Claude Bescheid geben („RTY entfernt“).** Claude prüft dann:
+   - Die Watchdog-Zeile muss je FFN-Konto „1H+1G“ zeigen, und M2K ist aus „Kontrakt:“ verschwunden.
+   - Danach `konten.account_sync --pull` und Konto-Karten neu.
+   - Ein einzelner Alarm „deaktiviert seit“ in der ersten Stunde ist nur der stündliche DB-Cache.
+
+**Die zwei RTY-JSONs auf der Box nie löschen oder umbenennen:** Ohne sie würde ein M2K-Chart auf diesen Konten das MNQ-Buch laden (AP424).
 
 ## Entscheidungsvorlage für Max (Entwurf 18.10. 00:30, Zahlen Stand 16.10., wird nach dem Lauf mit frischen Daten aktualisiert)
 

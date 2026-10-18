@@ -4155,3 +4155,120 @@ Info-Zellen (kein Test): B2 −1,20, B3 −0,35, B4 (ZN und 6E beide gegen den G
 **Nebenbefund Kosten (AP375):** frühere GC-Tests (#165, #174, #180b/c, Kommentar in `discovery/hypothesis_bank.py` vom 19.09.) rechneten MGC mit 1,60 $ Gebühr („konservativ“, ohne Beleg), E8 verlangt 2,40 $ (primär belegt), also 0,08 Punkte je Round Trip zu billig. Keins dieser Urteile wird mit den belegten Kosten günstiger. Seit 15.10. (AP384) rechnet `qbt` je Micro aus `COMMISSION_RT_MICRO` (MGC 2,40 $), ein Vollkontrakt ohne Gebühr bricht ab; die Urteile davor bleiben auf den alten Gebühren. Offene Lücke: eine im Job ausdrücklich gesetzte Micro-Gebühr unter der Tabelle läuft still durch (AP417). Engine-freie Tafeln verdrahten die Kosten selbst (`tafel_gcx.py` 0,44, nachgerechnet richtig, AP416). #174 Urteil A nennt „1 Tick + 1,02 $“ (MNQ-Default), ob Text oder Rechnung, ist ungeprüft.
 
 **Buch-Lücke:** hängt an der Prämisse. Keine Zelle trägt, also kein Grid, kein Engine-Umbau (S-GCX-1, -2, -8 werden nicht gebaut), AP373 bleibt gesperrt, nichts fürs Next-Week-Buch. W46 fehlen Why und Falsifier, Daten vor 2016 über AP142/AP143.
+
+## #185: Wochenend-Prüfung 18.10.2026 (Gate v4 Stufe 2): RTY-Gap abgeschaltet und aus dem Next-Buch, EVENT_ES aus LIVE_EXTRA, Zielbuch echt plus OpEx plus LD01 (18.10.2026)
+
+**Anlass:**
+- Wochenend-Prüfung, Entscheidung Max am 18.10. per Popup, alle acht Punkte wie empfohlen. Vorlage: [[Wochenend-Prüfung 17.10.2026]].
+- Rechnung: `engine/weekend_check/2026-10-16_neustand_1016.md`, gerechnet nach dem gemeinsamen Sync vom 16.10. (echte Gebühr 1,90 $, 150k-Käfig, neues `tempo_plan`).
+- Gegenleser:
+  - quant-mathematician und quant-statistician (16.10.), verdict-auditor und logbook-distiller (18.10.)
+  - Gebühren-Befund aus AP384
+  - LIVE_EXTRA-Nachrechnung aus AP223/AP286/AP303 (`engine/_scratch_ap223_286_303/live_extra/zusammenfassung.md`)
+- Tickets: AP419 (RTY auf FFN aus), AP420 (LD01-Vergleich), AP421 (k2), AP286, AP394, AP395, AP387.
+
+**Was entschieden wurde:**
+- Das echte Buch bleibt bei 4 Beinen.
+- Next-Buch 6 Beine (echt plus NQ_OPEXMOM_fv4 plus NQ_LD01_vix16_fv4), RTY-Gap raus.
+- OpEx: NT8-Port jetzt (AP394), nach grüner Parität ins echte Buch.
+- LD01: erst der Vergleich „PB3 doppelt bei VIX unter 16“ (AP420), dann der Port (AP395).
+- Asia nur auf den 150k-Konten, Umsetzung nach den Auflagen aus AP387.
+- Kein Konto auf k2 (AP421).
+
+**Zahlen aus dem Bericht** (Monate bis 50k mit RiskGuard-Stopp):
+
+| Buch | Monate |
+|---|---|
+| echtes Buch | 83,0 |
+| Next 7er | 68,6 |
+| 6er ohne RTY | 71,5 |
+
+Der 6er trägt in der ersten Fassung mit z 3,05, recent3y gegen echt −7,5. Mit Trade-Unsicherheit liegt er laut Statistiker bei 90 % zwischen −18,9 und −6,8 Monaten.
+
+**Buch-Lücke:**
+- OpEx: NT8-Modul plus Parität fehlen (AP394).
+- LD01: der Vergleich (AP420), danach Port und Parität (AP395).
+- Asia 50k: die AP387-Auflagen.
+
+### #185a RTY-Gap (`gen_gap_RTY_r1_08242126_v4re_d261002`)
+
+**Verdikt:** Nicht ins echte Buch, auf FFN1/FFN2 abgeschaltet (AP419), aus dem Next-Buch genommen.
+- Die erste Fassung (Linie RTY_Gap-fade, Stand 09.08.) ist nicht belegt: t 0,60.
+- In der Spalte „erste Fassung“ ist echt plus RTY nicht belegt: z 0,66, mittlere Zeit −0,6 Monate (90-%-Band −2,2 bis +0,9).
+- Gate v4 Stufe 1 mit echter Gebühr: Sharpe-t 1,87 bei 1,90 $ bzw. 1,90 bei 1,78 $ (FFN), IS-PF 1,05. Stufe 1 scheitert an Sharpe-t und IS, die DSR (0,43 bei 1,90 $, N = 30) ist nur Info.
+- Die −2,9 Monate, die RTY im 7er roh bringt, sind laut Mathematiker und Statistiker reiner Tuning-Gewinn (vierte Retune-Generation).
+- Dazu kommt die Datenquelle (Golden Master 18.10., AP313): Die Linie RTY_Gap-fade hat auf Databento bis 10.08. 211 Trades und Sharpe +0,199, auf NT8 im selben Zeitraum 221 Trades und Sharpe −0,036. Die Databento-Zahlen sind für RTY also die optimistische Quelle.
+
+**Reichweite:**
+- Signal: Gap-Fade auf RTY (M2K), Gap 0,45 bis 1,625 ATR, Stopp 0,5 × Gap, kein Target, Bestätigung 5 Min, rund 31 Trades je Jahr (Konto-Karte).
+- Rolle: Zusatzbein im Prop-Buch bei k1 (Käfig E8/FN 50k, E8/FFN 150k mit RiskGuard-Tagesstopp).
+- Kosten: 1,90 $ bzw. 1,78 $ je Round Trip.
+- Daten: RTY ab 10.07.2017 bis 07.08.2026 (Databento).
+
+**Kategorie:** `unentscheidbar`, zählt nicht als Friedhof.
+- Begründung wie die Umstempelung der Linie in #173: Bei n = 211 liegt die Nachweisgrenze bei 0,301 R gegen ein Ziel von 0,0595 R, das Bein war auf keiner Datenversion von Null zu unterscheiden.
+- Das Stufe-1-Ergebnis (t 1,87, Job mit N = 8 Grid-Configs, Fehlerbalken t ±0,90 bei 1,90 $) ist eine Messung dieser Fassung, kein Urteil über die Klasse.
+
+**Wiedervorlage** (`wiedervorlagen.json`, Eintrag `lb185a_rty_gap`):
+- Max entscheidet AP313/AP199 (NT8-Hauptdaten): dann die Linie auf der gewählten Quelle neu messen. Bleibt der Vorzeichenwechsel, ist das auf der neuen Quelle `empirisch-nichts-gefunden`.
+- Gebühr je Round Trip unter 1,34 $ (qbt-Tabelle). Das öffnet nur Stufe 1 wieder, nicht die Belegfrage: Die erste Fassung bleibt auch bei 1,02 $ bei t 0,76.
+- Ein unabhängiger Fund derselben Gap-Fade-Klasse auf einem anderen Markt.
+
+**Stempel:**
+- Engine-Fingerprint ae2c4063c7e2034c5aa60c8e381479ee (Sync 16.10.), Datei-md5 `golden_masters.json` c4fe8a23 und `qbt.py` 3ca7a0d3.
+- Daten Databento bis 07.08.2026.
+- Kriterium Zeit bis 50k mit RiskGuard-Tagesstopp, Kalender-Modus, k1, Begleitdatei erste Fassung 20bd53bf.
+
+**Nicht tot:**
+- Gap-Fade als Klasse und RTY als Markt.
+- Große Gaps über 1,0 ATR (dort rund 70 % des Ergebnisses laut strategy-auditor 11.10.) als eigene vorregistrierte Zelle.
+- Andere Kostenstruktur (Vollkontrakt auf eigenem Konto).
+
+### #185b EVENT_ES_primary (LIVE_EXTRA, Live-Buch)
+
+**Verdikt:** Aus LIVE_EXTRA genommen (`live_finalize.py`), wegen Doppelung. OPEXMOM_NQ bleibt dort als Beobachtungsbein, bis NQ_OPEXMOM_fv4 ins echte Buch kommt.
+- Bei 1,90 $ und je 1 Micro:
+
+| Bein | $/Jahr | Trades/Jahr | t | DD |
+|---|---|---|---|---|
+| EVENT_ES | 245 | 10,4 | 1,54 | −1.481 |
+| davon OpEx-Hälfte | 185 | 6,2 | 2,20 (nachträglich geteilt) | |
+| davon FOMC-Hälfte | 61 | 4,2 | 0,45 | |
+| OPEXMOM_NQ | 250 | 6,6 | 1,79 | −353 |
+
+- An 52 gemeinsamen Tagen ist es dieselbe OpEx-Wette wie OPEXMOM_NQ (Korrelation dort 0,87).
+- Das „Grade A“ vom 31.07. galt mit Same-Bar-Look-ahead, das betraf nur den OpEx-Teil (AP286). Die FOMC-Hälfte hatte nie einen.
+
+**Reichweite:**
+- Kombi aus #054. An OpEx-Freitagen `opex_mom` (Einstieg ab Minute 180, Schwelle 0,3, Stopp 0,75).
+- An FOMC-Tagen die fomc_post-Logik aus #034: Einstieg 14:15 in Richtung der Bewegung 14:00 bis 14:15, gehalten bis Close.
+- ES, Rolle Bank-Bein im Live-Buch (kein Prop-Käfig), 1,90 $ je Round Trip.
+- FOMC-Liste ab 27.01.2021, rund 45 Termine (verdict-auditor), Daten bis 06.08.2026.
+
+**Kategorie:**
+- OpEx-Hälfte: kein Urteil, sie lebt in OPEXMOM_NQ und NQ_OPEXMOM_fv4 weiter.
+- FOMC-Hälfte: `unentscheidbar`. Bei rund 45 Ereignissen liegt die Nachweisgrenze bei PF rund 1,6 (wie #105 für dieselbe Config mit n 43, Ursprung #034). #181c markiert FOMC schon bei n 84 vorab als unentscheidbar.
+
+**Wiedervorlage** (`wiedervorlagen.json`, Eintrag `lb185b_fomc`): FOMC-Liste in `calendar_fx` auf 2016 bis 2020 zurück ergänzt (rund +40 Termine). Dann fomc_post allein einmal neu messen, als eigene vorregistrierte Zelle.
+
+**Stempel:** Engine-Fingerprint ae2c4063c7e2034c5aa60c8e381479ee, `calendar_fx` mit AP286-Fix (OpEx-Signal aus der Bar vor dem Einstieg), Gebühr 1,90 $, Daten bis 06.08.2026, Kriterium dSR im Live-Buch plus Einzel-t.
+
+**Nicht tot:** FOMC auf NQ, OpEx-Freitag auf ES als eigenes Bein, FOMC als Filter für andere Beine.
+
+**Lehre 176:** *Ein Bein, das live läuft, ohne im echten Buch zu stehen (Live-Experiment wie RTY-Gap auf FFN seit 11.10., Bank-Beine in LIVE_EXTRA), hat keine automatische Ausstiegsregel.*
+- Die Edge-Health-Prüfung (`app_server._edge_health`, Alarm in `auto_check`) kennt nur die Beine aus `edge_ref.json`, also das echte Buch.
+- Die Ausstiegsregel vom 11.10. für RTY-Gap stand nur als Notiz in AP338 („Eintrag in auto_check.py steht aus“).
+- Gebühr: Die Gebühren-Seite derselben Geschichte ist seit AP384 Code (`qbt.COMMISSION_RT_MICRO`), siehe #184 Nebenbefund Kosten und AP417.
+- Code-Gate fehlt noch: Ticket „Live-Ausstiegsregel-Pflicht“.
+
+**Nachtrag 18.10.2026 nachmittags:**
+- **Ursache der Quellenabhängigkeit belegt (AP199, Export-Session):** Databento fehlen 67 RTY-Sessions in Roll-Wochen. Dort hatte Databento Kalender-Spread-Kurse, die am 30.08. gelöscht wurden (#075). NT8 hat an diesen Tagen echte Kurse, RTY-Gap handelt dort rund 10 Trades mehr, und der Sharpe geht von +0,199 auf −0,036. Die Databento-Zahlen von #185a sind also zu optimistisch. Das stützt die Entscheidung, ändert aber die Kategorie nicht.
+- **Vorfall Auto-Promotion:**
+  - Nach dem Rauswurf von `gen_gap_RTY_r1_08242126` hat die Zyklusmarke aus AP209 die zurückgestellten RTY-Varianten neu geprüft.
+  - Ohne offenes RTY-Bein war `gen_gap_RTY_r1_10122016` kein Klon mehr und kam als Zusatz ins Next-Buch (dSR roh +0,067).
+  - Das ist dieselbe Linie (r 0,95), also gegen Max' Entscheidung.
+  - Noch am selben Tag zurückgenommen: Alle 8 Kandidaten der Linie stehen in der Inbox auf `promote_skipped`, das Next-Buch hat wieder 6 Beine.
+
+**Lehre 177:** *Eine Verwerfung durch Max muss für die Automatik so hart gelten wie ein Gate: Wer ein Bein rauswirft, muss auch dessen Kopien sperren, sonst holt die nächste Neuprüfung die Linie zurück.*
+- Gate fehlt noch: AP425 (`next_week.verworfen`, promote_next stellt Kandidaten mit Korrelation über 0,7 zu einem verworfenen Bein zurück).
+- Bis dahin gilt: Nach jedem Rauswurf aus dem Next-Buch die Inbox-Kandidaten derselben Linie auf `promote_skipped` setzen.
