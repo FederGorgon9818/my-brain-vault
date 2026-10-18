@@ -34,6 +34,34 @@ Eine Liste für Samstag: alle offenen Buch-Entscheidungen aus den Ticket-Session
    - Erste Fassungen für OpEx und LD01 stehen in `book_erstfassung.json`.
    - Den Lauf fährt die Wochenend-Session (AP209), einen Vorab-Lauf gibt es nicht.
 
+## Neurechnung auf NT8-Daten (18.10. abends)
+
+Hauptdaten NQ/ES/YM/RTY seit 18.10. NT8 bis 16.10.2026 (Lücken aus Databento, Entscheidung Max AP199). Bericht `engine/weekend_check/2026-10-18_nt8_1018.md`. Gegengelesen von Mathematiker und Statistiker.
+
+| Variante | Monate bis 50k | gegen echt | erste Fassung |
+|---|---|---|---|
+| echtes Buch (4) | 95,5 | | |
+| **Next 6er** | **80,3** | **−15,1 ± 1,0** (Trade-Unsicherheit 90 %: −25,3 bis −9,4) | z 3,21, recent3y −11,4 |
+| echt + LD01 | 85,3 | −10,2 | z 2,42 |
+| echt + OpEx | 88,6 | −6,8 | z 2,19 |
+
+- **Fingerprint-Warnung im Bericht ist ein Fehlalarm.** AP426 hat während des Laufs `eod_flat_px` eingebaut, der Standard ist unverändert, der Golden Master ist grün (Mathematiker hat den Diff geprüft).
+- **AP426-Vorbehalt (15:55-Exit live schlechter):**
+  - Mit der Planzahl von 10 bis 13 Ticks je Zwangs-Flat wird das echte Buch 106,0 bzw. 109,6 Monate langsam, das Next 88,7 bzw. 91,6.
+  - Der Vorsprung wächst dabei auf −17,2 bis −18,3 Monate, weil beide Bücher dieselben Dollar verlieren.
+  - Am stärksten trifft es LastHour (Drift −25 bis −33 %).
+  - Die 79/23/14 % aus AP426 sind der 31-Tick-Rohwert, nicht die Planzahl.
+- **Keine der Entscheidungen kippt:**
+  - RTY raus bleibt (NT8-Sharpe 0,033).
+  - OpEx-Port bleibt. **Neue Auflage:** Im Backtest geht OpEx erst um 15:59 flat. Im Port die Exit-Zeit festlegen, nicht nach dem 15:55-Bar-Close-Muster bauen, und das Bein mit genau dieser Zeit neu rechnen.
+  - LD01 erst Vergleich bleibt. Das z ist weiter von PB3 geliehen, 49 % gemeinsame Verlusttage.
+  - Asia nur 150k bleibt:
+    - Asia ist auf NT8 nicht eigenständig belegt (t in R 1,51, erste Hälfte negativ), aber im Buch positiv: raus kostet 4,5 bis 7,3 Monate.
+    - Das spricht für „nur 150k“, nicht für „ganz raus“.
+    - Neu prüfen nach dem AP387-Nachlauf und AP334.
+  - Kein k2 bleibt, eher gestärkt: FFN σ60 618 $, Buch-Sharpe sinkt mit AP426.
+- **Nach Max' Entscheidung zu AP426** (Option A, Standard close) muss `weekend_check` noch einmal laufen.
+
 ## Entscheidung Max 18.10. und Umsetzung
 
 Max hat alle acht Punkte wie empfohlen entschieden (Popup über die Ticket-Session). Logbuch: [[Strategie-Logbuch]] #185.
