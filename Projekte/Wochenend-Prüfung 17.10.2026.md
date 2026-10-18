@@ -34,6 +34,24 @@ Eine Liste für Samstag: alle offenen Buch-Entscheidungen aus den Ticket-Session
    - Erste Fassungen für OpEx und LD01 stehen in `book_erstfassung.json`.
    - Den Lauf fährt die Wochenend-Session (AP209), einen Vorab-Lauf gibt es nicht.
 
+## Entscheidungsvorlage für Max (Entwurf 18.10. 00:30, Zahlen Stand 16.10., wird nach dem Lauf mit frischen Daten aktualisiert)
+
+| # | Punkt | Empfehlung (ein Satz) | Alternativen |
+|---|---|---|---|
+| 1 | RTY-Gap | Nicht ins echte Buch, auf FFN1/FFN2 abschalten und aus dem Next-Buch nehmen. Erste Fassung nicht belegt, mit echter Gebühr fällt es durch Stufe 1. | B: auf FFN als Experiment weiterlaufen lassen. C: ins echte Buch |
+| 2 | OpEx (NQ_OPEXMOM_fv4) | Im Next-Buch lassen und jetzt den NT8-Port bauen (AP394), nach grüner Parität ins echte Buch. Sauberste Herkunft, rund −3,6 Monate, kostet bei Edge 0 nichts. | B: einfrieren wie RTY, Stufe-1-Widerspruch t 1,80 |
+| 3 | LD01 (NQ_LD01_vix16_fv4) | Im Next-Buch lassen, Port (AP395) erst, wenn der Vergleich „PB3 doppelt bei VIX unter 16“ zeigt, dass LD01 mehr ist als eine PB3-Verdopplung. | B: gleich portieren. C: raus |
+| 4 | Asia nur auf 150k | Asia-Modul auf E8 50k, FN1 und FN2 abschalten, auf FFN1/FFN2 und künftigen 150k behalten. 0,6 bis 1,8 Monate schneller, E8-Ruin vor erstem Payout 17 → 6 %. | B: überall lassen |
+| 5 | LIVE_EXTRA | EVENT_ES_primary raus, OPEXMOM_NQ als Beobachtungsbein behalten, bis OpEx ins echte Buch kommt, dann beide raus. Why-Texte korrigieren. | B: beide behalten |
+| 6 | AP223, AP286, AP303 | AP223 und AP303 schließen (done_when erfüllt), AP286 nach Punkt 5 mit Logbuch-Urteil schließen. | |
+| 7 | next-week-2026-40 | Löschen (EMA-Leiter am 10.10. raus). | |
+| 8 | k2 | Kein Konto auf k2. FFN σ60 577 $ gegen Schwelle 235 $, nach dem Export mit frischer Vola neu prüfen (konto-analyst). | |
+
+**Zielbuch, wenn 1 bis 3 wie empfohlen:**
+- Next-Buch = echtes Buch plus OpEx plus LD01 (6er ohne RTY, 71,5 Monate gegen 83,0).
+- Das echte Buch bleibt bei 4 Beinen, bis OpEx bzw. LD01 portiert und paritätsgeprüft sind.
+- Umsetzung erst nach Max' OK: `book_state_next.json`, dann `funded_finalize --next` und `--push-next`. Die Host-JSONs (RTY auf FFN aus, Asia auf 50k aus) macht die Deploy-Session mit `konto-analyst`.
+
 ## Ergebnis weekend_check vom 16.10. (neuer Stand)
 
 Gerechnet nach dem gemeinsamen Sync: echte Gebühr 1,90 $, 150k-Käfig, neues `tempo_plan`. Bericht: `engine/weekend_check/2026-10-16_neustand_1016.md`. Bedingungen: Kalender-Modus, RiskGuard-Stopp, 600 Sims, Nulldrift 0 %, Modus-Check grün.
