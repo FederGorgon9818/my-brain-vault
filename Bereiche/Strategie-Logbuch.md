@@ -4411,3 +4411,13 @@ Stufe 1 hält bei allen drei Beinen (t mit „close": LH 3,23, OD 4,34, PB3 3,92
 **Buch-Lücke:** keine Bein-Änderung. Offen sind die Entscheidung A (Standard „close", danach Konto-Karten und Next-Beine neu) und der Tick-Befund (AP427), erst danach der Paarversuch B' (AP428).
 
 **Stempel:** PC 18.10.2026, `eval_plan.engine_fingerprint()` 74ffd28df4f916d3628a34f586900bc0, `book_cache` ae5b3debb5f07ce5c13f4ca3a92bfd7c (nach dem Patch, Standard „open"), Golden-Master-Referenz a569fb20 unverändert, NT8-Hauptdaten bis 16.10.2026, Live-Fills `live/maxlab_executions.csv` Stand 18.10. 00:20 plus NT8-Logs der Box. Skripte und Ausgaben `engine/_scratch_ap426/`.
+
+### #187a Umsetzung Option A (18.10.2026, 23:15)
+
+- **Entscheidung Max:** „A jetzt, B' später prüfen" (über die Ticket-Session).
+- **Engine:** `qbt.DEFAULTS["eod_flat_px"]` = „close". Register-Stempel `eod_flat_px` und `engine_fp` in jedem neuen Register-Eintrag (`discovery_runner.registry_entry`), `job_generator.prune_known` zählt eine Config unter anderem Stempel als neu (`discovery_lib.registry_known`, Einträge vor AP426 ohne Stempel gelten als „open"). Zufallsdecke unverändert, je Schlüssel ein Trial.
+- **Golden Master:** neu eingefroren (engine_fingerprint e93cce7f1560b9531b30a472184b095f, 18 Fälle). Geändert nur die 5 Fälle mit 15:55-Flat (NQ_Momentum, NQ_LastHour_v3, RTY_Gap-fade, NQ_VWAP-Pullback, maband_RVOL1.2_NQ), n_trades und tpy gleich, auf Trade-Ebene nur Flat-Trades. 4 Fälle bitgleich, alle Kanarien wie vorher, neu `KANARIE_eod_flat_px` (Selbsttest stirbt auf allen drei Pfaden). Lehre 180 damit für die Modellseite codiert (G1).
+- **Box:** Runner per STOP gestoppt, Sync 23:13:27 (93 Dateien, MD5 PC gleich Box), Runner läuft, `weekend_check --stand-setzen`.
+- **Konto-Karten** (Zellen 499345e6ef41, Karten 17c556e2f7d4): Flotte Netto 36 M 10.358 auf 9.519 $, FFN 3.975 auf 3.753 $, sigma60 618 auf 630 $, Hochstuf-Ampel überall grün (k1), Nulldrift bestanden. Bei E8/FN steckt laut konto-analyst zusätzlich ein Regelstand-Wechsel der alten Karten im Vergleich.
+- **Next-Buch:** LD01 kaum betroffen (747 auf 740 $/Jahr, t 3,41 auf 3,40), OpEx (Modus cal) hat keinen 15:55-Flat, rechnet aber bis 15:59: eigene Paritätslücke vor einer Übernahme (an die Wochenend-Session gemeldet).
+- **Offen:** AP427 Tick-Daten (Max), AP428 Paarversuch B', AP429 Rest-Gates (Sim-Filter, `live_fill_check.py`).

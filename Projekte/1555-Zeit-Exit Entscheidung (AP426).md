@@ -1,11 +1,14 @@
 ---
 tags: [trading, ausfuehrung, live, entscheidung, ap426]
 datum: 2026-10-18
-status: Entscheidung Max offen
+status: entschieden 18.10.2026 (Option A umgesetzt, B' später als AP428)
 ticket: AP426
 ---
 
 # 15:55-Zeit-Exit: Entscheidungsvorlage (AP426)
+
+> [!success] Entschieden 18.10.2026, umgesetzt 23:15
+> Max: „A jetzt, B' später prüfen". Engine-Standard `eod_flat_px` = „close", Golden Master neu eingefroren, Box-Sync 23:13, Runner läuft, Konto-Karten neu (Flotte Netto 36 M 10.358 auf 9.519 $, Ampel überall grün k1). Tick-Daten: AP427 (Max, Anleitung im Ticket). B': AP428, erst nach den Ticks. Details [[Strategie-Logbuch]] #187a.
 
 Live füllt der Zeit-Exit um 15:55 im Mittel **33,7 Ticks** schlechter als der Backtest annimmt (Echtgeld, 10 Tage 21.09. bis 15.10.). Betroffen sind die drei Beine mit Exit am Tagesende: am stärksten LastHour. Logbuch: [[Strategie-Logbuch]] #187.
 
