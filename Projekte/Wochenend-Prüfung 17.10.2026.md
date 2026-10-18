@@ -1,7 +1,7 @@
 ---
 tags: [projekt, trading, gate-v4, stufe-2, buch, wochenende]
 date: 2026-10-15
-status: entschieden 18.10. (alle 8 Punkte wie empfohlen), Umsetzung läuft, RTY-Instanzen entfernt Max per RDP (AP419)
+status: entschieden 18.10. (alle 8 Punkte wie empfohlen), Umsetzung läuft, RTY-Instanzen am 18.10. 23:32 entfernt (AP419 erledigt)
 ---
 
 # Wochenend-Prüfung 17.10.2026
@@ -69,7 +69,7 @@ Max hat alle acht Punkte wie empfohlen entschieden (Popup über die Ticket-Sessi
 | # | Punkt | Umgesetzt | Ticket | Neu rechnen? |
 |---|---|---|---|---|
 | 1 | RTY-Gap aus | Next-Buch ohne RTY (6 Beine, md5 35652bf1, PC = Box, Finalize gelaufen). Host-JSONs auf der Box auf `enabled: false` (Sicherung, Backup `_bak_archiv
-tygap-aus-20261018`). **Offen: Max entfernt die zwei M2K-Instanzen** (Anleitung unten) | AP419, AP424 (Härtung) | nein |
+tygap-aus-20261018`). Die zwei M2K-Instanzen hat Max am 18.10. um 23:32 Boxzeit entfernt (Watchdog 23:38 ohne Alarm, FFN je 1H+1G, Karten ohne RTY) | AP424 (Härtung) | nein |
 | 2 | OpEx NT8-Port | Notiz am Ticket | AP394 | nein, nach dem Port nur Parität |
 | 3 | LD01 erst Vergleich | neues Ticket | AP420, AP395 | ja, der Vergleich ist die Rechnung |
 | 4 | Asia nur 150k | Notiz, Umsetzung nach den Auflagen | AP387 | ja, Nachlauf mit Oktober-Vola |
