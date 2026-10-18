@@ -4376,3 +4376,38 @@ Der 6er trägt in der ersten Fassung mit z 3,05, recent3y gegen echt −7,5. Mit
 **Lehre 179:** *Eine Nachrechnung nach einem Datenfix darf nicht über die Queue laufen, sonst zählt dieselbe Config zweimal gegen die Zufallsdecke.* Für AP418 liefen 86 Jobs in einer Sandbox (`process_job` mit umgebogenem Register, Inbox, Ergebnisordner, Heartbeat, Placebo-Log), Wiederholungen ohne neue Trials. Das Werkzeug liegt nur im Session-Scratchpad (`ap418/rerun_jobs.py`), nicht in der Engine → nur Text. Gate: Sandbox-Modus im Runner (`--rerun-sandbox`), der Register-Schreiben hart abschaltet. Falle beim Bau: `ref_book`-Pfade sind relativ zu `discovery_lib.ENG`.
 
 **Buch-Lücke:** Kein Ergebnis wird Kandidat. Einziger Weg nach vorn ist SIP-ORB NQ mit Gap-Filter: hängt vor Stufe 1 (kein Job, Regel noch nicht eingefroren); Entscheidung Max.
+
+## #187: 15:55-Zeit-Exit live 33,7 Ticks unter dem Backtest: der Host sendet nach dem Bar-Close mitten in einen Preis-Burst, Planzahl 10 bis 13 Ticks je Trade, Engine kann es jetzt abbilden (18.10.2026, AP426)
+
+**Anlass:**
+- `live-reconciler` 05. bis 16.10. (AP356): Logik live gleich Backtest (29 von 29 Trades), aber Live 19,8 % unter dem Backtest. Hauptursache der Zwangs-Flat um 15:55 bei NQ_LastHour_v3, NQ_OpenDrive_maband2050, NQ_Momentum_PB3_fa01b. Die Engine nahm den Open der 15:55-Bar plus 1 Tick an.
+- Gegenleser: quant-mathematician, quant-statistician, pipeline-auditor (gelb mit Auflagen), strategy-auditor, engine-regression-tester, logbook-distiller. Entscheidungsvorlage: [[1555-Zeit-Exit Entscheidung (AP426)]].
+
+**Befund:**
+- **Ablauf live (NT8-Log, Millisekunden):** der Host löst den Zeit-Exit am Bar-Close der 1m-Chartserie aus (15:55:00,1 bis 0,6), storniert erst den Stop (fertig bis 15:55:01,3) und schickt dann Market. Fill 1,0 bis 4,2 s nach 15:55:00. `FlatSecondsBeforeClose` allein kann daran nichts ändern, der Trigger hängt am Bar-Close.
+- **Burst belegt:** Sim-Konto und Echtkonto füllen zur selben Millisekunde 20 Ticks (07.10.) bzw. 41 Ticks (05.10.) auseinander. Sim füllt am Feed-Preis (≈ O1555), der NT8-Feed hängt im Burst hinterher. Unter Brownscher Bewegung wäre die sd der ersten 2 s rund 10 Ticks, gemessen 36,6 (p < 1e-6). Der Burst beginnt erst ab 15:55:00: O1555 minus C1554 im Mittel 0,4 Ticks.
+- **Größe:** Echtgeld n = 10 Tage (der erste Abgleich zählte ein Sim-Konto mit, n = 11): +33,7 Ticks gegen O1555, CI90 etwa [+12; +54], alle Tests p 0,02 bis 0,04. Davon +28,6 die 15:55-Minute selbst, die an diesen Tagen zufällig schlecht lief (gegen 2026 p 0,11, kein Strukturbruch). Planzahl (empirical Bayes, Beine und Jahre geschrumpft, plus Live-Rest F minus C1555 +5,1): LH +11,9, OD +10,0, PB3 +12,8 Ticks je Trade, Obergrenze rund 28.
+- **Historie (1m NT8, 2016 bis 16.10.2026):** 15:53 und 15:54 laufen für die Beine, 15:55 dagegen (LH +4,0 [2,0; 6,0], OD +8,1, PB3 +7,4 Ticks je Trade über die volle Minute). Allgemein, ohne Bein-Richtung, gibt es keine Umkehr um 15:55. Die Range der 15:55-Minute stieg von 37 (2016 bis 2023) auf 90 bis 94 Ticks.
+- **Exit-Varianten (21 Tests, max-T):** früher fest raus (Open 15:45/15:50/15:53/15:54) ist bei LH gegen das bisherige Backtest-Modell echt schlechter. „Exit vor 15:55 schlägt Exit in der 15:55-Minute" trägt gepoolt (t 3,4), aber getragen von 2020 bis 2023, ab 2024 +2,6 Ticks (t 0,83). Limit statt Market: Hebel höchstens ±0,5 Tick.
+
+**Engine:** neuer Parameter `qbt.eod_flat_px` („open" Standard, bitgleich; „close" = Fill am Close des Flat-Bars, MAE mindestens bis zum Fill), Helfer `qbt.eod_flat_price` in qbt (4 Pfade), `sigcore.simulate_trade` (3 Stellen) und `vwap_pullback` (Flatten). Unbekannter Wert bricht hart ab. Je Trade exakt geprüft (Abweichung unter 1e-14), Golden Master grün bitgleich, `regression_ok` gesetzt, kein Box-Sync. Die Standard-Umstellung auf „close" ist Max' Entscheidung (Option A), weil bei einem Exit vor 15:55 „open" wieder das richtige Modell wäre.
+
+**Wirkung (k1, je Konto mit allen drei Beinen):**
+
+| Modell | Netto $/Jahr | Zeit bis 50k echtes Buch (Median, erreicht in 120 M) |
+|---|---|---|
+| open (bisher) | 5.045 | 96,7 M, 83,0 % |
+| close | 4.745 (−5,9 %) | 101,0 M (+4,3 ±1,0), 75,7 % |
+| close + 5 Ticks | | 108,9 M (+12,2 ±1,1), 65,2 % |
+
+Stufe 1 hält bei allen drei Beinen (t mit „close": LH 3,23, OD 4,34, PB3 3,92). Nulldrift-Zwilling überall 0 %.
+
+**Lehre 180:** *Parität „Logik gleich" sagt nichts über die Fill-Lage. Ein Exit-Modell muss die tatsächliche Sendezeit des Live-Codes abbilden (Auslöse-Ereignis plus Stop-Storno plus Latenz), nicht die nominelle Uhrzeit. Live-Abgleich deshalb je Exit-Art: Live-Fill minus Modell-Preis, mit Millisekunden aus dem NT8-Log.*
+- logbook-distiller 18.10.: nur Text. Gates G1 (Kanarie `eod_flat_px`), G2 bis G4 (`live_fill_check.py`, Alert in `auto_check`, live-reconciler.md) als AP429.
+
+**Lehre 181:** *Sim-Konten gehören nie in einen Live-Kosten-Abgleich. Filter auf das Präfix „Sim", nie auf einen einzelnen Kontonamen.*
+- logbook-distiller 18.10.: nur Text. Gate G5/G6 (`is_sim_account`/`real_fills` in `konten/` plus Test) in AP429.
+
+**Buch-Lücke:** keine Bein-Änderung. Offen sind die Entscheidung A (Standard „close", danach Konto-Karten und Next-Beine neu) und der Tick-Befund (AP427), erst danach der Paarversuch B' (AP428).
+
+**Stempel:** PC 18.10.2026, `eval_plan.engine_fingerprint()` 74ffd28df4f916d3628a34f586900bc0, `book_cache` ae5b3debb5f07ce5c13f4ca3a92bfd7c (nach dem Patch, Standard „open"), Golden-Master-Referenz a569fb20 unverändert, NT8-Hauptdaten bis 16.10.2026, Live-Fills `live/maxlab_executions.csv` Stand 18.10. 00:20 plus NT8-Logs der Box. Skripte und Ausgaben `engine/_scratch_ap426/`.
