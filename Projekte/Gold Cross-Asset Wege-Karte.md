@@ -31,27 +31,29 @@ Chance = grobe Schätzung des Scouts, dass der Signalgeber bis ins Next-Week-Buc
 
 Gold selbst (GC, 1 Minute) reicht von 12/2015 bis **24.07.2026**.
 
+Datenstand der Spalte „Daten“: 18.10.2026 (NT8-Export AP356, FRED 15.10.).
+
 | Signalgeber | Kanal | Daten | Schon gemessen oder getestet | Wege | Chance (Schätzung) |
 |---|---|---|---|---|---|
-| **ZN** (10Y-Future) | Zins | 1 Minute, 12/2015 bis 18.09.2026. Bei E8 handelbar, bei FN nicht in der Liste | Gleichzeitig 0,35 (0,46 → 0,38 → 0,24 ab 2024). Versatz eine 5-Minuten-Bar +0,007. Lags 1 bis 4 Minuten nie gemessen. 0 Trials. Bedingt, an Datentagen, als Bestätigung, am eigenen Level: nie gemessen | W1, W5, W6, W12, W15, W21, W27, W36, W38 bis W42 | 5 bis 10 %, bester vorhandener |
-| **ZB** (30Y-Future) | Zins | 1 Minute, bis 18.09.2026 | nichts | Zwilling von ZN, nur Achse | kein Zusatz zu ZN |
-| **DGS10, DGS2** (FRED) | Zins, Tagesstand | Tag, enden 14.08.2026 | Tor existiert (`tm_dgs10_*`, `tm_dgs2_*`), ein Kurven-Tor (10Y minus 2Y) nicht. Auf GC 0 Trials, eine nachträgliche Zählung (GCZINS-01: t −2,2, 15 Trades im Jahr). Auf NQ 9 Trials (`mak01_macrogate_pb3_NQ`, 6 Survivors, kein Kandidat, offener Fall) | W7, W19, W43 | 3 bis 5 % |
-| **6E** (Euro-Future) | Dollar | 1 Minute, bis 14.09.2026 | Gleichzeitig 0,40 (0,46 → 0,40 → 0,36), stabilste Kopplung. Versatz eine 5-Minuten-Bar +0,002. 0 Trials | W2, W5, W12, W15, W27, W36, W38 bis W41 | 5 bis 10 %, zusammen mit ZN |
-| **6B** (Pfund-Future) | Dollar | 1 Minute, bis 14.09.2026 | nichts | Zwilling von 6E | kein Zusatz |
-| **DTWEXBGS** (breiter Dollar, FRED) | Dollar, Tagesstand | Tag, endet 14.08.2026 | Tor existiert (`tm_dxy_*`). Auf GC 0 Trials | W7, W19, W45 | 3 bis 5 % |
-| **6J** (Yen) | Dollar, sicherer Hafen | **fehlt** (NT8 nachladbar) | nichts | Achse von W2, W15 | unter 3 %, dritter Dollar-Blick |
+| **ZN** (10Y-Future) | Zins | 1 Minute, 12/2015 bis 16.10.2026 (Stand 18.10., davor ab 27.08. auf dem auslaufenden Kontrakt). Bei E8 nicht handelbar (Zinsfutures gesperrt), bei FN nicht in der Liste | Gleichzeitig 0,35 (0,46 → 0,38 → 0,24 ab 2024). Versatz eine 5-Minuten-Bar +0,007. Lags 1 bis 4 Minuten nie gemessen. 0 Trials. Bedingt, an Datentagen, als Bestätigung, am eigenen Level: nie gemessen | W1, W5, W6, W12, W15, W21, W27, W36, W38 bis W42 | 5 bis 10 %, bester vorhandener |
+| **ZB** (30Y-Future) | Zins | 1 Minute, bis 16.10.2026 | nichts | Zwilling von ZN, nur Achse | kein Zusatz zu ZN |
+| **DGS10, DGS2** (FRED) | Zins, Tagesstand | Tag, bis 09.10.2026 (Stand 15.10.) | Tor existiert (`tm_dgs10_*`, `tm_dgs2_*`), ein Kurven-Tor (10Y minus 2Y) nicht. Auf GC 0 Trials, eine nachträgliche Zählung (GCZINS-01: t −2,2, 15 Trades im Jahr). Auf NQ 9 Trials (`mak01_macrogate_pb3_NQ`, 6 Survivors, kein Kandidat, offener Fall) | W7, W19, W43 | 3 bis 5 % |
+| **6E** (Euro-Future) | Dollar | 1 Minute, bis 16.10.2026 | Gleichzeitig 0,40 (0,46 → 0,40 → 0,36), stabilste Kopplung. Versatz eine 5-Minuten-Bar +0,002. 0 Trials | W2, W5, W12, W15, W27, W36, W38 bis W41 | 5 bis 10 %, zusammen mit ZN |
+| **6B** (Pfund-Future) | Dollar | 1 Minute, bis 16.10.2026 | nichts | Zwilling von 6E | kein Zusatz |
+| **DTWEXBGS** (breiter Dollar, FRED) | Dollar, Tagesstand | Tag, bis 09.10.2026 (Stand 15.10.) | Tor existiert (`tm_dxy_*`). Auf GC 0 Trials | W7, W19, W45 | 3 bis 5 % |
+| **6J** (Yen) | Dollar, sicherer Hafen | 1 Minute, 11/2015 bis 16.10.2026 (geladen 18.10.) | nichts | Achse von W2, W15 | unter 3 %, dritter Dollar-Blick |
 | **DXY intraday** | Dollar | **fehlt** (ICE-Kontrakt, im CME-Feed vermutlich nicht enthalten, ungeprüft) | nichts | durch 6E abgedeckt | kein Zusatz |
-| **Realzins, TIPS** (DFII10), **Inflationserwartung** (T10YIE) | Zins, Tagesstand | **fehlt** (FRED, gratis) | Research-Cache: Kopplung Gold zu Realzins seit 2022 nur noch 3 bis 7 % | W7, W21, W31, W44 | unter 3 % als Signal, nützlich als Zustands-Beschreibung |
-| **SI** (Silber) | Metall | **fehlt** (NT8 nachladbar, bei E8 und FN handelbar; AP221 wartet darauf, AP143 ist die Databento-Kostenabfrage) | nichts gerechnet. Im Cache: Wei 2026 (Gold und Silber über Sessions, nur Abstract) | W8, W18, W24, W25, W32 | 3 bis 6 %, einziger enger Ersatz-Markt |
-| **HG** (Kupfer), **PL** (Platin) | Metall, Konjunktur | **fehlt** | nichts | W26, W35 | unter 3 %, keine Gold-Story |
-| **CL** (Öl) | Inflation | 1 Minute, bis 21.07.2026 | Gegen GC nie gemessen | W9, W26, W29, W44 | unter 3 % |
+| **Realzins, TIPS** (DFII10), **Inflationserwartung** (T10YIE) | Zins, Tagesstand | Tag, DFII10 bis 09.10., T10YIE bis 13.10.2026 (neu seit 15.10., `exported_data`) | Research-Cache: Kopplung Gold zu Realzins seit 2022 nur noch 3 bis 7 % | W7, W21, W31, W44 | unter 3 % als Signal, nützlich als Zustands-Beschreibung |
+| **SI** (Silber) | Metall | 1 Minute, 11/2015 bis 16.10.2026 (geladen 18.10., Roll geprüft; bei E8 und FN handelbar, kein SIL bei E8; AP221 kann starten) | nichts gerechnet. Im Cache: Wei 2026 (Gold und Silber über Sessions, nur Abstract) | W8, W18, W24, W25, W32 | 3 bis 6 %, einziger enger Ersatz-Markt |
+| **HG** (Kupfer), **PL** (Platin) | Metall, Konjunktur | 1 Minute, 11/2015 bis 16.10.2026 (geladen 18.10.) | nichts | W26, W35 | unter 3 %, keine Gold-Story |
+| **CL** (Öl) | Inflation | 1 Minute, bis 16.10.2026 (16.10. noch auf dem November-Kontrakt) | Gegen GC nie gemessen | W9, W26, W29, W44 | unter 3 % |
 | **NQ, ES** | Risiko | 1 Minute | Gleichzeitig 0,11, Vorzeichen kippte (−0,18 → +0,20 ab 2020), Versatz eine 5-Minuten-Bar −0,006, Tageskorrelation 0,09. 0 Trials | W3, W17, W21, W22, W23, W41, W42 | 3 bis 6 %, nur im Stress |
 | **YM, RTY, FDAX** | Risiko | 1 Minute | nichts | Achse von W3 | kein Zusatz |
-| **VIX** (FRED) | Risiko, Tagesstand | Tag, endet 26.08.2026 | Tor existiert (`tm_vix_*`). Auf GC 0 Trials (Klone schließen VIX aus). Auf anderen Märkten 316 Trials, 35 Survivors (alle NQ, ES und YM 0). Zwei getötete Verwandte in `ideas.json` (ORB-VIX-Band, AXV-W26) | W20, W22 | 3 bis 5 % |
+| **VIX** (FRED) | Risiko, Tagesstand | Tag, bis 13.10.2026 (Stand 15.10.) | Tor existiert (`tm_vix_*`). Auf GC 0 Trials (Klone schließen VIX aus). Auf anderen Märkten 316 Trials, 35 Survivors (alle NQ, ES und YM 0). Zwei getötete Verwandte in `ideas.json` (ORB-VIX-Band, AXV-W26) | W20, W22 | 3 bis 5 % |
 | **GEX, DIX** | Aktien-Dealer | Tag | nichts für Gold | keiner | keine Story |
 | **GLD-Bestände, GDX** | Gold-Nachfrage | **fehlt** | nichts | W10, W33 | unter 3 % intraday |
 | **Shanghai-Prämie, USDCNH** | Nachfrage Asien | **fehlt**, Quelle unklar | nichts. Nachbarn: GC-ON-01 (Nacht-Halten, Prämisse trägt nicht), #174 Urteil C (US → Asien auf GC selbst, unentscheidbar) | W30, W41 | 3 bis 6 %, aber Daten und Engine fehlen |
-| **Bitcoin** | Erzählung „digitales Gold“ | **fehlt** (AP311 liegt bei Max) | nichts | W11 | unter 3 % |
+| **Bitcoin** | Erzählung „digitales Gold“ | **fehlt** (BTC am 18.10. nicht geladen, MBT nur 10-26; MET bis 17.10.2026 da; AP311) | nichts | W11 | unter 3 % |
 | **ZS, ZW** | Agrar | 1 Minute | nichts | keiner | keine Story |
 | **Treasury-Auktionskalender** | Termin | **fehlt** (auch Blocker für KF-44 und SZ-14) | nichts | W29 | keine Story für Gold |
 
