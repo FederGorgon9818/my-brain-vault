@@ -89,6 +89,7 @@ Auf Wunsch von Max (18.10. abends): k1 gegen alle Fracs 0,10 bis 0,30 in 0,02er-
 
 - Zellen gebaut mit Engine `ae2c4063` (eine andere Session hat um 19:46 bis 19:58 qbt.py, sigcore.py und vwap_pullback.py geändert, AP426, neuer Standard unverändert. Der Statistiker hat auf `74ffd28` nachgerechnet, die k1-Basis ist bit-gleich).
 - Daten bis 16.10.2026, 1.702 Tage, 157,9 Handelstage je Jahr.
+- **Nach der Rechnung umgesetzt:** AP426 Option A (Zwangs-Flat füllt zum Close statt zum Open, `eod_flat_px close`, Commit 36bb59a am Abend des 18.10.). Alle Zahlen hier stammen noch vom alten Fill (open) und wurden **nicht nachgerechnet**. Weil k1 und Cushion dieselben Tageszellen nutzen, ändert das am Vergleich vermutlich wenig. Die absoluten Monate können sich aber verschieben.
 - Setup wie `weekend_check`: Ziel 50.000 $, Budget 600 $ je Monat, Deckel 2.500 $, Master-Seed 101, Nachkauf-Lane E8 150k k1, RiskGuard-Tagesstopp fest. Sims: 600 / 300 (Nulldrift) / 300 / 300.
 - Bestand aus `konten/accounts.json` (Stand 16.10.): E8 50k, FN1, FN2, FFN1, FFN2 mit aktuellem Kontostand. Vereinfachung: alle Konten handeln dasselbe Buch, FFN ohne RTY-Gap.
 - Echtes Buch 4 Beine, Next-Buch 6 Beine (ohne RTY-Gap).
