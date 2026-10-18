@@ -3323,6 +3323,8 @@ Vollständig in [[Neue Märkte (NT8-Daten) Plan]]. Kurz: NT8 auf der Box liefert
 
 ## #171 — W19 auf GC/CL/YM/RTY ausgerollt: dasselbe "kein Folgetag-Effekt"-Muster auf allen sechs Märkten (22.09.2026)
 
+> **Nachrechnung AP418 (18.10.2026), siehe #186c:** auf bereinigten NT8-Daten bleibt das Muster; CL abs_sig gegen Vola liegt formal über der Regel (rho 0,053), über 36 Zellen Mehrfachtest-Rauschen.
+
 **Anlass:** Max, nach dem Bau- und Testlauf #168: „auf Gold und alle Märkte testen, die wir noch nicht angefangen haben." `adx_vs_vola_w19.py` erweitert um einen Symbol-Parameter (Default weiter NQ/ES, kein Override des Erstlaufs), auf GC, CL, YM, RTY laufen lassen — dieselben vorab festgelegten Urteilsregeln wie am 21.09.
 
 **Ergebnis:** ADX(t-1) ist auf keinem der vier neuen Märkte ein Vola-Proxy (R² ADX~Vola 0,066–0,144, alle weit unter der 0,60-Schwelle) und trägt auf keinem Information über den Folgetag (kein Markt erfüllt gleichzeitig CI-ohne-0 und |rho|≥0,05 — GC/CL: alle relevanten CIs enthalten 0 oder das rho bleibt unter der Latte; YM: zwei CIs ohne 0 bei dir_ret, aber |rho| 0,033–0,039 unter der Schwelle). Zusammen mit NQ/ES (#168) heißt das: **sechs von sechs getesteten Futures-Märkten** (Tech-Index, breiter Index, Dow, Small-Cap, Gold, Öl) zeigen dasselbe Muster.
@@ -3334,6 +3336,8 @@ Vollständig in [[Neue Märkte (NT8-Daten) Plan]]. Kurz: NT8 auf der Box liefert
 **Nicht getestet:** W24/W6/AXV-W26 (die drei Jobs in der Queue) liefen bisher nur auf NQ. Ob sich das Ergebnis (falls einer der drei doch trägt) auf andere Märkte übertragen lässt, ist eine eigene Frage für später.
 
 ## #173 — OxfordStrat "Gap Pattern – Type A" geprüft: das Gap existiert im 23-Stunden-Handel nicht mehr, drei getrennte Urteile (22.09.2026)
+
+> **Nachrechnung AP418 (18.10.2026), siehe #186:** GC/CL auf bereinigten NT8-Daten, alle drei Urteile bleiben; Montags-Anteil Urteil 2 jetzt GC 54,5 %, CL 64,0 % (die Spanne 65 bis 86 % galt für die ungefilterten Daten).
 
 **Anlass:** Max gab die Vendor-Seite https://oxfordstrat.com/trading-strategies/gap-pattern/ (Quelle: Dahlquist/Bauer 2012, "Technical Analysis of Gaps") mit dem Auftrag, sie zu testen, mit allen Agents zu optimieren und anschließend mit unserem eigenen Gap-Bein zu kombinieren. Gelaufen sind `research-scout` (Web-Tools in der Session tot, lieferte nur den Cache-Teil — Spezifikation danach selbst über den Browser geholt und in den [[Research-Cache]] eingetragen), `familien-scout` ([[Gap Wege-Karte]], 34 Wege, 11 Skelette), `quant-mathematician`, `quant-statistician`, `strategy-auditor`, `pipeline-auditor`, `verdict-auditor`.
 
@@ -3397,6 +3401,8 @@ Vollständig in [[Neue Märkte (NT8-Daten) Plan]]. Kurz: NT8 auf der Box liefert
 **Buch-Lücke:** unverändert, kein neuer Kandidat aus diesem Strang. AXV-W26 war ein Torwächter (kein Bein), die Mini-Rekalkulation bleibt Backlog (Sizing-Frage) bzw. verworfen (Kostenfrage).
 
 ## #174 — GC Opening-Drive (Klon NQ_Momentum) an vier Gold-Ankern: 12 Survivors aus 1.800 sind Nullniveau, VWAP-Abstand ist Regime, drei Gold-Paper auf GC nicht reproduziert (24.09.2026)
+
+> **Nachrechnung AP418 (18.10.2026), siehe #186a:** 6 statt 12 Survivors, Urteil A bleibt; die Wiedervorlage „#5 vor 2016" ist gestrichen, neue Wiedervorlage 16.10.2027 (10:00-Cluster). Gao: Brutto-Untergrenze für 5 Specs jetzt −0,013.
 
 **Anlass:** Max (Juli-Modus): NQ_Momentum 1:1 auf Gold (15 Min Drive ≥ 0,3 % → mitgehen bis EOD, Stop 0,3x, BE 0,5R), dazu ADX > 20 / > 10 und VWAP als Filter, dann erweitert auf London/andere Uhrzeiten, Fenster 5-60 Min, Stop-Basis letzte Kerze/15 Min/Stunde, Exits ohne EOD, und Paper-Suche nach einem Why. Gelaufen: `ein-weg` (variant-scout + strategy-auditor: GC-OD-01 testbar mit Auflagen, ADX- und VWAP-Story fallen durch), `research-scout` (Web-Tools tot, danach per Browser/Crossref/Europe PMC), `quant-statistician`, `quant-mathematician`, `verdict-auditor` (hält mit Auflagen, drei Nachtests gerechnet), `logbook-distiller`. Alles in `engine/_scratch_gc_od/`.
 
@@ -3586,6 +3592,8 @@ Die offenen Regelfragen (Stufe 2 Tempo statt Passquote, k_hi statt k_lo, Kontrol
 3. Null-Schalter für noise_orb, i2, rv und flip, dann je Wette ein Vertreter mit k nach Register plus Placebo.
 
 ## #177: Juli-Modus Idee 2 (Max) „ruhig → Bull": gilt gleichzeitig, nicht als Vorhersage; RTH ohne Edge, Nacht-Signal nur 2020 bis 2026 und unentscheidbar (29.09.2026)
+
+> **Nachrechnung AP418 (18.10.2026), siehe #186:** die geänderten NT8-Roll-Tage wirken nicht (Nacht-Überschuss +2,90 → +2,93 bp). Auf den seit 18.10. getauschten Hauptdaten liegt die Schlagzeile „+4,9 bp" bei +2,9 bp [0,82; 4,69]; Urteil gleich.
 
 **These (Max, 29.09.):** „Wenn NQ und ES wenig Volatilität haben, ist ein Bullmarkt wahrscheinlicher." Verfahren: [[Testphase Juli-Modus]] Teil A. Gruppen aus der [[State Classification (Marktzustands-Karte)]], Recherche im [[Research-Cache]] (Abschnitt 29.09.).
 
@@ -3905,6 +3913,8 @@ Buch-Beine aus der v4-Abnahme (übernommen, nicht neu gerechnet, Referenz 2-Bein
 **Nicht tot:** Datentage NFP/CPI getrennt. LBMA-Fix-Zeiten. Gold-Zins-Lead. Target-Exit 2,0 R. Andere Anker (Asien nach London). Fades nur eingeschränkt: ohne Stopp ist die Mit-Richtung brutto leicht positiv, ein Fade startet brutto eher im Minus.
 
 ### #180c TD-12 Sternzelle auf GC/CL (Wiederaufnahme #164)
+
+> **Nachrechnung AP418 (18.10.2026), siehe #186b:** CL +0,0070 ATR, Kriterium formal knapp erfüllt, Replikation unentscheidbar, Handel auf MCL ausgeschlossen; GC bleibt echt-aber-zu-klein.
 
 **Verdikt:** Die TD-12-Sternzelle (Signal 90 Min, Horizont 60 Min, Handel nach Vorzeichen) repliziert auf GC und CL nicht nach dem vorab festgelegten Kriterium aus #164 (gleiches Vorzeichen und ≥ 50 % der NQ-Größe = 0,0065 ATR): GC +0,0015 ATR (CI90 −0,0077/+0,0105, t 0,28), CL +0,0046 ATR (CI90 −0,0055/+0,0145, t 0,76). Auf keinem Markt Rang 1 von 14, Plateau-Mittel GC t 0,18, CL t 0,06. **Auf GC ist die Information aber da:** Steigung +0,0146 ATR/z (CI90 +0,0049/+0,0243), IC +0,068 (CI90 +0,021/+0,112), so groß wie auf ES. Auf CL nicht.
 **Reichweite:** VWAP-minus-TWAP-Residuum nach 90 Min ab 09:30 ET (RTH-Anker, für GC/CL laut #165 Lehre 6 nicht der native Anker), Haltedauer 60 Min, Handel nach Vorzeichen an jedem Tag, GC und CL mit Micro-Kosten.
@@ -4272,3 +4282,97 @@ Der 6er trägt in der ersten Fassung mit z 3,05, recent3y gegen echt −7,5. Mit
 **Lehre 177:** *Eine Verwerfung durch Max muss für die Automatik so hart gelten wie ein Gate: Wer ein Bein rauswirft, muss auch dessen Kopien sperren, sonst holt die nächste Neuprüfung die Linie zurück.*
 - Gate fehlt noch: AP425 (`next_week.verworfen`, promote_next stellt Kandidaten mit Korrelation über 0,7 zu einem verworfenen Bein zurück).
 - Bis dahin gilt: Nach jedem Rauswurf aus dem Next-Buch die Inbox-Kandidaten derselben Linie auf `promote_skipped` setzen.
+
+## #186: AP418 Nachrechnung aller NT8-Ergebnisse nach dem Wochenend-Streubar-Fix: kein Urteil kippt, kein Bein betroffen, GC-Opening-Drive halbiert seine Survivors, drei alte Lichtblicke verschwinden (18.10.2026)
+
+**Anlass:**
+- Golden Master nach dem NT8-Export vom 18.10. (AP356): der Konverter `exported_data_nt8/_nt8_to_parquet.py` hat seit dem ersten Export am 19.09. Bars außerhalb der CME-Woche durchgelassen (Samstag, Sonntag vor 18:00 ET, Freitag ab 17:00 ET; 884 bis 1.284 je Markt).
+- Im RTH-Fenster wurden daraus Mini-Tage mit meist 1 Bar (rund 11 % aller Tage bei GC/CL). Alles mit Vortag, ATR, Gap, Tagesrange, Wochentagsfolge oder rollierenden Tagesfenstern war damit verfälscht. Außerdem fielen Rolls an Sonntags-Mini-Sessions mit 1 bis 2 Bars, also ein paar Tage zu früh.
+- Fix am 18.10.: CME-Wochenfilter im Konverter (Krypto erst ab Session 30.05.2026 ausgenommen), dazu Roll-Donnerstag-Fix (`MIN_BAR_SHARE` 0,8). Finaler Stand 18.10. 16:43, PC und Box MD5-gleich. Backups `_bak_20261018` (Stand 19.09.) und `_bak2_20261018` (Stand 02:25).
+- Ticket AP418. Gegenleser: quant-statistician (vier knappe Fälle), verdict-auditor (hielt mit Auflagen, fand vier fehlende Ergebnisse, alle nachgerechnet), logbook-distiller.
+
+**Was nicht betroffen war (geprüft, nicht angenommen):**
+- **Bücher:** echtes Buch (4 Beine), Next-Week-Buch (6 Beine) und LIVE_EXTRA sind reine NQ-Beine. Bis zum Hauptdaten-Tausch am 18.10. kamen NQ/ES/YM/RTY in der Engine aus Databento (`qbt.bars_file` nahm die NT8-Datei nur als Fallback). Der Tausch auf NT8-Hauptdaten passierte erst nach dem Fix und auf dem finalen Stand (Golden Master a569fb20). Kein Live- oder Next-Week-Bein kann durch die Streubars kippen.
+- **Track Record 12.10.** (`_scratch_trackrecord_1210/data_ext`, NQ/RTY ab 06.08. aus NT8 verlängert): nach der Naht 0 Wochenend-Bars in `ext` und `ext17`. Die Konto-Karten bauen darauf auf und bleiben.
+- **#184 Gold Cross-Asset:** von der Gold-Tafel-Session selbst nachgeprüft, Urteile gleich (#184a).
+- **Vorzählung alpha-scout 15.10.** (36 Trials `prescan_count` auf 6B/6E/ZS/ZW): nur Auswahl-Zählung für Gruppe 2; die echten Jobs daraus sind unten neu gerechnet.
+- **SI, HG, PL, 6J, MET, FDAX:** kein Ergebnis seit 19.09. (die ersten fünf kamen erst am 18.10. mit gefilterten Daten).
+- **#165 Lehre 1 und 3** sind überholt: Lehre 1 (Kostenquote gegen Tagesrange, MGC 3,3× usw.) rechnete die Tagesrange mit 1-Bar-Tagen, Rangfolge vermutlich gleich, Zahlen nicht mehr belastbar. Lehre 3 (NQ NT8 gegen Databento „trade-identisch, +1,8 pp") lief auf ungefiltertem NT8-NQ und ist durch den Quellenvergleich vom 18.10. (AP199) ersetzt.
+
+**Was neu gerechnet wurde** (alles in Sandbox-Kopien, kein Register, keine Inbox, keine Wiederholungs-Trials):
+
+| Ergebnis | alt | neu | |
+|---|---|---|---|
+| 86 Queue-Jobs seit 19.09. (NM-GC 46, NM-CL 28, NM-asian GC 3, AC-08b, cleia01 + Kontrolle, gcclk01, ap195 x2, fx6e, grain ZS/ZW) | 0 Survivors, 0 Kandidaten | 0 Survivors, 0 Kandidaten, kein Status gewechselt | bleibt |
+| übrige 35 NT8-Jobs der Queue | | 16 Prämissen-Duplikate eines neu gerechneten Jobs, 19 `__v4re` mit identischem Grid und identischer Basis | durch die 86 abgedeckt |
+| #165 NM-Klone GC/CL | Prämissen gescheitert | größte Bewegung NM-TV-10 GC IS expR −0,02 → +0,30, aber edge 0,5 pp (nötig 1,0), gesamt −0,41 R | bleibt |
+| #180a CL-EIA | WF-OOS −1.437 $, 2/9 Jahre | −1.360 $, 2/9 Jahre | bleibt |
+| #180b GC-COMEX | 4 Prämissen, OOS −0,076 bis −0,308 R | OOS −0,072 bis −0,313 R | bleibt |
+| #180c TD-12 GC (Sternzelle) | +0,0015 ATR [−0,0077; +0,0105], beta +0,0146 [+0,0049; +0,0243] | +0,0039 ATR [−0,0048; +0,0123], beta +0,0138 [+0,0052; +0,0226] | bleibt echt-aber-zu-klein |
+| #180c TD-12 CL (Sternzelle) | +0,0046 ATR [−0,0055; +0,0145], Kriterium 0,0065 verfehlt | +0,0070 ATR [−0,0029; +0,0164], Kriterium formal knapp erfüllt | siehe #186b |
+| #171 W19 GC/CL | kein Markt trägt Information | CL abs_sig gegen Vola rho 0,053 [0,018; 0,084] formal über der Regel | bleibt (Mehrfachtest-Rauschen) |
+| #173 Oxford Gap, nur GC/CL | Pool GC+CL 6 von 12 Zellen positiv, ctl_null-Perzentil 0,52; Urteil 2 GC 22 Ereignisse, Montags-Anteil 63,6 %, CL 23 / 69,6 % | 3 von 12, Perzentil 0,42; GC 22 / 54,5 %, CL 25 / 64,0 %; Overlap GC 99,9 %, CL 100 % | bleibt |
+| #174 GC Opening-Drive, Grid 1.800 | 12 Survivors (7x 08:20, 5x 10:00) | 6 Survivors (1x 08:20, 5x 10:00), alle schon vorher dabei | siehe #186a |
+| #174 Nachtests, VWAP-Filter, Xu, Wei | Top-10-SR 0,40 bis 0,51; VWAP OOS 15/16; Wei rho +0,010 | SR 0,29 bis 0,50; 15/16; rho −0,001 | bleibt |
+| #174 Gao letzte Halbstunde | brutto +0,110 Pkt, Untergrenze nach Korrektur für 5 Specs −0,019 | brutto +0,140, Untergrenze für 5 Specs −0,013 (für 2 Specs +0,007), netto −0,362 | bleibt empirisch-nichts-gefunden |
+| #177/#178 Juli-Modus Idee 2/3 (Roll-Lücken NQ/ES aus NT8) | Urteile „trägt nicht" | reine Roll-Wirkung: 23 (NQ) / 13 (ES) Tagesrenditen, 10/18 Richtungs-Etiketten, Vola-Etiketten gleich; Nacht-Überschuss +2,90 → +2,93 bp | bleibt |
+| Juli-Modus Idee 1 (26.09.) Freitags-Hoch auf GC | 255 GC-Montage, Überschuss −4,1 % [−10,1; +2,0], netto −0,64 Pkt | 441 Montage (430 bis zum alten Datenende), −5,8 % [−10,2; −1,4], netto −1,15 Pkt | bleibt, eher stärker |
+| Juli-Modus 24.09. CL/EIA Paper-Specs | netto −5,76 bis −8,46 $ je MCL | −5,90 bis −8,28 $ | bleibt |
+| Juli-Modus 24.09. Vola-Regime-Filter GC (26 Trials) | Makro F1 hoch +1,21 Pkt (217 $/J), 4-Beine-Portfolio 402 $/J SR 0,30 | Makro F1 −0,24 Pkt (−46 $/J), Portfolio −254 $/J SR −0,18 | siehe #186d |
+| Lab-Karte „GC Regime-Portfolio (3 Beine)" 24.09. | 563 $/J, SR 0,40 (heutige Engine auf alten Daten: 514 $/J, SR 0,36) | nur Fix 508 $/J, SR 0,36; mit Daten bis 16.10. 45 $/J, SR 0,03, MaxDD −5.726 $ | Fix wirkt nicht, neue Marktzeit kippt den Lichtblick |
+| Juli-Modus Regime-Tafel und rollierender Rang (GC/CL-Zellen) | 0 Treffer | 0 Treffer | bleibt |
+| GC-Prämissen 12.10. (ON-01, MR-03a, MR-02, NEWS-01) | trägt nicht | trägt nicht | bleibt (NEWS-01 siehe #186e) |
+| SIP-ORB 12.10. auf 8 NT8-Märkten, Gap-Filter GC/CL | alle negativ, Filter ohne Wirkung | alle negativ, Filter ohne Wirkung | bleibt |
+| SIP-ORB NQ mit Gap-Filter (lief aus der NT8-NQ-Datei) | +0,186 R, t 2,6 | +0,206 R, t 3,16, 11/11 Jahre | bleibt unentscheidbar, siehe #186e |
+| Regime-Karte (State Classification), nur Roll-Lücken aus NT8 (Stand 02:25) | | 23 von 10.461 Etiketten anders (0,22 %), alle an der Richtungsschwelle, Vola-Achse 0 | bleibt; Neubau ohnehin fällig nach dem Hauptdaten-Tausch (AP199/AP313) |
+
+**Hauptdaten-Tausch, nicht Teil von AP418, aber hier gesehen:** bei #177 verschiebt der Wechsel Databento → NT8-Hauptdaten plus Verlängerung die Zahlen stärker als die Rolls (Nacht-Überschuss ruhig +4,9 bp [3,11; 6,89] → +2,9 bp [0,82; 4,69]). Das Urteil bleibt, die Schlagzeile „+4,9 bp" in #177 ist mit heutigen Daten veraltet.
+
+**Lab-Karten:** gut 20 GC/CL-Karten vom 24.09., 25.09., 26.09. und 12.10. stehen mit Trades auf Altdaten im Lab. Sammelvermerk: Zahlen dort sind vor dem Fix gerechnet, gültig sind die Werte dieses Eintrags.
+
+### #186a GC Opening-Drive (#174 Urteil A)
+
+**Urteil:** Bleibt. 6 statt 12 Survivors aus 1.800, unter Nulldrift etwa 4 erwartet (Null-Welten 0 bis 12), P(≥ 6) unter Poisson 0,22. Das alte 08:20-Cluster (7 → 1) war zum Teil Datenartefakt. Die 5 Survivors bei 10:00 bleiben, haben aber IS nur noch 0,010 bis 0,048 R (OOS-lastiges Gold-Trendregime). Survivor #5 (08:20, 15 Min, 0,3 %, Stop 0,3x Fenster, Target 2R): expR 0,150 → 0,079, t ca. 1,80 → 0,97, bei 2 Ticks 0,099 → 0,018 R, 259 → 128 $/J je MGC.
+**Reichweite:** wie #174 A (GC/MGC, Signal-Rolle, Anker 03:00/08:20/09:30/10:00 ET, Fenster 5 bis 60 Min, 4 Stop-Basen, 5 Exits, MGC-Kosten 1 Tick + 1,02 $, Stress 2 Ticks).
+**Kategorie:** empirisch-nichts-gefunden, N = 1.800. „An den Kosten tot" wäre falsch, weil auch die Brutto-Edge nicht belegt ist.
+**Wiedervorlage:** Die alte Bedingung „#5 als Vorzeichen-Check auf GC vor 2016" fällt weg (Power 16 % bei 5 Jahren, 24 % bei 10 Jahren), #5 wird nicht mehr eingefroren. Neu: am 16.10.2027 (12 Monate neue Daten) das 10:00-Cluster (5 Configs, Parameter eingefroren) einmal als Vorzeichen-Check auf den Daten ab 17.10.2026. Der eigene GC-Anker AP197 bringt für dieses Grid nichts Neues, der Harness verschob die Bars bitgleich.
+**Stempel:** siehe Sammelstempel; Grid auf dem Stand 02:25, der sich bei GC vom Endstand nur an 5 Sessions unterscheidet (27.05.2016, 23.01.2026, 24., 27. und 28.07.2026; Endstand 1.617 Zeilen mehr). Kriterium `_scratch_gc_od/grid.py` unverändert.
+
+### #186b TD-12 Sternzelle auf CL (#180c)
+
+**Urteil:** Der Satz in #180c wird präzisiert. Neu +0,0070 ATR, CI90 [−0,0029; +0,0164], gegen das Kriterium 0,0065: formal knapp erfüllt (+0,09 SE, P(wahr ≥ 0,0065) = 0,53), statistisch unentscheidbar (MDE80 0,0146 ATR, mehr als doppelt so groß wie das Kriterium; das alte „repliziert nicht" war genauso unentscheidbar). Die Verschiebung kommt aus der Bereinigung 2018 bis 2025 (Mittel +0,0070 → +0,0113), die 64 neuen Tage ab Juli 2026 liegen bei −0,046. Rang 1 springt von 120/60 auf 90/60, Plateau(14) t −0,06: eine Nadel. TD-12 insgesamt bleibt echt-aber-zu-klein, getragen von GC (beta und IC Pearson ohne 0, obere Handels-CI 0,0123 unter 0,015 ATR Kosten bei MGC).
+**Reichweite:** Replikation der Sternzelle (VWAP-minus-TWAP-Residuum nach 90 Min ab 09:30 ET, Haltedauer 60 Min) auf CL. Vorzeichen-Handel auf MCL ist ausgeschlossen: obere CI90 0,0164 unter den Kosten von ca. 0,021 ATR je RT, P(wahr > Kosten) 0,85 %.
+**Kategorie:** CL-Replikation unentscheidbar (zählt nicht als Friedhof). GC echt-aber-zu-klein wie #180c.
+**Wiedervorlage:** wie #180c (marktnativer Anker oder Kosten unter ca. 0,01 ATR je RT), Termin-Check `lb180_bedingungen`.
+**Stempel:** siehe Sammelstempel; Skript `engine/_archiv_lb180/td13_repl_gccl.py` unverändert, je Markt jetzt 107 bis 109 statt 440 Tage übersprungen (die Mini-Tage zählten vorher als Tage), ATR-Mittel GC 23,65 → 26,96. CL-Daten im Endstand gleich 02:25.
+
+### #186c W19 auf CL (#171, zweiter Eintrag 22.09.)
+
+**Urteil:** Bleibt. CL abs_sig gegen Vola (|Tagesrendite|/sigma, laut Skript reine Einordnung, also Vola und nicht Richtung) erfüllt formal die Vorab-Regel: rho 0,053, CI90 [0,018; 0,084], Hälften 0,041/0,053. Über 36 geprüfte Zellen (6 Märkte, 3 Ziele, 2 Kontrollen) ist das Mehrfachtest-Rauschen: unter der Null kommt mindestens ein solcher Treffer in 37 % der Fälle, Bonferroni-p 0,30. Gegen Vola+Trend fällt die Zelle mit 0,047 durch. Richtung (dir_ret) und Trendtag (er_day) auf GC und CL weiter |rho| ≤ 0,025, alle CI mit 0. „ADX ist kein Trend- oder Richtungsprädiktor" bleibt.
+**Reichweite:** ADX(t-1) als Tages-Feature auf GC/CL, Ziele Tages-Effizienz, |Rendite|/sigma, vorzeichenbehaftete Rendite, Kontrollen Vola und Vola+Trend.
+**Kategorie:** empirisch-nichts-gefunden, N = 36 Zellen (Feature-Messung, keine Register-Trials).
+**Wiedervorlage:** sobald AP358 (Vola-Prognose) Merkmale auswählt: ADX(t-1) dort einmal als Vola-Merkmal mit Vola-Kontrolle prüfen. Als Signal keine.
+**Stempel:** siehe Sammelstempel; Skript `engine/adx_vs_vola_w19.py` (Kopie mit umgebogenem Ausgabepfad), Datenende 13.10. statt 24.07.
+
+### #186d Juli-Modus 24.09.: Vola-Regime-Filter GC, Makro-Impuls und Portfolios
+
+**Urteil:** Gesamturteil „kein Kandidat" bleibt, die Lichtblicke verschwinden. Makro-Impuls 08:30 → 10:00 mit F1 hoch: netto +1,21 → −0,24 Pkt, CI90 [+0,15; +3,45] → [−1,67; +2,14], 217 → −46 $/J je MGC, OOS +3,75 → +0,32. Das 4-Beine-Portfolio daraus: 402 $/J, SR 0,30 → −254 $/J, SR −0,18, MaxDD −7.382 $. Die Lab-Karte mit 3 Beinen: der Fix allein ändert nichts (514 → 508 $/J), die 46 neuen Trades seit 24.07. (−4.297 $, September −2.216 $) drücken sie auf 45 $/J. Kein gefilterter Drive-Config über seinem Nulldrift-Zwilling (p 0,15 bis 0,55, positives $/J im Filter 11 → 4 von 18). Asia long mit F2 hoch knapp positiv (+0,09 Pkt, CI [−0,85; +2,03]), kein Befund; Asia long handelt am 18:05-Open, wo die Sonntagabend-Streubars lagen.
+**Reichweite:** GC/MGC, Vola-Regime als Filter (F1 20-Tage-RV bis Vortag, F2 Nacht-RV, Rang gegen expandierende Historie), 18 Drive-Configs und 8 Zeit-Mechanismen wie am 24.09.
+**Kategorie:** empirisch-nichts-gefunden, N = 26 (registriert 24.09.).
+**Wiedervorlage:** bei einem Treffer der Regime-Tafel auf GC (vorab festgelegtes Kriterium aus `regime_families.py`), sonst keine.
+**Stempel:** siehe Sammelstempel; Skripte `engine/_scratch_gc_od/regime.py`, `grid_regime.py`, `portfolio_regime.py`/`publish_workbench.py` (Nachbau ohne publish), Portfolio über die alten Zahlen rekonstruiert (402 $/J, SR 0,30, MaxDD −3.708 passen auf genau diese vier Beine). Die 3-Beine-Karte war mit der heutigen Engine nicht bitgleich reproduzierbar (je Trade 1,38 $ schlechter, Kostenseite seit 24.09. geändert), verglichen wird deshalb nur innerhalb der heutigen Engine.
+
+### #186e GC-NEWS-01 und SIP-ORB NQ (Bank-Zeilen und Vorschläge vom 12.10., keine Logbuch-Urteile)
+
+- **GC-NEWS-01:** Bis zum alten Datenende identisch (Fade bis 10:00 netto −7,4 bis −11,3 $, t −1,6 bis −2,3). Der 60-Tage-Median läuft hier über die 08:30-Kerzen Mo bis Fr und war vom Tageszeilen-Fehler nicht berührt. Mit Daten bis 16.10. dreht die Fade-Zahl auf −2,0 bis −4,4 $ (t −0,3 bis −1,1), getragen von 17 neuen Event-Tagen 30.07. bis 15.10.2026 (Fade an 14 davon positiv, +2.806 $ je MGC). Datenverlängerung in einer Hochvola-Phase, keine Bereinigungswirkung. „Prämisse trägt nicht" bleibt; „Fade bis 10:00 verliert" gilt nur bis Juli 2026.
+- **SIP-ORB NQ mit Gap-Filter:** lief aus der NT8-NQ-Datei (ATR14 über Mini-Tage zu klein). Bereinigt Keep +0,206 R (t 3,16, n 2.059, 11/11 Jahre), OOS +0,149. Nach Korrektur für 54 Zellen familienweites p 0,04 bis 0,12, OOS Rang 7 bis 9 von 54. Keine Dosis-Wirkung (fast der ganze Effekt sitzt in Gap-Dezil 2), die besten 1 % der Trades tragen 75 % der Summe. Bleibt unentscheidbar. Ein Discovery-Job mit eingefrorener Regel und Zwilling ohne Filter wäre vertretbar, Entscheidung Max. Offener Punkt: das NQ-Etikett trennt auch auf ES (Differenz +0,32 R, t 2,92), das stand mit t 2,4 schon im alten Lauf.
+
+**Sammelstempel:** PC 18.10.2026, Engine-Fingerprint `eval_plan.engine_fingerprint()` ae2c4063c7e2034c5aa60c8e381479ee, NT8-Daten finaler Stand 18.10. 16:43 (MD5 GC cad139067e1f, CL 164c88650892, 6E 14b34e0688eb, ZS c09071399c44, ZW 88a2f83b4676, 6B 9a83c745ace1, ZN 6b4fbeef1f49, ZB a1b6b0ffb903), Datenende 16.10.2026. Queue-Jobs, GC-Grid, W19 und TD-12 liefen auf dem Zwischenstand 02:25 (nur Wochenend-Filter); der Endstand unterscheidet sich bei CL und 6E gar nicht, bei GC an 5, ZW 3, ZN 2, ZS/ZB/6B je 1 Session. CL-EIA, GC-COMEX und alle Scratch-Nachläufe liefen auf dem Endstand. Kriterien je Ergebnis unverändert aus den Original-Skripten und Jobs; Gate v4 gegen das aktuelle Buch (Fingerprint c504e914), Jobs mit `ref_book` gegen ihr eingefrorenes Referenzbuch. Die #173-Skripte lagen nur noch im Transkript (Session 1b52fd7d) und wurden von dort unverändert wiederhergestellt (#180 Lehre 2 ein zweites Mal). Arbeitsdateien: Session-Scratchpad 35a126ad `ap418/` (`cmp_queue.json`, `cmp_gcod.py`, `quant/urteil.py`, `agent_gc12/`, `agent_juli24/`, `agent_nach/`).
+
+**Lehre 178:** *Eine neue Datenquelle ist erst fertig, wenn ihre Kalender-Invarianten zweimal geprüft werden: an der Konsumenten-Grenze (Lader) und als Prüfung der geschriebenen Dateien, nicht nur beim Schreiben im Konverter.* Die Invarianten: keine Samstags- oder Sonntags-Session, kein Mini-Tag als Handelstag, Roll nur auf vollen Sessions. Gleiche Klasse wie die Roll-Garbage-Guards #075/#135: dort blieb das Netz im Lader bewusst, obwohl die Parquets bereinigt waren. Beim NT8-Ordner vom 19.09. wurde das nicht angewandt, weil es niemand als Regel formuliert hatte. `qbt.load_rth`, `load_session`, `asian.load_full` und `_drop_corrupt_sessions` reichten die Tage durch, und die Hälfte der betroffenen Skripte las ohnehin roh (`pd.read_parquet(qbt.bars_file(...))` in `_scratch_gc_od/harness.py`, eigene Tagesfenster für ATR14, 20-Tage-RV, Wochentagsfolge). Die Prüfung vom 19.09. („NQ-Buch trade-identisch", #165) prüfte Trades, keinen Datenkalender, und der Golden Master deckte die NT8-Märkte nicht ab. Sichtbar wurde es erst, als NQ selbst auf NT8 lief.
+- logbook-distiller 18.10.: Konverter voll codiert (seit 18.10.), Lader und Dateiprüfung nur Text, keine Daten-Kanarie → halb-codiert.
+- Gate fehlt noch: `_check_cme_week` in `load_rth`/`load_session` (vor der Verschiebung)/`asian.load_full`, Krypto ab Session 30.05.2026 ausgenommen, Toleranz für die rund 10 Freitag-17:00-Bars in den alten Databento-Dateien; Kalender-Steckbrief je Parquet in `auto_check` (fängt auch Roh-Leser); Kanarie `gm_cme_week_canary.py` (eingeschmuggelter Samstags-, Sonntags-, Freitagabend-Bar, Krypto-Ausnahme, Parquet-Scan) und Fall `KANARIE_cme_woche` in `golden_masters.json`. Auf den bereinigten Dateien muss der Golden Master bit-identisch bleiben. Steht im done_when von AP418, als eigene Session vorgeschlagen.
+
+**Lehre 179:** *Eine Nachrechnung nach einem Datenfix darf nicht über die Queue laufen, sonst zählt dieselbe Config zweimal gegen die Zufallsdecke.* Für AP418 liefen 86 Jobs in einer Sandbox (`process_job` mit umgebogenem Register, Inbox, Ergebnisordner, Heartbeat, Placebo-Log), Wiederholungen ohne neue Trials. Das Werkzeug liegt nur im Session-Scratchpad (`ap418/rerun_jobs.py`), nicht in der Engine → nur Text. Gate: Sandbox-Modus im Runner (`--rerun-sandbox`), der Register-Schreiben hart abschaltet. Falle beim Bau: `ref_book`-Pfade sind relativ zu `discovery_lib.ENG`.
+
+**Buch-Lücke:** Kein Ergebnis wird Kandidat. Einziger Weg nach vorn ist SIP-ORB NQ mit Gap-Filter: hängt vor Stufe 1 (kein Job, Regel noch nicht eingefroren); Entscheidung Max.
