@@ -4481,7 +4481,7 @@ Stufe 1 hält bei allen drei Beinen (t mit „close": LH 3,23, OD 4,34, PB3 3,92
 
 **Offen:** **AP399** ist der Hebel, nicht die Rechenzeit -- ein Bein mit 4 $ netto je Trade verkuerzt die Zeit bis 50.000 $ auf EINEM E8-Konto von 189,1 auf 185,6 bis 188,1 Monate (+95 bis +180 $ ueber 36 Monate gegen einen MC-Standardfehler von 383 $, also unter dem Rauschen), auf allen fuenf Konten auf 172,8 bis 180,1. Fuer 10 % weniger Zeit braucht es auf einem Konto 23,55 bis 44,39 $, auf der Flotte 4,71 bis 8,88 $. E8 erlaubt MBT, **FundedNext erlaubt kein Krypto**, FFN ungeprueft. Dazu: `promote_next` hat keine Symbol-Whitelist (AP399 Punkt 5), ein BTC-Kandidat koennte ohne NT8-Modul ins Next-Week-Buch wandern. Jobs BTC-03/BTC-04 laufen, Auswertung **AP438**, Pipeline-Luecken **AP439**.
 
-### Nachtrag 23.10.2026 02:00, nachdem die Jobs durch sind und der `verdict-auditor` gegengelesen hat
+### Nachtrag 23.10.2026 01:27, nachdem die Jobs durch sind und der `verdict-auditor` gegengelesen hat
 
 **Ergebnis: BTC-03 und BTC-04 je 0 Survivors, Gate v4 nicht bestanden, Next-Week-Buch unveraendert** (md5 vor und nach dem Lauf identisch, nichts automatisch promotet, echtes Buch die ganze Nacht unberuehrt).
 
@@ -4503,3 +4503,17 @@ BTC-03, 14 Configs: Vor-Gates fallen bei **allen 14** an `sharpe_t` (dazu `top5`
 **Was "zwei von drei Gate-v4-Stufen ok" wirklich wert ist, und ich hatte es zu hoch gelesen:** P(mindestens 4 von 7 Testjahren positiv) ist unter der Nullhypothese **exakt 0,500**, und "Buch ok" folgt bei rho 0,09 und positiver OOS-Summe fast mechanisch aus "Walk-Forward ok". Die Stufe mit Power sind die Vor-Gates, und die fallen 14 von 14. Zwei "ok" aus diesen beiden Stufen sind also knapp ein Befund, nicht zwei.
 
 **Zur zitierten Huellkurven-Rechnung oben, Nachtrag zum Stempel:** die Skripte des `quant-mathematician` lagen nur als Code auf Platte, ohne gespeicherten Output, womit die Rechnung nach Lehre 159 nicht reproduzierbar war. Nachgeholt (`_scratch_qm_btc_221026/teil1.out.txt`, `teil2.out.txt`, `teil10.out.txt`). **Wichtig beim Nachlesen:** `teil10.py` rechnet intern noch mit 2 Ticks Slippage je Seite, also K_bp 6,28. Die Zahlen im Urteil oben (7,73 bp, Preis ab 256.000 $, Tagesrange ab 780 $) sind meine Neurechnung bei den korrigierten 6,40 $ RT. Beides steht jetzt nebeneinander auf Platte.
+
+**Nachtrag 2, 01:30: die 240-Minuten-Zone ist jetzt gemessen statt offen gelassen.** Der `verdict-auditor` hatte verlangt, sie zu messen, bevor ueber die Familie geurteilt wird. Nachgeholt mit zwei Bereinigungen (erste Rendite je Session verworfen, weil sie Roll-Sprung UND Overnight-Luecke enthaelt; rollendes Sigma mit `min_periods`, damit der z-Nenner nach einem Roll nicht um 13,5 % ueberhoeht ist). Gegen die Kostenschwelle 7,73 bp:
+
+| Horizont | Klasse | n | Umkehr | t | obere CI-Grenze | schliesst 7,73 bp aus? |
+|---|---|---|---|---|---|---|
+| 60 min | mittel | 11.584 | +1,27 bp | -1,78 | +2,48 | **ja, klar** |
+| 60 min | gross | 6.418 | +1,33 bp | -1,24 | +3,25 | **ja** |
+| 240 min | mittel | 2.252 | +3,19 bp | -1,02 | +8,22 | nein, knapp |
+| 480 min | mittel | 575 | +7,38 bp | -0,81 | +20,39 | nein |
+| 720 min | mittel | 107 | +28,14 bp | -1,65 | +47,92 | nein |
+
+**Fuer 15 bis 60 Minuten traegt das Urteil damit klar** -- bereinigt ist die Umkehr dort nur 0,28 bis 1,33 bp und die obere CI-Grenze bleibt unter 3,3 bp. Die Bereinigung hat den Effekt sogar KLEINER gemacht. **Ab 240 Minuten ist die Zone nicht ausschliessbar, aber auch nirgends nachweisbar:** die Punktschaetzer wachsen, die Intervalle aber so stark (bis plus/minus 145 bp), dass kein t die 2 erreicht und bei 720 Minuten nur noch 107 Beobachtungen je Klasse uebrig sind.
+
+**Und ein Befund ueber unsere Datenform, der allgemein gilt (Lehre 188): auf einer unadjustierten Reihe ist eine Umkehr-Messung oberhalb einer Session-Laenge strukturell nicht entscheidbar.** Ab dort spannt JEDE Rendite ueber eine Session-Grenze, die Roll-Bereinigung loescht dann 84 bis 92 % der Daten (bei 1440 Minuten bleiben 447 von 2.748 Fenstern), und ohne Bereinigung steckt der Roll-Sprung im Signal. Das braeuchte rueckwaerts-adjustierte Preise. **Alle unsere Serien sind unadjustiert**, bewusst und fuer die Intraday-Arbeit richtig -- es heisst aber, dass jede Tages- und Wochen-Aussage auf diesen Daten mit diesem Vorbehalt gelesen werden muss, nicht nur bei BTC. Betrifft rueckblickend auch das Varianz-Verhaeltnis "5 Tage 1,016 / 20 Tage 1,095" aus dem Befund oben: diese zwei Zahlen stehen auf derselben unbereinigten Basis und sind damit schwaecher belegt als die Intraday-Zahlen daneben. Gate-Platz: Hinweis in `qbt.load_rth`/`bars_file`-Doku und eine Pflichtzeile im Steckbrief je Markt, dass Horizonte ab Session-Laenge auf unadjustierten Serien nicht roll-bereinigbar sind.
