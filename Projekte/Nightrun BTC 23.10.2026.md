@@ -18,13 +18,17 @@ Verwandt: [[Neue Märkte (NT8-Daten) Plan]] (der Vorläufer-Nightrun auf GC/CL v
 >
 > **2. Er zahlt trotzdem nicht.** In Netto-Dollar, der einzigen Einheit die ein Prop-Konto auszahlt, ist er null: +0,0004 $ je Trade. Mit ehrlich gemessenen Kosten von 6,40 $ je Round-Turn sogar −1,68 $. Der Median-Trade verliert 5,90 $, nur 40 % gewinnen, und das Gesamtergebnis hängt an einem Prozent der Trades. Das Break-even, ab dem ein BTC-Bein die Buch-Sharpe nicht mehr *senkt*, liegt bei 5,04 bis 6,89 $ je Trade. Die Wahrscheinlichkeit, dass wir da drüber sind: 7 %.
 >
-> **3. Eine Zeile hat einen Weg, und die läuft.** Der Filter auf große Opening Ranges bringt bei OR60 +8,75 bis +11,69 $ je Trade mit positiver unterer CI-Grenze, übersteht den Kosten-Stress und ist ab 2021 stärker. Auf OR30 dreht derselbe Filter ins Negative, deshalb ist die OR-Länge im Job eine Achse. Zwei Jobs rechnen auf der Box: der Filter und eine Kontrolle mit Zufallsleveln. **Die Kontrolle hat schon gewarnt** — bei der strengen Schwelle macht das Zufallslevel +5,37 $, dort ist ein guter Teil also Vola-Konditionierung und nicht das Level.
+> **3. Eine Zeile hatte einen Weg, und sie ist gelaufen. Ergebnis: 0 Survivors, Gate v4 nicht bestanden.** Der Filter auf große Opening Ranges erreicht out of sample +8,81 $ je Trade über 264 Trades, der Walk-Forward sagt „ok" (4 von 7 Jahren positiv), das Buch-Marginal sagt „ok" (Sharpe 2,141 → 2,202), der Nulldrift-Zwilling besteht nicht und die Korrelation zu den vier Beinen ist praktisch null. Die Vor-Gates fallen aber bei **allen 14** Configs an `sharpe_t`. Urteil: **OR30-Zweig `empirisch-nichts-gefunden`, OR60-Zweig `unentscheidbar`** — für t = 2 bräuchte es 373 bis 715 OOS-Trades, also 10 bis 19 Jahre statt der vorhandenen 7.
+>
+> **3b. Die Kontrolle hat etwas Unerwartetes geliefert, und ich hatte es zuerst falsch gelesen.** Gepaart über identische Config-Schlüssel schlägt das echte Level das Zufallslevel auf der OR60-Hälfte in **6 von 6 Zellen** (Δ `sharpe_t` +1,005, Vorzeichentest p = 0,016). Die #127-Frage fällt auf BTC also **zugunsten des Levels** aus, nicht dagegen — mein Zwischenbefund „überwiegend Vola-Proxy" war aus dem schwächsten verfügbaren Vergleich abgeleitet und ist zurückgezogen. Das Level trägt etwas. Es trägt die Kosten nicht. Das sind zwei verschiedene Fragen.
 >
 > **4. Die wichtigste Zahl der Nacht ist aber eine andere: AP399 entscheidet mehr als jede Rechenzeit.** Ein BTC-Bein mit 4 $ netto je Trade verkürzt die Zeit bis 50.000 $ auf **einem** E8-Konto von 189 auf 186 bis 188 Monate. Das sind +95 bis +180 $ über drei Jahre gegen einen Fehlerbalken von 383 $, also unter dem Rauschen. Auf **allen fünf** Konten wären es 173 bis 180 Monate. FundedNext erlaubt nachweislich kein Krypto, FFN ist ungeprüft. **Solange FFN offen ist, ist die Obergrenze des ganzen BTC-Vorhabens rund 2 % Zeitgewinn.** Diese eine Antwort ist mehr wert als 350 Configs.
 >
 > **5. Was ich dir offen lassen muss:** Du wolltest alle Strategien der Top 3 Familien durch Gate v4. Ich habe 2 von 12 eingereiht. Mean Reversion ist über eine Rechnung erledigt (der Effekt sättigt bei 2,50 bp gegen 7,73 bp Kosten, und auf dem einzigen billigeren Kontrakt wäre eine Einheit 316 % der Drawdown-Grenze), Intraday Bias hat die Multiple-Testing-Korrektur nicht gehalten und war ohnehin der Klon unseres lebenden Momentum-Beins. Die zehn nicht eingereihten Zeilen stehen alle mit Zahl in Abschnitt 8 und liegen als fertige Grids in `hypothesen.json` — ein Befehl, wenn du den vollen Sweep trotzdem willst. **Das ist deine Entscheidung, nicht meine.**
 >
-> **6. Zum Mitlesen, weil es die Nacht prägt:** vier eigene Messfehler habe ich selbst gefunden und korrigiert, vier weitere Aussagen hat das Quant-Team widerlegt — darunter meinen ersten Hauptbefund („der Effekt zerfällt"), der sich als Einheiten-Artefakt entpuppte. Die Lehre daraus ist allgemein und steht als Lehre 182 im Logbuch: auf einem Markt, dessen Preis sich verzwölffacht hat, ist bp keine stabile Einheit, und welche Einheit gilt, ist eine Messung und keine Annahme.
+> **6. Zum Mitlesen, weil es die Nacht prägt:** fünf eigene Messfehler habe ich selbst gefunden und korrigiert, und **acht Aussagen von mir haben die Gegenleser widerlegt** — darunter meinen ersten Hauptbefund („der Effekt zerfällt", war ein Einheiten-Artefakt), meine Kontroll-Deutung (war genau verkehrt), meine Schlagzeilen-Zelle (0,80 hängt an fünf Trades, robust ist 0,65) und meine eigene vorab festgeschriebene Kill-Schwelle (deren zwei Hälften lagen um Faktor 3 bis 4 auseinander, sie war also von Anfang an unerreichbar). Die allgemeine Lehre steht als Lehre 182 im Logbuch: auf einem Markt, dessen Preis sich verzwölffacht hat, ist bp keine stabile Einheit, und welche Einheit gilt, ist eine Messung und keine Annahme.
+>
+> **7. Das Ergebnis ist trotzdem brauchbar, nur anders als gedacht.** Wir haben jetzt BTC in der Engine, ein belastbares Profil, eine zitierfähige Hüllkurven-Rechnung für die Umkehr-Klasse, fünf neue Lehren mit benannten Gate-Plätzen, und die Erkenntnis, dass die Entscheidung über Bitcoin nicht an einem Backtest hängt, sondern an AP399. **Kein Kandidat im Next-Week-Buch, und das echte Buch war die ganze Nacht unberührt.**
 >
 > **Modell und Session:** Für die Auswertung morgen reicht **sonnet**, die Zahlen stehen alle hier und in `_scratch_btc_nightrun/`. Nimm eine **frische Session** (`/clear`), diese hier ist nach einer ganzen Nacht voll. Für die AP399-Entscheidung und die Frage, ob der Filter-Job ein Bein werden darf, lohnt **opus oder fable**.
 
@@ -378,6 +382,97 @@ Der Kontroll-Job ersetzt den zunächst geplanten Fade-Job. Der Auditor hat zu Re
 **Vorab festgeschriebene Kill-Schwelle:** Walk-Forward-OOS-Netto **≥ +5,04 $ je Trade** (Buch-Break-even bei σ 97) **und t ≥ 2,8**. Reißt das keine Config, lautet das Urteil `empirisch-nichts-gefunden, N = 24`. **Einschränkung, die der Auditor zu Recht anmerkt: diese Schwelle steht im `note`-Feld, also in Prosa, nicht als Code-Gate.** Sie ist damit eine Selbstbindung und keine Durchsetzung.
 
 **Warnung für morgen früh:** das Vor-Gate ist nicht zu streng, sondern zu **durchlässig**. Bei Edge null passiert eine Config es mit 2,3 %, weil P(Mehrheit der Testjahre positiv) bei μ = 0 schon 0,50 ist. Bei 24 Configs sind das erwartet 0,55 Null-Kandidaten, bei den ursprünglich geplanten 350 wären es 8,1 gewesen. Das ist der Hauptgrund für den kleinen Lauf.
+
+---
+
+## 8b. Ergebnis der Jobs, und drei Korrekturen am eigenen Zwischenstand
+
+**Beide Jobs sind um 01:20 durch. 0 Survivors, Gate v4 nicht bestanden, und das Next-Week-Buch ist unverändert** (md5 vor und nach dem Lauf identisch, nichts wurde automatisch übernommen, das echte Buch war die ganze Nacht tabu).
+
+### Was BTC-03 geliefert hat
+
+14 Configs (12 Gitterzellen plus 2 Prämissen). Die Vor-Gates fallen bei **allen 14** an `sharpe_t`, dazu `top5` 8x, `cost2t` 8x, `last3y` 7x, `dollar` 6x. Aber zwei der drei Gate-v4-Stufen sagen „ok":
+
+| Stufe | Ergebnis |
+|---|---|
+| Vor-Gates (GATES_HARD, voller Zeitraum) | **fallen** (edge, sharpe_t, IS) |
+| Walk-Forward, 2 J Training / 1 J Test, Neuauswahl | 4 von 7 Testjahren positiv, OOS **+2.326,60 $**, expR 0,036 → ok |
+| Buch-Marginal | SR 2,1407 → 2,202 (dSR +0,0613), Passquote **+0,49 pp**, Max-DD −0,3 % → ok |
+| Korrelation je Bein | +0,035 / −0,001 / −0,028 / −0,003 — praktisch null, bestätigt ρ 0,092 |
+| Nulldrift-Zwilling der deploy_config | **besteht nicht** → die #106-Pflichtkontrolle ist sauber |
+| Reality Check | p = 0,58 (nur Info, hätte unter Gate v3 gesperrt) |
+| PBO | 15 % gegen Zufallsband 7 bis 89 %, p = 0,20 — „besser als Zufall, nicht sauber getrennt" |
+
+Walk-Forward je Jahr: 2020 −183 (n 24), 2021 +892 (n 17), 2022 −214 (n 15), 2023 +219 (n 46), 2024 +294 (n 88), **2025 +1454 (n 34)**, 2026 −135 (n 40). Summe +2.327 $ auf 264 Trades = **+8,81 $ je Trade.**
+
+### ⚠️ Korrektur 1: meine Kontroll-Aussage war falsch, und zwar in der entscheidenden Richtung
+
+Ich hatte aus Profit-Faktor 1,19 (echtes Level) gegen 1,15 (Zufallslevel) geschlossen, dass „nur 21 % des Überschusses beim echten Level bleibt" und der Opening Range „überwiegend ein Vola-Proxy" ist. **Das war der schwächste verfügbare Vergleich, und die 21 % waren eine erfundene additive Zerlegung eines Verhältnismaßes.** Der `verdict-auditor` hat darauf hingewiesen, dass beide Jobs identische Config-Schlüssel haben und deshalb **gepaart** auswertbar sind. Selbst nachgerechnet, `sharpe_t` je Zelle:
+
+| | echtes Level besser in | Δ `sharpe_t` Mittel | Vorzeichentest einseitig |
+|---|---|---|---|
+| alle 12 Configs | 9 von 12 | +0,582 | p = 0,073 |
+| **nur OR60 (6 Zellen)** | **6 von 6** | **+1,005** | **p = 0,016** |
+| nur OR30 (6 Zellen) | 3 von 6 | — | — |
+
+Stärkste Einzelfälle: 0,65/OR60/240 `sharpe_t` **+1,46 gegen −0,35**, 0,65/OR60/offen **+1,44 gegen −0,15**.
+
+> **Auf der relevanten OR60-Hälfte schlägt das echte Level das Zufallslevel in jeder einzelnen Zelle.** Die #127-Frage fällt auf BTC also **vorläufig zugunsten des Levels** aus, nicht dagegen. Mein Zwischenbefund war das Gegenteil und ist zurückgezogen.
+>
+> Einschränkungen, die dazugehören: ein einzelner Seed (der `pipeline-auditor` nennt das das Rauschmuster aus dem NQ-ORB-Vorfall), stark überlappende Populationen (das gepaarte t ist kein Signifikanztest), alles In-Sample über den vollen Zeitraum. **Dass das Level etwas trägt und dass es die Kosten trägt, sind zwei verschiedene Fragen.** Es trägt etwas. Es trägt die Kosten nicht.
+
+### ⚠️ Korrektur 2: die robuste Zelle ist 0,65, nicht 0,80 — meine Schlagzeile war verkehrt
+
+Die Zahl, die ich den ganzen Bericht über als Bestwert geführt habe (+11,69 $ je Trade bei Schwelle 0,80), steht auf einer Zelle, deren Gesamtergebnis **komplett an fünf Trades hängt**. `top5_share` je Zelle, aus der Ergebnisdatei:
+
+| Zelle | `top5_share` | `sharpe_t` | |
+|---|---|---|---|
+| 0,5 / OR60 / offen | **4,245** | +0,17 | hängt komplett an 5 Trades |
+| 0,5 / OR60 / 240 | **2,052** | +0,33 | hängt komplett an 5 Trades |
+| 0,8 / OR60 / offen | **1,091** | +1,10 | hängt komplett an 5 Trades |
+| 0,8 / OR60 / 240 | **1,077** | +1,06 | hängt komplett an 5 Trades |
+| **0,65 / OR60 / 240** | **0,643** | **+1,46** | **robust** |
+| **0,65 / OR60 / offen** | **0,703** | **+1,44** | **robust** |
+
+Ein `top5_share` über 1,0 heißt: ohne die fünf besten Trades ist die Zelle negativ. **Die einzige robuste Lage ist 0,65 auf OR60**, und die hat auch den höchsten `sharpe_t`. Das ist auch die Config, die der Walk-Forward als `deploy_config` gewählt hat — das Verfahren hat es also selbst gefunden, nur mein Bericht nicht.
+
+### ⚠️ Korrektur 3: meine eigene Kill-Schwelle war von Anfang an unerreichbar
+
+Ich hatte vorab festgeschrieben: OOS-Netto ≥ 5,04 $ je Trade **und** t ≥ 2,8. Das klang streng und war in sich widersprüchlich. Auf n = 264 OOS-Trades bei der gemessenen Trade-Streuung:
+
+| gemessene sd | t realisiert | 5,04 $ entspricht t | t = 2,8 braucht | Faktor |
+|---|---|---|---|---|
+| 85,1 $ | 1,68 | 0,96 | 14,67 $ | **2,91** |
+| 96,9 $ | 1,48 | 0,85 | 16,70 $ | **3,31** |
+| 117,8 $ | 1,22 | 0,70 | 20,30 $ | **4,03** |
+
+**Die beiden Hälften meiner UND-Schwelle liegen um Faktor 2,9 bis 4,0 auseinander.** Der Dollar-Teil ist mit +8,81 $ erfüllt, der t-Teil hätte das Zwei- bis Vierfache des wirtschaftlich relevanten Werts gebraucht. Nach unserer eigenen Kategorien-Tabelle ist das wörtlich **`unentscheidbar`** („MDE/Feasibility schlägt die Kill-Schwelle"), und das zählt ausdrücklich nicht als Friedhof. Eine vorab festgeschriebene Schwelle muss **erreichbar** sein, sonst ist sie keine Falsifikation, sondern ein garantiertes Nein.
+
+### Die 2025-Frage, nachgerechnet statt behauptet
+
+62,5 % der OOS-Summe kommen aus 2025. Jackknife je Trade: ohne 2020 +10,46 · ohne 2021 +5,81 · ohne 2022 +10,20 · ohne 2023 +9,67 · ohne 2024 +11,55 · **ohne 2025 +3,80** · ohne 2026 +10,99. 2025 ist also einzigartig tragend, jedes andere Jahr weglassen *hebt* den Schnitt.
+
+Der Auditor hat mir dazu einen Konsistenzfehler nachgewiesen: ich kann nicht τ² = 0 benutzen, um 2026 als normales Rauschjahr zu retten, und gleichzeitig 2025 als Regime-Artefakt behandeln. Und das τ² = 0 war auf den Jahreszahlen des *nackten* Bruchs geschätzt, nicht auf diesen sieben. Neu geschätzt (DerSimonian-Laird auf den sieben Walk-Forward-Jahren):
+
+| gemessene sd | Q (df 6) | τ² | τ | I² | Random-Effect-Mittel | Lesart |
+|---|---|---|---|---|---|---|
+| 85,1 $ | 13,17 | 244,95 | 15,65 $ | 54,5 % | +10,30 $ ± 8,23 | Q > 12,59, Jahre **informativ** |
+| 96,9 $ | 10,16 | 184,19 | 13,57 $ | 40,9 % | +10,00 $ ± 8,19 | Rauschen |
+| 117,8 $ | 6,87 | 57,24 | 7,57 $ | 12,7 % | +9,23 $ ± 7,96 | Rauschen |
+
+**Die Antwort ist ehrlich ambivalent und ändert das Urteil nicht:** unter jeder der drei Streuungs-Annahmen liegt der Random-Effect-Schätzer bei +9,2 bis +10,3 $ mit einem Standardfehler um 8, das Intervall überdeckt also bequem die Null. 2025 schrumpft von +42,76 auf +13,36 bis +27,67 $ und bleibt das größte Jahr. Ob die Jahre informativ sind oder Rauschen, lässt sich mit sieben Zahlen nicht entscheiden.
+
+### Das Urteil, in zwei Teile getrennt
+
+Mein erster Entwurf war `empirisch-nichts-gefunden, N = 24`. Das trägt nicht: N = 24 zählt die 12 Zellen der Null-Kontrolle als getestete Varianten mit und wäre ein Doppelzählen gegen die eigene Zufallsdecke, und die Kategorie widerspricht sowohl der Feasibility-Rechnung oben als auch dem Logbuch-Eintrag #188, der die konditionierten Formen selbst als `unentscheidbar` führt. Richtig ist die Trennung:
+
+> **OR30-Zweig: `empirisch-nichts-gefunden, N = 6.`** Alle sechs OR30-Zellen negativ, `sharpe_t` −0,92 bis −1,70, alle acht Gates gefallen. Das ist echte Evidenz.
+>
+> **OR60-Zweig: `unentscheidbar, N = 6.`** Punktschätzer +8,81 $ je Trade, aber die Kill-Schwelle war unerreichbar und das CI überdeckt die Null. **Wiedervorlage mit konkreter Bedingung: für t = 2 bei der gemessenen Effektgröße braucht es 373 bis 715 OOS-Trades, also 1,4 bis 2,7 mal das Vorhandene — bei 37,7 Trades im Jahr sind das 9,9 bis 19,0 Jahre.** Das ist weit weg von den 58,7 Jahren des nackten Bruchs, also eine echte Bedingung und kein Nie.
+>
+> **Nicht geprüft und deshalb nicht mitbegraben:** die Richtungsachse (short hat brutto t +3,34 gegen long +2,13, bewusst kein Job wegen der Drift-Schmeichelei), die Bestätigungs-Achse (`retest`), und die Stop-Weite. Ohne die drei ist ein „nichts gefunden" über den **Mechanismus** nie sagbar, nur über dieses Grid.
+
+**Und warum „zwei von drei Gate-v4-Stufen ok" kein zweiter Befund ist**, was ich oben noch anders gelesen hatte: P(mindestens 4 von 7 Testjahren positiv) ist unter der Nullhypothese exakt 0,500, und „Buch ok" folgt bei ρ = 0,09 und positiver OOS-Summe fast mechanisch aus „Walk-Forward ok". Die Stufe mit der Power sind die Vor-Gates, und die fallen 14 von 14.
 
 ### Die acht Zeilen, die NICHT eingereiht werden, jede mit ihrer Zahl
 
