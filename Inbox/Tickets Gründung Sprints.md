@@ -27,7 +27,7 @@ status: Stand 22.10.2026, Ticket-Befehle warten auf Max' OK
 | # | Ticket | Was | Frist | Hängt an |
 |---|---|---|---|---|
 | 1 | **AP35** | ELSTER-Fragebogen zur steuerlichen Erfassung | **Ziel Fr 30.10., gesetzliche Frist Mo 02.11.** (Tracker: 31.10.) | USt-Wahl |
-| 2 | Steuerberater | Kanzlei finden, Fragenliste ist fertig | keine | Max |
+| 2 | Steuerberater | angefragt (Steuerberater von Marco, Berlin, der selbst Prop-Firms handelt), Antwort offen | Antwort binnen 3 bis 4 Tagen ab 22.10., sonst Fallback für AP35 | Steuerberater |
 | 3 | AP37 | Revolut Pro eröffnen, eigene IBAN prüfen, bei E8, FN und FFN als Auszahlungskonto eintragen, 30 % automatisch ins Steuer-Pocket | Tracker 31.10. | nichts mehr (Gewerbeschein ist da) |
 | 4 | AP238 | BOS-Finanzplan | **vor dem 05.11.**, sonst kein Kauf am 06.11. ([[Kaufvorlage Kaufrunde 06.11.2026]]) | Max liefert drei Zahlen: Lebenshaltung jetzt und in der BOS, Wohnsituation, Kontostand heute |
 | 5 | AP251 | Belege-Nachtrag Oktober | war 07.10. | Max: FFN-Rechnung und Claude-Belege aus den Dashboards holen, dazu Gewerbe-Bescheid und Überweisungsbeleg (40 €) in `_Eingang` |
@@ -35,7 +35,7 @@ status: Stand 22.10.2026, Ticket-Befehle warten auf Max' OK
 
 **Zu AP35, Vorschlag Claude (22.10.):** Steht bis So 25.10. kein Steuerberater-Termin, im Fragebogen **Kleinunternehmer** ankreuzen. Der Verzicht auf §19 geht laut [[Research-Cache]] bis Ende Februar 2028 noch rückwirkend für 2026, Regelbesteuerung bindet dagegen 5 Jahre. Die rund 1.270 € Vorteil der Regelbesteuerung ([[Gründung Zeitplan]]) sind kein Grund, die Frist zu reißen. **Achtung:** Die Checkliste im Ticket sagt noch „Kleinunternehmerregelung: JA“ (alter Stand), das Update vom 23.09. im selben Ticket sagt Regelbesteuerung. Beim Ausfüllen gilt, was Max entscheidet, nicht die Checkliste.
 
-**Zum Steuerberater:** Laut Daily Note 14.10. wollte Max AP35, AP37, AP249, AP251 und AP236 bis AP238 am 15.10. mit dem Steuerberater klären. Ein Ergebnis steht nirgends, die Notiz [[Fragen an Steuerberater (Gründung)]] sagt „Steuerberater wird gesucht“. Kandidaten (research-scout, 10.10.) stehen dort.
+**Zum Steuerberater:** Laut Daily Note 14.10. wollte Max AP35, AP37, AP249, AP251 und AP236 bis AP238 am 15.10. mit dem Steuerberater klären. Ein Ergebnis steht nirgends. **Update 22.10. (Max):** Steuerberater angefragt, Empfehlung über Marco (Berlin, handelt Prop-Firms manuell, dessen Steuerberater betreut ihn umfassend). Noch keine Antwort. **Max' Plan:** kommt in 3 bis 4 Tagen keine Antwort, kreuzt er im Fragebogen Kleinunternehmer an (bindet nicht), Abgabe bis 30.10. Die zwei Kernfragen, die die Antwort klären muss, stehen in [[Fragen an Steuerberater (Gründung)]]: ist der Payout ein Leistungsaustausch, und hält der Vorsteuerabzug bei nicht steuerbaren Drittland-Umsätzen (§ 15 Abs. 2 Nr. 2 / Abs. 3 Nr. 2 UStG).
 
 **Zur Rücklage:** Max hat am 11.10. 30 % ins Steuer-Pocket gesetzt. Im Ticket AP37 steht noch die alte Faustzahl 42 %.
 

@@ -4,7 +4,7 @@ tags:
   - bereich/business
   - steuer
 erstellt: 2026-10-10
-status: Fragen fertig, Steuerberater wird gesucht
+status: Steuerberater angefragt (22.10.2026, Empfehlung von Marco), Antwort offen
 ---
 # ❓ Fragen an den Steuerberater (Gründung)
 
