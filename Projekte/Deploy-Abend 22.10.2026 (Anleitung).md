@@ -21,7 +21,7 @@ Stand vor dem Abend (Claude per SSH, 22.10. ca. 22:10): live RiskGuard `DBEAC7AF
 
 ## Teil 1: Vorprüfung beider Deploys (NT8 läuft weiter, nichts wird verändert)
 
-> [!success] Schon erledigt, 22.10. ca. 22:20 von Claude
+> [!success] Schon erledigt, 22.10. ca. 22:10 von Claude
 > Beide Vorprüfungen sind grün: alle Konten flat, `COMPILE OK`, `Pre-Flight OK.`, nichts deployt. Du kannst direkt mit Teil 2 anfangen. Nur falls du erst viel später loslegst, die zwei Befehle unten noch einmal laufen lassen.
 
 PowerShell am PC:
@@ -37,7 +37,7 @@ powershell -ExecutionPolicy Bypass -File .\deploy_20261024.ps1 -PreflightOnly
 ## Teil 2: Deploy A = RiskGuard Trade-PnL-Fix (AP319)
 
 > [!success] Schon erledigt, 22.10. 22:08 bis 22:10 (Session b547a17b, auf deine Freigabe)
-> Live ist `MaxRiskGuard.cs` jetzt `312C74C9`, die DLL stammt von 22:10:23, alle 5 `commissionrt`-Zeilen stehen in der cfg (E8/FN 1.90, FFN 1.78). Claude hat das um 22:30 per SSH nachgeprüft. NT8 läuft seit 22:10:31 neu, **deshalb sind gerade alle Strategien aus**. **Teil 2 nicht nochmal starten**, sondern direkt mit Teil 3 weitermachen. Rollback: `_bak_archiv\deploy-20261022-2210` plus `_bak_archiv\d1022-20261022-2209\cfg`.
+> Live ist `MaxRiskGuard.cs` jetzt `312C74C9`, die DLL stammt von 22:10:23, alle 5 `commissionrt`-Zeilen stehen in der cfg (E8/FN 1.90, FFN 1.78). Claude hat das um 22:12 per SSH nachgeprüft. NT8 läuft seit 22:10:31 neu, **deshalb sind gerade alle Strategien aus**. **Teil 2 nicht nochmal starten**, sondern direkt mit Teil 3 weitermachen. Rollback: `_bak_archiv\deploy-20261022-2210` plus `_bak_archiv\d1022-20261022-2209\cfg`.
 
 Was er bringt: Telegram zeigt den Trade-Gewinn je Exit richtig an (aus den Fill-Preisen minus Kommission) statt der falschen −1 $. Die cfg bekommt je Konto eine Zeile `commissionrt`, und zwar nur dort, wo sie fehlt.
 
