@@ -36,6 +36,9 @@ powershell -ExecutionPolicy Bypass -File .\deploy_20261024.ps1 -PreflightOnly
 
 ## Teil 2: Deploy A = RiskGuard Trade-PnL-Fix (AP319)
 
+> [!success] Schon erledigt, 22.10. 22:08 bis 22:10 (Session b547a17b, auf deine Freigabe)
+> Live ist `MaxRiskGuard.cs` jetzt `312C74C9`, die DLL stammt von 22:10:23, alle 5 `commissionrt`-Zeilen stehen in der cfg (E8/FN 1.90, FFN 1.78). Claude hat das um 22:30 per SSH nachgeprüft. NT8 läuft seit 22:10:31 neu, **deshalb sind gerade alle Strategien aus**. **Teil 2 nicht nochmal starten**, sondern direkt mit Teil 3 weitermachen. Rollback: `_bak_archiv\deploy-20261022-2210` plus `_bak_archiv\d1022-20261022-2209\cfg`.
+
 Was er bringt: Telegram zeigt den Trade-Gewinn je Exit richtig an (aus den Fill-Preisen minus Kommission) statt der falschen −1 $. Die cfg bekommt je Konto eine Zeile `commissionrt`, und zwar nur dort, wo sie fehlt.
 
 ```
@@ -94,7 +97,7 @@ Danach loggt sich NT8 nach einem Neustart selbst ein. Wenn du heute keine Lust h
 4. Reiter **Strategies:** alle Hosts aktivieren (E8, FN1, FN2, FFN1, FFN2) und alle **5 RiskGuards**. Bei jedem RiskGuard `TelegramToken` und `TelegramChatId` mit den Werten aus dem Chat vergleichen.
    - **Erwartet:** alle Häkchen grün, je Konto eine Telegram-Startmeldung aufs Handy.
    - **Fehlerfall:** Springt eine Instanz sofort wieder auf deaktiviert, den Namen notieren, nicht ständig neu klicken, in den Hauptkanal schreiben.
-5. Im Hauptkanal **„Deploy fertig“** schreiben. Claude prüft per SSH das NT8-Log, `HOST BEREIT` je Konto, die RiskGuard-cfg (`commissionrt`) und `CONFIG-INAKTIVITAET aktiv=ja`.
+5. Im Hauptkanal **„Deploy fertig“** schreiben. Claude prüft per SSH das NT8-Log, `HOST BEREIT` je Konto, im RiskGuard-Log je Konto die Zeile `CONFIG-KOMMISSION '<Konto>': commissionrt=… -> Trade-PnL je Exit netto` und `CONFIG-INAKTIVITAET aktiv=ja`.
 
 ## Teil 6: Downloads und Export (AP422/AP311, AP427)
 
