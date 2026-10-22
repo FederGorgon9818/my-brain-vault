@@ -77,8 +77,19 @@ Stufe 1 hält mit dem realistischen Modell bei allen drei Beinen (t LastHour 3,2
 - Workbench: drei Karten „AP426_…_flat_close" im Lab unter Tests.
 - Rechnungen und Skripte: `engine/_scratch_ap426/`.
 
+## Nachtrag 22.10.2026: neuer Live-Tag, Close-Modell bestätigt, Tick-Skript bereit
+
+- **Stand:** Option A läuft seit 18.10. (Engine füllt den 15:55-Flat am Close der 15:55-Bar). Nichts davon neu gerechnet. Offen sind nur der Tick-Befund (AP427, Max) und danach B' (AP428).
+- **20.10., 5 Echtgeld-Konten, LastHour long:** die Fills kamen diesmal schon **0,5 bis 1,0 s** nach 15:55:00 (vorher 1,0 bis 4,2 s). Trotzdem **+35 Ticks schlechter als der Open** der 15:55-Bar und 42 Ticks besser als ihr Close. 38 % der Abwärtsbewegung der ganzen Minute war schon in der ersten halben Sekunde passiert, Volumen der 15:55-Minute 1,6x der 15:54-Minute. Bars aus Yahoo NQ=F 1m, weil die NT8-Daten am 16.10. enden.
+- **Heißt:** der Sprung sitzt in der ersten halben Sekunde nach 15:55:00. Schneller ausführen bringt nichts. Helfen kann nur ein Exit vor 15:55:00, also B'.
+- **Das Close-Modell passt:** über 11 Echtgeld-Tage liegt Live im Mittel **+0,8 Ticks** neben dem Close der 15:55-Bar (Median −2, t 0,08), gegen den Open +33,8 Ticks (t 3,2). Die Engine-Annahme seit 18.10. trifft also im Mittel.
+- **Tick-Skript fertig:** `engine/_scratch_ap426/tick_burst.py "<NT8-Tick-Export>"` misst je Live-Tag den Preis von 15:54:00 bis 15:56:00 gegen die Position (15:54:30, :45, :50, :55, 15:55:00, +0,25 s bis +30 s), Volumen je Sekunde und ab wann der Preis 10 Ticks weg ist, mit Zeitzonen-Gegenprobe gegen die 1m-Bars. Mit künstlichen Daten getestet. Sobald die Ticks auf der Box liegen, ist der Befund ein Aufruf.
+- **Why, wahrscheinlich die Nasdaq-Schlussauktion:** um 15:55:00 ET endet bei Nasdaq der MOC-Cutoff des Closing Cross, und der Imbalance-Feed (NOII) läuft ab da jede Sekunde statt alle 10 s, erstmals mit dem Preis, zu dem die Auktion gerade laufen würde (Primärquellen Federal Register 2019, Nasdaq-FAQ). NQ hängt am Nasdaq-100, das passt zum Zeitpunkt. NYSE hat ihren Schnitt um 15:50, nicht um 15:55. **Die Größe von rund 35 Ticks erklärt keine Quelle**, eine Studie zur Reaktion von NQ in Sekunden gibt es nicht. Details im [[Research-Cache]], Abschnitt „Closing Cross, MOC-Cutoffs und Imbalance-Feeds“.
+- **Für B' heißt das:** ist der Auslöser die Nasdaq-Veröffentlichung um 15:55:00, liegt er fest auf der Uhr, und ein Exit vor 15:55:00 umgeht ihn. Die Ticks (AP427) müssen das noch bestätigen.
+- Rechnungen: `engine/_scratch_ap426/` (Fill-Abgleich `fills_vs_bars.csv` plus 20.10. aus dem NT8-Log der Box).
+
 ## Offen, nicht Teil der Entscheidung
 
 - Am 13.10. zwei Exit-Fills auf FN1 im Abstand von 1,35 s: das ist der Doppel-Exit aus AP382 (Fix am 16.10. deployt), hier nur als Gegenprobe vermerkt.
-- Why der 15:55-Umkehr ist offen (Börsen-Fristen 15:50/15:55 nicht aus Primärquelle geprüft).
+- Why der 15:55-Umkehr: Zeitpunkt seit 22.10. mit Primärquelle erklärt (Nasdaq 15:55, siehe Nachtrag), Größe weiter offen.
 - Halbtage: Exit am letzten Close, nicht kalibriert.
