@@ -27,7 +27,7 @@ status: Idee, OGSM-Entwurf steht, Entscheidungen bei Max offen
 
 ## Content
 
-- **Eigener Kanal, getrennt** vom Trading-Content ([[Social Media & Wissensprodukt]]).
+- **Ein ehrlicher Self-Brand-Kanal für alles (Max, 22.10.2026, ersetzt „getrennt vom Trading-Content“).** Gedanken, Schritte, wo ich stehe und wie genau ich es mache, KI und Trading zusammen. Nordstern: **der erste 100.000-€-Monat** (steht in der CLAUDE.md, Abschnitt Großes Ziel), die 10.000 € bis Juli 2027 sind eine Etappe. Leitplanken: Edge bleibt privat (Prozess ja, Strategie-Regeln nie), posten erst nach schriftlicher GEWO-Zustimmung und GEWO nie nennen, Trading nur als eigene Doku und Methodik, nie Signale oder Anlageberatung. Der früher getrennt geplante Trading-Kanal ([[Social Media & Wissensprodukt]]) läuft hier mit.
 - Alles mitfilmen. Founder-Kurzfilme: 19-jähriger Vollzeitarbeiter baut nebenbei zwei Side-Hustles auf.
 - Themen: Hustle, Get Better, Motivation, jedes Hoch und jedes Tief filmen, Be the Best, Believe.
 - Haupt-Leitmotiv: **Be Obsessed.**
