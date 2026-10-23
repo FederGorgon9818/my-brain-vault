@@ -13,7 +13,7 @@ Verwandt: [[Nightrun BTC 23.10.2026]], [[Firm-Regeln je Konto]], [[Research-Cach
 
 > ## 🧭 Kurzfassung für Max
 >
-> **1. Die vier NQ-Beine auf einem CFD-Konto: ja, das verkürzt die Zeit bis 50k.** Mit k1 (1 MNQ-Äquivalent je Bein) und angenommenen 1,5 Punkten NAS100-Spread: FTMO 2-Step 100K **−11,8 ± 0,3 Monate**, E8 One 100K **−10,6 ± 0,3**, FundedNext Stellar 2-Step 25K **−6,0 ± 0,3** (Mittelwert der gepaarten Differenz; Flotte ohne CFD: Median 78,7 Monate). In 97 bis 98 % der simulierten Welten ist die Flotte mit FTMO oder E8 schneller. Nulldrift-Zwilling 0,0 %.
+> **1. Die vier NQ-Beine auf einem CFD-Konto: ja, das verkürzt die Zeit bis 50k. Die Richtung ist sicher, die Größe nur auf etwa Faktor 2 genau.** Mit k1 (1 MNQ-Äquivalent je Bein) und angenommenen 1,5 Punkten NAS100-Spread, Backtest-Edge: FTMO 2-Step 100K **rund 12 Monate schneller**, E8 One 100K **rund 11**, FundedNext Stellar 2-Step 25K **rund 6** (Flotte ohne CFD: Median 78,7 Monate; in 97 bis 98 % der Welten ist die Flotte mit FTMO oder E8 schneller). Mit geschrumpfter Edge (Drift x 0,58 auf beiden Büchern) bleibt es ein Ja, aber kleiner: FTMO **−6,4**, E8 **−5,4**, FN **−2,0** Monate (Mittel bis zur 120-Monats-Kappe), und die Chance, 50k in 10 Jahren zu erreichen, steigt von 18,7 % auf 38,3 % (FTMO) bzw. 37,3 % (E8). Nulldrift-Zwilling überall 0,0 %. Die Monte-Carlo-Fehlerbalken (± 0,3 bis 0,6) sind dabei klein gegen die Unsicherheit der Edge selbst, deshalb nenne ich Spannen statt einer Zahl.
 >
 > **2. BTC auf CFD: nein.** Die BTC-Variante aus dem Nachtlauf bringt allein auf jedem CFD-Konto nichts (+0,1 bis +0,7 Monate, also leicht langsamer, weil das Konto die Prüfung praktisch nie besteht). Zusammen mit den NQ-Beinen spart sie zusätzlich 0,6 bis 1,2 Monate (FN 0,61, FTMO 0,70, E8 1,15), das ist kleiner als das, was die unbekannten Spreads verschieben können.
 >
@@ -150,6 +150,23 @@ Empfehlung der Recherche: eigener MQL5-EA mit serverseitigem Stop und TP, in eig
 - Rechnung: `C:\Users\Administrator\cfd_check\calc\` (`t1_trades.py` Trades brutto/netto, `cfdsim.py` CFD-Käfig und Kosten, `t3_run.py` gepaarte Flotte, `t4_check.py` Margin/Risiko/Zeiten, `t5_costs.py` Kosten je RT, `t6_breakeven.py`, `t7_table.py`; Ergebnisse `out_main.json`, `out_grid.json`). In `trading-data` wurde nichts geändert.
 - Gegengelesen: `quant-mathematician` (Paarung korrekt, Kernaussage trägt; seine Befunde zu Payout-Zyklen, E8-Konsistenz, FN-Risikoregel, Tagesstopp und Auslage sind eingebaut) und `quant-statistician` (siehe Abschnitt 8).
 
-## 8. Gegenlesen Statistik
+## 8. Gegenlesen Statistik und Robustheits-Spalte
 
-(folgt)
+`quant-statistician` (eigene Gegenrechnung mit 300 Welten, zwei Seeds, Dateien in `cfd_check\qs\`):
+
+- **Paarung korrekt**, Nulldrift-Zwilling sauber (beide Bücher je Pfad zentriert, 0 % in allen Fällen).
+- **Die MC-Fehlerbalken sind nicht die ehrliche Unsicherheit.** Futures-Buch 32,85 $/Tag, Block-SE 5,79, CI90 23,42 bis 42,38. Die Edge liegt fast ganz ab 2021 (2016 bis 2020 jeweils höchstens 13,4 $/Tag). Das NQ-CFD-Buch korreliert mit 1,00 mit der Flotte: es ist eine **verdoppelte Wette auf dieselbe Edge**, Schrumpfung trifft Basis und Zusatz gleichzeitig.
+- **BTC:** auf dem CFD 1,54 $/Tag, Block-t 1,66, CI90 0,06 bis 3,12, Korrelation zum Futures-Buch 0,01. Passt zu „OR60 unentscheidbar" in #188. Zeile (b) heißt „kein messbarer Beitrag", nicht „Beitrag 0". Fall (c) **nicht als eigene Option führen**, der Gewinn kommt komplett aus NQ.
+- Seine FN-Zahlen (ohne 3-%-Regel) liegen bei −19 Monaten; mit der Regel als Funded-Bust sind es bei mir −6. **Die 3-%-Regel ist bei FN der größte Einzelposten**, deshalb ist die Support-Frage nach ihrer Folge wichtig.
+
+**Robustheits-Spalte shrink058** (meine finalen Konfigurationen, 300 Welten, Drift x 0,58 auf Futures- UND CFD-Buch, Median dort gekappt, deshalb Mittel bis 120 Monate und Erreichung):
+
+| Konto, k1, NQ-Beine | Δ Zeit (Mittel bis Kappe) | Erreichung 50k in 10 Jahren ohne -> mit | Auslage p90 ohne / mit | Nulldrift |
+|---|---|---|---|---|
+| FTMO 2-Step 100K | −6,35 ± 0,64 M | 18,7 -> 38,3 % | 1.998 / 2.588 $ | 0,0 % |
+| E8 One 100K | −5,43 ± 0,58 M | 18,7 -> 37,3 % | 1.998 / 2.340 $ | 0,0 % |
+| FN Stellar 2-Step 25K | −1,97 ± 0,39 M | 18,7 -> 24,3 % | 1.998 / 2.531 $ | 0,0 % |
+
+**Auslage:** das CFD-Konto hat einen eigenen Deckel (1.000 $, FTMO 1.500 $) neben den 2.500 $ der Flotte. Die Summe liegt also über dem heutigen Rahmen, die angegebene p90 „mit" ist eine Obergrenze.
+
+**Was zum Beweis noch fehlt (nicht gerechnet, nicht beauftragt):** CFD-Konto gegen ein weiteres Futures-Konto bei gleicher Auslage (bei Korrelation 1,00 die eigentliche Alternative); Worst-Case-Spalte 2016 bis 2020.
