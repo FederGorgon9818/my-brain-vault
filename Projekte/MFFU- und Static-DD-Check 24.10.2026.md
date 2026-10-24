@@ -241,17 +241,17 @@ Nulldrift: in allen 10 Politiken 0,0 % Zielerreichung. Chance auf 50k in 5 Jahre
 | Automation, eigener NinjaScript-Bot | ✅ erlaubt in Eval, Sim Funded, Live, kein HFT | Support-Mails 28.09. |
 | VPS mit Rechenzentrums-IP | ✅ „no VPS/IP restrictions as long as you are not sharing devices“ | Support 28.09. |
 | Unbeaufsichtigt | ✅ „allowed provided it can be intervened by the user and managed“ (Telegram plus Fernzugriff) | Support 29.09. |
-| Plattform | ✅ NT8 über Tradovate (Rithmic bei MFFU gesperrt). ⚠️ ob die MFFU-Verbindung in derselben NT8-Installation neben Tradovate (E8, FN) und Rithmic (FFN) läuft: offen, in der Mail | Support 28.09., Help Center |
+| Plattform | ✅ NT8 über Tradovate (Rithmic bei MFFU gesperrt). ⚠️ ob die MFFU-Verbindung in derselben NT8-Installation neben Tradovate (E8, FN) und Rithmic (FFN) läuft: offen, auf der Box testen | Support 28.09., Help Center |
 | Deutschland, KYC | ✅ | Support 28.09. |
 | Copy auf eigenen MFFU-Konten | ✅ | Support 28.09. |
-| **Dieselbe Strategie bei E8/FN/FFN** | ❌ offen, zweimal gefragt, nie beantwortet | Thread 28./29.09. |
+| **Dieselbe Strategie bei E8/FN/FFN** | ❌ offen, zweimal gefragt, nie beantwortet; bewusst nicht nochmal gefragt (Max 24.10.) | Thread 28./29.09. |
 | Drawdown | ✅ EOD-Trailing 2.000, rastet bei +100 ein (auch in der Eval). ⚠️ Bruch intraday oder nur Tagesschluss: offen, gerechnet intraday (vorsichtig) | Support 28.09., Help Center |
 | Consistency | ✅ Eval 30 % (nur das Ziel steigt, kein Bruch), Funded keine | Help Center |
 | Kontraktlimit | ✅ 3 Minis / 30 Micros, wir handeln höchstens 5 Micros | Help Center |
 | Flat-Zeit | ✅ Auto-Close 16:10 ET, wir sind 15:55 flat | Help Center, Support |
 | **News (T1) im Funded** | ⚠️ für Rapid EOD widersprüchlich (Plan-Artikel ja, Policy und Support nennen nur Rapid und Pro). Falls ja: Sperre 13:58 bis 14:02 an FOMC/Minutes, LastHour ist dann immer offen, also AP335 bauen. Kostet rechnerisch rund 1 Monat | Help Center, Support 28.09. |
 | **Inaktivität 7 Tage** | ❌ **entscheidend:** ohne erlaubten Keep-alive ist MFFU im Kaufplan 4,75 Monate langsamer statt 5,3 schneller. Ein reiner Mini-Trade ist nicht eindeutig erlaubt („strategy must remain consistent“), Frage 1 der Mail | Support 29.09., quant-mathematician |
-| **Hedging** | ❓ „hedging of any kind“ verboten, gegenläufige Beine im selben Konto nicht geklärt | Help Center |
+| **Hedging** | ❓ „hedging of any kind“ verboten, gegenläufige Beine im selben Konto nicht geklärt, bewusst nicht gefragt (Max 24.10.) | Help Center |
 | HFT, schnelle Stop-outs | ⚠️ keine Zahl, PB3 hat rund 11 % Stop-outs in der ersten Minute | Help Center |
 | Kontolimits | ✅ 10 Konten, bis 3 Rapid EOD Funded | Support 28.09. |
 | Live | ⚠️ nur 1 Live-Konto, dann ruhen alle MFFU-Sim- und Eval-Konten; Zeitpunkt nach Ermessen, bis 5.000 $ Sim-Gewinn als Reserve. Gerechnet als M1L: −3,2 statt −5,3 Monate | Support 29.09., Help Center |
@@ -261,4 +261,8 @@ Nulldrift: in allen 10 Politiken 0,0 % Zielerreichung. Chance auf 50k in 5 Jahre
 
 ## 12. Nachfrage-Mail an MFFU
 
-Antwort im bestehenden Verlauf (Gmail maxlkho4, Thread 1a0ea01789064500) an support@myfundedfutures.com. Entwurf liegt im Postfach, **gesendet erst nach Max' OK**. Fragen im A/B-Format, **Frage 1 entscheidet**: Keep-alive-Trade (mit Ausweichfrage, wie man ein Konto sonst aktiv hält), dann andere Firmen, Hedging, T1 bei Rapid EOD (inkl. ruhende Stop- und Target-Orders und Folge eines Verstoßes), schnelle Stop-outs, Intraday-Bruch des EOD-Floors, Live-Wechsel und Reserve, NT8-Verbindung und Lizenz, Provision und Reset-Preis, späteres Hochstufen auf 2 Micros. Ticket AP440.
+Neue, kurze Mail an support@myfundedfutures.com (Gmail maxlkho4, Entwurf, **gesendet erst nach Max' OK**), bewusst **nicht** als Antwort im alten Verlauf, weil dort andere Firmen erwähnt sind. Regel Max 24.10.: nur das Nötige fragen, nichts schon Beantwortetes wiederholen (VPS, Automation), keine anderen Firmen erwähnen, nichts Unnötiges über das System preisgeben.
+
+Gefragt wird nur noch: (1) Keep-alive-Trade gegen die Inaktivität, entscheidet (A/B, mit Ausweichfrage), (2) gilt T1 für Rapid EOD Funded, zählen Stop/Target-Orders, Folge eines Verstoßes, (3) Live-Wechsel und Rest-Saldo, (4) NT8-Lizenz für Automation, (5) Provision MNQ und Reset-Preis. Ticket AP440.
+
+**Bewusst nicht gefragt (Max 24.10.):** dieselbe Strategie bei anderen Firmen, Hedging gegenläufiger Beine, schnelle Stop-outs, Prüfzeitpunkt des EOD-Floors, Einrasten in der Eval, späteres Hochstufen. Diese Punkte bleiben offen und werden im Betrieb selbst abgesichert (vorsichtig rechnen, NT8-Verbindung auf der Box testen).
