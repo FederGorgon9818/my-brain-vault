@@ -25,6 +25,8 @@ Alle Zeiten **Boxzeit**. Heute Nacht (Sa auf So, 03:00) stellt Europa auf Winter
 - **Prüflauf JSON** (`deploy_json_20261025.ps1 -Check`): alle 6 Dateien `[OK]`, Box-Stand gleich dem erwarteten Ausgangsstand.
 - **konto-analyst** (Konto-Sperre): kein Konto spricht formal gegen OpEx mit 1 MNQ. FN1/FN2 sind das schwächste Glied (Puffer etwa 2 Tagesschwankungen), das ist bekannt und deine Entscheidung vom 24.10. Die Konto-Karten kennen OpEx und LD01 noch nicht, das wird nach dem Aktivieren nachgezogen (siehe Teil 5).
 
+- **Freigabe (25.10., deine Ansage):** OpEx steht in `engine/konten/rules.json` unter `freigegebene_beine` bei E8, FN und FFN (Backup `rules.json.bak-20261025-vor-opex`). Die Konto-Karten zeigen nach dem Deploy also kein Gelb wegen OpEx. LD01 kommt dort erst in Stufe 2 dazu.
+
 ### Was in den neuen JSONs steht
 
 - Die vier alten Module bleiben **unverändert und in derselben Reihenfolge**. OpEx hängt als 5. Modul hinten dran, Parameter genau wie im echten Buch und in der Paritätsprüfung (78/78): Signal 12:00 ET, Schwelle 0,225 × ATR20, Stop 0,75 × ATR20, kein Ziel, `skip_dates` 18.06.2027.
@@ -36,6 +38,20 @@ Alle Zeiten **Boxzeit**. Heute Nacht (Sa auf So, 03:00) stellt Europa auf Winter
 ## Was du brauchst
 
 PC mit PowerShell, RDP zur Box (`100.127.89.9`), Handy mit Telegram. Zeitfenster: heute Abend oder So 25.10. **bis spätestens 22:00 Boxzeit** (Globex-Open So 23:00). Alles ist Wochenende, die Skripte prüfen Uhrzeit und flat trotzdem selbst.
+
+## Der Deploy in einem Rutsch (ersetzt Teil 1 bis 3, Stand 25.10.)
+
+Ein Skript ruft die drei getesteten Einzel-Skripte in der richtigen Reihenfolge auf und stoppt beim ersten Fehler. Vorher prüft es alles, ohne etwas zu ändern (JSON-Abgleich und Pre-Flight-Compile). PowerShell am PC:
+
+```
+cd C:\Users\maxlk\Projects\trading-data\nt8_staging_20261025_live
+powershell -ExecutionPolicy Bypass -File .\deploy_live_20261025.ps1
+```
+- Dauer etwa 5 bis 10 Minuten. Es gibt **eine** Rückfrage `Gesamt-Deploy starten? (ja/nein)` → **`ja`**. Danach laufen C) VIX-Feed, D) JSONs, E) LD01-Code (beendet NT8 und startet es neu) ohne weitere Fragen.
+- **Erwartet:** viermal `Skript ok`, je Abschnitt eine grüne Zeile `---- … : ok`, am Ende `=== GESAMT-DEPLOY FERTIG`. Die Einzel-Ausgaben sind dieselben wie unten in Teil 1 bis 3 beschrieben (dort stehen sie im Detail).
+- **Fehlerfall:** rote Zeile `!!! … endete mit Exit …`. Dann laufen die restlichen Schritte nicht. NT8 nicht selbst starten, in den Hauptkanal **„Deploy Fehler“** schreiben. Claude liest das Log `deploy_live_<Datum-Uhrzeit>.log` im selben Ordner.
+- **Prüflauf schon grün** (Claude, So 25.10. 00:10 Boxzeit, `-Check`): alle Skripte im erwarteten Stand, 6× `[OK]` beim JSON-Abgleich, alle Konten flat, `COMPILE OK`, nichts geändert.
+- Danach direkt weiter mit **Teil 4** (NT8 per RDP). Teil 1 bis 3 brauchst du nur, falls du einen Schritt einzeln wiederholen musst.
 
 ## Teil 1: VIX-Feed starten (startet die Messwoche, NT8 bleibt unberührt)
 
