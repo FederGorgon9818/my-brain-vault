@@ -1,7 +1,7 @@
 ---
 tags: [trading, box, nt8, deploy, anleitung, opex, ld01]
 datum: 2026-10-24
-status: Anleitung fertig, Stufe 1 (OpEx live, LD01 Code + Messwoche) durch Max am Wochenende 24./25.10., Stufe 2 (LD01 live) frühestens 31.10.
+status: Stufe 1 deployt und geprüft (25.10. 00:30), OpEx live ab 20.11., offen Sim-Host Sim101 und Feiertags-Check, Stufe 2 (LD01 live) frühestens 31.10.
 tickets: [AP394, AP395]
 ---
 
@@ -17,6 +17,15 @@ Die zwei Beine aus der [[Wochenend-Prüfung 24.10.2026]] gehen in zwei Stufen li
 Alle Zeiten **Boxzeit**. Heute Nacht (Sa auf So, 03:00) stellt Europa auf Winterzeit um, die USA erst am 01.11. Diese Woche gilt also: ET plus 5 Stunden (Handel 14:30 bis 21:00 Boxzeit), ab 02.11. wieder plus 6.
 
 **Hauptkanal** ist die Claude-Session, in der diese Anleitung entstanden ist (Seitenleiste, Session vom 24.10. abends). Die **fett** gedruckten Stichworte schreibst du dort hinein, Claude prüft per SSH und schreibt dir das Ergebnis.
+
+> [!success] Stufe 1 deployt und geprüft, So 25.10. 00:30 Boxzeit (Claude per SSH)
+> - Gesamt-Deploy von Max 00:12 bis 00:16 durchgelaufen, NT8 neu seit 00:16:41, DLL 00:16:34.
+> - Code live: Momentum `1754238F`, PB3 `170970EB`, VixFilter `78CABE11`, OpEx `3565F4E9`, Host `C2C4B5A9`, Basis `582D56B5`. Backup `_bak_archiv\deploy-20261025-0016`.
+> - **Alle 5 Hosts `HOST BEREIT` um 00:18 mit der neuen md5**, Module LH, OD, Asia, PB3 (FFN mit Stop-Verzögerung 10 s), **OpEx als letztes**. JSON-Backups `*.bak-20261025-vor-opex` liegen auf der Box.
+> - 5 RiskGuards aktiv, Telegram an, Tagesstopp E8 900 $, FN 600 $, FFN 2.500 $, Inaktivitäts-Wächter aktiv.
+> - VIX-Feed läuft (Task alle 15 min, Ergebnis 0), jüngste Zeile 23.10. mit 19,45. Damit würde LD01 am Montag ohnehin nicht handeln.
+> - Register nachgezogen (Belegung jetzt PB3+LH+Asia+OD+OPEX auf allen 5 Konten), Kartenlauf angestoßen.
+> - **Noch offen von dir:** Teil 4 Schritt 5 (Output-Zeile `OpexMom 2026-10-16`, nur per RDP sichtbar), Schritt 6 (Sim-Host Sim101, bisher kein `HOST BEREIT` für Sim101) und Schritt 7 (Feiertags-Bars).
 
 ## Schon erledigt (Claude, Sa 24.10. ca. 17:30)
 
