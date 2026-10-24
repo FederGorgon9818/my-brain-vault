@@ -26,7 +26,7 @@ Verwandt: [[CFD-Check 23.10.2026]] (gleiche Methode, Vergleichszeilen E8/FFN/FN 
 >
 > **Der Vorteil hängt komplett am Keep-alive bei MFFU (quant-mathematician):** MFFU schließt ein Konto nach 7 Kalendertagen ohne Trade, unser Buch hat rund 2 solche Lücken im Jahr. Bei E8 ist ein Keep-alive-Trade erlaubt (jeder geschlossene Trade zählt, heute Alarm plus Hand-Trade). Bei MFFU ist er **nicht eindeutig erlaubt** (Support 29.09.: „your strategy must remain consistent“). Rechnet man die Inaktivität deshalb nur bei MFFU, ist der Kaufplan **mit** MFFU **4,75 ± 0,40 Monate langsamer** als ohne, weil ein MFFU-Konto dann fast nie bis zur Auszahlung kommt (Eval-Pass 23 % statt 76 %, Netto je Konto 779 statt 13.606 $). **Also: Rapid EOD 50K nur kaufen, wenn MFFU den Keep-alive-Trade schriftlich erlaubt.** Das ist Frage 1 der Mail. Fehlt er überall (auch bei E8), fällt jeder Kaufplan von 58 auf rund 105 Monate, das wiegt zehnmal mehr als die Frage MFFU ja oder nein.
 >
-> **Kriterien:** schriftlich geklärt aus den Mails vom 28./29.09. (lagen im Postfach maxlkho4): Automation in allen Stufen, VPS ohne IP-Beschränkung, unbeaufsichtigt erlaubt („provided it can be intervened“), NT8 über Tradovate, Copy auf eigenen Konten, Deutschland, CLUB-Rabatt mehrfach. **Offen:** dieselbe Strategie bei anderen Firmen (zweimal gefragt, nie beantwortet), Keep-alive-Trade, Hedging gegenläufiger Beine, T1-Regel bei Rapid EOD Funded, Live-Wechsel. Nachfrage-Mail liegt als Entwurf in maxlkho4 und geht erst mit Max' OK raus. Kriterien-Tabelle Abschnitt 11.
+> **Kriterien:** schriftlich geklärt aus den Mails vom 28./29.09. (lagen im Postfach maxlkho4): Automation in allen Stufen, VPS ohne IP-Beschränkung, unbeaufsichtigt erlaubt („provided it can be intervened“), NT8 über Tradovate, Copy auf eigenen Konten, Deutschland, CLUB-Rabatt mehrfach. **Offen:** dieselbe Strategie bei anderen Firmen (zweimal gefragt, nie beantwortet), Keep-alive-Trade, Hedging gegenläufiger Beine, T1-Regel bei Rapid EOD Funded, Live-Wechsel. Nachfrage-Mail am 24.10. um 18:41 gesendet (nach Max' OK), Antwort steht aus. Kriterien-Tabelle Abschnitt 11.
 
 > ## 🧭 Kurzfassung für Max (erste Runde)
 >
@@ -261,7 +261,7 @@ Nulldrift: in allen 10 Politiken 0,0 % Zielerreichung. Chance auf 50k in 5 Jahre
 
 ## 12. Nachfrage-Mail an MFFU
 
-Neue, kurze Mail an support@myfundedfutures.com (Gmail maxlkho4, Entwurf, **gesendet erst nach Max' OK**), bewusst **nicht** als Antwort im alten Verlauf, weil dort andere Firmen erwähnt sind. Regel Max 24.10.: nur das Nötige fragen, nichts schon Beantwortetes wiederholen (VPS, Automation), keine anderen Firmen erwähnen, nichts Unnötiges über das System preisgeben.
+Neue, kurze Mail an support@myfundedfutures.com (Gmail maxlkho4), **gesendet 24.10.2026 18:41 (MESZ) nach Max' OK**, Thread 1a16e27923c48c8a, Betreff „Questions before purchase: Rapid EOD 50K“. Antwort steht aus, bewusst **nicht** als Antwort im alten Verlauf, weil dort andere Firmen erwähnt sind. Regel Max 24.10.: nur das Nötige fragen, nichts schon Beantwortetes wiederholen (VPS, Automation), keine anderen Firmen erwähnen, nichts Unnötiges über das System preisgeben.
 
 Gefragt wird nur noch: (1) Keep-alive-Trade gegen die Inaktivität, entscheidet (A/B, mit Ausweichfrage), (2) gilt T1 für Rapid EOD Funded, zählen Stop/Target-Orders, Folge eines Verstoßes, (3) Live-Wechsel und Rest-Saldo, (4) NT8-Lizenz für Automation, (5) Provision MNQ und Reset-Preis. Ticket AP440.
 
