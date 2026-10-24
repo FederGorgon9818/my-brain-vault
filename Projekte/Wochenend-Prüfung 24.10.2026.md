@@ -93,6 +93,8 @@ strategy-auditor vor der Übernahme (24.10.): beide **go mit Auflagen**. OpEx-Pa
 
 ## Was Max noch tun muss (vor dem ersten Live-Trade)
 
+Umsetzung mit Exakt-Anleitung: [[Live-Stellung OpEx und LD01 (Anleitung)]] (24.10. abends vorbereitet).
+
 **LD01 A:**
 1. Deploy `deploy_ld01_20261024.ps1` starten (außerhalb 09:00 bis 16:05 ET). Danach prüfen, dass die bestehenden Momentum-Instanzen unverändert laufen.
 2. VIX-Feed starten (`install_vix_feed.ps1`) und eine Woche messen: der Vortagesschluss muss vor 09:40 ET da sein.
