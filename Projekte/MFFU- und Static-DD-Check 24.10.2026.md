@@ -10,7 +10,25 @@ Auftrag Max 24.10.2026: intensive Recherche zu MyFundedFutures (MFFU), „My-Stu
 
 Verwandt: [[CFD-Check 23.10.2026]] (gleiche Methode, Vergleichszeilen E8/FFN/FN stammen von dort), [[Kaufvorlage Kaufrunde 06.11.2026]], [[Firm-Regeln je Konto]], [[MFFU 50k Pläne (Regeln + Wahl)]] (Stand 04.08., überholt), [[Research-Cache]].
 
-> ## 🧭 Kurzfassung für Max
+> ## 🔁 Zweite Runde (24.10. nachmittags, Auftrag Max: Rapid EOD 50K komplett nachrechnen, Kriterien prüfen, offen Gebliebenes per Mail klären)
+>
+> **Korrektur zur ersten Runde:** die „−16,7 Monate“ unten galten für ein MFFU-Konto **zusätzlich** zur heutigen Flotte, mit eigenem Budget und eigenem Deckel obendrauf. Entscheidend ist aber, was MFFU **im echten Kaufplan** bringt (Kaufvorlage: ein Kauf je Monat, Deckel 2.500 $ für alles, BOS-Regel). Dort sind es **2 bis 5 Monate**, nicht 16.
+>
+> | Regime | E8 + FFN (Kaufvorlage) | + MFFU Rapid EOD in der Rotation | Vorsprung |
+> |---|---|---|---|
+> | alle Jahre | 55,9 Monate Median, 50k in 5 J: 61,5 % | 49,6 Monate, 72,5 % | **−5,3 ± 0,4 Monate** (9 %), in 84 % der Welten schneller |
+> | letzte 3 Jahre | 35,1 | 32,6 | −2,0 ± 0,2 |
+> | Edge x 0,58 | Mittel bis Kappe 100,1, 50k in 10 J: 51,2 % | 97,0, 55,5 % | −3,1 ± 0,6 |
+> | nur 2016 bis 2020 | kein Ziel in 10 J | kein Ziel | 0 (das Buch hatte damals kaum Edge) |
+> | Nulldrift | 0 % | 0 % | |
+>
+> Auslage p90 sogar etwas niedriger (2.146 statt 2.210 $). Laut Statistiker belastbar in jedem Regime mit Edge (z ≥ 5, Bonferroni bestanden), die Größe aber unsicher. Details Abschnitt 10.
+>
+> **Der Vorteil hängt komplett am Keep-alive bei MFFU (quant-mathematician):** MFFU schließt ein Konto nach 7 Kalendertagen ohne Trade, unser Buch hat rund 2 solche Lücken im Jahr. Bei E8 ist ein Keep-alive-Trade erlaubt (jeder geschlossene Trade zählt, heute Alarm plus Hand-Trade). Bei MFFU ist er **nicht eindeutig erlaubt** (Support 29.09.: „your strategy must remain consistent“). Rechnet man die Inaktivität deshalb nur bei MFFU, ist der Kaufplan **mit** MFFU **4,75 ± 0,40 Monate langsamer** als ohne, weil ein MFFU-Konto dann fast nie bis zur Auszahlung kommt (Eval-Pass 23 % statt 76 %, Netto je Konto 779 statt 13.606 $). **Also: Rapid EOD 50K nur kaufen, wenn MFFU den Keep-alive-Trade schriftlich erlaubt.** Das ist Frage 1 der Mail. Fehlt er überall (auch bei E8), fällt jeder Kaufplan von 58 auf rund 105 Monate, das wiegt zehnmal mehr als die Frage MFFU ja oder nein.
+>
+> **Kriterien:** schriftlich geklärt aus den Mails vom 28./29.09. (lagen im Postfach maxlkho4): Automation in allen Stufen, VPS ohne IP-Beschränkung, unbeaufsichtigt erlaubt („provided it can be intervened“), NT8 über Tradovate, Copy auf eigenen Konten, Deutschland, CLUB-Rabatt mehrfach. **Offen:** dieselbe Strategie bei anderen Firmen (zweimal gefragt, nie beantwortet), Keep-alive-Trade, Hedging gegenläufiger Beine, T1-Regel bei Rapid EOD Funded, Live-Wechsel. Nachfrage-Mail liegt als Entwurf in maxlkho4 und geht erst mit Max' OK raus. Kriterien-Tabelle Abschnitt 11.
+
+> ## 🧭 Kurzfassung für Max (erste Runde)
 >
 > 1. **„My-Funded Studios“ gibt es wirklich: MyFundedStudio ist MFFUs Static-Drawdown-Linie.** Winzige Konten (5k, 10k, 20k, MLL 250 bis 1.000 $ static, 75 bis 280 $), **nur auf MFFUs eigener Plattform Hyperprop, kein NinjaTrader**. Für die Box heute nicht nutzbar. Selbst wenn NT8 käme, wäre Studio 20k nur ungefähr so gut wie ein E8 150K, bei viel mehr Käufen (rund 14 bis 19 in 10 Jahren).
 > 2. **Die normalen MFFU-Pläne (Builder, Rapid EOD, Pro) sind für uns rechnerisch das beste Zusatzkonto, das wir bisher gefunden haben.** Ein zusätzliches **Rapid EOD 50K (135 $) spart rund 16,7 Monate** bis 50k, Pro 50K 14,2, Builder 50K 12,2 (vorsichtig gerechnet: Konto endet beim Live-Wechsel, Auszahlung in großen Beträgen). Zum Vergleich: E8 Futures 100K **10,1**, E8 150K 8,0, FFN 150K 7,8. Pro Euro am besten ist **Builder 50K (92 $)**, absolut am schnellsten **Rapid EOD 50K** oder Pro 50K (die Reihenfolge innerhalb von MFFU ist nicht robust). **Mit geschrumpfter Edge (x 0,58)** bleibt es ein klares Ja: MFFU −5,6 bis −7,2 Monate gegen E8 100K −3,9 und FFN −3,2, gepaart in jedem Fall schneller (quant-statistician, Holm-p unter 0,001).
@@ -43,6 +61,9 @@ Verwandt: [[CFD-Check 23.10.2026]] (gleiche Methode, Vergleichszeilen E8/FFN/FN 
 Nicht mehr kaufbar: Core, Scale, (Flex unklar). Rapid (Intraday-Trailing im Funded) habe ich nicht gerechnet: die Engine-Zellen kennen den Tageshöchststand nicht, und Intraday-Trailing ist für uns nach Lehre 18 ohnehin das schlechteste Modell.
 
 ## 3. MFFU-Regeln gegen unsere Box
+
+> [!note] Stand erste Runde
+> Überholt bei VPS und unbeaufsichtigtem Betrieb: beides ist seit den Support-Mails vom 28./29.09. schriftlich erlaubt (lagen im Postfach maxlkho4, beim ersten Durchgang übersehen). Aktueller Stand: Abschnitt 11.
 
 | Regel | Ampel | Kern |
 |---|---|---|
@@ -172,3 +193,72 @@ Nulldrift bei MFFU nur für `cont` gerechnet (wer dort 0 % hat, hat es in `end` 
 
 - Recherche: [[Research-Cache]] Abschnitte „MyFundedFutures (MFFU): alle Pläne inkl. Static-DD, Regeln, Algo/VPS, Copy (24.10.2026)“ mit Nachtrag „Detailregeln für die Simulation“ und „Static-Drawdown-Futures-Pläne am Markt (ohne MFFU), Regeln und Algo/VPS (24.10.2026)“.
 - Rechnung auf der Box: `C:\Users\Administrator\mffu_check\calc\` (`mffu_kern.py` Käfig, `mffu_plans.py` Parameter und Annahmen, `mffu_run.py` Lauf je Plan, `acct_sim.py` Einzelkonto-Simulator für DayTraders/BluSky und Gegenprobe, `mffu_table.py` Tabelle, `test_kern.py` Selbsttest, Ergebnis `table_final.md`). Flotte und Vergleichszeilen aus `C:\Users\Administrator\cfd_vergleich\calc\out_A.npz` / `out_B.npz`. In `trading-data` wurde nichts geändert.
+
+
+## 10. Zweite Runde: MFFU im echten Kaufplan (24.10. nachmittags)
+
+**Methode:** wie die [[Kaufvorlage Kaufrunde 06.11.2026]] (`kauf_0611_v2.py`): Kaufrunde monatlich, höchstens ein bezahlter Kauf je Runde über alle Firmen (Reihenfolge rotiert), Budget 600 $/Monat bis Gehaltsende (7,9 Monate ab 06.11.), Deckel Netto-Auslage 2.500 $, danach BOS-Regel (nur noch aus Gewinn kaufen), FFN höchstens 5 Konten, E8 höchstens 5 Funded, RiskGuard-Tagesstopp, alle Politiken gepaart auf denselben Pfaden. Neu gegenüber der Kaufvorlage: **Kontostände vom 23.10.** (konto-analyst, kein Konto geplatzt, alle Salden gestiegen), **Trade-Daten bis 15.10.2026** (Kaufvorlage: bis 07.08.), Gebühr 1,90 $ je Round-Turn, MFFU Rapid EOD 50K als dritte Firma (135 $, max. 3 Funded laut Support, vorsichtige Auszahlung: Ende nach 5 Payouts, Auszahlung erst ab 4.000 $ über dem Puffer). 400 Welten je Regime (Nulldrift 200), andere Seeds als in der ersten Runde. Skript `C:\Users\Administrator\mffu_check\kauf\kauf_mffu.py`, Ergebnisse `kauf_mffu.md`, `kauf_mffu_fix.md`, `kauf_mffu_wc.md`.
+
+**Ergebnis (Δ = gegen E8 + FFN, gepaart, negativ = schneller, Monate bis 50k als Mittel bis zur 120-Monats-Kappe):**
+
+| Politik | alle Jahre | letzte 3 Jahre | Edge x 0,58 | 2016 bis 2020 | Auslage p90 |
+|---|---|---|---|---|---|
+| P5B E8 + FFN (Kaufvorlage) | 58,3 (Median 55,9) | 37,8 | 100,1 | 120 (Kappe) | 2.210 $ |
+| **M1 E8 + FFN + MFFU** | **−5,32 ± 0,38** | **−2,03 ± 0,24** | **−3,08 ± 0,61** | −0,03 | 2.146 $ |
+| M1c dasselbe, MFFU zahlt nach Live weiter | −6,14 ± 0,40 | −2,29 ± 0,22 | −3,07 ± 0,55 | −0,11 | 2.146 $ |
+| M2 MFFU zuerst, dann E8 + FFN | −5,04 ± 0,45 | −1,42 ± 0,29 | −1,91 ± 0,66 | −0,06 | 1.989 $ |
+| M3 FFN + MFFU (kein E8) | −4,72 ± 0,60 | −1,07 ± 0,44 | −0,71 ± 0,86 | −0,13 | 1.418 $ |
+| M4 E8 + MFFU (kein FFN) | −3,61 ± 0,50 | −0,29 ± 0,35 | −0,74 ± 0,72 | −0,03 | 2.070 $ |
+| M5 nur MFFU | +1,07 ± 0,77 | +5,07 ± 0,70 | +5,92 ± 0,88 | −0,09 | 540 $ |
+| M1n E8 + FFN + nur 1 MFFU-Konto | −3,25 ± 0,25 | −1,48 ± 0,16 | −2,43 ± 0,43 | −0,03 | 2.344 $ |
+| M1L E8 + FFN + MFFU, Live nach 3 Payouts (Reserve verfällt, nur 1 MFFU-Konto) | −3,22 ± 0,25 | −1,45 ± 0,16 | −2,35 ± 0,41 | −0,03 | 2.344 $ |
+| M1b E8 + FFN + Builder 50K statt Rapid EOD | −2,51 ± 0,21 | −1,45 ± 0,16 | −2,21 ± 0,31 | −0,03 | 2.302 $ |
+
+Nulldrift: in allen 10 Politiken 0,0 % Zielerreichung. Chance auf 50k in 5 Jahren (alle Jahre): P5B 61,5 %, M1 72,5 %.
+
+**Sensitivitäten (alle Jahre):**
+- **News-Sperre** für MFFU- und FFN-Funded (Trades, die an FOMC- und Minutes-Tagen 13:58 bis 14:02 offen sind, fallen weg; 55 Trades in 10 Jahren, davon LastHour 33, OpenDrive 14, PB3 8): P5B +1,0 Monate, M1 +1,4, M1 bleibt −4,95 ± 0,38 vorn. Die Sperre ist für uns billig, muss aber gebaut sein (AP335), weil LastHour um 14:00 immer offen ist.
+- **Inaktivität ohne Keep-alive** (E8 und MFFU, erster Handelstag nach 7 vollen Kalendertagen ohne Trade = Bruch, 23 Fälle in 10 Jahren, echte Handelspausen, keine Datenlöcher): P5B fällt auf 105,5 Monate (Mittel, **+47,2**), M1 bleibt −3,14 ± 0,55 vorn. Diese Zeile ist die realistische, wenn der Keep-alive nicht verlässlich läuft.
+
+**Kontrollen:** ein erster Lauf hatte in den Sensitivitäten einen Fehler (wiederverwendete Rechenprozesse stapelten die Umleitungen, die News-Zeile lief mit Inaktivitäts-Sperre). Behoben, Nachlauf: das Hauptregime kommt **bitgleich** heraus, nur die News-Zeile ändert sich. Ein zweiter kleiner Fehler (Zeit-Versatz des Asia-Beins griff nie, 3 Trades, 0,2 % der Drift) ist im Skript korrigiert, die Läufe sind deswegen nicht wiederholt. Käfig-Erweiterung um den Live-Wechsel bitgleich zur alten Fassung für alle alten Pläne (`test_kern2.py`).
+
+**Gegenlesen:**
+- `quant-statistician`: **M1 trägt mit Einschränkung.** Gepaart in jedem Regime mit Edge schneller (z −14 / −8,5 / −5,1), Bonferroni über alle Vergleiche bestanden (kleinstes |z| 5,05). Die Größe ist klein gegen die Unsicherheit der Edge: der Vorsprung entspricht 0,29 Standardfehlern der Drift (1 SE Drift = rund 18 Monate). M2 und M3 tragen nicht belastbar, M4 und M5 nicht. In 2016 bis 2020 ist die Buch-Drift nicht von null unterscheidbar (4,65 $/Tag gegen 56,1 ab 2021), die ganze Zeit bis 50k hängt am Regime seit 2021. Minutes-Termine: +21 Tage trifft 79 von 87, mit echten Terminen 60 statt 55 Trades, ändert nichts. Inaktivität: 7 volle Tage (Abstand ≥ 8) ist die wörtliche Lesart bei E8 und MFFU.
+- `quant-mathematician`: **trägt nach dem Worker-Fix**, mit einem kleinen Fehler und zwei Modellfragen.
+  - Buch, Gebühr, Achse, Kaufrunde, Paarung (P5B in seinen Nachläufen bitgleich), Kernel-Erweiterung (auf den Buch-Zellen bitgleich zu v1), Regime: tragen. Die Worker-Stapelung hat er selbst nachgestellt, der Fix ist korrekt.
+  - **Asia-Versatz bei T1** (derselbe Fund wie beim Statistiker): richtig gerechnet 58 Trades und +3.354 $, M1 in der News-Variante −4,62 ± 0,38 statt −4,95. Im Skript korrigiert.
+  - **Inaktivität als Szenario schief:** „symmetrisch“ heißt „nirgends Keep-alive“ und bestraft vor allem E8, wo Keep-alive erlaubt ist und praktiziert wird. Sein Nachlauf nur für MFFU (IS_inactM, 400 Welten, gleiche Seeds): M1 **+4,75 ± 0,40**, M1c +3,65, M1n +2,42, M2 +8,00, M5 +57,3 Monate gegen P5B. Je MFFU-Konto: Eval-Pass 22,6 statt 75,9 %, mindestens ein Payout 15,1 statt 83,6 %, Netto 779 statt 13.606 $. Grund: 1,39 % Lücken-Rate je Handelstag, 270 Handelstage ohne Lücke schafft ein Konto nur mit 2,3 % (seit 2021 0,86 % Rate, tödlich bleibt sie trotzdem).
+  - **Live:** „nach 3 Payouts“ ist eine Annahme, laut Regel automatisch erst bei 10.000 $ an einem Tag (für unser Buch nie), sonst Ermessen. Der 3. Payout kommt im Median erst rund 40 Monate nach dem Kauf, deshalb M1L ≈ M1n. Das echte Risiko ist eine frühe Beförderung nach Ermessen (andere MFFU-Konten frieren ein, 21 Tage Cooldown nach Live-Bruch). Ehrliche Spanne: M1n (−3,25) bis M1 (−5,32).
+  - **Eval-Einrasten bei +100** (Support 28.09. für Rapid/Pro, Rapid EOD nicht genannt): Pass-Quote 84,9 statt 76,7 %, M1 −5,73 statt −5,32. Gerechnet ist ohne Einrasten, also vorsichtig.
+  - News-Fenster: Treffer mit 1 und 2 Minuten identisch, ganze Trades streichen ist pessimistischer als „Tag auslassen“ oder „um 13:58 glattstellen“. Für die Umsetzung: OpenDrive steigt teils um 14:04 ein, auch ruhende Orders dürfen im Fenster nicht offen sein.
+  - `y16_20` hat eine Drift von 4,65 $/Tag (t = 1,0), ist praktisch ein zweiter Nulldrift-Lauf und unterscheidet MFFU nicht von P5B.
+  - Prüfdateien: Box `C:\Users\Administrator\mffu_check\kauf\qm\`, PC-Scratchpad der Session `kauf\qm`, `kauf\pcrun2`.
+
+## 11. Kriterien-Check Rapid EOD 50K gegen Box und Regeln
+
+| Kriterium | Stand | Quelle |
+|---|---|---|
+| Automation, eigener NinjaScript-Bot | ✅ erlaubt in Eval, Sim Funded, Live, kein HFT | Support-Mails 28.09. |
+| VPS mit Rechenzentrums-IP | ✅ „no VPS/IP restrictions as long as you are not sharing devices“ | Support 28.09. |
+| Unbeaufsichtigt | ✅ „allowed provided it can be intervened by the user and managed“ (Telegram plus Fernzugriff) | Support 29.09. |
+| Plattform | ✅ NT8 über Tradovate (Rithmic bei MFFU gesperrt). ⚠️ ob die MFFU-Verbindung in derselben NT8-Installation neben Tradovate (E8, FN) und Rithmic (FFN) läuft: offen, in der Mail | Support 28.09., Help Center |
+| Deutschland, KYC | ✅ | Support 28.09. |
+| Copy auf eigenen MFFU-Konten | ✅ | Support 28.09. |
+| **Dieselbe Strategie bei E8/FN/FFN** | ❌ offen, zweimal gefragt, nie beantwortet | Thread 28./29.09. |
+| Drawdown | ✅ EOD-Trailing 2.000, rastet bei +100 ein (auch in der Eval). ⚠️ Bruch intraday oder nur Tagesschluss: offen, gerechnet intraday (vorsichtig) | Support 28.09., Help Center |
+| Consistency | ✅ Eval 30 % (nur das Ziel steigt, kein Bruch), Funded keine | Help Center |
+| Kontraktlimit | ✅ 3 Minis / 30 Micros, wir handeln höchstens 5 Micros | Help Center |
+| Flat-Zeit | ✅ Auto-Close 16:10 ET, wir sind 15:55 flat | Help Center, Support |
+| **News (T1) im Funded** | ⚠️ für Rapid EOD widersprüchlich (Plan-Artikel ja, Policy und Support nennen nur Rapid und Pro). Falls ja: Sperre 13:58 bis 14:02 an FOMC/Minutes, LastHour ist dann immer offen, also AP335 bauen. Kostet rechnerisch rund 1 Monat | Help Center, Support 28.09. |
+| **Inaktivität 7 Tage** | ❌ **entscheidend:** ohne erlaubten Keep-alive ist MFFU im Kaufplan 4,75 Monate langsamer statt 5,3 schneller. Ein reiner Mini-Trade ist nicht eindeutig erlaubt („strategy must remain consistent“), Frage 1 der Mail | Support 29.09., quant-mathematician |
+| **Hedging** | ❓ „hedging of any kind“ verboten, gegenläufige Beine im selben Konto nicht geklärt | Help Center |
+| HFT, schnelle Stop-outs | ⚠️ keine Zahl, PB3 hat rund 11 % Stop-outs in der ersten Minute | Help Center |
+| Kontolimits | ✅ 10 Konten, bis 3 Rapid EOD Funded | Support 28.09. |
+| Live | ⚠️ nur 1 Live-Konto, dann ruhen alle MFFU-Sim- und Eval-Konten; Zeitpunkt nach Ermessen, bis 5.000 $ Sim-Gewinn als Reserve. Gerechnet als M1L: −3,2 statt −5,3 Monate | Support 29.09., Help Center |
+| Preis | ✅ 135 $ mit CLUB, laut Support für beliebig viele Käufe | Support 29.09. |
+
+**Vor dem ersten Trade (wenn die Antworten passen):** `/neues-konto` (Firm-Regeln, RiskGuard-cfg mit Tagesstopp 900 $, Telegram), Keep-alive verlässlich (für MFFU nur, wenn erlaubt), AP335 News-Sperre, falls T1 für Rapid EOD gilt, MFFU-Verbindung in NT8 auf der Box testen. Kauf nach den Bedingungen der Kaufvorlage (BOS-Plan AP238, AP381).
+
+## 12. Nachfrage-Mail an MFFU
+
+Antwort im bestehenden Verlauf (Gmail maxlkho4, Thread 1a0ea01789064500) an support@myfundedfutures.com. Entwurf liegt im Postfach, **gesendet erst nach Max' OK**. Fragen im A/B-Format, **Frage 1 entscheidet**: Keep-alive-Trade (mit Ausweichfrage, wie man ein Konto sonst aktiv hält), dann andere Firmen, Hedging, T1 bei Rapid EOD (inkl. ruhende Stop- und Target-Orders und Folge eines Verstoßes), schnelle Stop-outs, Intraday-Bruch des EOD-Floors, Live-Wechsel und Reserve, NT8-Verbindung und Lizenz, Provision und Reset-Preis, späteres Hochstufen auf 2 Micros. Ticket AP440.
