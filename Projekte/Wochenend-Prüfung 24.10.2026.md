@@ -58,6 +58,35 @@ Bericht `engine/weekend_check/2026-10-24_wochenende.md`, Engine 20fbf8e4, 600 Si
 - Flotte: Netto 36 M 9.810 $ (SE 387), P(50k in 36 M) 0,0 %, Auslage p90 2.465 $ knapp am Deckel.
 - Die Karten führen keinen Hebel „plus Bein“, dafür ist dieser weekend_check-Lauf da.
 
+### Nachtrag 24.10. abends: Konto-Karten mit dem 6er-Buch als Szenario (Session fa8ff501, Auftrag Max)
+
+- **Wie gerechnet:**
+  - In `engine/konten/leg_map.json` stehen jetzt zusätzlich OPEX und LD01. Backup: `leg_map.json.bak-20261024-vor-6er`.
+  - Die Karten rechnen sie je Konto als „plus Bein“-Hebel. „plus alle“ ist das 6er-Buch.
+  - Live-Belegung und Register sind unverändert (4 Beine).
+  - Lesespalte: geschrumpft, Vola heute.
+  - Karten vom 24.10. 17:44, Daten bis 16.10.
+  - Nulldrift überall bestanden.
+- **Korrektur oben:** Die Einzelwerte von 12,0 / 1,6 / 2,4 / 67,9 % stammten von den Karten vom 22.10. Mit dem Kontostand vom 23.10. sind es (12 M ohne Bust ab heute) E8 16,6 %, FN1 3,9 %, FN2 4,2 %, FFN 69,8 %. Flotte netto 36 M: 9.858 $ (SE 399).
+
+| Konto | 12 M ohne Bust ab Funded: Ist / +OpEx / +LD01 / 6er | Netto 36 M Ist → 6er (Δ, SE) |
+|---|---|---|
+| E8 50k | 33,9 / 29,9 / 36,9 / 33,8 % | 1.402 → 1.438 $ (+36, 53) |
+| FN1 | 1,0 / 1,2 / 1,9 / 2,6 % | 480 → 957 $ (+476, 59) |
+| FN2 | 1,0 / 1,2 / 1,9 / 2,6 % | 474 → 1.002 $ (+528, 60) |
+| FFN1 / FFN2 | 69,4 / 65,1 / 66,8 / 62,5 % | 3.816 → 4.748 $ (+933, 81) |
+
+- **Lesart:**
+  - Das 6er-Buch bringt auf allen Konten mehr Netto.
+  - Auf FFN kostet es Überleben, −6,9 Punkte, beide Beine über 2 SE.
+  - Auf E8 kostet nur OpEx etwas, −4,0 Punkte bei +16 $ Netto (SE 47), also Rauschen. LD01 verbessert dort.
+  - Auf FN ändert sich am Grundproblem wenig: auch mit 6 Beinen nur 2,6 % ab Funded.
+- **Widerspruch zum Quant-Team oben:** Es sagt „LD01 senkt den FN-Ruin“. Die Karten zeigen auf FFN eine Verschlechterung auch durch LD01 (−2,6 Punkte). Die Messlatten sind verschieden: die Karten bei Vola heute ab Funded, die Wochenend-Prüfung über die Historie mit Tagesstopp. Ungeklärt, das wäre ein Auftrag fürs Quant-Team.
+- **Schlimmster 6er-Tag −1.449 $:** Er liegt über dem Rest-Puffer von FN1 (1.333 $) und FN2 (1.365 $). Die FN-Zahlen gelten nur, solange der RiskGuard-Stopp bei 600 $ sicher greift. Ohne ihn wären beide FN-Konten am selben Tag tot. E8 und FFN überleben den Tag auch ohne Stopp.
+- **Hochstuf-Regel:** unverändert. σ60 liegt mit 4 Beinen bei 630 $ gegen 235 $ FFN-Schwelle. Mit 6 Beinen ist es nicht gerechnet, liegt aber kaum darunter. k2 bleibt gesperrt.
+- **Vor dem ersten Live-Trade:** In `konten/rules.json` stehen unter `freigegebene_beine` nur PB3, LH, Asia und OD. Sobald ein Host OpEx oder LD01 trägt, zeigt die Karte das Konto GELB („nicht freigegeben“). Die Liste je Firma ergänzt Max oder auf seine Ansage.
+- **Selbsttest `konten.test_konten`:** 8 von 11 Tests scheitern an Altlasten vom RTY-Rauswurf am 18.10. (Test erwartet noch RTYgap und alte RTY-Host-Dateien). Nicht durch diesen Nachtrag verursacht, eigenes Aufräumen offen.
+
 ## Modus-Check und NT8 (Abschnitt 5 und 5b)
 
 - **OpEx, Modus `cal` „geändert“:** der Code-Check für die Änderung (`cal_eod_flat`) ist erledigt, strategy-auditor 22.10. (go mit Auflagen, AP394). Nach Übernahme `weekend_check --stand-setzen`.
