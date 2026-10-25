@@ -25,7 +25,8 @@ Alle Zeiten **Boxzeit**. Heute Nacht (Sa auf So, 03:00) stellt Europa auf Winter
 > - 5 RiskGuards aktiv, Telegram an, Tagesstopp E8 900 $, FN 600 $, FFN 2.500 $, Inaktivitäts-Wächter aktiv.
 > - VIX-Feed läuft (Task alle 15 min, Ergebnis 0), jüngste Zeile 23.10. mit 19,45. Damit würde LD01 am Montag ohnehin nicht handeln.
 > - Register nachgezogen (Belegung jetzt PB3+LH+Asia+OD+OPEX auf allen 5 Konten), Kartenlauf angestoßen.
-> - **Noch offen von dir:** Teil 4 Schritt 5 (Output-Zeile `OpexMom 2026-10-16`, nur per RDP sichtbar), Schritt 6 (Sim-Host Sim101, bisher kein `HOST BEREIT` für Sim101) und Schritt 7 (Feiertags-Bars).
+> - **Teil 4 Schritt 5 erledigt (25.10. 15:30):** Das Output-Fenster bleibt leer (Ursache offen, die Hosts laufen). Ersatzweise hat Max an allen Host-Charts Days to load 45 und US Equities RTH bestätigt: 26 Handelstage vor dem 16.10., 33 vor dem 20.11. nach einem Neustart, OpEx braucht 20. Echte Kontrolle am Fr 20.11. ab 18:01 Boxzeit im NT8-Log (Zeile `OpexMom 2026-11-20`).
+> - **Noch offen von dir:** Schritt 6 (Sim-Host Sim101, bisher kein `HOST BEREIT` für Sim101) und Schritt 7 (Feiertags-Bars).
 
 ## Schon erledigt (Claude, Sa 24.10. ca. 17:30)
 
