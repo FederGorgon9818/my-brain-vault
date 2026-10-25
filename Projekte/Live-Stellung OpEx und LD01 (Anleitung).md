@@ -1,7 +1,7 @@
 ---
 tags: [trading, box, nt8, deploy, anleitung, opex, ld01]
 datum: 2026-10-24
-status: Anleitung fertig, Stufe 1 (OpEx live, LD01 Code + Messwoche) durch Max am Wochenende 24./25.10., Stufe 2 (LD01 live) frühestens 31.10.
+status: Stufe 1 deployt und geprüft (25.10. 00:30), OpEx live ab 20.11., offen Sim-Host Sim101 und Feiertags-Check, Stufe 2 (LD01 live) frühestens 31.10.
 tickets: [AP394, AP395]
 ---
 
@@ -18,12 +18,23 @@ Alle Zeiten **Boxzeit**. Heute Nacht (Sa auf So, 03:00) stellt Europa auf Winter
 
 **Hauptkanal** ist die Claude-Session, in der diese Anleitung entstanden ist (Seitenleiste, Session vom 24.10. abends). Die **fett** gedruckten Stichworte schreibst du dort hinein, Claude prüft per SSH und schreibt dir das Ergebnis.
 
+> [!success] Stufe 1 deployt und geprüft, So 25.10. 00:30 Boxzeit (Claude per SSH)
+> - Gesamt-Deploy von Max 00:12 bis 00:16 durchgelaufen, NT8 neu seit 00:16:41, DLL 00:16:34.
+> - Code live: Momentum `1754238F`, PB3 `170970EB`, VixFilter `78CABE11`, OpEx `3565F4E9`, Host `C2C4B5A9`, Basis `582D56B5`. Backup `_bak_archiv\deploy-20261025-0016`.
+> - **Alle 5 Hosts `HOST BEREIT` um 00:18 mit der neuen md5**, Module LH, OD, Asia, PB3 (FFN mit Stop-Verzögerung 10 s), **OpEx als letztes**. JSON-Backups `*.bak-20261025-vor-opex` liegen auf der Box.
+> - 5 RiskGuards aktiv, Telegram an, Tagesstopp E8 900 $, FN 600 $, FFN 2.500 $, Inaktivitäts-Wächter aktiv.
+> - VIX-Feed läuft (Task alle 15 min, Ergebnis 0), jüngste Zeile 23.10. mit 19,45. Damit würde LD01 am Montag ohnehin nicht handeln.
+> - Register nachgezogen (Belegung jetzt PB3+LH+Asia+OD+OPEX auf allen 5 Konten), Kartenlauf angestoßen.
+> - **Noch offen von dir:** Teil 4 Schritt 5 (Output-Zeile `OpexMom 2026-10-16`, nur per RDP sichtbar), Schritt 6 (Sim-Host Sim101, bisher kein `HOST BEREIT` für Sim101) und Schritt 7 (Feiertags-Bars).
+
 ## Schon erledigt (Claude, Sa 24.10. ca. 17:30)
 
 - **Box-Stand:** Hosts laufen seit 24.10. 11:13 auf allen 5 Konten mit den 4 alten Beinen, alle flat. OpEx-Code `3565F4E9` ist seit 22.10. auf der Box. Die 5 Live-JSONs auf der Box sind byte-gleich mit den Staging-Kopien.
 - **Pre-Flight LD01** (`deploy_ld01_20261024.ps1 -PreflightOnly`): alle Konten flat, `COMPILE OK - keine Fehler`, `Pre-Flight OK.`, nichts deployt.
 - **Prüflauf JSON** (`deploy_json_20261025.ps1 -Check`): alle 6 Dateien `[OK]`, Box-Stand gleich dem erwarteten Ausgangsstand.
 - **konto-analyst** (Konto-Sperre): kein Konto spricht formal gegen OpEx mit 1 MNQ. FN1/FN2 sind das schwächste Glied (Puffer etwa 2 Tagesschwankungen), das ist bekannt und deine Entscheidung vom 24.10. Die Konto-Karten kennen OpEx und LD01 noch nicht, das wird nach dem Aktivieren nachgezogen (siehe Teil 5).
+
+- **Freigabe (25.10., deine Ansage):** OpEx steht in `engine/konten/rules.json` unter `freigegebene_beine` bei E8, FN und FFN (Backup `rules.json.bak-20261025-vor-opex`). Die Konto-Karten zeigen nach dem Deploy also kein Gelb wegen OpEx. LD01 kommt dort erst in Stufe 2 dazu.
 
 ### Was in den neuen JSONs steht
 
@@ -36,6 +47,20 @@ Alle Zeiten **Boxzeit**. Heute Nacht (Sa auf So, 03:00) stellt Europa auf Winter
 ## Was du brauchst
 
 PC mit PowerShell, RDP zur Box (`100.127.89.9`), Handy mit Telegram. Zeitfenster: heute Abend oder So 25.10. **bis spätestens 22:00 Boxzeit** (Globex-Open So 23:00). Alles ist Wochenende, die Skripte prüfen Uhrzeit und flat trotzdem selbst.
+
+## Der Deploy in einem Rutsch (ersetzt Teil 1 bis 3, Stand 25.10.)
+
+Ein Skript ruft die drei getesteten Einzel-Skripte in der richtigen Reihenfolge auf und stoppt beim ersten Fehler. Vorher prüft es alles, ohne etwas zu ändern (JSON-Abgleich und Pre-Flight-Compile). PowerShell am PC:
+
+```
+cd C:\Users\maxlk\Projects\trading-data\nt8_staging_20261025_live
+powershell -ExecutionPolicy Bypass -File .\deploy_live_20261025.ps1
+```
+- Dauer etwa 5 bis 10 Minuten. Es gibt **eine** Rückfrage `Gesamt-Deploy starten? (ja/nein)` → **`ja`**. Danach laufen C) VIX-Feed, D) JSONs, E) LD01-Code (beendet NT8 und startet es neu) ohne weitere Fragen.
+- **Erwartet:** viermal `Skript ok`, je Abschnitt eine grüne Zeile `---- … : ok`, am Ende `=== GESAMT-DEPLOY FERTIG`. Die Einzel-Ausgaben sind dieselben wie unten in Teil 1 bis 3 beschrieben (dort stehen sie im Detail).
+- **Fehlerfall:** rote Zeile `!!! … endete mit Exit …`. Dann laufen die restlichen Schritte nicht. NT8 nicht selbst starten, in den Hauptkanal **„Deploy Fehler“** schreiben. Claude liest das Log `deploy_live_<Datum-Uhrzeit>.log` im selben Ordner.
+- **Prüflauf schon grün** (Claude, So 25.10. 00:10 Boxzeit, `-Check`): alle Skripte im erwarteten Stand, 6× `[OK]` beim JSON-Abgleich, alle Konten flat, `COMPILE OK`, nichts geändert.
+- Danach direkt weiter mit **Teil 4** (NT8 per RDP). Teil 1 bis 3 brauchst du nur, falls du einen Schritt einzeln wiederholen musst.
 
 ## Teil 1: VIX-Feed starten (startet die Messwoche, NT8 bleibt unberührt)
 
