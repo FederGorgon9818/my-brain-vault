@@ -2815,6 +2815,10 @@ Folge fuer uns: vollautomatisch vom VPS geht bei FN CFD nur auf Konten < 50k (al
 | **CLUB-Rabatt:** „You can use it for as long as you want in as many evaluations as you would like to purchase.“ | Mail Oliver 29.09.2026 | bestätigt |
 | Deutschland erlaubt, KYC mit deutschem Ausweis ok | Mail Psalm 28.09.2026 | bestätigt |
 | Nicht beantwortet: Provisionen je Round-Turn, Reset-Preise, eigene Software über Tradovate-API, Payout-Weg SEPA/Rise | Thread 1a0ea01789064500 | offen |
+| **Mail 24.10.2026 (neuer Thread 1a16e27923c48c8a, Betreff „Questions before purchase: Rapid EOD 50K“), Antwort nach 1 Minute von „Spark“, MFFUs KI-Support-Agent, kein Mensch** („If you need the team, reply to this email and ask for a person“) | Gmail maxlkho4 24.10.2026 16:42 UTC | Quelle: KI-Agent |
+| Keep-alive-Trade (1 Micro rein und raus nach 7 Tagen ohne Signal): „A) Allowed. The rule only requires at least one trade every 7 calendar days.“ Keine Vorab-Meldung an den Support nötig | Spark 24.10.2026 | KI-Agent, menschliche Bestätigung ausstehend |
+| T1 bei Rapid EOD 50K Sim Funded: gilt („Tier 1 news trading is not allowed on Sim Funded accounts“), Positionen **und Orders** (auch Stop/Target) 2 Min vor bis 2 Min nach dem Release geschlossen. Folge eines Verstoßes: „policy does not specify“ | Spark 24.10.2026 | KI-Agent, deckt sich mit Rapid-EOD-Artikel |
+| Live-Wechsel: kein fester Auslöser dokumentiert. NT8-Lizenz, Provision MNQ je Round-Turn, Reset-Preis Rapid EOD 50K: „not specified/listed in the available documentation“ | Spark 24.10.2026 | offen |
 
 ## Static-Drawdown-Futures-Pläne am Markt (ohne MFFU), Regeln und Algo/VPS (recherchiert 24.10.2026, gültig Stand 24.10.2026)
 
