@@ -13,7 +13,7 @@ status: Entwurf v1 (Claude), Max liest gegen, Cheat-Sheet noch nicht eingearbeit
 
 > [!info] Was das hier ist
 > Entwurf für den Gratis-Download aus dem Aufruf „Kommentiere KI“ ([[Be Obsessed Content-Plan]], Abschnitt „E-Mail-Liste ab Tag 1“). Als PDF rund 8 Seiten, eine Überschrift unten ist grob eine Seite.
-> **Entschieden von Max am 16.10.2026:** Claude zuerst (die Prompts laufen trotzdem in ChatGPT und Gemini), persönlich mit Max' Story als rotem Faden, Schwerpunkt Prompts zum Kopieren, kein Trading-Bezug (Nicht-Assoziation). Das Cheat-Sheet wird nachgezogen, sobald es im Vault liegt.
+> **Entschieden von Max am 16.10.2026:** Claude zuerst (die Prompts laufen trotzdem in ChatGPT und Gemini), persönlich mit Max' Story als rotem Faden, Schwerpunkt Prompts zum Kopieren. **Max am 26.10.2026:** Be Obsessed zeigt inzwischen KI und Trading, das Playbook bleibt trotzdem ein **reines KI-Playbook**. Trading kommt nur einmal in der Story auf Seite 1 vor, als System, ohne Edge, ohne Zahlen, ohne Signale. Das Cheat-Sheet wird nachgezogen, sobald es im Vault liegt.
 > Abdeckung der Themen: 16 (Kap. 1), 17 (Kap. 2), 19 (Kap. 3), 25 und 20 und 24 (Kap. 4), 22 (Kap. 5), 23 (Kap. 6), 18 und 21 (Kap. 7). Jedes Kapitel ist damit auch ein Video, und jedes Video kann aufs Playbook verweisen.
 
 > [!todo] Vor dem PDF prüfen
@@ -33,7 +33,7 @@ Ich bin [Max Nachname], 19, und arbeite Vollzeit als Fachinformatiker. Nebenbei 
 
 Vor einem Jahr war ich da, wo du vielleicht gerade bist. Hungrig, wollte unbedingt was reißen, wusste aber nicht genau was. KI hab ich benutzt wie fast alle: eine Frage rein, eine mittelmäßige Antwort raus, und dann gedacht, das Ding ist halt überbewertet.
 
-Heute arbeite ich jeden Tag mit einem System aus über 20 KI-Agents. Die recherchieren für mich, lesen gegen, planen und kontrollieren sich gegenseitig. Ein zweites Gehirn, das alles weiß, was ich mir je notiert hab.
+Heute arbeite ich jeden Tag mit einem System aus über 20 KI-Agents. Die recherchieren für mich, lesen gegen, planen und kontrollieren sich gegenseitig. Ein zweites Gehirn, das alles weiß, was ich mir je notiert hab. Und ein Rechner, der rund um die Uhr meine Trading-Ideen durchtestet, während ich arbeite oder schlafe.
 
 Der Unterschied war kein Geheimtrick. Es waren ein paar Grundregeln, die dir keiner erklärt. Genau die stehen hier drin. Kein Fachchinesisch, keine 300 Seiten, sondern das, was ich mir selbst vor einem Jahr gegeben hätte.
 

@@ -5,13 +5,16 @@ tags:
   - newsletter
   - recht
 erstellt: 2026-10-16
-status: Empfehlung Claude, Werkzeug-Entscheidung bei Max offen
+status: Empfehlung fertig, Einrichtung erst nach schriftlicher Freigabe von GEWO (AP445, Max 26.10.2026)
 ---
 # 📬 Be Obsessed: E-Mail-Liste, Werkzeuge und Recht
 
 ⬅️ [[Be Obsessed]] · [[Be Obsessed Content-Plan]] · [[Be Obsessed Prompt-Playbook (Entwurf)]] · [[Be Obsessed Fahrplan]]
 
 Grundlage: zwei Recherchen vom 16.10.2026 im [[Research-Cache]] (Abschnitte „E-Mail-Liste und Kommentar-DM für Be Obsessed“ und „E-Mail-Liste und Instagram-Kanal in Deutschland“), dort alle Quellen. Preise ändern sich, vor dem Einrichten im eigenen Konto prüfen. **Keine Rechtsberatung.**
+
+> [!warning] Stand 26.10.2026 (Max)
+> Vorerst wird **nichts eingerichtet**. Erst kommt die schriftliche Freigabe der Führungskraft bei GEWO, dann die Werkzeug-Entscheidung. Alle Schritte stehen in Ticket **AP445** (Backlog, Board Privat).
 
 ## Kurzfassung
 
@@ -98,13 +101,14 @@ Grundlage: zwei Recherchen vom 16.10.2026 im [[Research-Cache]] (Abschnitte „E
 | Wann | Was |
 |---|---|
 | **jetzt bis Ende Oktober** | Konten anlegen und testen (Brevo, Meta Business Suite), Seite mit Impressum und Datenschutz bauen, Playbook fertig und als PDF. **Alles nur vorbereiten, nichts veröffentlichen.** |
-| **Mo 19.10.** | GEWO fragen (AP406) |
+| **jetzt** | auf die schriftliche Freigabe der Führungskraft bei GEWO warten |
 | **Oktober** | Gewerbe anmelden, KI-Coaching und Content im Gegenstand |
-| **nach GEWO-Zustimmung und Gewerbe** | Formular, DM-Automatik und Bio-Link scharf schalten, erstes Reel mit „Kommentiere KI“ |
+| **nach der Freigabe** | Ticket AP445 abarbeiten: Werkzeuge entscheiden, einrichten, testen |
+| **nach Freigabe, Gewerbe und Test** | Formular, DM-Automatik und Bio-Link scharf schalten, erstes Reel mit „Kommentiere KI“ |
 
 ## Offen bei Max
 
-- [ ] Werkzeuge: Brevo und Meta (mit CreatorFlow als Ersatz) wie empfohlen, oder anders?
-- [ ] Impressum-Adresse: Privatadresse (0 €) oder c/o-Service (rund 36 € im Jahr)? Beim Service vorher schriftlich bestätigen lassen, dass Einschreiben und förmliche Zustellungen angenommen werden.
+- [ ] Werkzeuge: Brevo und Meta (mit CreatorFlow als Ersatz) wie empfohlen, oder anders? **Max 26.10.: erst nach der Freigabe entscheiden (AP445).**
+- [ ] Impressum-Adresse: Privatadresse (0 €) oder c/o-Service (rund 36 € im Jahr)? Beim Service vorher schriftlich bestätigen lassen, dass Einschreiben und förmliche Zustellungen angenommen werden. **Max 26.10.: später entscheiden.**
 - [ ] Newsletter-Takt (wöchentlich oder alle zwei Wochen), steht als Platzhalter im Playbook.
 - [ ] Datenschutzerklärung: Generator (z.B. e-recht24, Basis gratis, nicht geprüft) oder mit der Freundin durchgehen?
