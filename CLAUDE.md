@@ -63,7 +63,7 @@ Wenn etwas gebaut, getestet und für gut befunden wurde, gilt es als **fertig un
 
 Sagt Max **„Unter-Session“**, **„unter dir“**, **„zieh sie unter dich“** oder **„öffne sie unter dir“**, heißt das immer: die Session per `start_session` aus **dieser** Session starten (`initiation` „user_asked“), damit sie eingeklappt unter der aktuellen Session hängt. Nie eine freistehende Session, nie nur eine Karte, nie „mach es hier“, keine Rückfrage, was gemeint ist.
 - Titel so, dass man sofort sieht, was die Session macht (Thema: konkrete Aufgabe).
-- Bestehende Sessions lassen sich nicht nachträglich unterhängen: dann per `SendMessage` anschieben und das in einem Satz sagen.
+- Bestehende Sessions lassen sich nicht nachträglich unterhängen. „Zieh sie unter dich“ heißt dann: ihre Wurzel-Session (verschachtelte ziehen mit ihrer Wurzel mit) zusammen mit der aktuellen Session in die Seitenleisten-Gruppe „Orchestrator: offene Arbeit“ verschieben (`move_sessions`) und bei Bedarf per `SendMessage` anschieben.
 
 ---
 
