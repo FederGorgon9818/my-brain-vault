@@ -59,6 +59,14 @@ Wenn etwas gebaut, getestet und für gut befunden wurde, gilt es als **fertig un
 
 ---
 
+## 🧷 Unter-Sessions (Trigger-Regel Max, 26.10.2026)
+
+Sagt Max **„Unter-Session“**, **„unter dir“**, **„zieh sie unter dich“** oder **„öffne sie unter dir“**, heißt das immer: die Session per `start_session` aus **dieser** Session starten (`initiation` „user_asked“), damit sie eingeklappt unter der aktuellen Session hängt. Nie eine freistehende Session, nie nur eine Karte, nie „mach es hier“, keine Rückfrage, was gemeint ist.
+- Titel so, dass man sofort sieht, was die Session macht (Thema: konkrete Aufgabe).
+- Bestehende Sessions lassen sich nicht nachträglich unterhängen: dann per `SendMessage` anschieben und das in einem Satz sagen.
+
+---
+
 ## 🔢 Rechnen nur in Code (Regel Max, 18.10.2026)
 
 **Jede Berechnung läuft in Python, nie frei im Modell.** Gilt für alles mit Zahlen und Zeiten: Summen, Prozente, Kosten, Steuern, Umrechnungen, Datums- und Zeitabstände, Statistik, auch schnelle Überschläge, und auch für Subagents.
