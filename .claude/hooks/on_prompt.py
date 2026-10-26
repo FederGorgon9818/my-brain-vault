@@ -46,6 +46,22 @@ def main():
     except Exception:
         router_text = ""
 
+    # --- 0b. Rechen-Hinweis (Regel Max 18.10.2026, CLAUDE.md "Rechnen nur in Code") ---
+    # Auch vor dem Laengen-Filter: "rechne 5*7" ist kurz. Reiner Hinweis, Logik in rechen_hinweis.py.
+    try:
+        import rechen_hinweis as RH
+        if not prompt.lstrip().startswith("/"):
+            rh = RH.hinweis(prompt, inp.get("session_id"), STATE)
+            if rh:
+                router_text = "\n".join(t for t in (router_text, rh) if t)
+    except Exception as e:  # nie blocken, aber nicht still sterben (verdict-auditor 18.10.)
+        try:
+            STATE.mkdir(parents=True, exist_ok=True)
+            with open(STATE / "hook_errors.log", "a", encoding="utf-8") as f:
+                f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')} on_prompt.py rechen_hinweis: {e!r}\n")
+        except Exception:
+            pass
+
     if len(prompt.strip()) < 12 or prompt.lstrip().startswith("/"):
         context(router_text, "UserPromptSubmit")
 

@@ -196,6 +196,23 @@ def main():
         except Exception:
             pass
 
+    # --- 7. Wirkungsmessung Rechen-Hinweis (Auftrag Max, 18.10.2026) -------------
+    # Zaehlt nur, blockt nie und haengt nichts an issues: je Zug eine Zeile in
+    # rechen_hinweis_log.jsonl (Zahlen in der Antwort ohne python-Aufruf? Kam ein Hinweis?).
+    # Logik in rechen_zaehler.py, Auswertung python .claude/scripts/rechen_report.py.
+    if tp and Path(tp).is_file():
+        try:
+            import rechen_zaehler as RZ
+            with Path(tp).open("r", encoding="utf-8", errors="replace") as fh:
+                RZ.zaehle(STATE, inp.get("session_id"), fh, inp.get("last_assistant_message"))
+        except Exception as e:  # nie blocken, aber nicht still sterben
+            try:
+                STATE.mkdir(parents=True, exist_ok=True)
+                with open(STATE / "hook_errors.log", "a", encoding="utf-8") as f:
+                    f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')} on_stop.py rechen_zaehler: {e!r}\n")
+            except Exception:
+                pass
+
     if not issues:
         sys.exit(0)
     msg = "Hook: " + " | ".join(t for _, t in issues)

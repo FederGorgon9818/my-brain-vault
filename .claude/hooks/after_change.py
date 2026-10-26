@@ -84,6 +84,15 @@ def main():
         except Exception:
             pass
 
+    # Rechen-Bremse (AP411, Regel Max 18.10.2026): neues/geaendertes Skript mit eigenem Prozess-Pool
+    if tool != "Bash" and path and path.endswith(".py") and "/engine/" in path:
+        try:
+            if pool_ohne_bremse(Path(ti.get("file_path")).read_text(encoding="utf-8", errors="replace")) \
+                    and hinweis_einmal("pool:" + path):
+                notes.append(bremse_hinweis_text(path))
+        except Exception:
+            pass
+
     # Logbuch: logbook-distiller
     if re.search(r"strategie-logbuch\.md$", path):
         notes.append("Hook: Strategie-Logbuch geaendert. Neue Lehre? Dann `logbook-distiller`: "

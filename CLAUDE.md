@@ -59,6 +59,20 @@ Wenn etwas gebaut, getestet und für gut befunden wurde, gilt es als **fertig un
 
 ---
 
+## 🔢 Rechnen nur in Code (Regel Max, 18.10.2026)
+
+**Jede Berechnung läuft in Python, nie frei im Modell.** Gilt für alles mit Zahlen und Zeiten: Summen, Prozente, Kosten, Steuern, Umrechnungen, Datums- und Zeitabstände, Statistik, auch schnelle Überschläge, und auch für Subagents.
+
+- Jede Zahl in einer Antwort kommt entweder unverändert aus einer Quelle (Datei, Skript-Output, Tool) oder aus Code, der in der Session gelaufen ist. Für Kleinkram reicht `python -c "..."`.
+- Nichts im Kopf nach- oder umrechnen, auch keine Zahl aus einem Output „mal eben" in Prozent, Euro oder Monate.
+- **Bündeln:** alle Zahlen einer Antwort in **einem** Aufruf rechnen, nicht eine Runde je Zahl. Jede Runde liest den ganzen Chat neu, das sind rund 75 % ihrer Kosten (Messung 18.10.: 5 Rechnungen einzeln rund 4,6x so teuer wie gebündelt).
+- **Eingaben mit ausgeben:** Code rechnet richtig, schützt aber nicht vor falsch abgetippten Zahlen oder falscher Formel. Eingaben möglichst direkt aus der Datei lesen und im Output mit anzeigen, damit Max sie sieht.
+- Kein eigener Rechen-Agent: teurer (1,7x bis 5,6x) und nicht sicherer, auch er ist ein LLM. Schwere Rechnungen gehen ans Quant-Team, wiederkehrende bekommen ein festes Skript.
+- Ein Prompt-Hook erinnert bei Rechen-Fragen an diese Regel (`on_prompt.py`, siehe [[Hooks-Referenz]]).
+- Geht Rechnen gerade nicht, die Zahl als ungerechnet kennzeichnen statt zu schätzen.
+
+---
+
 ## 🧭 Auftrags-Typ zuerst: der feste Ablauf für JEDE Aufgabe (Regel Max, 21.09.2026)
 
 Max' Befund: „ich muss quasi immer selbst sagen, dass alle Agents eingeschaltet werden sollen". Das Audit über 14 Tage (121 Sessions) gab ihm recht — Agents, die nur per Text erinnert wurden, liefen in 9–56 % der Fälle (`logbook-distiller` 3 Aufrufe bei 30 ausgelassenen Sessions), Agents in einem Workflow zu 100 %. **Sessions mit Workflow hatten null Lücken.**
@@ -124,6 +138,7 @@ Damit du weißt, wo du suchen und ablegen musst (spart Tokens):
 - **Recherche:** VOR jeder Websuche erst [[Research-Cache]] + Insight-Bank ([[Strategie-Logbuch]]) greppen. Neue externe Claims danach in den Research-Cache eintragen.
 - **Discovery-Läufe:** immer Background + danach `python summarize_results.py <results.json>` lesen — NIE das volle Log einlesen. Logs nur per `-Tail` / gezieltem Select-String.
 - **Suchen:** spezifische Grep-Muster + `head_limit`/`glob` statt breiter Treffermengen; große Outputs auf Platte lassen und referenzieren.
+- **Rechenlast am PC (Regel Max, 18.10.2026, AP411):** jedes Skript mit mehreren Prozessen (`Pool`, `ProcessPoolExecutor`) läuft über `engine/rechen_bremse.py` (`RB.pool_map` / `RB.pool_imap_unordered`), nie über einen eigenen `mp.Pool(cpu_count()-1)`. Grund: der PC hat nur 6 Threads, zwei Sessions mit eigenem Pool legten ihn am 16.10. lahm. Die Bremse senkt die Priorität und deckelt PC-weit auf 4 Worker über alle Sessions. Ein Hook weist darauf hin, Anleitung in [[Backtest-Engine]] (Abschnitt Rechen-Bremse).
 - **Modell-Leitfaden für Max:** Standard-Modell ist seit 29.07. **sonnet** (Claudian-Settings, vorher Opus = ~5x Limit-Verbrauch!). Routine → sonnet/haiku, Frontier (fable/opus) nur gezielt per `/model` für Architektur-/Strategie-Entscheidungen und finale Reviews, danach zurückwechseln. Pro Themenblock lieber frische Session (Cache warm, Kontext klein) statt Marathon.
 - **Claude erinnert Max aktiv**, wenn ein Themenblock abgeschlossen ist und ein Sessionwechsel/Downgrade sinnvoll wäre.
 - **Bei JEDER Aufgabe von Max** am Ende der Antwort kurz dazuschreiben: (1) welches Modell dafür am besten passt (sonnet/haiku/opus/fable) und (2) ob vorher ein `/clear` (frische Session) sinnvoll ist oder der aktuelle Kontext weiterverwendet werden kann.
@@ -317,7 +332,7 @@ Kurzfassung, was blockt statt nur erinnert:
 - `guard_bash.py`/`guard_read.py`: kein Box-Sync ohne frischen `regression_ok`-Marker, kein `--enqueue` ohne `pipeline_ok`-Marker, keine Dauerläufer als Session-Kind, kein volles Log-/Transkript-Einlesen.
 - `guard_write.py` (Regel 21.09.2026, Fund: Momentum&Averages- und PCA-Bank blieben sonst wochenlang ohne Gegenleser): keine neue Zeile in einer Hypothesen-Bank, solange `variant-scout` + `strategy-auditor` nicht in derselben Session gelaufen sind (am einfachsten über Skill/Workflow `ein-weg`). Reine Status-/Formatierungs-Edits lösen nichts aus; Fehlalarm-Override `python .claude/hooks/mark.py hypothese_ok`.
 - `guard_chain.py` (Regel Max, 22.09.2026): ein **Todesurteil** im Strategie-Logbuch wird abgelehnt, solange die vier Pflichtfelder fehlen (siehe nächster Abschnitt). Geprüft wird nur der **Urteilsblock** (`Verdikt:`/`Urteil:`/`Fazit:`), nicht der Fließtext — Rückblicke und Zitate fremder Urteile lösen nichts aus. Fehlalarm-Override `python .claude/hooks/mark.py urteil_ok`. Selbsttest: `python .claude/scripts/test_urteil_gate.py` (7 Fälle, inkl. der Fehlalarm-Quellen).
-- `guard_chain.py` Konto-Sperre (Regel Max, 13.10.2026): **Konto-Fragen werden nie von Hand neu gerechnet, `konto-analyst` liest die Konto-Karten.** Wer die Host-JSON oder die RiskGuard-cfg eines Kontos schreibt oder auf die Box kopiert (Größe, Belegung), wird geblockt, solange `konto-analyst` in der Session nicht lief. Der Prompt-Hook erkennt Konto-Fragen breit (Kontoname plus Größe, Bein, Puffer, Payout, Inaktivität usw.). Gilt für Bash- und PowerShell-Tool, und `konto-analyst` ist Pflichtschritt der Kette `deploy` (reiner Code-Deploy: `--skip konto-analyst` mit Grund). Die älteren Sperren prüfen weiter nur das Bash-Tool (Ticket). Selbsttest `python .claude/scripts/test_konto_gate.py` (52 Fälle), Ausweg `receipt.py --skip konto-analyst --why "…"`.
+- `guard_chain.py` Konto-Sperre (Regel Max, 13.10.2026): **Konto-Fragen werden nie von Hand neu gerechnet, `konto-analyst` liest die Konto-Karten.** Wer die Host-JSON oder die RiskGuard-cfg eines Kontos schreibt oder auf die Box kopiert (Größe, Belegung), wird geblockt, solange `konto-analyst` in der Session nicht lief. Der Prompt-Hook erkennt Konto-Fragen breit (Kontoname plus Größe, Bein, Puffer, Payout, Inaktivität usw.). Gilt für Bash- und PowerShell-Tool, und `konto-analyst` ist Pflichtschritt der Kette `deploy` (reiner Code-Deploy: `--skip konto-analyst` mit Grund). Die älteren Sperren prüfen weiter nur das Bash-Tool (AP362), außer der Box-Sync-Sperre: die gilt seit 16.10. für beide Tools (AP398, [[Hooks-Referenz]]). Selbsttest `python .claude/scripts/test_konto_gate.py` (52 Fälle), Ausweg `receipt.py --skip konto-analyst --why "…"`.
 - `on_stop.py`: Session endet nicht, solange `book_state*.json` neuer als der letzte `--push-next` ist, oder solange eigene Datei-Änderungen ohne Daily-Note-Eintrag im Raum stehen. Seit 25.09.2026 auch nicht, wenn Scratch-Tests gerechnet, aber nicht per `workbench.publish` ins Lab gestellt wurden (Ausweg `mark.py tests_ok`).
 - **Ein Hook blockiert nie die Arbeit, weil er selbst kaputt ist** — Fehler werden verschluckt und geloggt, nie geworfen.
 - Neue Reflex-Regel geplant? Zuerst fragen, ob sie als Hook abbildbar ist (Dateipfad, Kommando-Muster, Dateizeit), statt sie nur als Text hier abzulegen.

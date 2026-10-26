@@ -60,13 +60,16 @@ def _user_text(rec):
     return None
 
 
-def last_turn(lines):
-    """Aus Transkript-Zeilen: (Max-Prompt, finaler Antworttext, Aenderung_im_Zug).
+def turn_info(lines):
+    """Aus Transkript-Zeilen: Dict mit prompt (Max), final (finaler Antworttext), changed
+    (Aenderung im Zug) sowie cmds (Bash/PowerShell-Kommandos), tools (Tool-Namen) und pid (uuid des
+    Prompt-Eintrags) des Zugs.
 
     Laufen im Zug noch Hintergrund-Agents (gestartet, aber keine task-notification
-    zurueck), ist die Antwort eine Zwischenmeldung: dann kommt als Text "" zurueck
+    zurueck), ist die Antwort eine Zwischenmeldung: dann kommt als final "" zurueck
     und der Check greift nicht (Live-Fund 05.10.2026, erster Tag)."""
     prompt, texts, changed = None, [], False
+    cmds, tools, pid = [], set(), None
     agent_ids, launched, done = set(), set(), set()
     for line in lines:
         try:
@@ -86,6 +89,7 @@ def last_turn(lines):
             t = _user_text(rec)
             if t and t.strip() and not NOT_MAX.search(t[:400]):
                 prompt, texts, changed = t.strip(), [], False
+                cmds, tools, pid = [], set(), rec.get("uuid")
                 agent_ids, launched, done = set(), set(), set()
             continue
         if typ == "assistant" and prompt is not None:
@@ -97,15 +101,23 @@ def last_turn(lines):
                 elif b.get("type") == "tool_use":
                     name = b.get("name")
                     inp = b.get("input") or {}
+                    tools.add(name)
                     if name == "Agent":
                         agent_ids.add(b.get("id"))
                     if name in EDIT_TOOLS:
                         changed = True
-                    elif name in ("Bash", "PowerShell") and BASH_WRITE.search(str(inp.get("command", ""))):
-                        changed = True
-    if launched - done:
-        return prompt, "", changed
-    return prompt, (texts[-1] if texts else ""), changed
+                    elif name in ("Bash", "PowerShell"):
+                        cmds.append(str(inp.get("command", "")))
+                        if BASH_WRITE.search(cmds[-1]):
+                            changed = True
+    final = "" if launched - done else (texts[-1] if texts else "")
+    return {"prompt": prompt, "final": final, "changed": changed, "cmds": cmds, "tools": tools, "pid": pid}
+
+
+def last_turn(lines):
+    """Aus Transkript-Zeilen: (Max-Prompt, finaler Antworttext, Aenderung_im_Zug)."""
+    t = turn_info(lines)
+    return t["prompt"], t["final"], t["changed"]
 
 
 def missing(final_text, changed):

@@ -3323,6 +3323,8 @@ Vollständig in [[Neue Märkte (NT8-Daten) Plan]]. Kurz: NT8 auf der Box liefert
 
 ## #171 — W19 auf GC/CL/YM/RTY ausgerollt: dasselbe "kein Folgetag-Effekt"-Muster auf allen sechs Märkten (22.09.2026)
 
+> **Nachrechnung AP418 (18.10.2026), siehe #186c:** auf bereinigten NT8-Daten bleibt das Muster; CL abs_sig gegen Vola liegt formal über der Regel (rho 0,053), über 36 Zellen Mehrfachtest-Rauschen.
+
 **Anlass:** Max, nach dem Bau- und Testlauf #168: „auf Gold und alle Märkte testen, die wir noch nicht angefangen haben." `adx_vs_vola_w19.py` erweitert um einen Symbol-Parameter (Default weiter NQ/ES, kein Override des Erstlaufs), auf GC, CL, YM, RTY laufen lassen — dieselben vorab festgelegten Urteilsregeln wie am 21.09.
 
 **Ergebnis:** ADX(t-1) ist auf keinem der vier neuen Märkte ein Vola-Proxy (R² ADX~Vola 0,066–0,144, alle weit unter der 0,60-Schwelle) und trägt auf keinem Information über den Folgetag (kein Markt erfüllt gleichzeitig CI-ohne-0 und |rho|≥0,05 — GC/CL: alle relevanten CIs enthalten 0 oder das rho bleibt unter der Latte; YM: zwei CIs ohne 0 bei dir_ret, aber |rho| 0,033–0,039 unter der Schwelle). Zusammen mit NQ/ES (#168) heißt das: **sechs von sechs getesteten Futures-Märkten** (Tech-Index, breiter Index, Dow, Small-Cap, Gold, Öl) zeigen dasselbe Muster.
@@ -3334,6 +3336,8 @@ Vollständig in [[Neue Märkte (NT8-Daten) Plan]]. Kurz: NT8 auf der Box liefert
 **Nicht getestet:** W24/W6/AXV-W26 (die drei Jobs in der Queue) liefen bisher nur auf NQ. Ob sich das Ergebnis (falls einer der drei doch trägt) auf andere Märkte übertragen lässt, ist eine eigene Frage für später.
 
 ## #173 — OxfordStrat "Gap Pattern – Type A" geprüft: das Gap existiert im 23-Stunden-Handel nicht mehr, drei getrennte Urteile (22.09.2026)
+
+> **Nachrechnung AP418 (18.10.2026), siehe #186:** GC/CL auf bereinigten NT8-Daten, alle drei Urteile bleiben; Montags-Anteil Urteil 2 jetzt GC 54,5 %, CL 64,0 % (die Spanne 65 bis 86 % galt für die ungefilterten Daten).
 
 **Anlass:** Max gab die Vendor-Seite https://oxfordstrat.com/trading-strategies/gap-pattern/ (Quelle: Dahlquist/Bauer 2012, "Technical Analysis of Gaps") mit dem Auftrag, sie zu testen, mit allen Agents zu optimieren und anschließend mit unserem eigenen Gap-Bein zu kombinieren. Gelaufen sind `research-scout` (Web-Tools in der Session tot, lieferte nur den Cache-Teil — Spezifikation danach selbst über den Browser geholt und in den [[Research-Cache]] eingetragen), `familien-scout` ([[Gap Wege-Karte]], 34 Wege, 11 Skelette), `quant-mathematician`, `quant-statistician`, `strategy-auditor`, `pipeline-auditor`, `verdict-auditor`.
 
@@ -3397,6 +3401,8 @@ Vollständig in [[Neue Märkte (NT8-Daten) Plan]]. Kurz: NT8 auf der Box liefert
 **Buch-Lücke:** unverändert, kein neuer Kandidat aus diesem Strang. AXV-W26 war ein Torwächter (kein Bein), die Mini-Rekalkulation bleibt Backlog (Sizing-Frage) bzw. verworfen (Kostenfrage).
 
 ## #174 — GC Opening-Drive (Klon NQ_Momentum) an vier Gold-Ankern: 12 Survivors aus 1.800 sind Nullniveau, VWAP-Abstand ist Regime, drei Gold-Paper auf GC nicht reproduziert (24.09.2026)
+
+> **Nachrechnung AP418 (18.10.2026), siehe #186a:** 6 statt 12 Survivors, Urteil A bleibt; die Wiedervorlage „#5 vor 2016" ist gestrichen, neue Wiedervorlage 16.10.2027 (10:00-Cluster). Gao: Brutto-Untergrenze für 5 Specs jetzt −0,013.
 
 **Anlass:** Max (Juli-Modus): NQ_Momentum 1:1 auf Gold (15 Min Drive ≥ 0,3 % → mitgehen bis EOD, Stop 0,3x, BE 0,5R), dazu ADX > 20 / > 10 und VWAP als Filter, dann erweitert auf London/andere Uhrzeiten, Fenster 5-60 Min, Stop-Basis letzte Kerze/15 Min/Stunde, Exits ohne EOD, und Paper-Suche nach einem Why. Gelaufen: `ein-weg` (variant-scout + strategy-auditor: GC-OD-01 testbar mit Auflagen, ADX- und VWAP-Story fallen durch), `research-scout` (Web-Tools tot, danach per Browser/Crossref/Europe PMC), `quant-statistician`, `quant-mathematician`, `verdict-auditor` (hält mit Auflagen, drei Nachtests gerechnet), `logbook-distiller`. Alles in `engine/_scratch_gc_od/`.
 
@@ -3586,6 +3592,8 @@ Die offenen Regelfragen (Stufe 2 Tempo statt Passquote, k_hi statt k_lo, Kontrol
 3. Null-Schalter für noise_orb, i2, rv und flip, dann je Wette ein Vertreter mit k nach Register plus Placebo.
 
 ## #177: Juli-Modus Idee 2 (Max) „ruhig → Bull": gilt gleichzeitig, nicht als Vorhersage; RTH ohne Edge, Nacht-Signal nur 2020 bis 2026 und unentscheidbar (29.09.2026)
+
+> **Nachrechnung AP418 (18.10.2026), siehe #186:** die geänderten NT8-Roll-Tage wirken nicht (Nacht-Überschuss +2,90 → +2,93 bp). Auf den seit 18.10. getauschten Hauptdaten liegt die Schlagzeile „+4,9 bp" bei +2,9 bp [0,82; 4,69]; Urteil gleich.
 
 **These (Max, 29.09.):** „Wenn NQ und ES wenig Volatilität haben, ist ein Bullmarkt wahrscheinlicher." Verfahren: [[Testphase Juli-Modus]] Teil A. Gruppen aus der [[State Classification (Marktzustands-Karte)]], Recherche im [[Research-Cache]] (Abschnitt 29.09.).
 
@@ -3906,6 +3914,8 @@ Buch-Beine aus der v4-Abnahme (übernommen, nicht neu gerechnet, Referenz 2-Bein
 
 ### #180c TD-12 Sternzelle auf GC/CL (Wiederaufnahme #164)
 
+> **Nachrechnung AP418 (18.10.2026), siehe #186b:** CL +0,0070 ATR, Kriterium formal knapp erfüllt, Replikation unentscheidbar, Handel auf MCL ausgeschlossen; GC bleibt echt-aber-zu-klein.
+
 **Verdikt:** Die TD-12-Sternzelle (Signal 90 Min, Horizont 60 Min, Handel nach Vorzeichen) repliziert auf GC und CL nicht nach dem vorab festgelegten Kriterium aus #164 (gleiches Vorzeichen und ≥ 50 % der NQ-Größe = 0,0065 ATR): GC +0,0015 ATR (CI90 −0,0077/+0,0105, t 0,28), CL +0,0046 ATR (CI90 −0,0055/+0,0145, t 0,76). Auf keinem Markt Rang 1 von 14, Plateau-Mittel GC t 0,18, CL t 0,06. **Auf GC ist die Information aber da:** Steigung +0,0146 ATR/z (CI90 +0,0049/+0,0243), IC +0,068 (CI90 +0,021/+0,112), so groß wie auf ES. Auf CL nicht.
 **Reichweite:** VWAP-minus-TWAP-Residuum nach 90 Min ab 09:30 ET (RTH-Anker, für GC/CL laut #165 Lehre 6 nicht der native Anker), Haltedauer 60 Min, Handel nach Vorzeichen an jedem Tag, GC und CL mit Micro-Kosten.
 **Kategorie:** GC echt-aber-zu-klein (Information belegt, obere CI90-Grenze des Vorzeichen-Handels +0,0105 ATR brutto liegt unter ca. 0,015 ATR Kosten je RT bei MGC; Kostenhürde Schätzung verdict-auditor, 1 Tick je Seite plus 1,6 $). CL empirisch-nichts-gefunden, N = 1 vorregistrierte Zelle (14 Zellen gemessen, Prämissen-Messung ohne Register-Trials wie #164), obere Grenze +0,0145 unter ca. 0,021 ATR Kosten bei MCL. TD-12 insgesamt bleibt echt-aber-zu-klein wie in #164. Der Satz „dann ist TD endgültig tot" aus AP224 Schritt 2 gilt damit nicht.
@@ -4019,3 +4029,535 @@ Explorativ, weil die Prämisse nicht trägt. 12 Varianten vorab festgelegt (`eng
 **Lehre:** Ein nachträglich gefundenes Fenster lässt sich auf denselben Daten nicht bestätigen, aber sein Why lässt sich prüfen: sagt das Why den Effekt auch für Gruppen voraus, an denen nicht gesucht wurde, sind diese Gruppen der Test. Hier hat das eine Session gekostet und das Why erledigt. Kein neues Gate nötig, der Ablauf steht in der Juli-Notiz (Stufe 2).
 
 **Buch-Lücke:** hängt an der Prämisse. Kein Grid, keine Strategie, nichts fürs Next-Week-Buch.
+
+## #183: Box-Sync aus Git Bash: MSYS-scp, halber Sync ohne Stempel, und warum jeder Sync 2,7 GB schob (15./16.10.2026, AP398)
+
+**Anlass:** Die Session „Engine-Fixes AP223/AP286/AP303“ startete am 15.10. `box_provision_discovery.ps1 -SyncOnly` aus dem Bash-Tool. `scp` stand im Skript als nackter Name, Git Bash hat `/usr/bin` vorne im PATH, also lief das MSYS-scp. Elf Logdateien in `_scratch_latte/v4_out_abnahme` heißen `log_<Bein>.txt`: ein Bash-Skript mit Windows-Zeilenenden hat ein `\r` in den Namen geschrieben, MSYS legt das als U+F00D auf NTFS ab und macht beim Senden wieder ein echtes `\r` daraus. Der Windows-OpenSSH-Server der Box lehnt das ab, scp endet mit Exit 1, das Skript bricht nach rund 2 Stunden ab, **vor** Stempel und Config. Box-Code gemischt, die Session hat per MD5-Abgleich von Hand vervollständigt. Zweiter Vorläufer derselben Klasse: #131 (25.08., scp-Glob still gescheitert, Skript meldete „fertig“). Der Fix damals prüfte nur das Engine-scp.
+
+### Was der Probelauf zusätzlich fand
+- **Die relativen `/XD`-Ausnahmen griffen nie.** robocopy nimmt bei `/XD` nur Ordnernamen oder volle Pfade. `discovery\results` und `developer\results` waren wirkungslos. Jeder Sync schob 13.572 Dateien (2,7 GB) statt rund 1.750: 3.221 PC-Ergebnisdateien in die Box-results (dort ist die Box die Wahrheit), 3.136 Dateien aus `box_results` (der PC-Spiegel der Box) zurück auf die Box, 5.469 Scratch-Dateien.
+- **Der Sync schob die Bücher an `--push-next` vorbei auf die Box.** `book_state.json` und `book_state_next.json` gingen ohne Hook-Marker, ohne md5-Stand und ohne Drift-Warnung mit. Im Probelauf lag am PC ein ungepushter Arbeitsstand des Next-Buchs von 23:09 (Wochenend-Session), der Box-Stand von 10:17 stammte aus dem halben Sync.
+- **`.claude_hooks` ging mit**, also die Hook-Marker und Quittungen dieses PCs, inklusive `regression_ok`.
+- **Die Daten-Kopie (`exported_data`, 683 MB) lief jedes Mal komplett** und ohne Exit-Prüfung.
+- **Kein eigener Exit-Code.** Im PowerShell-Tool per `&` gestartet erbt der Aufrufer den Code des letzten externen Befehls. Der erste Live-Lauf der neuen Fassung (16.10. 00:33, Queue-Session) war laut Manifest vollständig (1.620 Dateien gleich) und meldete trotzdem „Exit 4“. Im Test nachgestellt: Skript ohne `exit`, letzter externer Befehl gibt 4 zurück, Aufrufer sieht 4.
+- **Am Ende kopierte `scp -r` alle 3.134 Ergebnisdateien (232 MB) zurück** in einen Ordner, den nur noch `registry_backup.py` für zwei Dateien liest. Die Ergebnisse holt `inbox_tool.py --pull` längst inkrementell. Genau dort endete die Queue-Session um 00:40 im Nutzungslimit, der Runner blieb danach bis 15:50 gestoppt.
+
+### Was jetzt Code ist
+| Teil-Lehre | Wo |
+|---|---|
+| scp/ssh fest aus `%SystemRoot%\System32\OpenSSH`, egal aus welcher Shell, Hinweis bei gesetztem `MSYSTEM` | `box_provision_discovery.ps1` |
+| Vorab-Prüfung vor jedem Kopieren: Windows-Python, ssh erreichbar, Runner und Worker stehen (sonst Abbruch, `-Force` als Ausweg), Sperre | `box_provision_discovery.ps1` |
+| `/XD` mit vollen Pfaden; `_scratch*` (mit Ausnahme-Liste für Laufzeit-Dateien, `-WithScratch`), `logs`, `.claude_hooks`, Bücher und `portfolio_next` raus | `box_provision_discovery.ps1` |
+| Ausschlüsse werden geprüft statt geglaubt: liegt einer davon im Staging, Abbruch mit Exit 1 | `box_provision_discovery.ps1` |
+| Namen mit Steuerzeichen, U+F000 bis U+F0FF oder unter Windows verbotenen Zeichen werden gemeldet und ausgelassen | `sync_manifest.py clean`, Test `test_sync_manifest.py` |
+| MD5 auf PC und Box, kopiert wird nur, was abweicht; am Ende Abgleich jeder Datei PC gegen Box | `sync_manifest.py hash/diff` |
+| `.sync_incomplete` auf der Box vor dem ersten Schreiben; Config, Manifest (`.sync_manifest.tsv`) und Stempel nur bei vollem Erfolg | `box_provision_discovery.ps1` |
+| Runner startet nicht nach halbem Sync | `start_runner.ps1` (Ausweg `-Force`) |
+| Feste Exit-Codes 0 ok, 1 Box unverändert, 2 halber Sync, 3 nur Rückholen gescheitert; Schlusszeile `ERGEBNIS: … (Exit N)` | `box_provision_discovery.ps1` |
+| Nach `-SyncOnly` steht da, dass der Runner noch gestoppt ist und wie er startet | `box_provision_discovery.ps1` |
+| Box-Sync-Sperre (`regression_ok`) gilt für Bash- **und** PowerShell-Tool, nur beim echten Skriptstart; Trockenlauf und Testziel frei | `guard_bash.py`, Matcher in `settings.json`, Test `test_sync_gate.py` |
+| Hashing auf der Box im Hintergrund-Modus (CPU und Platte), Hinweis bei Sync in der US-Session | `sync_manifest.py`, `box_provision_discovery.ps1` |
+| Alles, was `inbox_tool.py --pull` holt, und alle Flags/States, die Runner, Generator, `promote_next` und Worker auf der Box schreiben, sind ausgeschlossen (u.a. `generator_state.json`, `pending_tickets.json`, `inbox.md`, `QUEUE_EMPTY_NOTIFIED`, `placebo_log.json`, `nachlauf_par\`) | `box_provision_discovery.ps1`, statischer Test in `test_sync_manifest.py` (schlägt an, sobald eine Box-Datei im Code dazukommt oder der Ausschluss fehlt) |
+| Der Live-Sync setzt vor dem ersten Schreiben selbst STOP: Runner, Worker und `maxlab_watchdog.ps1` (startet den Dienst sonst alle 5 Min neu) halten daran | `box_provision_discovery.ps1` |
+| Scheitert der MD5-Abgleich selbst, wird daraus kein stilles „nichts zu tun“, sondern ein Abbruch | `box_provision_discovery.ps1` (`Get-Todo`) |
+| Ein lebender Sync wird nie übernommen, wiederverwendete PIDs werden über die Startzeit erkannt | `box_provision_discovery.ps1` (Sperre) |
+
+Neue Schalter: `-DryRun` (zeigt, was kopiert würde) und `-RemoteBase <Testordner>` (Sync in einen Testordner auf der Box). Getestet am 16.10.: Trockenlauf live aus Git Bash (Exit 0, 3:18 min), vier Läufe in einen Testordner (Erstlauf 38 Dateien, Wiederholung 2 Dateien, provozierter Schreibschutz-Fehler endet mit Exit 2 und Marker, nach Behebung Exit 0 und Marker weg), Live-Engine dabei unberührt. Während der Testläufe 2 bis 4 (16:13 bis 16:25) meldete NT8 zehn kurze Verbindungsabbrüche (E8 und FN, je 1 bis 2 Sekunden). Lauf 1 mit gleicher Last hatte keine, am 14.10. gab es ohne Sync-Test 23. Zusammenhang nicht belegt, deshalb der Hintergrund-Modus und der Hinweis.
+
+### Hook-Entscheidung
+Keine Umleitung vom Bash- aufs PowerShell-Tool. Die Wurzel ist im Skript behoben und gilt damit auch für Max' eigenes Terminal. Eine Umleitung hätte ohne weitere Änderung auf das PowerShell-Tool geschoben, auf dem die `regression_ok`-Sperre bis zum 16.10. gar nicht galt (AP362). Stattdessen gilt die Sperre jetzt für beide Tools und feuert nur noch, wenn das Segment das Skript wirklich startet. Vorher reichte der Skriptname plus irgendein „-sync“ im selben Befehl: am 15.10. wurde so das Anlegen des Tickets geblockt, weil im Ticket-Text „Teil-Sync“ stand.
+
+### Abnahme (verdict-auditor, 16.10.)
+Erstes Ergebnis „hält mit Auflagen“. Drei Lücken im Skript: Box-eigene Dateien (`generator_state.json`, `pending_tickets.json`, `inbox.md`, `QUEUE_EMPTY_NOTIFIED`) wären beim nächsten Sync auf PC-Stand zurückgedreht worden, der Watchdog hätte den Runner mitten in einen halben Sync gestartet, und ein gescheiterter Abgleich wäre als „vollständig verifiziert“ durchgegangen. Dazu kam die erste Hook-Fassung durch zehn Umgehungen nicht hinterher, darunter der gefährlichste Aufruf überhaupt: das Skript **ohne** Schalter (Vollmodus, synct und startet den Runner), außerdem `time powershell …`, `Measure-Command { & … }`, `& $p` und die PowerShell-Kürzung `-Sy`. Alles umgesetzt (Tabelle oben). Die Hook-Erkennung schaut jetzt auf das Wort direkt vor dem Skriptpfad, frei ist nur `-Stop`, `-DryRun` und `-RemoteBase` auf ein Testziel, auch als Kürzung. Die zehn Umgehungen stehen als Block-Fälle im Selbsttest, die Lese- und Prüfmuster dieser Session als Frei-Fälle. Negativfälle an Skript-Kopien: fehlender Ausschluss bricht mit Exit 1 ab, gescheiterter Abgleich ebenso. Den Exit-Code sieht der Aufrufer nur über `-File` bzw. `&` sicher, maßgeblich ist die `ERGEBNIS`-Zeile.
+
+### Was noch nur Text ist (Folge-Ticket)
+- `promote_next.py` läuft auf der Box als geplante Aufgabe alle 30 Min und liest Engine-Code, auch mitten in einem halben Sync. Ob es STOP oder `.sync_incomplete` beachtet, ist ungeprüft. Runner, Worker und Watchdog halten seit dem 16.10. am STOP, das der Sync selbst setzt.
+- Die Ausnahme-Liste für Scratch-Dateien, die Code zur Laufzeit liest, ist Handpflege (heute nur `_scratch_juli_nacht/praemisse_globex_tage.csv` für `tafel_lib.py`).
+- Bash-Skripte mit Windows-Zeilenenden erzeugen die kaputten Namen weiter. Der Sync filtert sie, verhindert sie aber nicht.
+- Der Sync löscht nie: am PC gelöschte oder umbenannte Dateien bleiben auf der Box liegen. Ein Bericht gegen `.sync_manifest.tsv` würde die Waisen zeigen.
+
+**Lehre 175:** *Ein Kopier-Skript ist erst dann fertig, wenn es am Ende selbst nachweist, dass Ziel und Quelle gleich sind, und wenn sein Exit-Code etwas bedeutet.* Exit-Code-Prüfung je Befehl (#131) reicht nicht: sie sagt nichts über Dateien, die gar nicht erst kopiert werden sollten (Bücher, Box-Wahrheit), und nichts über Ausschlüsse, die still nicht greifen. Darum: Inhalt per MD5 abgleichen, Ausschlüsse im Staging nachprüfen, einen Halb-Zustand auf dem Ziel sichtbar machen, den der Startpfad respektiert, und externe Werkzeuge nie über den PATH auflösen, wenn das Skript aus mehreren Shells gestartet wird.
+
+## #184: Juli-Modus Idee 7 (Max) „Gold Cross-Asset“: von acht vorab festgelegten Fremdmarkt-Zellen trägt keine (vier schließen die Testrichtung aus, vier bleiben unentscheidbar), der ZN-Vorlauf auf Minutenbars ist zu klein für die Kosten, ein nachträglich gesehenes Gegenlauf-Muster bleibt ein Hinweis (18.10.2026, AP371)
+
+**Anlass:** Idee Max 13.10.2026: ein Fremdmarkt liefert das Signal für Gold (GC, gehandelt 1 MGC), Kandidaten ZN (Zins), 6E (Dollar), NQ (Aktien). Kein Why belegt (Research 9 von 9 offen), deshalb eine Messung ohne Strategie, 0 Register-Trials. Kette: `konzept-weg` (familien-scout, verdict-auditor, research-scout, [[Gold Cross-Asset Wege-Karte]] mit 45 Wegen), Vorab-Festlegung `engine/_scratch_juli_gcx/prereg.md` (Fassung 2.1), Quant-Team blind auf dem Entwurf (13.10.) und auf dem Ergebnis (18.10.), research-scout zu den MGC-Kosten (AP375), verdict-auditor auf diesem Eintrag (hält mit Auflagen, eingearbeitet), logbook-distiller in derselben Session. Max hat vor dem Lauf entschieden (14.10.): SESOI zeitneutral (nicht die von beiden Rechnern empfohlene Sharpe-neutrale Schwelle), auf den NT8-Export Oktober warten, Kosten 0,44 Punkte bzw. N1 0,64. Kriterien unverändert seit 14.10.; die letzten Änderungen der Festlegung vor dem Lauf (18.10.) waren nur Datenstand, neue Blind-Zählung und die Trockenlauf-Notiz.
+
+**Messung:** y = gerichtete GC-Bewegung, Test-Größe y / σ60 (R; σ60 = Streuung der GC-Strecke 08:20 bis 13:25 über 60 Vortage), brutto, Kostenhürde getrennt (Bezugs-Vola 2024 bis 2026 = 20,1 Punkte, Kosten 0,022 R bzw. 0,032 R bei N1). Acht Test-Zellen, einseitig, Holm 4 % plus Familien-Test 1 % (z 2,33), Fehler = größere aus iid- und Monats-Cluster-SE. SESOI je Zelle = zeitneutrale Schwelle (Jahres-Sharpe 0,10 bis 0,20, ab der 1 MGC die Zeit bis 50k nicht verlängert), Sharpe-neutrale Schwelle (0,44 bis 1,02) nur als Info. Ein Lauf, vorher Trockenlauf mit Zufallsvorzeichen. „Nichts gefunden“ gilt je Zelle (obere Grenze z 1,96, also 97,5 % einseitig, vorab so festgelegt), nicht simultan über die acht Zellen (dort z 2,50). Einseitig heißt: jedes Urteil schließt nur die Testrichtung aus, ein gedrehtes Vorzeichen ist eine neue Hypothese.
+
+| Zelle | Regel (alles ET) | n | Mittel R | z | obere Grenze netto als Jahres-Sharpe | Urteil |
+|---|---|---|---|---|---|---|
+| B1 | GC-Impuls 08:20 bis 09:00, ZN und 6E laufen mit, 09:00 bis 13:25 in Impulsrichtung | 842 | −0,072 | −2,05 | −0,21 | empirisch-nichts-gefunden |
+| N1 | Datentag 08:30, Richtung ZN-Sprung 08:30 bis 08:35, GC 08:35 bis 10:00 | 464 | +0,009 | 0,23 | 0,44 | unentscheidbar |
+| N4 | Nicht-Event-Tag, erster großer ZN-5-Minuten-Sprung 08:40 bis 12:00, GC 60 Minuten mit | 764 | −0,004 | −0,20 | 0,23 | unentscheidbar |
+| S1 | NQ 09:30 bis 10:30 mindestens 1 σ im Minus, GC long 10:30 bis 13:25 (Überschuss in Jahren) | 382 | +0,010 | 0,24 | 0,54 | unentscheidbar |
+| V1 | ZN 08:30 bis 08:59 durchgehend über Vortageshoch (unter Vortagestief), GC 09:00 bis 13:25 mit | 714 | −0,053 | −1,30 | 0,04 | empirisch-nichts-gefunden (einzeln, simultan unentscheidbar) |
+| V2 | dasselbe mit 6E | 800 | +0,048 | 1,42 | 0,83 | unentscheidbar |
+| T1 | Vorzeichen 5-Tage-Rendite ZN bis Vortag, GC 08:20 bis 13:25 (Überschuss Long gegen Short in Jahren) | 2.662 | −0,038 | −0,86 | 0,03 | empirisch-nichts-gefunden (einzeln, simultan an der Kante) |
+| T2 | dasselbe mit 6E | 2.696 | −0,053 | −1,16 | −0,06 | empirisch-nichts-gefunden |
+| Familie | Tages-Korb der acht | | | −1,15 | mittlerer Zell-Sharpe brutto höchstens 0,10 (97,5 %) | empirisch-nichts-gefunden |
+| L1 | Lags 1 bis 4 Minuten ZN auf GC (Korrelation), Punkte nach großen ZN-Sprüngen | 2.133 Tage | Korr. 0,0074 [0,0034; 0,0113] | rund 3,7 | +0,08 Pkt [0,005; 0,155] gegen Kosten 0,44 | echt-aber-zu-klein |
+| L2 / L3 | dasselbe mit 6E / NQ | | Korr. 0,003 / 0,000, CI enthält 0 | | ≤ 0,045 / 0,017 Pkt | empirisch-nichts-gefunden |
+
+Info-Zellen (kein Test): B2 −1,20, B3 −0,35, B4 (ZN und 6E beide gegen den Gold-Impuls) +1,92 (n 175), B5 −0,31, B6 +0,97, B1o (B1 ohne Datentage) −1,50, N2 −0,02, S2 −0,04, V3 +0,21. Gesamtbild gegen die Null: Σz² der acht Tests p 0,22, größtes |z| p 0,25, alle 17 Zellen p 0,30 (Monte-Carlo mit Zufallsvorzeichen je Tag und je Monat, je 4.000 Ziehungen). Alle 17 z und die Familie auf 1e-9 nachgerechnet. Unter exakter Null bekäme jede Zelle in 14 bis 37 % „nichts gefunden“ (im Mittel 1,9 von 8, vier oder mehr in 11 %): bei dieser niedrigen SESOI heißt „nichts gefunden“ praktisch „Schätzer negativ“.
+
+### #184a Bestätigung über Stunden (B1)
+
+**Verdikt:** Kein Effekt in der Testrichtung. Läuft der Gold-Impuls am Morgen mit Zins und Dollar, geht Gold bis 13:25 im Mittel nicht weiter, sondern eher zurück (−0,072 R, alle drei Epochen negativ). Die obere Grenze liegt schon brutto unter 0, also für jede Kostenstruktur. Einseitiger Ausschluss, kein Beleg für einen negativen Effekt (zweiseitig p 0,041, unter jeder Mehrfachtest-Schwelle; die Gegenrichtung ist eine neue Hypothese, #184g). Hält auch simultan (z 2,50: obere Grenze netto Sharpe −0,05).
+**Reichweite:** Signal. MGC, Einstieg 09:00 ET in Richtung des GC-Impulses 08:20 bis 09:00, ZN und 6E laufen im selben Fenster je mit mindestens 0,5 × Median der eigenen Bewegung mit, fester Ausstieg 13:25, ohne Stop, Prop-Micro, 2016 bis 10/2026. Ausgeschlossen ist jedes Bein dieser Form mit Netto-Jahres-Sharpe über −0,21; im besten noch möglichen Fall verlängert es die Zeit bis 50k um rund 9 Monate.
+**Kategorie:** empirisch-nichts-gefunden, N = 1 Zelle.
+**Nicht tot:** die Gegenrichtung (#184g), andere Haltedauern, Stops, stetige statt Schwellen-Bestätigung.
+**Wiedervorlage:** GC-, ZN- und 6E-Historie vor 2016 im Bestand (AP142/AP143), oder ein Daten- bzw. Roll-Fix an GC, ZN oder 6E. Termin-Check `wiedervorlagen.json` (`lb184_gold_vor2016`, Datum alle 6 Monate ab 04.01.2027, die Bedingungen stehen im guide), dazu Notiz an AP142/AP143.
+**Stempel:** PC-Lauf 18.10.2026 01:50, `tafel_gcx.py` Fassung 2.1 (md5 851a9c9593d6032b1a765d1ee0e93d81), `prereg.md` zum Lauf 6c0b3c1dc15dfe57c06a87b53dfdadbc, `result.json` 1dde25d1c0e225e9835e40219b9fff66, Engine-Fingerprint ae2c4063c7e2034c5aa60c8e381479ee (das Skript nutzt keine Engine-Module, reine Messung auf den Parquets), NT8-Export AP356 bis 16.10.2026 20:59 UTC (2.756 Tage ab 04.01.2016, md5 GC df73d28f4bdc, ZN 01915e4a9b45, 6E 1e2d055f75ff, NQ 374f906d08c6). Die Wochenend-Streubars dieses Exports (856 bis 963 je Symbol, Sa und So vor 18:00 ET) liegen in keinem benutzten Tag (höchstens 3 Fensterbars je Wochenend-Tag gegen die Schwellen 280 bzw. 200), geprüft 18.10. Datenprüfung nach dem Export-Fix (Dateien getauscht 18.10. 02:25, md5 GC 5c5d29a1d14f, ZN 0146db6670c8, 6E 14b34e0688eb, NQ 7bddbf416b62): an 64 von 2.756 Tagen ändert sich ein Zellwert oder eine Zellzugehörigkeit, alle Urteile bleiben gleich (z N1 0,23 → 0,09, N4 −0,20 → −0,14, V1 −1,30 → −1,43, T1 −0,86 → −0,75, Familie −1,15 → −1,18; derselbe Code in `check_saubere_daten/`, kein zweiter Entscheidungslauf). Ursache laut Export-Session und Code-Prüfung: 18 Tage sind geänderte Kontraktwahl an Rolls bzw. weggefallene Freitags-Streubars, 44 Tage betreffen nur die Datentag-Zellen (N1, N2, N4, B1o): der 60-Tage-Median des GC-Volumens der 08:30-Bar läuft im Skript über die Zeilen der Volumen-Tafel statt über gültige Tage, im alten Stand zählten Sonntags-Mini-Tage als leere Zeilen mit (Fenster etwas kürzer als 60 echte Vortage), seit dem Fix nur noch 22 Kurz-Sessions. Kleine Abweichung von der Festlegung („Median der 60 Vortage“), Urteile unberührt, Lehre in AP416. Gegenprobe auf dem finalen Export (Roll-Donnerstag-Fix, NQ-Lücken aus Databento; md5 GC cad139067e1f, ZN 6b4fbeef1f49, 6E 14b34e0688eb, NQ 0563cbb0a1fe; 2.763 gültige Tage): alle Urteile gleich, z verschiebt sich höchstens um 0,27 (V1 −1,30 → −1,57), Familie −1,20 (`check_final_daten/`). Kriterium: SESOI zeitneutral aus dem Zeit-Fit AP275 P2 (Buch k1, Sharpe 2,11, Korrelation zum Buch 0,09 angenommen), Kosten 0,44 Punkte (1 Tick je Seite plus 2,40 $ E8), N1/N2 0,64, Bezugs-Vola 20,1 Punkte, Betriebspunkt 1 MGC.
+
+### #184b Fremdmarkt am eigenen Level (V1 ZN, V2 6E)
+
+**Verdikt:** V1 (ZN über dem Vortageshoch) zeigt nichts in der Testrichtung (−0,053 R). V2 (6E) liegt positiv (+0,048 R, z 1,42, alle Epochen positiv, Tages-Rotation p 0,079), aber genau auf dem, was das Maximum von acht Null-Zellen erwarten lässt (1,42); Epochen und Rotation tragen keine Zusatzinformation (unter der Null bei diesem z in rund 70 % alle Epochen positiv, die Rotation enthält dieselbe Information wie z).
+**Reichweite:** Signal. MGC, ZN bzw. 6E schließt 08:30 bis 08:59 jede Minute über dem Vortageshoch (unter dem Vortagestief) der Session, GC 09:00 bis 13:25 in dieselbe Richtung, Roll-Tage raus, ohne Stop. V1 schließt einzeln Netto-Sharpe über 0,04 aus (hält, solange die Kosten mindestens rund 0,21 Punkte betragen). Simultan (z 2,50) bleibt netto Sharpe bis 0,22 offen, bestenfalls rund 1,3 Monate schneller. V2: offen bleibt Netto-Sharpe 0,14 bis 0,83.
+**Kategorie:** V1 empirisch-nichts-gefunden, N = 1, nur als Einzelzelle (vorab so festgelegt), simultan unentscheidbar. V2 unentscheidbar, zählt nicht als Friedhof.
+**Nicht tot:** V3 (Fehlausbruch, Info, nichts), Gegenrichtung (Fade des Ausbruchs, gehört zu W46), andere Level (Wochenhoch, runde Marken), andere Haltedauern, Stops.
+**Wiedervorlage:** V1: Median σ60 von GC (08:20 bis 13:25) über die letzten zwei Jahre ab 43 Punkten (heute 20,1; dann fällt V1 auf unentscheidbar, Umstempeln ohne neuen Lauf), oder Historie vor 2016. V2 nur mit Historie vor 2016 (Power dort 27 % beim vollen, 13 % beim halbierten Effekt); eine unveränderte Wiederholung auf neuen Tagen bräuchte für 80 % Power rund 33 Jahre, und geschrumpft (0,58) liegt V2 bei netto Sharpe 0,05, unter der zeitneutralen Schwelle 0,14. Kein Ticket mit Datum, Termin-Check `lb184_gold_vor2016`.
+**Stempel:** wie #184a.
+
+### #184c Tages-Vorlauf (T1 ZN, T2 6E)
+
+**Verdikt:** Die 5-Tage-Richtung von Zins und Dollar liefert in Testrichtung kein Vormittags-Bein für Gold, beide Schätzer negativ (−0,038 und −0,053 R Überschuss Long- gegen Short-Tage innerhalb der Jahre; Gegenrichtung offen, #184g).
+**Reichweite:** Signal bzw. Tagesbias. MGC, Vorzeichen der 5-Tage-Rendite von ZN bzw. 6E bis Vortag, GC 08:20 bis 13:25 jeden Tag in diese Richtung, ohne Stop. Ausgeschlossen: Netto-Sharpe über 0,03 (T1) bzw. −0,06 (T2). T2 hält ab 0,08 Punkten Kosten und auch simultan, T1 ab 0,20 Punkten, simultan genau auf der Hürde (0,0718 gegen 0,0718).
+**Kategorie:** empirisch-nichts-gefunden, N = 2 (T1 nur als Einzelzelle belastbar).
+**Nicht tot:** Gegenrichtung, andere Fensterlängen (1, 20 Tage), Realzins (DFII10, seit 15.10. im Bestand) und Zinskurve (W43, Feasibility AP369), Swing-Haltedauer (Live-Buch-Merker).
+**Wiedervorlage:** T1 bei Median σ60 von GC ab 44 Punkten (Kipp 43,8), beide mit Historie vor 2016. Termin-Check `lb184_gold_vor2016`.
+**Stempel:** wie #184a.
+
+### #184d Zahl, Zins-Sprung und Aktien-Stress (N1, N4, S1)
+
+**Verdikt:** Alle drei nahe null (+0,009, −0,004, +0,010 R). Nicht entscheidbar: eine Einzelzelle erkennt ein Rohbein erst ab Jahres-Sharpe rund 1,05 bis 1,10, die zeitneutrale Schwelle liegt bei 0,10 bis 0,12.
+**Reichweite:** Signal. N1: MGC an 08:30-Datentagen (GC-Volumen der 08:30-Bar mindestens 3 × Median), Richtung des ZN-Sprungs 08:30 bis 08:35, GC 08:35 bis 10:00, Kosten 0,64. N4: Nicht-Event-Tage, erster ZN-5-Minuten-Sprung mindestens 4 × Median 08:40 bis 12:00, GC 60 Minuten mit. S1: NQ 09:30 bis 10:30 mindestens 1 σ im Minus, GC long 10:30 bis 13:25, gemessen als Überschuss gegen dieselbe Strecke an allen anderen Tagen. Offen bleibt Netto-Sharpe 0,10 bis 0,44 (N1, bis zur Sharpe-neutralen Schwelle, also nur „Hebel“), 0,12 bis 0,23 (N4, nur Hebel; nach der Sharpe-neutralen Info-Hürde wäre N4 nichts gefunden), 0,10 bis 0,54 (S1, davon 0,46 bis 0,54 über der Sharpe-neutralen Schwelle).
+**Kategorie:** unentscheidbar, alle drei. Zählen nicht als Friedhof.
+**Wiedervorlage:** Historie vor 2016, auch dann grob (MDE 1,05 → rund 0,85 mit Daten ab 2010). Kein eigenes Ticket, Termin-Check `lb184_gold_vor2016`.
+**Stempel:** wie #184a.
+
+### #184e Vorlauf 1 bis 4 Minuten (L1 ZN, L2 6E, L3 NQ)
+
+**Verdikt:** ZN führt GC auf Minutenbars messbar (Korrelation der letzten 4 ZN-Minuten mit der nächsten GC-Minute 0,0074 [0,0034; 0,0113], unter Zufallsvorzeichen weg, nur bei ZN, nicht bei 6E und NQ). Die Größe entspricht rund 2,5 bis 3,6 Sekunden Vorsprung (Rückrechnung über den Gleichlauf, nicht gemessen). Ob das Preisfindung im Sekundenbereich oder ein Zeitstempel-Versatz der Bar-Schlüsse ist, trennen Minutenbars nicht. Die Gegenrichtung ist knapp negativ (−0,0033, eine von sechs Korrelationen) und stützt keine der beiden Lesarten. Ökonomisch nach großen ZN-Sprüngen +0,08 Punkte je 4-Minuten-Trade [0,005; 0,155], als Obergrenze ohne Latenz; schon 1 Tick Spread (0,10) liegt darüber.
+**Reichweite:** Signal, Taker, MGC, 08:20 bis 13:29 ET, Summe der Lags 1 bis 4 Minuten, 4-Minuten-Trade ohne Latenz (Obergrenze). Auch der billigste belegte MGC-Taker (1 Tick Spread, FFN 1,78 $, rund 0,28 Punkte) liegt über der oberen Grenze 0,155. Volles GC mit halbem Spread (0,145) ist nicht ausgeschlossen.
+**Kategorie:** L1 echt-aber-zu-klein, gilt für den Vorlauf auf Minutenbars; ob er bei anderen Kosten wieder aufsteht, hängt an der offenen Ursache. L2/L3 empirisch-nichts-gefunden, N = 2 (obere Grenzen 0,045 bzw. 0,017 Punkte gegen 0,44).
+**Nicht tot:** L1 als Ausführungshilfe für andere GC-Beine, ungeprüft.
+**Wiedervorlage:** (1) Sub-Sekunden-Daten GC und ZN im Bestand (Databento, AP142/AP143): Vorlauf auf Handelszeitpunkten nachmessen. (2) Eigenes Konto mit passiver Ausführung und Gesamtkosten unter 0,08 Punkten je Round Trip. Termin-Check `lb184_gold_vor2016`.
+**Stempel:** wie #184a.
+
+### #184f Familie
+
+**Verdikt:** Der Tages-Korb der acht Test-Größen liegt bei z −1,15. Mittlerer Brutto-Zell-Sharpe −0,15 ± 0,13, obere Grenze 0,10 (97,5 %) bzw. 0,06 (95 %), nach mittleren Kosten (Sharpe 0,25) netto −0,15 bzw. −0,19; ein typisches Bein an der 95-%-Grenze verlängert die Zeit bis 50k um rund 6 Monate.
+**Reichweite:** das gewichtete Mittel dieser acht Zellen in der vorab festgelegten Richtung. Schließt keine einzelne starke Zelle aus, keine gedrehten Vorzeichen und sagt nichts über Zellen mit entgegengesetztem wahren Vorzeichen, die sich im Mittel aufheben (das legt #184g nahe).
+**Kategorie:** empirisch-nichts-gefunden, N = 8 Zellen (als Familie).
+**Wiedervorlage:** Historie vor 2016 (`lb184_gold_vor2016`).
+**Stempel:** wie #184a.
+
+### #184g Hinweis: Gold läuft gegen die Morgenrichtung von Zins und Dollar (W46, post hoc, kein Urteil dieser Tafel)
+
+**Befund:** Die sechs B-Zellen (disjunkte Tage) ordnen sich nach dem Score Mitläufer minus Gegenläufer (+2 ZN und 6E mit dem Gold-Impuls bis −2 beide dagegen): −0,072 / −0,041 / −0,017 / −0,017 / +0,053 / +0,145 R, fünf Stufen streng monoton. Gerade −0,045 R je Stufe, z −2,86; post hoc aus mindestens 17 Zellen und 15 Kontrasten, grob korrigiert p 0,02 bis 0,08 (unkorrigiert 0,002 bis 0,004). Im linearen Modell fällt Golds eigener Impuls heraus (Achsenabschnitt +0,006 R, Rest-Chi² 0,94 auf 4 FG): Gold läuft von 09:00 bis 13:25 gegen die Morgenrichtung von ZN und 6E (08:20 bis 09:00). B4 positiv und seitengleich spricht gegen W12 (Residuum-Rückkehr). B1 negativ und B5 null sprechen gegen W13 (Residuum-Momentum). Die Lesart Faktor-Rückkehr (Zins und Dollar laufen nachmittags zurück, Gold läuft über die Kopplung mit) ist eine Hypothese; einzige Stütze ist Literatur (Cusatis/Kulkarni/Thomas 2009, Treasury-Note-Futures negativ serienkorreliert, alte Stichprobe, Frequenz unbekannt), auf unseren Daten nicht gemessen. V1, T1, T2 haben dasselbe Vorzeichen, V2 widerspricht. Confound: B1-Tage haben große, B5-Tage kleine Gold-Impulse.
+**Einordnung:** neue Hypothese W46 „Faktor-Rückkehr“ (Mean Reversion, Signal), steht vor Stufe 0. Ein aus der post hoc gefundenen Steigung gebautes In-Sample-Modellbein käme geschrumpft (0,58 bzw. empirisches Bayes) auf netto Sharpe 0,13 bis 0,25, also um die zeitneutrale Schwelle 0,19 und weit unter den Sharpe-neutralen Schwellen der B-Zellen (0,46 bis 0,73). Das ist eine Obergrenze der Erwartung, kein Schätzer eines Beins.
+**Kategorie:** keine (Hinweis, kein Urteil). Zählt nicht als Friedhof und nicht als Fund.
+**Wiedervorlage:** Zwei Wege, beide vorab festlegen. (1) Mechanismus-Falsifier auf vorhandenen Daten: laufen ZN und 6E selbst 09:00 bis 13:25 gegen ihre Bewegung 08:20 bis 09:00? Wenn nicht, ist die Lesart Faktor-Rückkehr erledigt (Ticket AP414, 0 Register-Trials, Mini-Vorab-Festlegung zuerst). (2) Historie vor 2016 (Databento ab 06/2010, AP142/AP143): Power 65 % beim vollen, 27 % beim halbierten Trend; nur neue Tage bräuchten 8 bzw. 24 Jahre. Eine zweite Tafel mit stetigem Maß und Kovariaten (Impulsgröße) zählt nur auf diesen Daten; auf 2016 bis 2026 ist sie In-Sample. Termin-Check `lb184_gold_vor2016`.
+**Stempel:** wie #184a.
+
+**Lehre:** Eine Prämissen-Tafel mit gestuften Info-Zellen kann eine Ordnung zeigen, die keine einzelne Zelle trägt. Sie ist dann Kandidat für ein stetiges Maß, prüfbar aber nur auf Daten oder Folgerungen, an denen nicht gesucht wurde (vor 2016, neue Tage, Mechanismus am Fremdmarkt selbst, Lehre #182), nie in einer zweiten Tafel auf denselben Tagen. Bei niedriger SESOI heißt „nichts gefunden“ praktisch „Schätzer negativ“ und schließt nur die Testrichtung aus; künftige Vorab-Festlegungen legen fest, ob es je Zelle oder simultan gilt, und der Eintrag nennt beides. Beide leben bisher nur als Text (logbook-distiller 18.10.): der Satz steht seit heute in Stufe 2 der [[Testphase Juli-Modus]], der Code-Teil (Flag „Daten vorab gesehen“, Info „je Zelle oder simultan“, Kosten aus der Gebühren-Tabelle in `tafel_lib`) ist AP416.
+
+**Nebenbefund Kosten (AP375):** frühere GC-Tests (#165, #174, #180b/c, Kommentar in `discovery/hypothesis_bank.py` vom 19.09.) rechneten MGC mit 1,60 $ Gebühr („konservativ“, ohne Beleg), E8 verlangt 2,40 $ (primär belegt), also 0,08 Punkte je Round Trip zu billig. Keins dieser Urteile wird mit den belegten Kosten günstiger. Seit 15.10. (AP384) rechnet `qbt` je Micro aus `COMMISSION_RT_MICRO` (MGC 2,40 $), ein Vollkontrakt ohne Gebühr bricht ab; die Urteile davor bleiben auf den alten Gebühren. Offene Lücke: eine im Job ausdrücklich gesetzte Micro-Gebühr unter der Tabelle läuft still durch (AP417). Engine-freie Tafeln verdrahten die Kosten selbst (`tafel_gcx.py` 0,44, nachgerechnet richtig, AP416). #174 Urteil A nennt „1 Tick + 1,02 $“ (MNQ-Default), ob Text oder Rechnung, ist ungeprüft.
+
+**Buch-Lücke:** hängt an der Prämisse. Keine Zelle trägt, also kein Grid, kein Engine-Umbau (S-GCX-1, -2, -8 werden nicht gebaut), AP373 bleibt gesperrt, nichts fürs Next-Week-Buch. W46 fehlen Why und Falsifier, Daten vor 2016 über AP142/AP143.
+
+## #185: Wochenend-Prüfung 18.10.2026 (Gate v4 Stufe 2): RTY-Gap abgeschaltet und aus dem Next-Buch, EVENT_ES aus LIVE_EXTRA, Zielbuch echt plus OpEx plus LD01 (18.10.2026)
+
+**Anlass:**
+- Wochenend-Prüfung, Entscheidung Max am 18.10. per Popup, alle acht Punkte wie empfohlen. Vorlage: [[Wochenend-Prüfung 17.10.2026]].
+- Rechnung: `engine/weekend_check/2026-10-16_neustand_1016.md`, gerechnet nach dem gemeinsamen Sync vom 16.10. (echte Gebühr 1,90 $, 150k-Käfig, neues `tempo_plan`).
+- Gegenleser:
+  - quant-mathematician und quant-statistician (16.10.), verdict-auditor und logbook-distiller (18.10.)
+  - Gebühren-Befund aus AP384
+  - LIVE_EXTRA-Nachrechnung aus AP223/AP286/AP303 (`engine/_scratch_ap223_286_303/live_extra/zusammenfassung.md`)
+- Tickets: AP419 (RTY auf FFN aus), AP420 (LD01-Vergleich), AP421 (k2), AP286, AP394, AP395, AP387.
+
+**Was entschieden wurde:**
+- Das echte Buch bleibt bei 4 Beinen.
+- Next-Buch 6 Beine (echt plus NQ_OPEXMOM_fv4 plus NQ_LD01_vix16_fv4), RTY-Gap raus.
+- OpEx: NT8-Port jetzt (AP394), nach grüner Parität ins echte Buch.
+- LD01: erst der Vergleich „PB3 doppelt bei VIX unter 16“ (AP420), dann der Port (AP395).
+- Asia nur auf den 150k-Konten, Umsetzung nach den Auflagen aus AP387.
+- Kein Konto auf k2 (AP421).
+
+**Zahlen aus dem Bericht** (Monate bis 50k mit RiskGuard-Stopp):
+
+| Buch | Monate |
+|---|---|
+| echtes Buch | 83,0 |
+| Next 7er | 68,6 |
+| 6er ohne RTY | 71,5 |
+
+Der 6er trägt in der ersten Fassung mit z 3,05, recent3y gegen echt −7,5. Mit Trade-Unsicherheit liegt er laut Statistiker bei 90 % zwischen −18,9 und −6,8 Monaten.
+
+**Buch-Lücke:**
+- OpEx: NT8-Modul plus Parität fehlen (AP394).
+- LD01: der Vergleich (AP420), danach Port und Parität (AP395).
+- Asia 50k: die AP387-Auflagen.
+
+### #185a RTY-Gap (`gen_gap_RTY_r1_08242126_v4re_d261002`)
+
+**Verdikt:** Nicht ins echte Buch, auf FFN1/FFN2 abgeschaltet (AP419), aus dem Next-Buch genommen.
+- Die erste Fassung (Linie RTY_Gap-fade, Stand 09.08.) ist nicht belegt: t 0,60.
+- In der Spalte „erste Fassung“ ist echt plus RTY nicht belegt: z 0,66, mittlere Zeit −0,6 Monate (90-%-Band −2,2 bis +0,9).
+- Gate v4 Stufe 1 mit echter Gebühr: Sharpe-t 1,87 bei 1,90 $ bzw. 1,90 bei 1,78 $ (FFN), IS-PF 1,05. Stufe 1 scheitert an Sharpe-t und IS, die DSR (0,43 bei 1,90 $, N = 30) ist nur Info.
+- Die −2,9 Monate, die RTY im 7er roh bringt, sind laut Mathematiker und Statistiker reiner Tuning-Gewinn (vierte Retune-Generation).
+- Dazu kommt die Datenquelle (Golden Master 18.10., AP313): Die Linie RTY_Gap-fade hat auf Databento bis 10.08. 211 Trades und Sharpe +0,199, auf NT8 im selben Zeitraum 221 Trades und Sharpe −0,036. Die Databento-Zahlen sind für RTY also die optimistische Quelle.
+
+**Reichweite:**
+- Signal: Gap-Fade auf RTY (M2K), Gap 0,45 bis 1,625 ATR, Stopp 0,5 × Gap, kein Target, Bestätigung 5 Min, rund 31 Trades je Jahr (Konto-Karte).
+- Rolle: Zusatzbein im Prop-Buch bei k1 (Käfig E8/FN 50k, E8/FFN 150k mit RiskGuard-Tagesstopp).
+- Kosten: 1,90 $ bzw. 1,78 $ je Round Trip.
+- Daten: RTY ab 10.07.2017 bis 07.08.2026 (Databento).
+
+**Kategorie:** `unentscheidbar`, zählt nicht als Friedhof.
+- Begründung wie die Umstempelung der Linie in #173: Bei n = 211 liegt die Nachweisgrenze bei 0,301 R gegen ein Ziel von 0,0595 R, das Bein war auf keiner Datenversion von Null zu unterscheiden.
+- Das Stufe-1-Ergebnis (t 1,87, Job mit N = 8 Grid-Configs, Fehlerbalken t ±0,90 bei 1,90 $) ist eine Messung dieser Fassung, kein Urteil über die Klasse.
+
+**Wiedervorlage** (`wiedervorlagen.json`, Eintrag `lb185a_rty_gap`):
+- Max entscheidet AP313/AP199 (NT8-Hauptdaten): dann die Linie auf der gewählten Quelle neu messen. Bleibt der Vorzeichenwechsel, ist das auf der neuen Quelle `empirisch-nichts-gefunden`.
+- Gebühr je Round Trip unter 1,34 $ (qbt-Tabelle). Das öffnet nur Stufe 1 wieder, nicht die Belegfrage: Die erste Fassung bleibt auch bei 1,02 $ bei t 0,76.
+- Ein unabhängiger Fund derselben Gap-Fade-Klasse auf einem anderen Markt.
+
+**Stempel:**
+- Engine-Fingerprint ae2c4063c7e2034c5aa60c8e381479ee (Sync 16.10.), Datei-md5 `golden_masters.json` c4fe8a23 und `qbt.py` 3ca7a0d3.
+- Daten Databento bis 07.08.2026.
+- Kriterium Zeit bis 50k mit RiskGuard-Tagesstopp, Kalender-Modus, k1, Begleitdatei erste Fassung 20bd53bf.
+
+**Nicht tot:**
+- Gap-Fade als Klasse und RTY als Markt.
+- Große Gaps über 1,0 ATR (dort rund 70 % des Ergebnisses laut strategy-auditor 11.10.) als eigene vorregistrierte Zelle.
+- Andere Kostenstruktur (Vollkontrakt auf eigenem Konto).
+
+### #185b EVENT_ES_primary (LIVE_EXTRA, Live-Buch)
+
+**Verdikt:** Aus LIVE_EXTRA genommen (`live_finalize.py`), wegen Doppelung. OPEXMOM_NQ bleibt dort als Beobachtungsbein, bis NQ_OPEXMOM_fv4 ins echte Buch kommt.
+- Bei 1,90 $ und je 1 Micro:
+
+| Bein | $/Jahr | Trades/Jahr | t | DD |
+|---|---|---|---|---|
+| EVENT_ES | 245 | 10,4 | 1,54 | −1.481 |
+| davon OpEx-Hälfte | 185 | 6,2 | 2,20 (nachträglich geteilt) | |
+| davon FOMC-Hälfte | 61 | 4,2 | 0,45 | |
+| OPEXMOM_NQ | 250 | 6,6 | 1,79 | −353 |
+
+- An 52 gemeinsamen Tagen ist es dieselbe OpEx-Wette wie OPEXMOM_NQ (Korrelation dort 0,87).
+- Das „Grade A“ vom 31.07. galt mit Same-Bar-Look-ahead, das betraf nur den OpEx-Teil (AP286). Die FOMC-Hälfte hatte nie einen.
+
+**Reichweite:**
+- Kombi aus #054. An OpEx-Freitagen `opex_mom` (Einstieg ab Minute 180, Schwelle 0,3, Stopp 0,75).
+- An FOMC-Tagen die fomc_post-Logik aus #034: Einstieg 14:15 in Richtung der Bewegung 14:00 bis 14:15, gehalten bis Close.
+- ES, Rolle Bank-Bein im Live-Buch (kein Prop-Käfig), 1,90 $ je Round Trip.
+- FOMC-Liste ab 27.01.2021, rund 45 Termine (verdict-auditor), Daten bis 06.08.2026.
+
+**Kategorie:**
+- OpEx-Hälfte: kein Urteil, sie lebt in OPEXMOM_NQ und NQ_OPEXMOM_fv4 weiter.
+- FOMC-Hälfte: `unentscheidbar`. Bei rund 45 Ereignissen liegt die Nachweisgrenze bei PF rund 1,6 (wie #105 für dieselbe Config mit n 43, Ursprung #034). #181c markiert FOMC schon bei n 84 vorab als unentscheidbar.
+
+**Wiedervorlage** (`wiedervorlagen.json`, Eintrag `lb185b_fomc`): FOMC-Liste in `calendar_fx` auf 2016 bis 2020 zurück ergänzt (rund +40 Termine). Dann fomc_post allein einmal neu messen, als eigene vorregistrierte Zelle.
+
+**Stempel:** Engine-Fingerprint ae2c4063c7e2034c5aa60c8e381479ee, `calendar_fx` mit AP286-Fix (OpEx-Signal aus der Bar vor dem Einstieg), Gebühr 1,90 $, Daten bis 06.08.2026, Kriterium dSR im Live-Buch plus Einzel-t.
+
+**Nicht tot:** FOMC auf NQ, OpEx-Freitag auf ES als eigenes Bein, FOMC als Filter für andere Beine.
+
+**Lehre 176:** *Ein Bein, das live läuft, ohne im echten Buch zu stehen (Live-Experiment wie RTY-Gap auf FFN seit 11.10., Bank-Beine in LIVE_EXTRA), hat keine automatische Ausstiegsregel.*
+- Die Edge-Health-Prüfung (`app_server._edge_health`, Alarm in `auto_check`) kennt nur die Beine aus `edge_ref.json`, also das echte Buch.
+- Die Ausstiegsregel vom 11.10. für RTY-Gap stand nur als Notiz in AP338 („Eintrag in auto_check.py steht aus“).
+- Gebühr: Die Gebühren-Seite derselben Geschichte ist seit AP384 Code (`qbt.COMMISSION_RT_MICRO`), siehe #184 Nebenbefund Kosten und AP417.
+- Code-Gate fehlt noch: Ticket „Live-Ausstiegsregel-Pflicht“.
+
+**Nachtrag 18.10.2026 nachmittags:**
+- **Ursache der Quellenabhängigkeit belegt (AP199, Export-Session):** Databento fehlen 67 RTY-Sessions in Roll-Wochen. Dort hatte Databento Kalender-Spread-Kurse, die am 30.08. gelöscht wurden (#075). NT8 hat an diesen Tagen echte Kurse, RTY-Gap handelt dort rund 10 Trades mehr, und der Sharpe geht von +0,199 auf −0,036. Die Databento-Zahlen von #185a sind also zu optimistisch. Das stützt die Entscheidung, ändert aber die Kategorie nicht.
+- **Vorfall Auto-Promotion:**
+  - Nach dem Rauswurf von `gen_gap_RTY_r1_08242126` hat die Zyklusmarke aus AP209 die zurückgestellten RTY-Varianten neu geprüft.
+  - Ohne offenes RTY-Bein war `gen_gap_RTY_r1_10122016` kein Klon mehr und kam als Zusatz ins Next-Buch (dSR roh +0,067).
+  - Das ist dieselbe Linie (r 0,95), also gegen Max' Entscheidung.
+  - Noch am selben Tag zurückgenommen: Alle 8 Kandidaten der Linie stehen in der Inbox auf `promote_skipped`, das Next-Buch hat wieder 6 Beine.
+
+**Lehre 177:** *Eine Verwerfung durch Max muss für die Automatik so hart gelten wie ein Gate: Wer ein Bein rauswirft, muss auch dessen Kopien sperren, sonst holt die nächste Neuprüfung die Linie zurück.*
+- Gate fehlt noch: AP425 (`next_week.verworfen`, promote_next stellt Kandidaten mit Korrelation über 0,7 zu einem verworfenen Bein zurück).
+- Bis dahin gilt: Nach jedem Rauswurf aus dem Next-Buch die Inbox-Kandidaten derselben Linie auf `promote_skipped` setzen.
+
+## #186: AP418 Nachrechnung aller NT8-Ergebnisse nach dem Wochenend-Streubar-Fix: kein Urteil kippt, kein Bein betroffen, GC-Opening-Drive halbiert seine Survivors, drei alte Lichtblicke verschwinden (18.10.2026)
+
+**Anlass:**
+- Golden Master nach dem NT8-Export vom 18.10. (AP356): der Konverter `exported_data_nt8/_nt8_to_parquet.py` hat seit dem ersten Export am 19.09. Bars außerhalb der CME-Woche durchgelassen (Samstag, Sonntag vor 18:00 ET, Freitag ab 17:00 ET; 884 bis 1.284 je Markt).
+- Im RTH-Fenster wurden daraus Mini-Tage mit meist 1 Bar (rund 11 % aller Tage bei GC/CL). Alles mit Vortag, ATR, Gap, Tagesrange, Wochentagsfolge oder rollierenden Tagesfenstern war damit verfälscht. Außerdem fielen Rolls an Sonntags-Mini-Sessions mit 1 bis 2 Bars, also ein paar Tage zu früh.
+- Fix am 18.10.: CME-Wochenfilter im Konverter (Krypto erst ab Session 30.05.2026 ausgenommen), dazu Roll-Donnerstag-Fix (`MIN_BAR_SHARE` 0,8). Finaler Stand 18.10. 16:43, PC und Box MD5-gleich. Backups `_bak_20261018` (Stand 19.09.) und `_bak2_20261018` (Stand 02:25).
+- Ticket AP418. Gegenleser: quant-statistician (vier knappe Fälle), verdict-auditor (hielt mit Auflagen, fand vier fehlende Ergebnisse, alle nachgerechnet), logbook-distiller.
+
+**Was nicht betroffen war (geprüft, nicht angenommen):**
+- **Bücher:** echtes Buch (4 Beine), Next-Week-Buch (6 Beine) und LIVE_EXTRA sind reine NQ-Beine. Bis zum Hauptdaten-Tausch am 18.10. kamen NQ/ES/YM/RTY in der Engine aus Databento (`qbt.bars_file` nahm die NT8-Datei nur als Fallback). Der Tausch auf NT8-Hauptdaten passierte erst nach dem Fix und auf dem finalen Stand (Golden Master a569fb20). Kein Live- oder Next-Week-Bein kann durch die Streubars kippen.
+- **Track Record 12.10.** (`_scratch_trackrecord_1210/data_ext`, NQ/RTY ab 06.08. aus NT8 verlängert): nach der Naht 0 Wochenend-Bars in `ext` und `ext17`. Die Konto-Karten bauen darauf auf und bleiben.
+- **#184 Gold Cross-Asset:** von der Gold-Tafel-Session selbst nachgeprüft, Urteile gleich (#184a).
+- **Vorzählung alpha-scout 15.10.** (36 Trials `prescan_count` auf 6B/6E/ZS/ZW): nur Auswahl-Zählung für Gruppe 2; die echten Jobs daraus sind unten neu gerechnet.
+- **SI, HG, PL, 6J, MET, FDAX:** kein Ergebnis seit 19.09. (die ersten fünf kamen erst am 18.10. mit gefilterten Daten).
+- **#165 Lehre 1 und 3** sind überholt: Lehre 1 (Kostenquote gegen Tagesrange, MGC 3,3× usw.) rechnete die Tagesrange mit 1-Bar-Tagen, Rangfolge vermutlich gleich, Zahlen nicht mehr belastbar. Lehre 3 (NQ NT8 gegen Databento „trade-identisch, +1,8 pp") lief auf ungefiltertem NT8-NQ und ist durch den Quellenvergleich vom 18.10. (AP199) ersetzt.
+
+**Was neu gerechnet wurde** (alles in Sandbox-Kopien, kein Register, keine Inbox, keine Wiederholungs-Trials):
+
+| Ergebnis | alt | neu | |
+|---|---|---|---|
+| 86 Queue-Jobs seit 19.09. (NM-GC 46, NM-CL 28, NM-asian GC 3, AC-08b, cleia01 + Kontrolle, gcclk01, ap195 x2, fx6e, grain ZS/ZW) | 0 Survivors, 0 Kandidaten | 0 Survivors, 0 Kandidaten, kein Status gewechselt | bleibt |
+| übrige 35 NT8-Jobs der Queue | | 16 Prämissen-Duplikate eines neu gerechneten Jobs, 19 `__v4re` mit identischem Grid und identischer Basis | durch die 86 abgedeckt |
+| #165 NM-Klone GC/CL | Prämissen gescheitert | größte Bewegung NM-TV-10 GC IS expR −0,02 → +0,30, aber edge 0,5 pp (nötig 1,0), gesamt −0,41 R | bleibt |
+| #180a CL-EIA | WF-OOS −1.437 $, 2/9 Jahre | −1.360 $, 2/9 Jahre | bleibt |
+| #180b GC-COMEX | 4 Prämissen, OOS −0,076 bis −0,308 R | OOS −0,072 bis −0,313 R | bleibt |
+| #180c TD-12 GC (Sternzelle) | +0,0015 ATR [−0,0077; +0,0105], beta +0,0146 [+0,0049; +0,0243] | +0,0039 ATR [−0,0048; +0,0123], beta +0,0138 [+0,0052; +0,0226] | bleibt echt-aber-zu-klein |
+| #180c TD-12 CL (Sternzelle) | +0,0046 ATR [−0,0055; +0,0145], Kriterium 0,0065 verfehlt | +0,0070 ATR [−0,0029; +0,0164], Kriterium formal knapp erfüllt | siehe #186b |
+| #171 W19 GC/CL | kein Markt trägt Information | CL abs_sig gegen Vola rho 0,053 [0,018; 0,084] formal über der Regel | bleibt (Mehrfachtest-Rauschen) |
+| #173 Oxford Gap, nur GC/CL | Pool GC+CL 6 von 12 Zellen positiv, ctl_null-Perzentil 0,52; Urteil 2 GC 22 Ereignisse, Montags-Anteil 63,6 %, CL 23 / 69,6 % | 3 von 12, Perzentil 0,42; GC 22 / 54,5 %, CL 25 / 64,0 %; Overlap GC 99,9 %, CL 100 % | bleibt |
+| #174 GC Opening-Drive, Grid 1.800 | 12 Survivors (7x 08:20, 5x 10:00) | 6 Survivors (1x 08:20, 5x 10:00), alle schon vorher dabei | siehe #186a |
+| #174 Nachtests, VWAP-Filter, Xu, Wei | Top-10-SR 0,40 bis 0,51; VWAP OOS 15/16; Wei rho +0,010 | SR 0,29 bis 0,50; 15/16; rho −0,001 | bleibt |
+| #174 Gao letzte Halbstunde | brutto +0,110 Pkt, Untergrenze nach Korrektur für 5 Specs −0,019 | brutto +0,140, Untergrenze für 5 Specs −0,013 (für 2 Specs +0,007), netto −0,362 | bleibt empirisch-nichts-gefunden |
+| #177/#178 Juli-Modus Idee 2/3 (Roll-Lücken NQ/ES aus NT8) | Urteile „trägt nicht" | reine Roll-Wirkung: 23 (NQ) / 13 (ES) Tagesrenditen, 10/18 Richtungs-Etiketten, Vola-Etiketten gleich; Nacht-Überschuss +2,90 → +2,93 bp | bleibt |
+| Juli-Modus Idee 1 (26.09.) Freitags-Hoch auf GC | 255 GC-Montage, Überschuss −4,1 % [−10,1; +2,0], netto −0,64 Pkt | 441 Montage (430 bis zum alten Datenende), −5,8 % [−10,2; −1,4], netto −1,15 Pkt | bleibt, eher stärker |
+| Juli-Modus 24.09. CL/EIA Paper-Specs | netto −5,76 bis −8,46 $ je MCL | −5,90 bis −8,28 $ | bleibt |
+| Juli-Modus 24.09. Vola-Regime-Filter GC (26 Trials) | Makro F1 hoch +1,21 Pkt (217 $/J), 4-Beine-Portfolio 402 $/J SR 0,30 | Makro F1 −0,24 Pkt (−46 $/J), Portfolio −254 $/J SR −0,18 | siehe #186d |
+| Lab-Karte „GC Regime-Portfolio (3 Beine)" 24.09. | 563 $/J, SR 0,40 (heutige Engine auf alten Daten: 514 $/J, SR 0,36) | nur Fix 508 $/J, SR 0,36; mit Daten bis 16.10. 45 $/J, SR 0,03, MaxDD −5.726 $ | Fix wirkt nicht, neue Marktzeit kippt den Lichtblick |
+| Juli-Modus Regime-Tafel und rollierender Rang (GC/CL-Zellen) | 0 Treffer | 0 Treffer | bleibt |
+| GC-Prämissen 12.10. (ON-01, MR-03a, MR-02, NEWS-01) | trägt nicht | trägt nicht | bleibt (NEWS-01 siehe #186e) |
+| SIP-ORB 12.10. auf 8 NT8-Märkten, Gap-Filter GC/CL | alle negativ, Filter ohne Wirkung | alle negativ, Filter ohne Wirkung | bleibt |
+| SIP-ORB NQ mit Gap-Filter (lief aus der NT8-NQ-Datei) | +0,186 R, t 2,6 | +0,206 R, t 3,16, 11/11 Jahre | bleibt unentscheidbar, siehe #186e |
+| Regime-Karte (State Classification), nur Roll-Lücken aus NT8 (Stand 02:25) | | 23 von 10.461 Etiketten anders (0,22 %), alle an der Richtungsschwelle, Vola-Achse 0 | bleibt; Neubau ohnehin fällig nach dem Hauptdaten-Tausch (AP199/AP313) |
+
+**Hauptdaten-Tausch, nicht Teil von AP418, aber hier gesehen:** bei #177 verschiebt der Wechsel Databento → NT8-Hauptdaten plus Verlängerung die Zahlen stärker als die Rolls (Nacht-Überschuss ruhig +4,9 bp [3,11; 6,89] → +2,9 bp [0,82; 4,69]). Das Urteil bleibt, die Schlagzeile „+4,9 bp" in #177 ist mit heutigen Daten veraltet.
+
+**Lab-Karten:** gut 20 GC/CL-Karten vom 24.09., 25.09., 26.09. und 12.10. stehen mit Trades auf Altdaten im Lab. Sammelvermerk: Zahlen dort sind vor dem Fix gerechnet, gültig sind die Werte dieses Eintrags.
+
+### #186a GC Opening-Drive (#174 Urteil A)
+
+**Urteil:** Bleibt. 6 statt 12 Survivors aus 1.800, unter Nulldrift etwa 4 erwartet (Null-Welten 0 bis 12), P(≥ 6) unter Poisson 0,22. Das alte 08:20-Cluster (7 → 1) war zum Teil Datenartefakt. Die 5 Survivors bei 10:00 bleiben, haben aber IS nur noch 0,010 bis 0,048 R (OOS-lastiges Gold-Trendregime). Survivor #5 (08:20, 15 Min, 0,3 %, Stop 0,3x Fenster, Target 2R): expR 0,150 → 0,079, t ca. 1,80 → 0,97, bei 2 Ticks 0,099 → 0,018 R, 259 → 128 $/J je MGC.
+**Reichweite:** wie #174 A (GC/MGC, Signal-Rolle, Anker 03:00/08:20/09:30/10:00 ET, Fenster 5 bis 60 Min, 4 Stop-Basen, 5 Exits, MGC-Kosten 1 Tick + 1,02 $, Stress 2 Ticks).
+**Kategorie:** empirisch-nichts-gefunden, N = 1.800. „An den Kosten tot" wäre falsch, weil auch die Brutto-Edge nicht belegt ist.
+**Wiedervorlage:** Die alte Bedingung „#5 als Vorzeichen-Check auf GC vor 2016" fällt weg (Power 16 % bei 5 Jahren, 24 % bei 10 Jahren), #5 wird nicht mehr eingefroren. Neu: am 16.10.2027 (12 Monate neue Daten) das 10:00-Cluster (5 Configs, Parameter eingefroren) einmal als Vorzeichen-Check auf den Daten ab 17.10.2026. Der eigene GC-Anker AP197 bringt für dieses Grid nichts Neues, der Harness verschob die Bars bitgleich.
+**Stempel:** siehe Sammelstempel; Grid auf dem Stand 02:25, der sich bei GC vom Endstand nur an 5 Sessions unterscheidet (27.05.2016, 23.01.2026, 24., 27. und 28.07.2026; Endstand 1.617 Zeilen mehr). Kriterium `_scratch_gc_od/grid.py` unverändert.
+
+### #186b TD-12 Sternzelle auf CL (#180c)
+
+**Urteil:** Der Satz in #180c wird präzisiert. Neu +0,0070 ATR, CI90 [−0,0029; +0,0164], gegen das Kriterium 0,0065: formal knapp erfüllt (+0,09 SE, P(wahr ≥ 0,0065) = 0,53), statistisch unentscheidbar (MDE80 0,0146 ATR, mehr als doppelt so groß wie das Kriterium; das alte „repliziert nicht" war genauso unentscheidbar). Die Verschiebung kommt aus der Bereinigung 2018 bis 2025 (Mittel +0,0070 → +0,0113), die 64 neuen Tage ab Juli 2026 liegen bei −0,046. Rang 1 springt von 120/60 auf 90/60, Plateau(14) t −0,06: eine Nadel. TD-12 insgesamt bleibt echt-aber-zu-klein, getragen von GC (beta und IC Pearson ohne 0, obere Handels-CI 0,0123 unter 0,015 ATR Kosten bei MGC).
+**Reichweite:** Replikation der Sternzelle (VWAP-minus-TWAP-Residuum nach 90 Min ab 09:30 ET, Haltedauer 60 Min) auf CL. Vorzeichen-Handel auf MCL ist ausgeschlossen: obere CI90 0,0164 unter den Kosten von ca. 0,021 ATR je RT, P(wahr > Kosten) 0,85 %.
+**Kategorie:** CL-Replikation unentscheidbar (zählt nicht als Friedhof). GC echt-aber-zu-klein wie #180c.
+**Wiedervorlage:** wie #180c (marktnativer Anker oder Kosten unter ca. 0,01 ATR je RT), Termin-Check `lb180_bedingungen`.
+**Stempel:** siehe Sammelstempel; Skript `engine/_archiv_lb180/td13_repl_gccl.py` unverändert, je Markt jetzt 107 bis 109 statt 440 Tage übersprungen (die Mini-Tage zählten vorher als Tage), ATR-Mittel GC 23,65 → 26,96. CL-Daten im Endstand gleich 02:25.
+
+### #186c W19 auf CL (#171, zweiter Eintrag 22.09.)
+
+**Urteil:** Bleibt. CL abs_sig gegen Vola (|Tagesrendite|/sigma, laut Skript reine Einordnung, also Vola und nicht Richtung) erfüllt formal die Vorab-Regel: rho 0,053, CI90 [0,018; 0,084], Hälften 0,041/0,053. Über 36 geprüfte Zellen (6 Märkte, 3 Ziele, 2 Kontrollen) ist das Mehrfachtest-Rauschen: unter der Null kommt mindestens ein solcher Treffer in 37 % der Fälle, Bonferroni-p 0,30. Gegen Vola+Trend fällt die Zelle mit 0,047 durch. Richtung (dir_ret) und Trendtag (er_day) auf GC und CL weiter |rho| ≤ 0,025, alle CI mit 0. „ADX ist kein Trend- oder Richtungsprädiktor" bleibt.
+**Reichweite:** ADX(t-1) als Tages-Feature auf GC/CL, Ziele Tages-Effizienz, |Rendite|/sigma, vorzeichenbehaftete Rendite, Kontrollen Vola und Vola+Trend.
+**Kategorie:** empirisch-nichts-gefunden, N = 36 Zellen (Feature-Messung, keine Register-Trials).
+**Wiedervorlage:** sobald AP358 (Vola-Prognose) Merkmale auswählt: ADX(t-1) dort einmal als Vola-Merkmal mit Vola-Kontrolle prüfen. Als Signal keine.
+**Stempel:** siehe Sammelstempel; Skript `engine/adx_vs_vola_w19.py` (Kopie mit umgebogenem Ausgabepfad), Datenende 13.10. statt 24.07.
+
+### #186d Juli-Modus 24.09.: Vola-Regime-Filter GC, Makro-Impuls und Portfolios
+
+**Urteil:** Gesamturteil „kein Kandidat" bleibt, die Lichtblicke verschwinden. Makro-Impuls 08:30 → 10:00 mit F1 hoch: netto +1,21 → −0,24 Pkt, CI90 [+0,15; +3,45] → [−1,67; +2,14], 217 → −46 $/J je MGC, OOS +3,75 → +0,32. Das 4-Beine-Portfolio daraus: 402 $/J, SR 0,30 → −254 $/J, SR −0,18, MaxDD −7.382 $. Die Lab-Karte mit 3 Beinen: der Fix allein ändert nichts (514 → 508 $/J), die 46 neuen Trades seit 24.07. (−4.297 $, September −2.216 $) drücken sie auf 45 $/J. Kein gefilterter Drive-Config über seinem Nulldrift-Zwilling (p 0,15 bis 0,55, positives $/J im Filter 11 → 4 von 18). Asia long mit F2 hoch knapp positiv (+0,09 Pkt, CI [−0,85; +2,03]), kein Befund; Asia long handelt am 18:05-Open, wo die Sonntagabend-Streubars lagen.
+**Reichweite:** GC/MGC, Vola-Regime als Filter (F1 20-Tage-RV bis Vortag, F2 Nacht-RV, Rang gegen expandierende Historie), 18 Drive-Configs und 8 Zeit-Mechanismen wie am 24.09.
+**Kategorie:** empirisch-nichts-gefunden, N = 26 (registriert 24.09.).
+**Wiedervorlage:** bei einem Treffer der Regime-Tafel auf GC (vorab festgelegtes Kriterium aus `regime_families.py`), sonst keine.
+**Stempel:** siehe Sammelstempel; Skripte `engine/_scratch_gc_od/regime.py`, `grid_regime.py`, `portfolio_regime.py`/`publish_workbench.py` (Nachbau ohne publish), Portfolio über die alten Zahlen rekonstruiert (402 $/J, SR 0,30, MaxDD −3.708 passen auf genau diese vier Beine). Die 3-Beine-Karte war mit der heutigen Engine nicht bitgleich reproduzierbar (je Trade 1,38 $ schlechter, Kostenseite seit 24.09. geändert), verglichen wird deshalb nur innerhalb der heutigen Engine.
+
+### #186e GC-NEWS-01 und SIP-ORB NQ (Bank-Zeilen und Vorschläge vom 12.10., keine Logbuch-Urteile)
+
+- **GC-NEWS-01:** Bis zum alten Datenende identisch (Fade bis 10:00 netto −7,4 bis −11,3 $, t −1,6 bis −2,3). Der 60-Tage-Median läuft hier über die 08:30-Kerzen Mo bis Fr und war vom Tageszeilen-Fehler nicht berührt. Mit Daten bis 16.10. dreht die Fade-Zahl auf −2,0 bis −4,4 $ (t −0,3 bis −1,1), getragen von 17 neuen Event-Tagen 30.07. bis 15.10.2026 (Fade an 14 davon positiv, +2.806 $ je MGC). Datenverlängerung in einer Hochvola-Phase, keine Bereinigungswirkung. „Prämisse trägt nicht" bleibt; „Fade bis 10:00 verliert" gilt nur bis Juli 2026.
+- **SIP-ORB NQ mit Gap-Filter:** lief aus der NT8-NQ-Datei (ATR14 über Mini-Tage zu klein). Bereinigt Keep +0,206 R (t 3,16, n 2.059, 11/11 Jahre), OOS +0,149. Nach Korrektur für 54 Zellen familienweites p 0,04 bis 0,12, OOS Rang 7 bis 9 von 54. Keine Dosis-Wirkung (fast der ganze Effekt sitzt in Gap-Dezil 2), die besten 1 % der Trades tragen 75 % der Summe. Bleibt unentscheidbar. Ein Discovery-Job mit eingefrorener Regel und Zwilling ohne Filter wäre vertretbar, Entscheidung Max. Offener Punkt: das NQ-Etikett trennt auch auf ES (Differenz +0,32 R, t 2,92), das stand mit t 2,4 schon im alten Lauf.
+
+**Sammelstempel:** PC 18.10.2026, Engine-Fingerprint `eval_plan.engine_fingerprint()` ae2c4063c7e2034c5aa60c8e381479ee, NT8-Daten finaler Stand 18.10. 16:43 (MD5 GC cad139067e1f, CL 164c88650892, 6E 14b34e0688eb, ZS c09071399c44, ZW 88a2f83b4676, 6B 9a83c745ace1, ZN 6b4fbeef1f49, ZB a1b6b0ffb903), Datenende 16.10.2026. Queue-Jobs, GC-Grid, W19 und TD-12 liefen auf dem Zwischenstand 02:25 (nur Wochenend-Filter); der Endstand unterscheidet sich bei CL und 6E gar nicht, bei GC an 5, ZW 3, ZN 2, ZS/ZB/6B je 1 Session. CL-EIA, GC-COMEX und alle Scratch-Nachläufe liefen auf dem Endstand. Kriterien je Ergebnis unverändert aus den Original-Skripten und Jobs; Gate v4 gegen das aktuelle Buch (Fingerprint c504e914), Jobs mit `ref_book` gegen ihr eingefrorenes Referenzbuch. Die #173-Skripte lagen nur noch im Transkript (Session 1b52fd7d) und wurden von dort unverändert wiederhergestellt (#180 Lehre 2 ein zweites Mal). Arbeitsdateien: Session-Scratchpad 35a126ad `ap418/` (`cmp_queue.json`, `cmp_gcod.py`, `quant/urteil.py`, `agent_gc12/`, `agent_juli24/`, `agent_nach/`).
+
+**Lehre 178:** *Eine neue Datenquelle ist erst fertig, wenn ihre Kalender-Invarianten zweimal geprüft werden: an der Konsumenten-Grenze (Lader) und als Prüfung der geschriebenen Dateien, nicht nur beim Schreiben im Konverter.* Die Invarianten: keine Samstags- oder Sonntags-Session, kein Mini-Tag als Handelstag, Roll nur auf vollen Sessions. Gleiche Klasse wie die Roll-Garbage-Guards #075/#135: dort blieb das Netz im Lader bewusst, obwohl die Parquets bereinigt waren. Beim NT8-Ordner vom 19.09. wurde das nicht angewandt, weil es niemand als Regel formuliert hatte. `qbt.load_rth`, `load_session`, `asian.load_full` und `_drop_corrupt_sessions` reichten die Tage durch, und die Hälfte der betroffenen Skripte las ohnehin roh (`pd.read_parquet(qbt.bars_file(...))` in `_scratch_gc_od/harness.py`, eigene Tagesfenster für ATR14, 20-Tage-RV, Wochentagsfolge). Die Prüfung vom 19.09. („NQ-Buch trade-identisch", #165) prüfte Trades, keinen Datenkalender, und der Golden Master deckte die NT8-Märkte nicht ab. Sichtbar wurde es erst, als NQ selbst auf NT8 lief.
+- logbook-distiller 18.10.: Konverter voll codiert (seit 18.10.), Lader und Dateiprüfung nur Text, keine Daten-Kanarie → halb-codiert. **Seit 18./19.10. voll codiert** (#186f): Lader-Gate, Kalender-Steckbrief, Kanarie, Golden Master bitgleich.
+- Gate gebaut (18./19.10., AP418): `_check_cme_week` in `load_rth`/`load_session` (vor der Verschiebung)/`asian.load_full`, Krypto ab Session 30.05.2026 ausgenommen, Toleranz für die rund 10 Freitag-17:00-Bars in den alten Databento-Dateien; Kalender-Steckbrief je Parquet in `auto_check` (fängt auch Roh-Leser); Kanarie `gm_cme_week_canary.py` (eingeschmuggelter Samstags-, Sonntags-, Freitagabend-Bar, Krypto-Ausnahme, Parquet-Scan) und Fall `KANARIE_cme_woche` in `golden_masters.json`. Auf den bereinigten Dateien blieb der Golden Master bit-identisch (alle 9 Backtest-Fälle).
+
+**Lehre 179:** *Eine Nachrechnung nach einem Datenfix darf nicht über die Queue laufen, sonst zählt dieselbe Config zweimal gegen die Zufallsdecke.* Für AP418 liefen 86 Jobs in einer Sandbox (`process_job` mit umgebogenem Register, Inbox, Ergebnisordner, Heartbeat, Placebo-Log), Wiederholungen ohne neue Trials. Das Werkzeug liegt nur im Session-Scratchpad (`ap418/rerun_jobs.py`), nicht in der Engine → nur Text. Gate: Sandbox-Modus im Runner (`--rerun-sandbox`), der Register-Schreiben hart abschaltet. Falle beim Bau: `ref_book`-Pfade sind relativ zu `discovery_lib.ENG`.
+
+**Buch-Lücke:** Kein Ergebnis wird Kandidat. Einziger Weg nach vorn ist SIP-ORB NQ mit Gap-Filter: hängt vor Stufe 1 (kein Job, Regel noch nicht eingefroren); Entscheidung Max.
+
+### #186f SIP-ORB NQ mit Gap-Filter als Engine-Modus, Sandbox-Lauf statt Job (18./19.10.2026)
+
+**Anlass:** Max wollte den Gap-Filter aus #186e als Discovery-Job („Ja, als Job“, dann „Jetzt bauen“). Die Engine hatte dafür keinen Modus, gebaut wurde `sip_orb` in `qbt.py` (`_check_sip_params`, `_sip_daily_atr`, `_sip_orb_trades`): Richtung = Farbe der 5-Min-OR-Kerze, ruhende Stop-Order am OR-Extrem (Fill am Open bei Gap), Stop 0,10 × ATR14 auf 24h-Handelstagen nur aus Vortagen, optional RVOL der OR gegen 14 Tage und |RTH-Open − RTH-Schluss Vortag| / ATR, Zwangs-Flat 15:55, Null-Schalter wie `_orb_trades`, harter Abbruch bei unbekannten `sip_*`-Werten, `orb_exec`/`orb_side` und `session_start`. Gegen das Scratch-Skript vom 12.10.: dieselben 2.562 Tage, Richtung zu 100 % gleich, Stop-Abstand gleich, Korrelation der Trade-Ergebnisse 0,996.
+- pipeline-auditor (Modus): GO, kein Look-ahead (Zukunft ab 2022 verfälscht → Trades davor bitgleich; Intraday-Rauschen nach Minute 120 → Richtung und Entry gleich; eine Bar Verzögerung behält 86 bzw. 89 %). Auflagen umgesetzt: Delay-Schalter in `controls._FILL_DELAY_SPEC`, Session-Guard, Defaults in der Prüffunktion (Modus-Hash), `GATE_OFF` um `sip_rvol_min`/`sip_gap_atr_min` ergänzt.
+- strategy-auditor (Story): „so nicht einreihen“. Das eigene Dezil-Bild trägt das Why nicht (schlechtestes Bucket ist Gap-Dezil 2 mit −0,40 R, nicht Dezil 1 ohne Gap), die Schwelle 0,08 schneidet genau dort; ein Gate-v4-Durchgang würde von `promote_next` automatisch ins Next-Buch befördert, ein Job-Flag „nur Info“ gibt es nicht.
+- Entscheidung Max 18.10. per Popup: Sandbox-Lauf statt Job (kein Register, keine Inbox, keine Promotion).
+
+**Urteil:** Kein Kandidat. Sandbox-Lauf des eingefrorenen Jobs (Prämisse Gap ≥ 0,08, Grid Zwilling ohne Filter plus die am 12.10. schon gemessenen Schwellen 0,05/0,10/0,15/0,20, Gate v4 gegen das aktuelle Buch): Prämisse ok (n 2.059, IS expR 0,198), 1 Survivor (Schwelle 0,20). Walk-Forward mit Neuauswahl besteht: 8 von 9 Testjahren positiv, OOS +14.801 $; gewählt wurde 6× die 0,10 und 3× die 0,20, nie der Zwilling ohne Filter und nie die eingefrorene 0,08. Gate v4 fällt trotzdem: Vor-Gate top5 (Tail-Konzentration, beste 1 % der Trades = 75 % der Summe) und Buch: Buch-Sharpe −0,22, Passquote −6,2 pp (Leitplanke −3 pp). Placebo-Zwilling: OOS −6.727 $. Delay-Kontrolle (Info): eine Bar spätere Order kostet 11 bis 14 % der Edge (Ratio 0,86 bzw. 0,89), gegen die Zwillinge z −3,94, „Edge hängt am Timing“, bei einer Stop-Order am OR-Extrem erwartbar. Ausdünnungs-Kontrolle: Passquote mit Gap-Filter 12,7 % gegen gleich stark zufällig ausgedünnt 3,2 % (z 4,49). Placebo-Filter (zufällig 19,6 % der Tage streichen, 5.000 Läufe): p 0,0004 gesamt, vor 2024 0,003, ab 2024 0,086.
+**Reichweite:** NQ (MNQ, k1), Signal-Rolle, 1 Trade/Tag, 5-Min-OR ab 09:30 ET, Stop-Entry in Kerzenrichtung, Stop 0,1 ATR14, Flat 15:55 (`eod_flat_px` close), Gap-Schwelle 0,05 bis 0,20 ATR gegen ohne Filter; Gebühr 1,90 $ RT plus 1 Tick je Seite.
+**Kategorie:** empirisch-nichts-gefunden für das Buch, N = 6 Configs in diesem Lauf (plus 305 Trials vom 12.10. im Register). Der Filter trennt auf gesehenen Daten (Placebo p 0,0004, Walk-Forward wählt ihn immer), das Bein verschlechtert aber das Buch, die Ursache ist die Tail-Konzentration, nicht fehlende Drift.
+**Wiedervorlage:** 16.10.2027, eingefrorene Regel auf 12 Monaten neuer Daten gegen den Zwilling (`wiedervorlagen.json`, Eintrag `lb186e_sip_orb_forward`).
+**Stempel:** PC 18./19.10.2026, `qbt.py` mit Modus `sip_orb` und Kalender-Gate (Golden Master siehe unten), NT8-Daten Endstand 18.10. 16:43, Daten bis 16.10.2026, Gate v4 gegen das Live-Buch (Fingerprint c504e914), Sandbox `ap418/rerun_jobs.py` (Job-Datei `ap418/sip/job_sip_orb_gap_NQ.json`).
+
+**Engine-Stand nach AP418:** Kalender-Gate `qbt._check_cme_week` in `load_rth`/`load_session`/`asian.load_full`, `kalender_check.py` (auto_check 1c), Kanarie `gm_cme_week_canary.py` (Fall `KANARIE_cme_woche`), Modus `sip_orb` (Fall `SIP_ORB_gap_NQ (Modus sip_orb)`), alle bestehenden Golden-Master-Fälle bitgleich. Lehre 178 damit voll codiert (Lader, Dateiprüfung, Kanarie).
+
+## #187: 15:55-Zeit-Exit live 33,7 Ticks unter dem Backtest: der Host sendet nach dem Bar-Close mitten in einen Preis-Burst, Planzahl 10 bis 13 Ticks je Trade, Engine kann es jetzt abbilden (18.10.2026, AP426)
+
+**Anlass:**
+- `live-reconciler` 05. bis 16.10. (AP356): Logik live gleich Backtest (29 von 29 Trades), aber Live 19,8 % unter dem Backtest. Hauptursache der Zwangs-Flat um 15:55 bei NQ_LastHour_v3, NQ_OpenDrive_maband2050, NQ_Momentum_PB3_fa01b. Die Engine nahm den Open der 15:55-Bar plus 1 Tick an.
+- Gegenleser: quant-mathematician, quant-statistician, pipeline-auditor (gelb mit Auflagen), strategy-auditor, engine-regression-tester, logbook-distiller. Entscheidungsvorlage: [[1555-Zeit-Exit Entscheidung (AP426)]].
+
+**Befund:**
+- **Ablauf live (NT8-Log, Millisekunden):** der Host löst den Zeit-Exit am Bar-Close der 1m-Chartserie aus (15:55:00,1 bis 0,6), storniert erst den Stop (fertig bis 15:55:01,3) und schickt dann Market. Fill 1,0 bis 4,2 s nach 15:55:00. `FlatSecondsBeforeClose` allein kann daran nichts ändern, der Trigger hängt am Bar-Close.
+- **Burst belegt:** Sim-Konto und Echtkonto füllen zur selben Millisekunde 20 Ticks (07.10.) bzw. 41 Ticks (05.10.) auseinander. Sim füllt am Feed-Preis (≈ O1555), der NT8-Feed hängt im Burst hinterher. Unter Brownscher Bewegung wäre die sd der ersten 2 s rund 10 Ticks, gemessen 36,6 (p < 1e-6). Der Burst beginnt erst ab 15:55:00: O1555 minus C1554 im Mittel 0,4 Ticks.
+- **Größe:** Echtgeld n = 10 Tage (der erste Abgleich zählte ein Sim-Konto mit, n = 11): +33,7 Ticks gegen O1555, CI90 etwa [+12; +54], alle Tests p 0,02 bis 0,04. Davon +28,6 die 15:55-Minute selbst, die an diesen Tagen zufällig schlecht lief (gegen 2026 p 0,11, kein Strukturbruch). Planzahl (empirical Bayes, Beine und Jahre geschrumpft, plus Live-Rest F minus C1555 +5,1): LH +11,9, OD +10,0, PB3 +12,8 Ticks je Trade, Obergrenze rund 28.
+- **Historie (1m NT8, 2016 bis 16.10.2026):** 15:53 und 15:54 laufen für die Beine, 15:55 dagegen (LH +4,0 [2,0; 6,0], OD +8,1, PB3 +7,4 Ticks je Trade über die volle Minute). Allgemein, ohne Bein-Richtung, gibt es keine Umkehr um 15:55. Die Range der 15:55-Minute stieg von 37 (2016 bis 2023) auf 90 bis 94 Ticks.
+- **Exit-Varianten (21 Tests, max-T):** früher fest raus (Open 15:45/15:50/15:53/15:54) ist bei LH gegen das bisherige Backtest-Modell echt schlechter. „Exit vor 15:55 schlägt Exit in der 15:55-Minute" trägt gepoolt (t 3,4), aber getragen von 2020 bis 2023, ab 2024 +2,6 Ticks (t 0,83). Limit statt Market: Hebel höchstens ±0,5 Tick.
+
+**Engine:** neuer Parameter `qbt.eod_flat_px` („open" Standard, bitgleich; „close" = Fill am Close des Flat-Bars, MAE mindestens bis zum Fill), Helfer `qbt.eod_flat_price` in qbt (4 Pfade), `sigcore.simulate_trade` (3 Stellen) und `vwap_pullback` (Flatten). Unbekannter Wert bricht hart ab. Je Trade exakt geprüft (Abweichung unter 1e-14), Golden Master grün bitgleich, `regression_ok` gesetzt, kein Box-Sync. Die Standard-Umstellung auf „close" ist Max' Entscheidung (Option A), weil bei einem Exit vor 15:55 „open" wieder das richtige Modell wäre.
+
+**Wirkung (k1, je Konto mit allen drei Beinen):**
+
+| Modell | Netto $/Jahr | Zeit bis 50k echtes Buch (Median, erreicht in 120 M) |
+|---|---|---|
+| open (bisher) | 5.045 | 96,7 M, 83,0 % |
+| close | 4.745 (−5,9 %) | 101,0 M (+4,3 ±1,0), 75,7 % |
+| close + 5 Ticks | | 108,9 M (+12,2 ±1,1), 65,2 % |
+
+Stufe 1 hält bei allen drei Beinen (t mit „close": LH 3,23, OD 4,34, PB3 3,92). Nulldrift-Zwilling überall 0 %.
+
+**Lehre 180:** *Parität „Logik gleich" sagt nichts über die Fill-Lage. Ein Exit-Modell muss die tatsächliche Sendezeit des Live-Codes abbilden (Auslöse-Ereignis plus Stop-Storno plus Latenz), nicht die nominelle Uhrzeit. Live-Abgleich deshalb je Exit-Art: Live-Fill minus Modell-Preis, mit Millisekunden aus dem NT8-Log.*
+- logbook-distiller 18.10.: nur Text. Gates G1 (Kanarie `eod_flat_px`), G2 bis G4 (`live_fill_check.py`, Alert in `auto_check`, live-reconciler.md) als AP429.
+
+**Lehre 181:** *Sim-Konten gehören nie in einen Live-Kosten-Abgleich. Filter auf das Präfix „Sim", nie auf einen einzelnen Kontonamen.*
+- logbook-distiller 18.10.: nur Text. Gate G5/G6 (`is_sim_account`/`real_fills` in `konten/` plus Test) in AP429.
+
+**Buch-Lücke:** keine Bein-Änderung. Offen sind die Entscheidung A (Standard „close", danach Konto-Karten und Next-Beine neu) und der Tick-Befund (AP427), erst danach der Paarversuch B' (AP428).
+
+**Stempel:** PC 18.10.2026, `eval_plan.engine_fingerprint()` 74ffd28df4f916d3628a34f586900bc0, `book_cache` ae5b3debb5f07ce5c13f4ca3a92bfd7c (nach dem Patch, Standard „open"), Golden-Master-Referenz a569fb20 unverändert, NT8-Hauptdaten bis 16.10.2026, Live-Fills `live/maxlab_executions.csv` Stand 18.10. 00:20 plus NT8-Logs der Box. Skripte und Ausgaben `engine/_scratch_ap426/`.
+
+### #187a Umsetzung Option A (18.10.2026, 23:15)
+
+- **Entscheidung Max:** „A jetzt, B' später prüfen" (über die Ticket-Session).
+- **Engine:** `qbt.DEFAULTS["eod_flat_px"]` = „close". Register-Stempel `eod_flat_px` und `engine_fp` in jedem neuen Register-Eintrag (`discovery_runner.registry_entry`), `job_generator.prune_known` zählt eine Config unter anderem Stempel als neu (`discovery_lib.registry_known`, Einträge vor AP426 ohne Stempel gelten als „open"). Zufallsdecke unverändert, je Schlüssel ein Trial.
+- **Golden Master:** neu eingefroren (engine_fingerprint e93cce7f1560b9531b30a472184b095f, 18 Fälle). Geändert nur die 5 Fälle mit 15:55-Flat (NQ_Momentum, NQ_LastHour_v3, RTY_Gap-fade, NQ_VWAP-Pullback, maband_RVOL1.2_NQ), n_trades und tpy gleich, auf Trade-Ebene nur Flat-Trades. 4 Fälle bitgleich, alle Kanarien wie vorher, neu `KANARIE_eod_flat_px` (Selbsttest stirbt auf allen drei Pfaden). Lehre 180 damit für die Modellseite codiert (G1).
+- **Box:** Runner per STOP gestoppt, Sync 23:13:27 (93 Dateien, MD5 PC gleich Box), Runner läuft, `weekend_check --stand-setzen`.
+- **Konto-Karten** (Zellen 499345e6ef41, Karten 17c556e2f7d4): Flotte Netto 36 M 10.358 auf 9.519 $, FFN 3.975 auf 3.753 $, sigma60 618 auf 630 $, Hochstuf-Ampel überall grün (k1), Nulldrift bestanden. Bei E8/FN steckt laut konto-analyst zusätzlich ein Regelstand-Wechsel der alten Karten im Vergleich.
+- **Next-Buch:** LD01 kaum betroffen (747 auf 740 $/Jahr, t 3,41 auf 3,40), OpEx (Modus cal) hat keinen 15:55-Flat, rechnet aber bis 15:59: eigene Paritätslücke vor einer Übernahme (an die Wochenend-Session gemeldet).
+- **Offen:** AP427 Tick-Daten (Max), AP428 Paarversuch B', AP429 Rest-Gates (Sim-Filter, `live_fill_check.py`).
+
+
+## #188: CME-Bitcoin erster Durchlauf: der 09:30-Bruch ist echt und ueberlebt 21 Tests, in Netto-Dollar aber exakt null, und drei Familien fielen an der Kostenschwelle statt am Markt (23.10.2026, AP311/AP438)
+
+**Anlass:**
+- Auftrag Max 22.10.2026 23:10 (Nacht, PC aus): BTC in die Engine aufnehmen, vermessen, die drei passendsten Familien waehlen und alle Strategien davon einmal durch Gate v4 schicken. Voller Bericht mit allen Tabellen: [[Nightrun BTC 23.10.2026]]. Register vorher: **0 BTC-Trials, je**, kein Friedhofs-Urteil, keine Vorbelastung.
+- Gegenleser: `variant-scout` 3x (je Familie), `quant-mathematician`, `quant-statistician`, `strategy-auditor` (Batch), `pipeline-auditor` (2x), `engine-regression-tester`, `logbook-distiller`, `box-ops`.
+- Daten: BTC 1,91 Mio 1m-Bars, 2.313 Sessions ab 19.12.2017, **105 Rolls (11,4 im Jahr)**; MBT 1,35 Mio ab 10.05.2021. Engine: `POINT_VALUE` BTC 5,0 / MBT 0,1, Tick je 5 Indexpunkte, `MICRO_OF` BTC nach MBT, MBT-Gebuehr 3,20 $ RT (E8-Primaerquelle). Golden Master gruen, alle 10 Referenzfaelle bitgleich.
+
+**Befund, der alles andere ordnet: die Kostenschwelle haengt am Preis.**
+- `K_bp = RT / (MULT x Preis) x 1e4`, fuer MBT also 640.000/Preis. 2018 waren das 75 bp, heute **7,7 bp**. Zerlegt: 2,42 bp Slippage (haengt NICHT an der Kontraktgroesse, MBT- und BTC-Tick sind beide 5 Indexpunkte) plus 3,86 bp Kommission (skaliert mit 1/Nominale).
+- **BTC war vor 2021 auf MBT kostentot** (Kostenquote 10,7 bis 15,3 % der Tagesrange), heute 2,26 %. Nicht weil der Mechanismus fehlte, sondern weil der Preis 7.000 statt 83.000 $ war.
+- Kosten wurden im Lauf von 5,20 auf **6,40 $ RT** korrigiert: Roll-Schaetzer auf MBT-1-Minuten-Closes gibt effektive RT-Slippage 2,44 bis 3,16 $ gegen angesetzte 2,00 $. Alle Jobs laufen mit `slippage_ticks=3.2`.
+
+**Was BTC wirklich hat:**
+- **Der 09:30-ET-Opening-Range-Bruch ist echt.** Brutto +17,50 bp bei t=+3,87 (n=1.906), familienweites p=**0,002** bei 21 Tests (Max-|t| unter der Null, 200.000 Ziehungen), haelt Trimmung (t 4,31), haelt ohne die 5 besten Tage (t 3,36), 5 von 5 Purged-Folds positiv. Er haengt genau am Anker: Fenster ab 08:00 statt 09:30 laesst t auf +0,30 fallen. **NQ hat ihn nicht** (t=+0,63), passend zu #067/#068, dessen Reichweite ausdruecklich Index-Futures ist.
+- **In Netto-Dollar ist er null:** +0,0004 $ je Trade, CI90 [-3,17; +3,04], Profit-Faktor 1,000. Ab MBT-Start 2021 +1,60 $, CI90 [-2,46; +5,73]. Bei den korrigierten 6,40 $ Kosten sogar negativ: OR30 -1,60 $, OR60 -1,68 $, Median -5,90 $, 40 % Gewinner, und das Gesamtergebnis von -3.542 $ haengt an 1 % der Trades (Top-5 bringen +2.150 $).
+- **Break-even, ab dem ein BTC-Bein die Buch-Sharpe nicht mehr senkt: 5,04 bis 6,89 $ je Trade.** P(mu > 5,04) = 7,4 %. Das komplette CI90 des ganzen Samples liegt darunter. Fuer die gemessene Effektgroesse braeuchte man 14.677 Trades = 58,7 Jahre fuer t = 2.
+- **Dekorrelation ist bei BTC kein Problem**, nur wertlos ohne Drift: Bein-PnL gegen Buch-Summe rho **+0,092** CI90 [+0,026; +0,166], BTC waere das am zweitwenigsten korrelierte Bein (buchintern Momentum gegen OpenDrive +0,284). Die Renditen-Korrelation 0,476 war die falsche Groesse.
+- **Einzige Zeile mit numerischem Weg:** OR-Groessen-Filter auf OR60. Schwelle 0,65 gibt +8,75 $ je Trade CI90 [+1,15; +18,42] bei 41 Trades im Jahr, 0,80 gibt +11,69 $ CI90 [+1,87; +23,67] bei 25; beide ueberstehen Kosten-Stress bei 8,20 $ und sind ab 2021 staerker. **Aber derselbe Filter dreht auf OR30 ins Negative** (-8,09 bzw. -28,42 $), und t ist nur 1,56 bis 1,78.
+- **Die Zufallslevel-Kontrolle warnt:** bei Schwelle 0,80 macht `orb_rand_level` **+5,37 $**, bei 0,65 nur -1,05 $ (echtes Level +9,58 bzw. +8,71 $). Bei der strengen Schwelle ist ein grosser Teil Vola-Konditionierung, nicht das Level. Das waere ohne Kontrolle als Level-Edge durchgegangen.
+
+**Lehre 182: Auf einem Markt mit starkem Preis-Trend ist bp keine stabile Einheit, weder fuer die Edge noch fuer die Kosten. Welche Einheit gilt, ist eine Messung, keine Annahme.** Ich hatte die Edge in bp gemessen, auf einer Reihe deren Preis sich verzwoelffacht hat, und daraus einen Zerfall gelesen (vor ETF-Start t=3,86, danach t=0,94, 2026 netto -10,16 $). Der Test, der das aufdeckt: Regression der Dollar je Trade auf den Preis. Steigung +0,147 (SE 0,595); "Edge konstant in bp" verlangt +1,750 und ist mit **p = 0,0070 verworfen**, "konstant in Dollar" nicht (p = 0,80). In Dollar gerechnet ist der Zerfall nicht signifikant: sup-Wald p 0,334 gegen 0,026 in bp, Empirical Bayes **tau^2 = 0** (die Jahresstreuung ist zu 100 % Rauschen, 2026 schrumpft von -10,16 auf +0,99 $), und 2026 ist mit p = 0,35 das normale schlechteste von zehn Rausch-Jahren. **Status: Gate v4 selbst ist nicht exponiert** (die Pipeline rechnet nativ in Dollar: `usd_series`, `usd_per_year_min`, `pf_usd_min`), die Luecke sitzt in der explorativen Vermessung VOR dem Job, wo eine Session frei in bp denkt. Gate-Platz: Info-Kontrolle `ctl_unit` in `controls.py` neben `ctl_delay`, plus ein Text-Check in `guard_write.py`, der "Zerfall" zusammen mit "bp" ohne Dollar-Regression in derselben Datei anmeckert. **Reichweite: jeder Markt mit starkem Preistrend, also Krypto und Gold, nicht die Index-Futures.**
+
+**Lehre 183: Jede neue Transformation in `qbt.load_bars` braucht eine eigene Kanarie, sonst ist der gruene Golden Master wertlos fuer sie.** Ich habe `_drop_thin_sessions`/`min_session_bars` gebaut, der Golden Master war gruen, hat die Funktion aber inhaltlich nie geprueft, weil alle 10 Referenzfaelle mit `None` laufen und damit am neuen Pfad vorbei. Gate-Platz: `test_defaults_coverage.py` in der Pflichtkette des `engine-regression-tester` -- diff der `qbt.DEFAULTS`-Keys gegen die in `golden_masters.json` mit Nicht-Default belegten Parameter, hart failen bei einer Luecke. Ticket **AP439**.
+
+**Lehre 184: Ein Varianz-Verhaeltnis unter 1 in einem duennen Markt ist erst Bid-Ask-Bounce und dann vielleicht Signal. Den Rausch-Term mitschaetzen, nicht als Umkehr verbuchen.** BTC sah intraday nach klarer Umkehr aus (15min 0,959 / 4h 0,885 / 1 Tag 0,882 gegen NQ 0,98 bis 1,02). Das Bounce-Modell MA(1) mit `VR(q) = 1 + 2rho(1 - 1/q)` und dem gemessenen rho = -0,03048 reproduziert das 15-Minuten-VR auf **vier Dezimalstellen**, der VR-Rest ist 1,0000. Sauber geschaetzt mit mitgefittetem Rausch-Term: Hurst BTC 0,478 [0,462; 0,496], NQ 0,467 [0,449; 0,496], gepaart ueber 1.753 gemeinsame Sessions **Delta H = +0,009, CI90 [-0,024; +0,036]** -- und beim bounce-freien Sockel kehrt NQ sogar staerker um als BTC. BTC handelt 4 Kontrakte je Minute, NQ 107. Gate-Platz: `require_bounce_check` in `discovery/premise_friedhof.py`, bricht eine Mean-Reversion-Praemisse auf einem Symbol unter einer Volumen-Schwelle ab, solange kein bounce-bereinigtes Feld in den Metadaten steht.
+
+**Lehre 185: Eine Bruttomessung ohne Stop ist kein Strategie-Ergebnis, und auf BTC ist der Unterschied bezifferbar.** Der Stop kostet dort 2 bis 2,8 $ je Trade: brutto +4,72 $ wird zu netto -1,68 $. Das Prinzip ist bekannt, neu ist die Zahl und der Fund, dass der Fehler eine Ebene hoeher wieder auftauchte: aus "Optimum 2 Trades je Tag" und "Break-even 8" folgt bei 6,40 $ Kosten zwingend 18,10 $ Brutto je Trade -- exakt 18,05 bp als Dollar gelesen, waehrend gemessen 4,33 bis 6,80 $ sind. Status halb-codiert: `guard_write.py` erzwingt `strategy-auditor` vor dem Bank-Eintrag, und der hat es gefangen. Luecke: Prosa-Zahlen in Scratch- und Projekt-Notizen davor sind ungeschuetzt.
+
+**Lehre 186: `orb_cutoff_min` steht per Default auf 120, ein ORB-Job handelt also nur Bruechte bis 11:30 ET.** Zitiert das Why eine Messung ueber das ganze Fenster, testet der Job eine andere Population. Nachgemessen war der Schaden hier klein (96 % der OR30-Bruechte liegen vor 11:30, bei OR60 80 %), die Falle ist aber strukturell und wurde nur durch Agent-Beurteilung gefangen, nicht durch Code. Gate-Platz: Pflichtfeld `measured_window_min` an `H()` plus Selbsttest gegen den effektiven Cutoff der Config.
+
+**Eigene Fehler dieser Nacht, zur Vollstaendigkeit:** vier Messfehler selbst gefunden und korrigiert (Fenster-Scan mit gedrehter Reihenfolge innerhalb der CME-Session, t um -21; Wochentags-Zuordnung mit Shift von Mitternacht statt von der Bar-Zeit; `bars_5m` aggregiert ueber q Beobachtungen statt q mal 5 Minuten, wodurch "1 Tag" bei BTC real 1,6 Sessions umfasste; Praemissen-Configs ohne `or_min` in der Basis, wodurch BTC-01/BTC-02 um 00:58 auf dem Engine-Default 15 starben, PF 0,28 und 0,54, Grid nie gestartet). Vier weitere Aussagen hat der `quant-statistician` widerlegt (Zerfall, Mean Reversion, "ein MBT ist ein halbes Bein" -- gemessene sd 85 bis 118 $ ist ein VOLLES Bein, zweitgroesstes im Buch --, und die Korrelationszahl).
+
+**Urteil (Klasse "unbedingte Preis-Umkehr als Signal auf BTC"):**
+- **Kategorie:** `echt-aber-zu-klein`. Nicht `strukturell-tot`: der `strategy-auditor` hat das zurueckgewiesen, weil eine Rechnung, die die Kostenstruktur als Eingabe braucht, keine Klasse verbietet sondern einen Betriebspunkt, und weil die Huellkurve bei 240 Minuten leckt (CI90 der Umkehr-Magnitude dort [-7,13; +2,15], schliesst Werte ueber der Kostenschwelle nicht aus). Das waere sonst das #163-Muster gewesen: Titel sagt tot, Koerper sagt unentscheidbar.
+- **Reichweite:** Rolle Signal, Horizont 15 bis 60 Minuten, Markt BTC und MBT auf CME, Kaefig Prop mit Drawdown unter 4.000 $, Kostenstruktur 3,2 Ticks Slippage je Seite plus 3,20 $ Kommission (6,40 $ RT), Betriebspunkt k1. **Die 240-Minuten-Zone bleibt ausdruecklich offen und ungemessen.** Die konditionierten Formen (OR-Terzile, z-Klassen) sind getrennt `unentscheidbar`, nicht Friedhof: MDE bei 80 % Power 13,21 bis 23,84 $ gegen Kill-Schwelle 5,20 $, es fehlt Faktor 6,5 bis 21 an Daten.
+- **Zitierte Rechnung:** der Umkehr-Effekt saettigt bei 2,50 bp (gemessen an vier Horizonten: 1,08 / 1,99 / 2,50 / 2,49 bp bei 15/30/60/240 Minuten, Steigung 0,27, bei 240 Minuten negativ) gegen eine Kostenschwelle von 640.000/Preis = 7,73 bp. Noetig waere Preis ab 256.000 $ oder MBT-Tagesrange ab 780 $. Auf dem einzigen billigeren Kontrakt (BTC voll, 2,49 bis 2,66 bp) ist eine Einheit 12.631 $ Tagesrange = **316 % der gesamten Drawdown-Grenze**; dasselbe Verhaeltnis wie bei MBT braeuchte ein Konto mit rund 7,5 Mio. $ Drawdown, das es bei keiner Prop-Firma gibt. Der Mechanismus ist echt, der Kontrakt ist falsch, und es gibt keine Groesse dazwischen.
+- **Wiedervorlage:** BTC-Preis ab 256.000 $ bei unveraenderter bp-Edge, ODER MBT-Tagesrange ab 780 $, ODER ein Kaefig ohne 4.000-$-Drawdown (CFD-Prop, AP422/AP433) -- dort ist die Rechnung neu zu machen, nicht uebertragbar. Zusaetzlich: Umkehr bei 240 Minuten und darueber mit roll- und pausenbereinigten Fenstern erstmals messen.
+- **Stempel:** Engine nach der BTC-Aufnahme (qbt.py 23.10.2026, `POINT_VALUE`/`TICK`/`MICRO_OF`/`COMMISSION_RT_MICRO` um BTC und MBT ergaenzt, neuer Parameter `min_session_bars`), Golden Master gruen und bitgleich, Datenstand BTC bis 22.10.2026 (2.313 Sessions, 105 Rolls, `min_session_bars=100` verwirft 88 Sessions), Kriterium Netto-Dollar je Trade gegen Buch-Break-even 5,04 bis 6,89 $, Kosten 6,40 $ RT, Register 70.226 Trials plus 160 nachgetragene aus dieser Nacht.
+
+**Nicht tot:** der 09:30-Bruch selbst (er ueberlebt 21 Tests und ist auf NQ nicht da, er traegt nur die Kosten nicht), der OR-Groessen-Filter (einzige Zeile mit positivem CI90-Rand, laeuft als BTC-03), die Level-Frage (BTC-04 mit Zufallsleveln), BTC ausserhalb des 4.000-$-Kaefigs (AP422/AP433), und Krypto auf dem Grosskontrakt bei einer Firma mit entsprechendem Drawdown.
+
+**Offen:** **AP399** ist der Hebel, nicht die Rechenzeit -- ein Bein mit 4 $ netto je Trade verkuerzt die Zeit bis 50.000 $ auf EINEM E8-Konto von 189,1 auf 185,6 bis 188,1 Monate (+95 bis +180 $ ueber 36 Monate gegen einen MC-Standardfehler von 383 $, also unter dem Rauschen), auf allen fuenf Konten auf 172,8 bis 180,1. Fuer 10 % weniger Zeit braucht es auf einem Konto 23,55 bis 44,39 $, auf der Flotte 4,71 bis 8,88 $. E8 erlaubt MBT, **FundedNext erlaubt kein Krypto**, FFN ungeprueft. Dazu: `promote_next` hat keine Symbol-Whitelist (AP399 Punkt 5), ein BTC-Kandidat koennte ohne NT8-Modul ins Next-Week-Buch wandern. Jobs BTC-03/BTC-04 laufen, Auswertung **AP438**, Pipeline-Luecken **AP439**.
+
+### Nachtrag 23.10.2026 01:27, nachdem die Jobs durch sind und der `verdict-auditor` gegengelesen hat
+
+**Ergebnis: BTC-03 und BTC-04 je 0 Survivors, Gate v4 nicht bestanden, Next-Week-Buch unveraendert** (md5 vor und nach dem Lauf identisch, nichts automatisch promotet, echtes Buch die ganze Nacht unberuehrt).
+
+BTC-03, 14 Configs: Vor-Gates fallen bei **allen 14** an `sharpe_t` (dazu `top5` 8x, `cost2t` 8x, `last3y` 7x, `dollar` 6x). Walk-Forward dagegen 4 von 7 Testjahren positiv, OOS **+2.326,60 $ auf 264 Trades = +8,81 $ je Trade**; Buch-Marginal SR 2,1407 nach 2,202 (dSR +0,0613), Passquote +0,49 pp; Korrelation je Bein +0,035 / -0,001 / -0,028 / -0,003; Nulldrift-Zwilling besteht **nicht** (#106-Kontrolle sauber); Reality Check p 0,58 (Info); PBO 15 % gegen Zufallsband 7 bis 89 %, p 0,20. Jahre: 2020 -183 (n 24), 2021 +892 (n 17), 2022 -214 (n 15), 2023 +219 (n 46), 2024 +294 (n 88), **2025 +1454 (n 34)**, 2026 -135 (n 40).
+
+**Urteil, in zwei Teile getrennt** (mein erster Entwurf `empirisch-nichts-gefunden, N = 24` traegt nicht: N 24 haette die 12 Zellen der Null-Kontrolle als getestete Varianten mitgezaehlt, also doppelt gegen die eigene Zufallsdecke, und die Kategorie widersprach der Feasibility-Rechnung UND dem Koerper dieses Eintrags, der die konditionierten Formen selbst als `unentscheidbar` fuehrt -- das waere das #163-Muster gewesen):
+- **OR30-Zweig: `empirisch-nichts-gefunden, N = 6.`** Alle sechs OR30-Zellen negativ, `sharpe_t` -0,92 bis -1,70, alle acht Gates gefallen. Echte Evidenz.
+- **OR60-Zweig: `unentscheidbar, N = 6.`** Punktschaetzer +8,81 $ je Trade, CI ueberdeckt die Null. **Wiedervorlage: 373 bis 715 OOS-Trades noetig fuer t = 2, also 9,9 bis 19,0 Jahre bei 37,7 Trades im Jahr (vorhanden 264 Trades / 7 Jahre).** Weit weg von den 58,7 Jahren des nackten Bruchs, also eine echte Bedingung.
+- **Nicht mitbegraben, weil nie geprueft:** die Richtungsachse (short brutto t +3,34 gegen long +2,13, bewusst kein Job wegen Drift-Schmeichelei), die Bestaetigungs-Achse (`retest`), die Stop-Weite. Ohne diese drei ist ein "nichts gefunden" ueber den MECHANISMUS nicht sagbar, nur ueber dieses Grid. Reichweite entsprechend: OR-groessen-gefilterter 09:30-ET-Bruch auf BTC/MBT, Grid `or_rel_min` x `or_min` x `orb_max_hold`, Kaefig Prop mit DD unter 4.000 $, Kosten 6,40 $ RT, k1, Richtung und Bestaetigung ungeprueft. Stempel wie oben.
+
+**Korrektur A, die wichtigste: meine Kontroll-Deutung im Befund oben ("bei der strengen Schwelle ist ein grosser Teil Vola-Konditionierung, nicht das Level") ist ZURUECKGEZOGEN.** Sie stand auf dem schwaechsten verfuegbaren Vergleich (Profit-Faktor 1,19 gegen 1,15) und einer daraus abgeleiteten additiven Zerlegung eines Verhaeltnismasses. Beide Jobs haben identische Config-Schluessel, also ist ein GEPAARTER Vergleich moeglich. Selbst nachgerechnet auf `sharpe_t`: echtes Level besser in **9 von 12** Configs (Delta-Mittel +0,582, Vorzeichentest p 0,073), **auf der OR60-Haelfte in 6 von 6** (Delta-Mittel +1,005, p 0,016). Staerkste Faelle 0,65/OR60/240 mit +1,46 gegen -0,35 und 0,65/OR60/offen mit +1,44 gegen -0,15. **Die #127-Frage faellt auf BTC vorlaeufig ZUGUNSTEN des Levels aus.** Einschraenkungen: ein Seed, stark ueberlappende Populationen (das gepaarte t ist kein Signifikanztest), alles In-Sample ueber den Vollzeitraum. Dass das Level etwas traegt und dass es die Kosten traegt, sind zwei verschiedene Fragen: es traegt etwas, es traegt die Kosten nicht.
+
+**Korrektur B: die robuste Zelle ist 0,65, nicht 0,80.** `top5_share` aus der Ergebnisdatei: 0,5/OR60/offen **4,245**, 0,5/OR60/240 **2,052**, 0,8/OR60/offen **1,091**, 0,8/OR60/240 **1,077** -- ein Wert ueber 1,0 heisst, ohne die fuenf besten Trades ist die Zelle negativ. Dagegen 0,65/OR60/240 **0,643** und 0,65/OR60/offen **0,703**, beide mit dem hoechsten `sharpe_t` (+1,46 / +1,44). Die Schlagzeile "+11,69 $ je Trade bei Schwelle 0,80" im Befund oben steht also auf einer Zelle, die komplett an fuenf Trades haengt. Der Walk-Forward hat 0,65/OR60/240 von selbst als `deploy_config` gewaehlt -- das Verfahren hat es gefunden, mein Bericht nicht.
+
+**Lehre 187: Eine vorab festgeschriebene Kill-Schwelle muss ERREICHBAR sein, sonst ist sie keine Falsifikation, sondern ein garantiertes Nein.** Ich hatte "OOS-Netto >= 5,04 $ je Trade UND t >= 2,8" festgeschrieben. Nachgerechnet auf n = 264 OOS-Trades bei der gemessenen Trade-Streuung: 5,04 $ entspricht t 0,70 bis 0,96, waehrend t = 2,8 ein Mittel von 14,67 bis 20,30 $ braucht. **Die beiden Haelften lagen um Faktor 2,91 bis 4,03 auseinander.** Der Dollar-Teil war mit +8,81 $ erfuellt, der t-Teil haette das Zwei- bis Vierfache des wirtschaftlich relevanten Werts gebraucht. Nach unserer eigenen Kategorien-Tabelle ist das woertlich `unentscheidbar` ("MDE/Feasibility schlaegt die Kill-Schwelle"), und das zaehlt nicht als Friedhof. **Gate-Platz:** wenn AP439 Punkt 2 (Kill-Schwelle als Feld statt Prosa) gebaut wird, muss dasselbe Feld die Erreichbarkeit mitpruefen -- also die Dollar-Schwelle in t-Einheiten der erwarteten Stichprobe umrechnen und ablehnen, wenn die beiden Teile mehr als Faktor rund 1,5 auseinanderliegen. Das ist billig und haette diese Nacht eine Stunde gespart.
+
+**Die 2025-Konzentration, nachgerechnet statt behauptet.** 62,5 % der OOS-Summe kommen aus 2025. Jackknife je Trade: ohne 2020 +10,46 / 2021 +5,81 / 2022 +10,20 / 2023 +9,67 / 2024 +11,55 / **2025 +3,80** / 2026 +10,99 -- jedes andere Jahr weglassen HEBT den Schnitt. Der `verdict-auditor` hat mir dazu einen Konsistenzfehler nachgewiesen: ich kann nicht tau^2 = 0 benutzen, um 2026 als normales Rauschjahr zu retten, und gleichzeitig 2025 als Regime-Artefakt behandeln, und das tau^2 = 0 war ohnehin auf den Jahreszahlen des NACKTEN Bruchs geschaetzt. Neu geschaetzt (DerSimonian-Laird auf den sieben Walk-Forward-Jahren, Einschraenkung: der Reselect hat drei verschiedene Configs benutzt, die sieben Zahlen sind Ziehungen des VERFAHRENS): bei sd 85,1 $ ist Q 13,17 > Chi2(6) 12,59, tau^2 245, Jahre informativ; bei sd 96,9 und 117,8 $ ist Q 10,16 bzw. 6,87, Jahre Rauschen. **Ambivalent, und es aendert das Urteil nicht:** der Random-Effect-Schaetzer liegt unter jeder Annahme bei +9,2 bis +10,3 $ mit SE um 8, das Intervall ueberdeckt bequem die Null. 2025 schrumpft von +42,76 auf +13,36 bis +27,67 $ und bleibt das groesste Jahr.
+
+**Was "zwei von drei Gate-v4-Stufen ok" wirklich wert ist, und ich hatte es zu hoch gelesen:** P(mindestens 4 von 7 Testjahren positiv) ist unter der Nullhypothese **exakt 0,500**, und "Buch ok" folgt bei rho 0,09 und positiver OOS-Summe fast mechanisch aus "Walk-Forward ok". Die Stufe mit Power sind die Vor-Gates, und die fallen 14 von 14. Zwei "ok" aus diesen beiden Stufen sind also knapp ein Befund, nicht zwei.
+
+**Zur zitierten Huellkurven-Rechnung oben, Nachtrag zum Stempel:** die Skripte des `quant-mathematician` lagen nur als Code auf Platte, ohne gespeicherten Output, womit die Rechnung nach Lehre 159 nicht reproduzierbar war. Nachgeholt (`_scratch_qm_btc_221026/teil1.out.txt`, `teil2.out.txt`, `teil10.out.txt`). **Wichtig beim Nachlesen:** `teil10.py` rechnet intern noch mit 2 Ticks Slippage je Seite, also K_bp 6,28. Die Zahlen im Urteil oben (7,73 bp, Preis ab 256.000 $, Tagesrange ab 780 $) sind meine Neurechnung bei den korrigierten 6,40 $ RT. Beides steht jetzt nebeneinander auf Platte.
+
+**Nachtrag 2, 01:30: die 240-Minuten-Zone ist jetzt gemessen statt offen gelassen.** Der `verdict-auditor` hatte verlangt, sie zu messen, bevor ueber die Familie geurteilt wird. Nachgeholt mit zwei Bereinigungen (erste Rendite je Session verworfen, weil sie Roll-Sprung UND Overnight-Luecke enthaelt; rollendes Sigma mit `min_periods`, damit der z-Nenner nach einem Roll nicht um 13,5 % ueberhoeht ist). Gegen die Kostenschwelle 7,73 bp:
+
+| Horizont | Klasse | n | Umkehr | t | obere CI-Grenze | schliesst 7,73 bp aus? |
+|---|---|---|---|---|---|---|
+| 60 min | mittel | 11.584 | +1,27 bp | -1,78 | +2,48 | **ja, klar** |
+| 60 min | gross | 6.418 | +1,33 bp | -1,24 | +3,25 | **ja** |
+| 240 min | mittel | 2.252 | +3,19 bp | -1,02 | +8,22 | nein, knapp |
+| 480 min | mittel | 575 | +7,38 bp | -0,81 | +20,39 | nein |
+| 720 min | mittel | 107 | +28,14 bp | -1,65 | +47,92 | nein |
+
+**Fuer 15 bis 60 Minuten traegt das Urteil damit klar** -- bereinigt ist die Umkehr dort nur 0,28 bis 1,33 bp und die obere CI-Grenze bleibt unter 3,3 bp. Die Bereinigung hat den Effekt sogar KLEINER gemacht. **Ab 240 Minuten ist die Zone nicht ausschliessbar, aber auch nirgends nachweisbar:** die Punktschaetzer wachsen, die Intervalle aber so stark (bis plus/minus 145 bp), dass kein t die 2 erreicht und bei 720 Minuten nur noch 107 Beobachtungen je Klasse uebrig sind.
+
+**Und ein Befund ueber unsere Datenform, der allgemein gilt (Lehre 188): auf einer unadjustierten Reihe ist eine Umkehr-Messung oberhalb einer Session-Laenge strukturell nicht entscheidbar.** Ab dort spannt JEDE Rendite ueber eine Session-Grenze, die Roll-Bereinigung loescht dann 84 bis 92 % der Daten (bei 1440 Minuten bleiben 447 von 2.748 Fenstern), und ohne Bereinigung steckt der Roll-Sprung im Signal. Das braeuchte rueckwaerts-adjustierte Preise. **Alle unsere Serien sind unadjustiert**, bewusst und fuer die Intraday-Arbeit richtig -- es heisst aber, dass jede Tages- und Wochen-Aussage auf diesen Daten mit diesem Vorbehalt gelesen werden muss, nicht nur bei BTC. Betrifft rueckblickend auch das Varianz-Verhaeltnis "5 Tage 1,016 / 20 Tage 1,095" aus dem Befund oben: diese zwei Zahlen stehen auf derselben unbereinigten Basis und sind damit schwaecher belegt als die Intraday-Zahlen daneben. Gate-Platz: Hinweis in `qbt.load_rth`/`bars_file`-Doku und eine Pflichtzeile im Steckbrief je Markt, dass Horizonte ab Session-Laenge auf unadjustierten Serien nicht roll-bereinigbar sind.
+
+## #189: Juli-Modus Idee 8 (Max) „ATR-Candle-Breakout Gold H1“: von sechs vorab festgelegten Zellen trägt keine, alle bleiben auf der Test-Größe unentscheidbar (Power, auf GC allein praktisch für immer), die Prop-Fassung verdient nach Kosten im Punkt nichts, das Original 7:1 ist netto positiv, aber nicht von Drift plus zwei guten Jahren zu trennen (22.10.2026)
+
+**Anlass:** Idee Max 22.10.2026, Regel aus Social Media: jede H1-Kerze auf Gold (XAUUSD, bei uns GC, gehandelt 1 MGC) prüfen; Range > 2,5 x ATR(200) und Close im äußeren Viertel ergibt Einstieg in Kerzenrichtung zum Close, Stop 0,5 %, Ziel 3,5 % (7:1), kein Zeit-Ausstieg; Risiko 100 $ je Trade, dazu andere Werte. Entscheidungen Max vor dem Lauf: beide Haltearten, Prop zuerst; alle Ziel-Varianten (7 R, 2 R, 1,5 R) je mit unserem Flat 15:55 ET und ohne Zeitlimit; Why über research-scout; XAUUSD dazu. Kette: research-scout (Research-Cache 22.10., Regel ohne Quelle und Backtest, stärkstes Why Stop-Kaskade nach Osler, nur Stunden und nur FX, Literatur erwartet nach extremen Intraday-Bewegungen in Futures eher Umkehr), `ein-weg` (variant-scout: n = 12, 68 % der Signale im COMEX-Fenster, verwandt mit #174/#180b/#184a; strategy-auditor: Story hält mit Vorbehalt, Auflagen Einstieg Folgeminute, Uhrzeit-Split, A ehrlich als Stop plus Flat, B nur Messzelle, alle umgesetzt), quant-statistician auf dem Ergebnis (fand den Roll-Fehler, siehe unten), quant-mathematician mit Grund ausgelassen (reine Tafel-Statistik, SESOI-Formel aus #184), verdict-auditor (hält mit Auflagen, eingearbeitet), logbook-distiller. 0 Register-Trials, keine Engine-Module.
+
+**Messung:** Juli-Modus Stufe 2, engine-freies Skript `engine/_scratch_juli_atrbo/atrbo.py` auf dem NT8-Export (Rolls additiv rückwärts bereinigt). Einstieg Eröffnung der Folgeminute (höchstens 5 Minuten nach Close), eine Position zur Zeit, Stop und Ziel auf dem 1-Minuten-Pfad (beide in einer Minute: Stop), Kosten 0,44 Punkte. Test-Größe y = R netto minus Basis, Basis = dieselbe Klammer an jeder H1-Kerze, gleiche Seite, gleiches Jahr, in A auch gleicher Uhrzeit-Block. Damit fallen Gold-Drift und Kosten raus, die Frage ist: schlägt die Regel dieselbe Klammer zu beliebiger Stunde? Sechs Zellen, Holm einseitig 0,05, SE = max(iid, Monats-Cluster) (Basis-Schätzfehler nicht drin, macht den Test großzügiger, hier folgenlos). SESOI zeitneutral (#184-Formel, Buch-Konstanten 13.10.), 0,014 bis 0,073 R je Trade. 1.395 Signale (716 Long, 679 Short), 595 davon in den Kerzen 08:00 und 09:00 ET.
+
+| Zelle | Regel | n | y (R) | 90 %-Band | p | netto R | Ziel erreicht | Kategorie |
+|---|---|---|---|---|---|---|---|---|
+| A7 | Stop 0,5 % plus Flat 15:55 (Ziel 3,5 % praktisch nie) | 1.130 | +0,032 | −0,030 bis +0,094 | 0,20 | −0,015 | 1,0 % | unentscheidbar |
+| A2 | Ziel 1 % (2 R), Flat 15:55 | 1.208 | +0,020 | −0,029 bis +0,069 | 0,25 | −0,032 | 12,6 % | unentscheidbar |
+| A15 | Ziel 0,75 % (1,5 R), Flat 15:55 | 1.244 | +0,016 | −0,028 bis +0,060 | 0,27 | −0,035 | 19,2 % | unentscheidbar |
+| B7 | Original 7:1, ohne Zeitlimit | 716 | +0,066 | −0,109 bis +0,240 | 0,27 | +0,102 | 14,4 % | unentscheidbar |
+| B2 | 2 R, ohne Zeitlimit | 1.132 | +0,045 | −0,024 bis +0,115 | 0,14 | −0,010 | 34,6 % | unentscheidbar |
+| B15 | 1,5 R, ohne Zeitlimit | 1.207 | +0,042 | −0,017 bis +0,100 | 0,12 | −0,014 | 41,3 % | unentscheidbar |
+
+Info (vorab festgelegt, kein Test): Gegengruppe (Randschluss bei Range 1,0 bis 2,5 x ATR) überall um 0. Richtungs-Null (y unter Zufallsrichtung an denselben Kerzen, 30 Seeds) −0,016 bis +0,056 R: Klammern direkt nach großen Kerzen laufen auch richtungslos anders als zu beliebiger Stunde, in B7 um +0,056. Spiegel (Fade am selben Einstieg): in A schlechter als die Regel (A7 −0,076 R netto), in B7 gleich gut (+0,103 gegen +0,102). Uhrzeit 08 bis 10 ET gegen Rest und Stunden-Schock gegen Rest: kein Muster, das über die Zellen hält. 2025 ist in allen Zellen klar negativ. Gepoolt über alle sechs Zellen (effektiv rund 1,5 unabhängig, y-Mittel korrelieren 0,31 bis 0,90): y +0,037, p 0,15. In $ (Info, Punkt): bei 200 $ Risiko je Trade A7 rund −313 $ je Jahr, B7 rund +1.354 $ je Jahr (Bruchteil wie CFD), mit ganzen MGC +633 $; 100 $ Risiko geht mit MGC bei heutigem Goldpreis nicht (1 MGC kostet bei 0,5 % Stop rund 167 $ am Median-Preis 2024 bis 2026, heute über 200 $).
+
+### #189a Prop-Fassung (A7, A2, A15: Stop 0,5 %, Flat 15:55 ET)
+
+**Verdikt:** Keine Zelle trägt. y liegt im Punkt leicht positiv, aber im Rauschen, und nach Kosten verdient die Prop-Fassung im Punkt nichts (−0,015 bis −0,035 R je Trade, brutto nur +0,015 bis +0,035 gegen 0,05 R Kosten). Max' Originalregel mit Flat ist faktisch „Stop 0,5 % plus Zeitausstieg“ (Ziel in 1 % der Trades), also fast die Form der toten #180b/#184a im selben Fenster. Ausgeschlossen ist y (einseitig 95 %) über +0,094 / +0,069 / +0,060 R je Trade. Netto ist A15 nur als Einzelzelle ab der SESOI ausgeschlossen (obere Grenze +0,009 gegen 0,014, p 0,035), über die drei A-Zellen simultan nicht (Holm 0,0167); A2 bleibt netto bis +0,017 offen, A7 bis +0,047 (2,4 x SESOI). Kein Ausschlusstest war vorab festgelegt.
+**Reichweite:** Signal. MGC k1, GC H1 rund um die Uhr (Einstieg 19:00 bis 15:00 ET), Range > 2,5 x ATR(200) Wilder inklusive Signalkerze, Close im äußeren Viertel, Einstieg Folgeminute, Stop 0,5 % vom Rohpreis, Ziele 7 / 2 / 1,5 R, Flat 15:55 ET (Fill zur Eröffnung der 15:55-Minute; Engine-Standard seit #187a ist der Close, das machte A netto eher noch schlechter), Kosten 0,44 Punkte, 01/2016 bis 16.10.2026.
+**Kategorie:** unentscheidbar (Power: MDE80 0,067 bis 0,094 gegen SESOI 0,014 bis 0,020 R), alle drei, zählen nicht als Friedhof. Netto A15 empirisch-nichts-gefunden ab 0,014 R, N = 1, nur als Einzelzelle, simultan unentscheidbar. **Praktisch abgeschlossen:** auf GC allein bräuchte jede Zelle rund 23 x so viele Daten (139 bis 248 Jahre), ein zweiter Markt bringt höchstens Faktor 2, niedrigere Kosten ändern y nicht (sie heben sich gegen die Basis auf). Eine spätere Session soll das nicht als „offen“ lesen.
+**Nicht tot (und schon gesehen, kein Befund):** die Gegenrichtung (Fade) wurde als Spiegel mitgemessen und ist in A schlechter als die Regel. A 2016 bis 2019 mit unterer Grenze über 0 und die Rest-Stunden-Zeile sind nachträglich gesehen und mehrfach getestet, kein Befund. Andere Stops (in ATR statt Prozent, der Prozent-Stop ist nicht stationär: 0,5 % sind 2017 bis 2019 rund 2,6 ATR, 2026 rund 1,1 ATR) wären eine neue Hypothese.
+**Wiedervorlage:** Termin-Check `wiedervorlagen.json` (`lb189_atrbo_pool`, jährlich ab 22.10.2027 bis 31.10.2029): Quelle mit eigenem Backtest genau dieser Regel inklusive Kosten und Out-of-Sample, oder ein Pool aus mindestens 20 unabhängigen Markt-Jahrzehnten 1m (z.B. Databento vor 2016, AP142/AP143), oder ein Daten- bzw. Roll-Fix an GC.
+**Stempel:** Nummer: geschrieben als #188, nach dem Vault-Vorfall vom 22.10. (Ordner geleert, aus GitHub zurück) ging #188 an Nightrun BTC, deshalb #189; die Scratch-Dateien heißen noch `logbuch_188_entwurf.md` und `rettung/einspielen_188.py`. PC-Lauf 22.10.2026 17:43, `atrbo.py` md5 0af9d988df01, `prereg.md` zum Lauf 4730b9f0dbd8 (Nachtrag 1 bis 3), `result.json` 5a346da736f0, `trades.pkl` 81ee4cbb4df2, keine Engine-Module, 0 Register-Trials (Präzedenz #184), NT8-Export GC 1m bis 16.10.2026 16:59 ET (md5 `GC_FUT_1m.parquet` cad139067e1f, gleich dem finalen Export aus #184; `GC_rolls.json` e3b199e8db3f). Kriterium: SESOI zeitneutral aus dem Zeit-Fit AP275 P2 (Buch k1, Sharpe 2,11, Jahres-SD 2.914 $, Korrelation 0,09, Drift über Null 5.745 $), Kosten 0,44 Punkte (AP375), Holm k = 6, einseitig 0,05, Betriebspunkt 1 MGC (Median-Preis 2024 bis 2026 3.333 $). Daten vorab gesehen: variant-scout hat beim Zählen Brutto-Mittel der Grundzellen gedruckt (nicht weitergegeben); zwei fehlerhafte Läufe wurden gesehen (siehe Lehren), beide Fixe haben eine Sperre im Code, der Roll-Fix drückte B7 nach unten (gegen die Hypothese), die Festlegung blieb seit dem gültigen Lauf unverändert. Fehler-Checks vor dem Stempel: 5 zufällige Trades unabhängig von `atrbo.py` gegen die rohen 1m-Daten nachgerechnet (`handcheck.py`, Einstieg, Richtung, Ausstiegsart und R exakt gleich); XAUUSD (Dukascopy, nur die geladenen Tage 01 bis 06/2016, Download wegen Drosselung gestoppt): 33 gemeinsame Signalkerzen, alle mit gleicher Richtung, die übrigen GC-Signale liegen an fehlenden XAU-Tagen oder knapp an der Schwelle (`xau_check.py`). Fehlerhafte Ausgaben archiviert: `result_FEHLER_einheit.json` 81b8a786ecec, `result_FEHLER_roll.json` 654987c1b07c.
+
+### #189b Original ohne Zeitlimit (B7, B2, B15, reine Messzellen)
+
+**Verdikt:** Keine Zelle trägt. B7 (Max' Original 7:1) liegt netto im Punkt bei +0,102 R je Trade [−0,071; +0,275], aber: die besten 5 % der Trades (36, alles 7-R-Treffer) machen 344 % der Summe, Trefferquote 14,4 % gegen Break-even 13,1 %, ohne 2020 und 2023 bleiben +0,009 R; Long netto +0,32, Short −0,12, der Richtungsanteil liegt bei z 0,11 gegen Zufallsrichtung, und der Fade am selben Einstieg ist gleich gut. Lesart: Gold-Drift auf der Long-Seite plus zwei gute Jahre plus Timing nach großen Kerzen, nicht die Richtung der Kerze. B2 und B15 netto um 0. Ausgeschlossen ist y über +0,240 / +0,115 / +0,100 R je Trade.
+**Reichweite:** Signal, wie #189a, aber ohne Zeitlimit (hält über Nacht und Wochenende, Stop-Lücken zur Eröffnung gefüllt, Rolls bereinigt). Auf unseren Futures-Konten (E8, FN, FFN) nicht handelbar (Flat-Pflicht vor Tagesschluss, Firm-Regeln je Konto); bei FundedNext-CFD wäre Overnight erlaubt, dort kämen Swap und Spread dazu (nicht gerechnet).
+**Kategorie:** unentscheidbar (Power: MDE80 0,264 / 0,105 / 0,088 gegen SESOI 0,074 / 0,026 / 0,021 R), alle drei, zählen nicht als Friedhof. Praktisch abgeschlossen wie #189a (13 bis 18 x so viele Daten nötig).
+**Nicht tot:** dieselbe Klammer als reine Drift-Long-Wette ist eine andere Frage (Long-Drift, keine Kerzen-Information) und gehört nicht zu dieser Idee.
+**Wiedervorlage:** nur bei einer Kontoart mit erlaubtem Overnight-Halten (CFD oder eigenes Konto) plus der Bedingung aus #189a. Termin-Check `lb189_atrbo_pool`.
+**Stempel:** wie #189a.
+
+### #189c Lehren (Prozess)
+
+Stand laut logbook-distiller (22.10.2026): keine der vier Lehren lebt als Code-Gate, 1 und 4 nur als Text, 2 und 3 halb. Kein neues Ticket, AP416 (Code-Teil `tafel_lib`) und AP230 (Roll-Daten) werden erweitert.
+
+1. **Einheiten-Falle pandas:** Der Parquet-Index liegt in Mikrosekunden, `asi8` liefert dann Mikrosekunden; das Skript rechnete in Nanosekunden, jeder Einstieg lag 41,7 Tage nach der Signalkerze. Ein Trockenlauf mit Zufallsrichtung findet so einen Fehler nicht (Null ist bei jeder Einstiegszeit Null, Kontext #184). Aufgefallen ist er an der Plausibilitätszeile (Haltedauer 0,0 h). Regel für jede Tafel mit Minuten-Einstieg: Index auf eine Einheit festlegen, Sperre „Einstieg liegt X bis Y Minuten nach dem Signal, in Zeit gemessen“, Plausibilitätszeile vor dem Lauf. Einziger Vorläufer: Kommentar in `workbench.py` („GC-Cache us, NQ ns“). **Gate:** `tafel_lib.entry_lag_check(signal_ende, einstieg, lo_min, hi_min)` über `pd.Timedelta`, wirft hart ohne Abschalter (Vorbild `discovery/asof_join.py`), dazu `tafel_lib.plausibel(trades)` (Haltedauer-Median, Ausstiegsanteile). Ticket AP416.
+2. **Roll-Bereinigung:** Der Roll-Check verglich nur den Rohsprung mit der gemeldeten Lücke und war damit blind für ein falsches Vorzeichen der Bereinigung (bereinigte Reihe sprang um 2 x Lücke, bis 3,9 %). Pflicht ist der Check auf der bereinigten Reihe: Sprung an der Grenze wie eine normale Session-Eröffnung. Getroffen sind nur Mehrtages-Pfade, deshalb blieb es in den Intraday-Tafeln (#184) ohne Folge. Heute gibt es drei eigene Back-Adjust-Stellen (`atrbo.py`, `_scratch_juli_donchian/daten.py`, `regime_map.py`) und keinen gemeinsamen Lader. Verwandt, andere Fehlerklasse: #075/#135 und Lehre 178 (#186e, „am Konsumenten prüfen“). **Gate:** `roll_lib.py` mit `roll_adjust(d, rolls)` und `assert_adjusted(d, off, grenze)` (wie `atrbo.roll_check`), alle Back-Adjust-Skripte rufen es auf. Ticket AP230.
+3. **Zwei Nullen:** „gleiche Klammer zu beliebiger Stunde“ und „Zufallsrichtung an denselben Kerzen“ sind verschiedene Fragen. Nach großen Kerzen weichen sie um bis zu 0,06 R je Trade ab. Beide nebeneinander zeigen. Heute gibt es die Richtungs-Null (`controls.ctl_null`) und die Rotations-Null (`tafel_lib.label_null`), nie nebeneinander, und keine Basis „Klammer zu beliebiger Stunde“. **Gate:** `tafel_lib.zwei_nullen(y_regel, y_basis, y_zufallsrichtung)` mit Flag `nullen_weichen_ab` ab halber SESOI, als Zeile in `pruefe(..., basis=, richtung=)`. Ticket AP416.
+4. **Social-Media-7:1 mit Prozent-Stop:** Bei Flat-Pflicht erreicht ein 3,5-%-Ziel auf Gold fast nie das Ziel; die Regel ist dann ein Stop plus Zeitausstieg. Vor jeder Tafel die Ausstiegsarten zählen. **Zum zweiten Mal:** dieselbe Lehre steht als Lehre 92 in #108 („Stop/Target/Zeit-Anteile gehören in jede Ergebniszeile“), danach wurde kein Gate gebaut. **Gate:** `tafel_lib.exit_mix(arten)` als Pflichtzeile in `pruefe()`, Flag bei Ziel-Anteil unter 5 % (qbt kennt `exit_kind` je Trade). Ticket AP416.

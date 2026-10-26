@@ -48,6 +48,28 @@ python run_vwap.py            # Self-Validation + Demo
 Neue Strategie: `qbt.run_strategy({...params...})` → `qbt.metrics(tr)` → `qbt.monte_carlo(tr)` → `qbt.prop_pass_probability(tr)`.
 Erster Lauf baut RTH-Cache (`exported_data/cache/`), danach schnell.
 
+## 🛑 Rechen-Bremse: Multiprocessing nur noch darüber (16.10.2026)
+Anlass: der PC hat nur 6 Threads. Zwei Sessions mit je eigenem Pool (5 plus 4 Worker, alle auf normaler Priorität) legten ihn lahm. `engine/rechen_bremse.py` löst das PC-weit:
+- **BELOW_NORMAL** für Hauptprozess und Worker, damit Maus, Browser und Claude bedienbar bleiben.
+- **Obergrenze 4 gleichzeitig rechnende Prozesse über alle Sessions zusammen** (`MAXLAB_MAX_WORKER` ändert sie, in allen Sessions gleich setzen). Geteilt wird über 4 Sperrdateien in `%LOCALAPPDATA%\MaxLab\rechen_bremse\`, je Aufgabe ein Slot, wartende Läufe bekommen nach jeder Freigabe Vortritt. Stirbt ein Lauf, gibt Windows den Slot selbst frei, und seine Worker beenden sich mit (Eltern-Wächter). Findet ein Lauf 5 Minuten keinen Slot, rechnet er eine Aufgabe ohne weiter, hängen bleibt nie etwas.
+- **Aus** auf der Box, auf Nicht-Windows und mit `MAXLAB_BREMSE=0`. `python rechen_bremse.py --status` zeigt, wer gerade rechnet. Test: `python test_rechen_bremse.py` (32 Prüfungen, rund 1 Minute).
+
+Eingebaut in `weekend_check.py` (`--jobs`, `run_jobs`), `konten/account_card.py` und `test_erstfassung.py`. **Für jedes neue Scratch-Skript mit mehreren Prozessen:**
+```python
+import sys; sys.path.insert(0, r"C:\Users\maxlk\Projects\trading-data\engine")
+import rechen_bremse as RB
+ergebnisse = RB.pool_map(meine_funktion, aufgaben, wunsch=4)              # Liste, Eingabe-Reihenfolge
+for r in RB.pool_imap_unordered(meine_funktion, aufgaben, wunsch=4): ...  # Fertig-Reihenfolge
+with RB.slot(): grosse_einzelrechnung()                                   # ein einzelner Prozess
+```
+`meine_funktion` muss auf Modulebene stehen (Spawn). Kein eigenes `mp.Pool(cpu_count()-1)` mehr. Wer unbedingt einen eigenen Pool braucht: `mp.Pool(RB.worker_zahl(5), initializer=RB.senke_prioritaet)`, das deckelt Zahl und Priorität, teilt aber keine Slots. Die Zahlen hängen nicht von Worker-Anzahl oder Priorität ab (jede Aufgabe hat ihren eigenen Seed).
+
+**Fallen:**
+- Ein gebremster Lauf kriecht, solange daneben noch ein ungebremstes Skript die CPU voll auslastet (Kinder erben die niedrige Priorität, auch ihr Start dauert dann). Gewollt, aber wer einen kurzen Test mit Zeitmessung braucht, setzt `MAXLAB_BREMSE_PRIO=0` (Slots und Obergrenze bleiben). Ein Skript mit eigenem `mp.Pool(cpu_count()-1)` ohne Bremse bringt die ganze Rechnung ins Leere.
+- Die Bremse zieht nur, wo das Skript sie benutzt. Seit 18.10.2026 (AP411, Max): Regel in der CLAUDE.md, ein Hook weist bei `Pool(` ohne `rechen_bremse` darauf hin (Start per Bash oder PowerShell und Schreiben eines Engine-Skripts, nur Hinweis, einmal je Datei; abschalten pro Datei mit dem Kommentar `# rechen_bremse: nicht noetig`), und `rechen_bremse.py` steht in `ENGINE_CORE` (Regressionstest vor dem Box-Sync).
+- Wird ein Lauf abgebrochen (Fehler, Strg+C), kann eine harmlose Meldung `OSError: handle is closed` aus dem Aufgaben-Puffer erscheinen. Das ist kein Fehler im Ergebnis.
+- `konten/account_card.py` gehört zum Karten-Fingerabdruck: die Konto-Karten gelten seit dem 16.10. als veraltet und werden beim nächsten Lauf neu ausgegeben (Simulation kommt aus dem Cache, Zahlen unverändert, nur Datum und Fingerabdruck neu).
+
 ## ✅ Validierungs-Ergebnis
 - Baseline (60%) = exakt Breakeven für Stop 1,5 / Target 1,0 → Engine-Mathe konsistent.
 - Reversion 56% netto (unter Baseline) → keine Edge = reproduziert QuantPad.

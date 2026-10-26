@@ -122,7 +122,8 @@ Feinschnitt: Claude bekommt nur Transkript und Schnittliste (wenige KB), ändert
 - [ ] **Nicht-Assoziationen:** womit du nie in Verbindung gebracht werden willst (Vorschlag: Get-rich-quick, Guru-Szene, Trading-Signale).
 - [ ] **Prompt-Playbook** als Gratis-Download.
 - [ ] **E-Mail-Werkzeug und Kommentar-DM** einrichten, Rechtliches (Double-Opt-In, Datenschutz, Impressum).
-- [ ] **Schnitt-Pipeline** am ersten echten Talking Head abnehmen.
+- [ ] **Schnitt-Pipeline** am ersten echten Talking Head abnehmen. **Max am 16.10.: das Testvideo (Testbild, Computerstimme) hat ihm gar nicht gefallen.** In der Woche ab 19.10. gemeinsam mit den ersten echten Videos klären, was genau nicht passt (Untertitel, Zoom, Tempo, Schnitte) und den Look anpassen. Vorher nichts ändern (Max).
+- [ ] **Start der Produktion:** erst nach der Antwort des Arbeitgebers am Montag 19.10. (AP406), dann ab nächster Woche Videos drehen und mit Claude schneiden.
 - [ ] **Lightning-EarPods** als Mikro bis zum neuen iPhone (wie minolee), falls keine da sind.
 
 ## Erwartung (ehrlich)

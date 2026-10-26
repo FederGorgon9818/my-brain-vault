@@ -71,6 +71,34 @@ Die Box (`vmd202078`, Tailscale `100.127.89.9`, Zeitzone = deutsche Zeit) ist vo
   - Überblick je Konto per SSH: `vps_health.ps1`. Am PC zusätzlich `auto_check.py` (Lab-Glocke): Live-Sync steht, Box-Watchdog läuft nicht mehr, Bars je Konto (mit Feiertagen), Fill-Logger eines Kontos bleibt hinter dem Host zurück, RiskGuard-Ereignisse je Konto. Nur Lab, kein Telegram, und nur wenn der PC an ist. Lokale Kopien aller Box-Skripte: `engine\maxlab_*.ps1`, `engine\vps_health.ps1`.
 - **Claude Code auf der Box:** nativ installiert (`C:\Users\Administrator\.local\bin\claude.exe`, v2.1.226, PATH gesetzt). Login einmalig per RDP nötig. Für autonome Health-Checks/Mitdenken direkt auf der Box.
 
+## Teil 10: Automatischer NT8-Login (AP134, Stand 18.10.2026)
+
+**Stand: gebaut, noch NICHT eingespielt und NICHT getestet.** Bis der Test unten grün ist, gilt weiter: Wiederanlauf braucht Max per RDP, `nt8_autorestart_pause.flag` bleibt liegen.
+
+**Das Problem genau:** Windows meldet sich nach dem Boot seit 06.09. selbst an (Sysinternals Autologon, LSA-Secret), NT8 startet über `NinjaTrader.lnk` im Autostart von Administrator bzw. den Task „MaxLab NT8“. Dann hängt es im Login-Fenster. Beleg im NT8-Log: jeder Start ohne Max am Rechner bleibt bei genau einer Zeile („Session Break“), z.B. 01.10. 16:11 und 08.10. 19:43/19:47 ET. Mit Max dauert es vom Start bis „Connecting“ zwischen 20 s und 31 Min, je nachdem, wann er tippt. „Remember me“ hält das Passwort nicht (Max 14.10. und 18.10.), Login-Pflicht ist seit NT 8.1.1.0 Design, SFT-5780 ohne Termin, kein Startparameter und kein Lizenz-Weg am Login vorbei ([[Research-Cache]], Abschnitte 06.09. und 18.10.).
+
+**Geprüfte Wege:**
+
+| Weg | Urteil |
+|---|---|
+| „Remember me“ / Stay logged in | geht nicht, siehe oben |
+| Startparameter, Offline-Modus, Lifetime-Lizenz | gibt es nicht |
+| Windows-Autologon | steht schon seit 06.09., löst nur die Windows-Anmeldung |
+| tscon nach Disconnect | löst nur ein Desktop-Problem, das Passwort fehlt trotzdem (AP86, 06.09. gemessen) |
+| Fremd-Tools (Ilasorf, NJLogon, DeepSignalTech) | Download fremden Codes, teils Passwort im Klartext oder per Zwischenablage und Tastatur (scheitert in getrennter RDP-Sitzung) |
+| **eigener UIA-Wächter** | **gewählt:** kein Download, Passwort per DPAPI, füllt per UI Automation statt Tastatur |
+
+**Der Weg:** `C:\Users\Administrator\nt8_autologin.ps1`, gestartet vom Task **„MaxLab NT8 Login“** (bei Anmeldung von Administrator, Interactive, RunLevel Highest, kein Zeitlimit, nie doppelt). Er schaut alle 5 s, ob ein Fenster von `NinjaTrader.exe` ein Passwortfeld hat, trägt das Passwort per `ValuePattern.SetValue` ein und löst „Log In“ per `InvokePattern` aus. Deckt alle Startwege ab: Reboot, Watchdog-Neustart, Deploy, Handstart.
+- **Passwort:** nur in `nt8_login.secret` (DPAPI, an Administrator und diese Box gebunden, ACL nur Administrator + SYSTEM). Max legt es selbst an mit `nt8_store_credential.ps1` (Get-Credential, Claude sieht es nie). Nie im Log, nie im Bericht, nie auf der Kommandozeile. Ehrlich: wer Administrator auf der Box ist und eine echte Anmeldung hat, kommt an das Passwort.
+- **Genau ein Versuch je NT8-Start.** NT kann Rechenzentrums-IPs mit CAPTCHA belegen, jeder Fehlversuch setzt den Sperr-Timer neu. Kommt der Login nicht durch, meldet der Watchdog weiter „hängt im Login-Fenster“.
+- **Notbremse:** `C:\Users\Administrator\nt8_autologin_off.flag` anlegen, der Wächter macht dann nichts mehr. Rückbau: `Unregister-ScheduledTask -TaskName "MaxLab NT8 Login" -Confirm:$false`.
+- **Spuren:** `nt8_autologin_log.txt` (Ablauf), `nt8_uia_report.txt` (UIA-Baum des Login-Fensters beim ersten Treffer, ohne Werte), `nt8_autologin_heartbeat.txt` (lebt der Wächter, jede Minute).
+- **Firmen-Regeln:** Login-Automatik ändert nichts an „nur ein Gerät gleichzeitig“ (FFN/Rithmic). Den NT-Account selbst darf man laut Forum auf zwei Rechnern nutzen, aber eine zweite Rithmic-Verbindung vom PC kann die der Box kappen. Am PC also keine Rithmic-Verbindung zu FFN-Konten öffnen.
+
+**Offene Lücke, nur auf der Box klärbar:** ob das Login-Fenster ein normales WPF-Passwortfeld hat, das `SetValue` annimmt, und ob UI Automation auch in einer getrennten RDP-Sitzung füllt. Fällt Letzteres durch: vor dem Trennen die Sitzung per `tscon` auf die Konsole legen (Max selbst, Claude ist dafür gesperrt, AP136).
+
+**Was danach noch fehlt:** die Strategien kommen nach jedem NT8-Neustart deaktiviert zurück (NT-Design, kein Enable per AddOn). Erst wenn auch das automatisch geht (AP134 Teil 2, UIA im Strategies-Tab, nur mit WaitUntilFlat und nach Test-NT8Ready), darf das Pause-Flag weg.
+
 ## Aus der CLAUDE.md (05.10.2026): Box-Fernzugriff, Regeln für Claude
 
 Aus dem Abschnitt „Box-Fernzugriff" (Regel Max, 11.08.2026, „nie wieder vergessen") hierher übernommen, damit die CLAUDE.md schlank bleiben kann.
