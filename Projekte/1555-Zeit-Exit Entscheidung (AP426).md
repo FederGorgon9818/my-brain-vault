@@ -1,7 +1,7 @@
 ---
 tags: [trading, ausfuehrung, live, entscheidung, ap426]
 datum: 2026-10-18
-status: entschieden 18.10.2026 (Option A umgesetzt, B' später als AP428)
+status: A umgesetzt (18.10.2026), Tick-Befund 26.10. fertig, B' Entscheidung Max offen
 ticket: AP426
 ---
 
@@ -94,6 +94,41 @@ Stufe 1 hält mit dem realistischen Modell bei allen drei Beinen (t LastHour 3,2
 - **Über 13 Echtgeld-Tage:** gegen den Open +25,6 Ticks im Mittel (Median +34,6, t 2,4), gegen den Close der 15:55-Bar −6,0 (t −0,65). Das Close-Modell der Engine liegt damit weiter im Rauschen, eher leicht zu vorsichtig.
 - **Korrektur zum 22.10.:** in der ersten Sekunde nach 15:55:00 springt der Preis stark, aber nicht immer gegen uns. Im Mittel kostet es, die Streuung ist groß (sd 38 Ticks). Ob ein Exit vor 15:55:00 die Kosten spart oder nur die Streuung, zeigen erst die Ticks (AP427).
 - **Ticks:** die Ticks vom 10.09. bis 22.10. liegen schon in NT8 auf der Box (am 22.10. geladen), es fehlen 23.10. und 26.10. Neue Anleitung in AP427 (Download der zwei Tage, Export 21.09. bis 26.10.). `tick_burst.py` deckt jetzt alle 13 Live-Tage ab und erkennt die Zeitzone des Exports selbst, `box_tick_filter.py` kürzt den Export auf der Box auf 15:40 bis 15:59.
+
+## Tick-Befund 26.10.2026 und Entscheidung zu B'
+
+> [!question] Entscheidung Max offen
+> Was passiert mit B' (Exit vor 15:55)? Empfehlung: **erst historisch beweisen** (Option 2 unten), weil der Live-Versuch die erwartete Größe nicht auflösen kann.
+
+**Daten:** NT8-Tick-Export MNQ 12-26, 21.09. bis 26.10.2026 (26 Handelstage, 13 davon Live-Tage mit 15:55-Exit). Original bleibt auf der Box (`Documents\NinjaTrader 8\export\MNQ 12-26.Last.txt`, 2,9 GB, Zeitstempel UTC), gekürzt auf 15:40 bis 15:59 unter `C:\Users\Administrator\ap427_mnq_1540_1559.txt`. Skripte `engine/_scratch_ap426/tick_burst.py`, `tick_burst_all.py`, Quant-Team `st_ap428_main.py`, `ap428_tstar.py`.
+
+**Was die Ticks zeigen**
+- **Der Sprung kommt genau um 15:55:00.** Schon 0,25 s danach steht der Preis an den Live-Tagen im Mittel 23 Ticks gegen die Position und bleibt bis 15:56 bei rund 30. Von 15:54:45 bis 15:54:59 ist es ruhig.
+- **Zwei feste Ereignisse:** In der ersten Sekunde springt der Preis nach 15:50:00 im Mittel 48 Ticks (Volumen x56, NYSE-Frist) und nach 15:55:00 38 Ticks (Volumen x15, Nasdaq-Frist). Nach anderen vollen Minuten sind es 4 bis 12 Ticks.
+- **Die Richtung ist nicht systematisch.** Über 26 Tage läuft der Sprung nicht klar gegen den Nachmittagslauf (t 0,8). Historisch ist nur „gegen unsere Position“ leicht belegt (LastHour-Tage +6,4 Ticks ab 10/2018, ab 2024 nur noch +1,9).
+- **Das Close-Modell der Engine passt** (Live gegen C1555 −6,0 Ticks, im Rauschen). Das alte Open-Modell ist widerlegt.
+
+**Was B' bringt (Quant-Team)**
+
+| | Planzahl je Trade | Spanne (CI90) | $/Jahr je Konto (k1, 3 Beine) |
+|---|---|---|---|
+| Statistiker (Empirical Bayes, Anlass-Effekt raus) | +4,5 Ticks | −7,5 bis +16,5 | +264 (−420 bis +941) |
+| Mathematiker (Historie bis Planzahl, Drift und Staffel abgezogen) | +3 bis +10 Ticks | | +150 bis +470 |
+| Live roh, 13 Tage (keine Planzahl) | +29 Ticks | | +1.675 |
+
+- **Die +29 aus den Live-Tagen sind fast ganz Anlass-Effekt.** Die 10 Tage, wegen derer wir hingeschaut haben, liegen bei +37,7, die 3 Tage danach bei 0. Mit 73 % Wahrscheinlichkeit lohnt sich B' überhaupt.
+- **Zeit bis 50k:** grob 2 bis 7 Monate schneller. Das ist nur linear hochgerechnet, nicht mit `tempo_plan` gerechnet.
+- **Sendezeit:** LastHour um **15:54:50**, die anderen Beine im Abstand von 15 s davor (15:54:35, 15:54:20). Damit rutscht der Fill nur in 0,4 % der Fälle hinter 15:55:00 (Stress 5,6 %). 15:54:55 wäre 0,3 Ticks besser, aber deutlich riskanter. Der 15:50-Sprung ist nicht betroffen. Seit 09.10. war um 15:55 nie mehr als ein Modul offen.
+- **Der geplante Paarversuch (20 Tage, Regel +3 Ticks) kann das nicht entscheiden.** Die Tagesstreuung liegt bei 45 Ticks, und die Paarung nimmt nichts davon weg. Nach 20 Tagen ist ein Effekt erst ab 17 bis 26 Ticks sichtbar, für +5 Ticks bräuchte es 3,8 Jahre. Auflösen lässt sich +4 bis +5 nur mit historischen NQ-Ticks: 775 Tage mit 15:55-Exit seit 10/2018 erkennen rund 4 Ticks.
+- **Engine, falls B' kommt:** neuer Modus `eod_flat_px="pre"` mit Brücken-Interpolation in der 15:54-Bar, Sendezeit je Bein als Parameter. Nicht das alte „open“, das wäre rund 104 $/Jahr zu optimistisch. Auflagen: Register-Stempel, Kanarie, Golden Master. Der Standard wird erst umgestellt, wenn B' auf allen Konten läuft. Bisher nichts gebaut.
+
+**Optionen für Max**
+
+1. **B' auf Eis, Status quo bleibt.** Die Engine rechnet ehrlich, live ändert sich nichts. Kostet die mögliche Planzahl von rund 150 bis 470 $ je Jahr und Konto.
+2. **Erst historisch beweisen, dann entscheiden** ⭐ Empfehlung. Historische NQ-Ticks für die Sekunden um 15:55 an allen Tagen seit 10/2018 (Databento, Konto mit 125 $ Startguthaben, AP143, Kosten vorher per Abfrage prüfen). Die Regel steht vorab fest: Mittel ab 10/2018 mindestens +3 Ticks, CI90-Untergrenze über 0, ab 2024 nicht negativ. Trägt das, B' bauen (ninja-coder, Config je Konto, Standard aus), eine Technik-Probe auf 1 Konto für 5 bis 10 Tage (nur Technik, kein Urteil), dann alle Konten. Der Abgleich aus Ticks je Live-Tag läuft kostenlos mit.
+3. **B' direkt nach einer Technik-Probe auf alle Konten.** Begründung: Der Nachteil ist klein (verschenkte Drift von 1 bis 4 Ticks), und der Auslöser hängt fest an der Uhr. Dagegen spricht, dass der strategy-auditor am 18.10. B' ohne Versuch auf allen Konten als No-Go eingestuft hat und der Effekt nicht belegt ist.
+
+Frühestens ab 02.11., wegen der US-Zeitumstellung am 01.11.
 
 ## Offen, nicht Teil der Entscheidung
 
