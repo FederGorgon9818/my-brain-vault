@@ -88,6 +88,13 @@ Stufe 1 hält mit dem realistischen Modell bei allen drei Beinen (t LastHour 3,2
 - **Für B' heißt das:** ist der Auslöser die Nasdaq-Veröffentlichung um 15:55:00, liegt er fest auf der Uhr, und ein Exit vor 15:55:00 umgeht ihn. Die Ticks (AP427) müssen das noch bestätigen.
 - Rechnungen: `engine/_scratch_ap426/` (Fill-Abgleich `fills_vs_bars.csv` plus 20.10. aus dem NT8-Log der Box).
 
+## Nachtrag 26.10.2026: zwei weitere Live-Tage, Sprung geht in beide Richtungen
+
+- **23.10.:** Fill 0,6 bis 1,4 s nach 15:55:00, nur +1,8 Ticks gegen den Open der 15:55-Bar. **26.10.:** Fill 0,9 bis 1,8 s, **40 Ticks besser** als der Open. Beide Male LastHour long auf allen 5 Konten, Bars aus Yahoo NQ=F 1m.
+- **Über 13 Echtgeld-Tage:** gegen den Open +25,6 Ticks im Mittel (Median +34,6, t 2,4), gegen den Close der 15:55-Bar −6,0 (t −0,65). Das Close-Modell der Engine liegt damit weiter im Rauschen, eher leicht zu vorsichtig.
+- **Korrektur zum 22.10.:** in der ersten Sekunde nach 15:55:00 springt der Preis stark, aber nicht immer gegen uns. Im Mittel kostet es, die Streuung ist groß (sd 38 Ticks). Ob ein Exit vor 15:55:00 die Kosten spart oder nur die Streuung, zeigen erst die Ticks (AP427).
+- **Ticks:** die Ticks vom 10.09. bis 22.10. liegen schon in NT8 auf der Box (am 22.10. geladen), es fehlen 23.10. und 26.10. Neue Anleitung in AP427 (Download der zwei Tage, Export 21.09. bis 26.10.). `tick_burst.py` deckt jetzt alle 13 Live-Tage ab und erkennt die Zeitzone des Exports selbst, `box_tick_filter.py` kürzt den Export auf der Box auf 15:40 bis 15:59.
+
 ## Offen, nicht Teil der Entscheidung
 
 - Am 13.10. zwei Exit-Fills auf FN1 im Abstand von 1,35 s: das ist der Doppel-Exit aus AP382 (Fix am 16.10. deployt), hier nur als Gegenprobe vermerkt.
