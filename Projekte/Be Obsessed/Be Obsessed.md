@@ -52,6 +52,8 @@ status: Idee, OGSM-Entwurf steht, Entscheidungen bei Max offen
 | [[Be Obsessed Stil-Steckbrief]] | Analyse der vier Vorbild-Reels, Look und Untertitel |
 | [[Be Obsessed High-Ticket Angebot]] | Coach-Angebot aus dem Interview 19.10.: Business-Gehirn, 6 Wochen, Preisleiter 1.500 → 3.000 → 5.000 €, 5-Stunden-Garantie, Messaging |
 | [[Be Obsessed Vertrauens-Konzept]] | Vorschlag 26.10.: Builder statt Experte, drei Sprech-Zonen, Serien „Unter der Haube“ und „Ein Agent für …“, Fallstudie Null vor dem ersten Verkauf |
+| [[Be Obsessed Prompt-Playbook (Entwurf)]] | Gratis-Download für „Kommentiere KI“, Entwurf v1 (16.10.) |
+| [[Be Obsessed E-Mail-Liste (Werkzeuge und Recht)]] | Werkzeug-Vergleich, Kosten, Rechts-Checkliste vor der ersten Adresse (16.10.) |
 | Schnitt-Pipeline | `C:\Users\maxlk\Projects\be-obsessed-schnitt\` (lokal, nicht im Vault), Session „Be Obsessed: Schnitt-Skripte ausarbeiten“ |
 
 ---
