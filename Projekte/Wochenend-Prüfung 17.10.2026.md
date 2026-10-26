@@ -34,6 +34,23 @@ Eine Liste für Samstag: alle offenen Buch-Entscheidungen aus den Ticket-Session
    - Erste Fassungen für OpEx und LD01 stehen in `book_erstfassung.json`.
    - Den Lauf fährt die Wochenend-Session (AP209), einen Vorab-Lauf gibt es nicht.
 
+## Endstand 19.10. (NT8-Daten, Close-Exit AP426, CME-Wochen-Gate AP418)
+
+Bericht `engine/weekend_check/2026-10-19_close_1019.md`, Engine 20fbf8e4, Golden Master 19.10. 00:05 grün. Der erste Versuch am 18.10. 23:16 brach ab, weil der PC um 00:25 neu startete (Windows-Ereignis 1074). Das war kein Engine-Fehler.
+
+| Variante | Monate bis 50k | gegen echt | erste Fassung |
+|---|---|---|---|
+| echtes Buch (4) | 100,4 | | |
+| **Next 6er** | **83,2** | **−17,2 ± 0,9** | z 3,08, recent3y −10,8 |
+| echt + LD01 | 88,1 | −12,3 | z 2,27 |
+| echt + OpEx | 93,7 | −6,7 | z 2,19 |
+| OpEx statt Asia | 103,4 | +3,0 | |
+| LD01 statt Asia | 94,6 | −5,9 | |
+
+- **Vorhersage bestätigt:** Der Mathematiker hatte für den Close-Exit einen Vorsprung von −17,2 bis −17,9 Monaten vorhergesagt. **Keine Entscheidung kippt.**
+- **Asia** ist mit Close-Exit mehr wert als OpEx: OpEx statt Asia wäre +3,0 Monate langsamer, denn Asia geht nicht um 15:55 flat. Das stützt „Asia bleibt auf 150k“.
+- Nächster Neulauf erst bei neuer Buch-Änderung oder Engine-Änderung.
+
 ## Neurechnung auf NT8-Daten (18.10. abends)
 
 Hauptdaten NQ/ES/YM/RTY seit 18.10. NT8 bis 16.10.2026 (Lücken aus Databento, Entscheidung Max AP199). Bericht `engine/weekend_check/2026-10-18_nt8_1018.md`. Gegengelesen von Mathematiker und Statistiker.

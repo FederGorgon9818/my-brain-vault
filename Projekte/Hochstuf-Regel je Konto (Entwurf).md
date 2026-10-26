@@ -19,6 +19,9 @@ status: Entwurf, Entscheidung Max offen (Wochenend-Thema)
 > [!success] Ergänzung Max, 13.10.2026
 > **Der Maßstab hinter den 235 $ ist jetzt ausdrücklich festgelegt: Bust-Chance in 12 Monaten höchstens 30 %.** Die 235 $ bleiben, ohne Abschlag für die Mess-Unschärfe (gemessen 235 $ heißt grob 25 %, im Pechfall etwa 35 %). Neben der gemessenen 60-Tage-Zahl darf künftig auch eine Vola-Schätzung grünes Licht geben, sobald sie die Rückrechnung bestanden hat und ihr vorsichtiger Wert unter der Schwelle liegt. Das System meldet nur, die Größe ändert Max. Damit ist Frage 5 in Abschnitt 7 entschieden. Details: [[Vola-Prognose Agent (Konzept)]], Ticket AP358.
 
+> [!info] Nachrechnung 19.10.2026 (Quant-Team, nach Telegram-Alarm „k2 für das 150k prüfen“)
+> **k2 bleibt auf FFN1 und FFN2 gesperrt.** Sigma60 der Belegung 630 $, Sigma120 501 $, Bust 12 Monate k1 30,8 % gegen k2 84,9 %. Kein Tagesstopp zwischen 500 und 5.000 $ bringt k2 unter 30 %. **Die 235 $ sind bestätigt:** das Modell gibt k2 die 30-%-Marke bei 246 bis 251 $ (Buch-Tage, geschrumpfter Sharpe), die 10 im Abstand ist leicht vorsichtig. **Einheit beachten:** die Regel misst auf Buch-Tagen, `vola_check.py` auf Börsentagen mit Nulltagen (etwa 0,75-fach), dort entspräche die Schwelle rund 182 $. Der Alarm vom 18.10. war deshalb doppelt falsch (alte Schwelle 400 $, falsche Einheit), Fix als AP436. **Nebenbefund:** k1 selbst liegt bei heutiger Vola an der 30-%-Marke (Sigma120 501 $ gegen Grenze ~493 $). Die hohe Sigma kommt aber von großen Gewinntagen, abwärts-kalibriert liegt k1 bei rund 18 %. Wieder vorlegen, wenn Sigma120 oder Sigma250 (Buch-Tage) unter ~250 $ fällt. Rechnungen: `engine/_scratch_k2_1019/`.
+
 Alles andere hier ist ein **Vorschlag**. Geändert ist nichts, weder am Buch noch am RiskGuard. Zahlen aus `engine/_scratch_trackrecord_1210/` (Quant-Team, 12.10.2026), Daten bis 11.09.2026.
 
 ## 1. Worum es geht
