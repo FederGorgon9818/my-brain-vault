@@ -8,6 +8,9 @@ erstellt: 2026-08-04
 
 ⬅️ [[Live-Setup (Algo auf Prop)]] · [[Eval-Passing]]
 
+> [!warning] Überholt (Stand 04.08.2026)
+> Preise, Pläne und Abo-Modell haben sich geändert (seit 25.08.2026 Einmalzahlung, Flex/Core nicht mehr kaufbar, neu Builder, Rapid EOD, Pro redesigned, Static-Linie MyFundedStudio). Aktueller Stand und Rechnung Zeit bis 50k: [[MFFU- und Static-DD-Check 24.10.2026]], Regeln im [[Research-Cache]] Abschnitt „MyFundedFutures (MFFU)“ (24.10.2026).
+
 ## Alle 4 Pläne (50k, Target immer $3K, Max DD immer $2K!)
 
 | Regel | ⚡ Rapid | 💼 Pro | 🧱 Builder | 🎛️ Flex |
