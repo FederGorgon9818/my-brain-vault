@@ -4,7 +4,7 @@ tags:
   - bereich/business
   - steuer
 erstellt: 2026-10-10
-status: Fragen fertig, Steuerberater wird gesucht
+status: Steuerberater angefragt (22.10.2026, Empfehlung von Marco), Antwort offen
 ---
 # ❓ Fragen an den Steuerberater (Gründung)
 
@@ -32,6 +32,18 @@ status: Fragen fertig, Steuerberater wird gesucht
 - Stimmt es, dass ich jetzt Kleinunternehmer ankreuzen und den **Verzicht für 2026 bis Ende Februar 2028 nachholen** kann? Was bedeutet das BMF-Schreiben vom 10.11.2025 dafür?
 - Bei Regelbesteuerung: Voranmeldung 2026 vierteljährlich, 2027 monatlich?
 - Soll ich bei den Anbietern auf Firmenkunde mit USt-IdNr. umstellen oder privat bleiben?
+
+> [!info] Eigene Recherche 22.10.2026 (research-scout, Details im [[Research-Cache]], Abschnitt „Umsatzsteuer bei Prop-Firm-Payouts“)
+> - Zu Prop-Payouts gibt es weder Gesetz noch Urteil noch Verwaltungsaussage. Die Preisgeld-Linie (EuGH Baštová C-432/15, BFH XI R 37/14) sagt: ein nur bei Erfolg gezahltes, ungewisses Preisgeld ist kein Entgelt. Die AGB passen eher dazu: E8 (E8 Funding LLC, Texas) nennt es „payout awards related to performance“ und Max einen „independent participant“, FundedNext nennt den Reward „not … financial remuneration“. Gegenindiz nur FFN (Blog: „independent contractor“, 1099-NEC).
+> - Kein Leistungsaustausch heißt womöglich: Trading ist keine unternehmerische Tätigkeit, und auf die Trading-Kosten gibt es keine Vorsteuer (BFH V R 21/16). Anker wären nur Software, IT und Coaching aus der Gewerbeanmeldung.
+> - Ist der Payout doch Entgelt für eine Dienstleistung, hält der Vorsteuerabzug nach dem Wortlaut von § 15 Abs. 2 Nr. 2 UStG.
+> - Rückwirkender Verzicht: § 19 Abs. 3 Satz 2 wirkt „von Beginn des Besteuerungszeitraums an“, spricht also für volle Vorsteuer 2026 auch auf die Dezember-Hardware. Ob das BMF-Schreiben vom 10.11.2025 das einschränkt, ist offen.
+>
+> **Die geschärften Fragen an den Steuerberater:**
+> 1. Wie ordnet das Finanzamt die Payouts ein: Preisgeld (nicht steuerbar, kein Leistungsaustausch) oder Entgelt?
+> 2. Wenn Preisgeld: trägt die Software-, IT- und Coaching-Tätigkeit die Unternehmereigenschaft, und wie viel Vorsteuer auf Trading-Kosten (Evals, Server, Hardware) ist dann abziehbar?
+> 3. Gilt der rückwirkende Verzicht für 2026 trotz BMF 10.11.2025 auch für Käufe früher im Jahr?
+> 4. Was gilt für § 13b auf Eval-Gebühren, wenn das Trading nicht zum Unternehmen zählt?
 
 ## 2. Einkunftsart
 - Gewerbliche Einkünfte (§ 15) oder sonstige Einkünfte (§ 22 Nr. 3)? Wie sieht das Finanzamt Erding das?

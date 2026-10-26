@@ -16,6 +16,9 @@ status: gerechnet, Annahmen offen
 > 3. **In der BOS knapp über der Familienversicherungs-Grenze landen** → ≈ 3.200 €/Jahr Krankenversicherung. Ein Payout von 9.000 € bringt dir dann **weniger** als einer von 6.000 €.
 > 4. **Gewerbe über 20 h/Woche in der BOS** → das Kindergeld für deine Eltern (≈ 259 €/Monat) kann wegfallen.
 
+> [!warning] Update 22.10.2026 zu Punkt 1
+> Der Vorteil der Regelbesteuerung hängt daran, dass der Payout ein Leistungsaustausch ist. Die AGB von E8 und FundedNext sprechen eher für ein Preisgeld (kein Leistungsaustausch), dann gibt es auf die Trading-Kosten womöglich gar keine Vorsteuer. Kleinunternehmer jetzt anzukreuzen kostet dagegen nichts, solange der Verzicht für 2026 bis Ende Februar 2028 rückwirkend nachgeholt werden kann. Details: [[Fragen an Steuerberater (Gründung)]] Abschnitt 1, [[Research-Cache]].
+
 ---
 
 ## 1. Annahmen (bitte korrigieren, wenn falsch)

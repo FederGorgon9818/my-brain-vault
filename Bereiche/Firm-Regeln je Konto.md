@@ -166,6 +166,19 @@ Konto `2D-150K394206247048`, gekauft 05.10.2026 für 292,50 $ (50 % + BOGO, Bonu
 - Regelwerte (DD, Ziel, Consistency, Payout): Tabelle oben und [[Research-Cache]]; Quelle FFN-Help-Center Artikel 2.5 STEADY + 3.7 Independent Trading Rules.
 - Die Zeile „Freigabe geklärt, nicht erneut fragen" bleibt in der CLAUDE.md, solange FFN läuft.
 
+## 💵 Kommission je Konto (cfg `commissionrt`, AP319, 22.10.2026)
+
+Der RiskGuard rechnet den **Trade-PnL je Exit** (Telegram „⚡ Fill … | Trade-PnL: −$277.40 (netto)“) seit AP319 aus den Fill-Preisen und zieht die Kommission aus der cfg ab. NT8 liefert die Kommission je Fill bei keinem Broker mit (`Execution.Commission` ist überall 0, NT8-DB geprüft 22.10.).
+
+| Konto | Broker | `<Konto>.commissionrt` | Beleg |
+|---|---|---|---|
+| E8 50k, FN1, FN2 | Tradovate | **1.90** $ je Micro-Round-Turn | brutto aus Fills gegen NetLiq-Differenz an jedem flachen Tag 05. bis 21.10. identisch, deckt sich mit AP384 |
+| FFN1, FFN2 | Rithmic | **1.78** $ | 14.10. (M2K), 15.10. und 21.10. (MNQ) identisch |
+
+- Wirkt **nur auf die Anzeige**, nicht auf Size, Tagesbasis, Kill-Switch, Floor, Deckel oder Inaktivität. Fehlt der Key, zeigt das Telegram brutto mit Hinweis.
+- **Neues Konto oder Funded-Wechsel:** Key `<Konto>.commissionrt` mit anlegen (Schritt 2 unten), Satz am ersten flachen Tag gegen die NetLiq-Differenz prüfen.
+- Vorher (bis 22.10.) zeigte das Telegram auf Tradovate-Konten „Trade-PnL −$1“: NT8 bucht dort den realisierten Gewinn erst nach dem Fill-Ereignis, der alte Diff sah nur die Kommission einer Seite.
+
 ## Ablauf bei neuem Konto oder neuer Firma (Regel Max, 22.09.2026)
 
 Aus der CLAUDE.md übernommen (Abschnitt „Neues Konto oder neue Firma → Regeln prüfen und alles anpassen"). Skill: `/neues-konto`.
@@ -173,7 +186,7 @@ Aus der CLAUDE.md übernommen (Abschnitt „Neues Konto oder neue Firma → Rege
 **Auslöser:** Firma-Regel, die E8 nicht kennt (FundedNext-Challenge hat eine Consistency-Rule, Tagesgewinn ≤ 40 % vom Target), fehlte im RiskGuard, bis sie am 21.09. per Zufall auffiel. Deshalb: **sobald Max ein weiteres Konto kauft oder eine neue Firma/Phase dazukommt** (auch Funded-Wechsel, Kontogröße, Reset, Add-on), läuft der Ablauf **von selbst und vor dem ersten Trade**:
 
 1. **Regeln holen:** Regeln der Firma/Phase aus der Primärquelle holen (`research-scout`, [[Research-Cache]] zuerst) und hier eintragen: Consistency/Tagesgewinn, DD-Typ und Einrasten, News-Regel, Inaktivität, Zeitfenster/Flat-Zeit, Kontraktlimit, Payout-Regeln, Algo-/VPS-Erlaubnis, Haushaltsgrenze.
-2. **Gegen die Umsetzung abgleichen und alles Nötige anpassen:** `MaxRiskGuard.cs` (cfg-Datei `maxlab_riskguard.cfg` pro Konto, nie nur die UI), Strategie-Instanzen/Größe (k), `book_state.json`/Käfig (`cage_policy_lib`, `evaluate_v2`), Watchdog/Telegram. Was noch nicht als Property existiert, wird als Ticket angelegt und vor dem Trade gebaut, oder das Konto handelt bis dahin nur mit Handaufsicht.
+2. **Gegen die Umsetzung abgleichen und alles Nötige anpassen:** `MaxRiskGuard.cs` (cfg-Datei `maxlab_riskguard.cfg` pro Konto, nie nur die UI, inklusive `commissionrt`, siehe Abschnitt Kommission), Strategie-Instanzen/Größe (k), `book_state.json`/Käfig (`cage_policy_lib`, `evaluate_v2`), Watchdog/Telegram. Was noch nicht als Property existiert, wird als Ticket angelegt und vor dem Trade gebaut, oder das Konto handelt bis dahin nur mit Handaufsicht.
 3. **Festhalten und ansagen:** Konten-Liste, Regel-Tabelle und die aktiven Deckel (Werte je Konto) hier festhalten und Max ansagen, was angepasst wurde.
 
 **Ein Konto gilt erst als startklar, wenn diese Prüfung durch ist.** Der Dauer-Check bei Statuswechsel (Challenge zu Funded) hängt an **AP203**.

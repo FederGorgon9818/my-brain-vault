@@ -11,4 +11,4 @@ tags:
 
 ---
 
-- **[Auftrag Max 29.09., für die nächste PC-Session]** Gründungs-Tickets in die Sprints der passenden Woche eintragen. Fertiger Plan mit Befehlen: [[Tickets Gründung Sprints]]. Danach diese Zeile löschen.
+- **[Gründung, Stand 22.10.]** Offene Schritte nach Frist und Ticket-Befehle (laufen erst auf Max' OK): [[Tickets Gründung Sprints]]. Dringend: AP35 ELSTER-Fragebogen (Ziel 30.10., Frist 02.11.) und AP238 BOS-Plan vor dem 05.11. Zeile löschen, sobald AP35 abgeschickt ist und die zwei neuen Tickets stehen.
