@@ -50,6 +50,7 @@ status: Idee, OGSM-Entwurf steht, Entscheidungen bei Max offen
 | [[Be Obsessed Profil]] | Account-Name, Bio-Beispiele, welche Plattform |
 | [[Be Obsessed Content-Plan]] | **gilt seit 16.10.:** Wochenplan, Formate, Mini-Story, Messen, 70/20/10, E-Mail-Liste, Schnitt-Ablauf |
 | [[Be Obsessed Stil-Steckbrief]] | Analyse der vier Vorbild-Reels, Look und Untertitel |
+| [[Be Obsessed High-Ticket Angebot]] | Coach-Angebot aus dem Interview 19.10.: Business-Gehirn, 6 Wochen, Preisleiter 1.500 → 3.000 → 5.000 €, 5-Stunden-Garantie, Messaging |
 | Schnitt-Pipeline | `C:\Users\maxlk\Projects\be-obsessed-schnitt\` (lokal, nicht im Vault), Session „Be Obsessed: Schnitt-Skripte ausarbeiten“ |
 
 ---
