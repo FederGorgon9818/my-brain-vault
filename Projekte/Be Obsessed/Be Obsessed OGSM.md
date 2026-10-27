@@ -11,7 +11,7 @@ status: Entwurf v1 (Max, 15.10.2026), Zwischenziele sind Vorschlag Claude, nicht
 
 ⬅️ [[Be Obsessed]] · [[Be Obsessed Lernplan]] · [[OGSM (10k netto bis 2031)]] · [[Gründung Zeitplan]]
 
-Ein-Seiten-Plan nach OGSM (Objective, Goals, Strategies, Measures, Erklärung im [[Research-Cache]], Abschnitt OGSM). Vorgaben von Max am 15.10.2026: Ziel 10.000 € im Monat bis Juli 2027 (Jobende 03.07.2027), Geldquelle egal (Abo, Firmen oder beides), eigener Kanal getrennt vom Trading-Content.
+Ein-Seiten-Plan nach OGSM (Objective, Goals, Strategies, Measures, Erklärung im [[Research-Cache]], Abschnitt OGSM). Vorgaben von Max am 15.10.2026: Ziel 10.000 € im Monat bis Juli 2027 (Jobende 03.07.2027), Geldquelle egal (Abo, Firmen oder beides). Seit 22.10.2026 ein gemeinsamer Self-Brand-Kanal für KI und Trading (Max), und die 10.000 € sind eine Etappe zum Nordstern **erster 100.000-€-Monat** ([[Großes Ziel]]). Seit 19.10. gilt das Leiter-Modell aus dem [[Be Obsessed High-Ticket Angebot]]: Coaches und Creator zuerst, Abo für junge Leute unten, Firmen später.
 
 **Woher die Zahlen kommen:** Das Endziel ist von Max. Die Zwischenziele, Follower-Zahlen und der Workshop-Preis sind ein Vorschlag von Claude, nichts davon ist gerechnet oder recherchiert.
 
@@ -46,6 +46,7 @@ Ein-Seiten-Plan nach OGSM (Objective, Goals, Strategies, Measures, Erklärung im
 | Nur Abo zu 50 € | 200 Mitglieder | 10.000 € |
 | Nur Abo zu 100 € | 100 Mitglieder | 10.000 € |
 | Mix | 60 Mitglieder zu 75 € plus 3 Firmen-Workshops zu 1.800 € (Preis ist Annahme) | 9.900 € |
+| Leiter-Modell (seit 19.10.) | 3 Coach-Kunden zu 3.000 € (Preisleiter aus dem [[Be Obsessed High-Ticket Angebot]]) plus 20 Abo-Mitglieder zu 50 € | 10.000 € |
 
 Umsatz ist nicht Gewinn: davon gehen Plattformgebühren, je nach Steuerform 19 % Umsatzsteuer und die Einkommensteuer ab.
 
@@ -54,15 +55,16 @@ Umsatz ist nicht Gewinn: davon gehen Plattformgebühren, je nach Steuerform 19 %
 | Strategy | Measures (früh) | Measures (Ergebnis) |
 |---|---|---|
 | **S1 Learn in public.** Lernen und Filmen in einem Schritt: jedes Lernthema wird zu Content. Mein eigenes System (zweites Gehirn, Agents, Hooks) ist das Anschauungsmaterial. | Lernstunden je Woche; Themen durch (Ziel 8 von 8 bis 31.01.2027) | Videos je Lernthema (mindestens eins) |
-| **S2 Founder-Kanal „Be Obsessed“.** Eigene Marke, getrennt vom Trading. Kurzfilme: 19, Vollzeitjob, zwei Side-Hustles, jedes Hoch und jedes Tief. Hustle, Get Better, Be the Best, Believe. | Videos je Woche (Vorschlag 3); Wochen ohne Lücke | Follower; Reichweite; Anmeldungen auf der Warteliste |
+| **S2 Founder-Kanal „Be Obsessed“.** Ein ehrlicher Self-Brand-Kanal für KI und Trading zusammen (Max, 22.10.), Edge bleibt privat. Kurzfilme: 19, Vollzeitjob, zwei Side-Hustles, jedes Hoch und jedes Tief. Hustle, Get Better, Be the Best, Believe. | Videos je Woche (Vorschlag 3); Wochen ohne Lücke | Follower; Reichweite; Anmeldungen auf der Warteliste |
 | **S3 Mentorship-Abo für junge Leute.** Für alle, die unbedingt etwas machen wollen, aber nicht wissen was: mit KI das eigene Ding finden und bauen. 50 bis 100 € im Monat. Ab 18, Jüngere nur mit den Eltern. | Warteliste; Erstgespräche; Preis und Inhalt stehen | Zahlende Mitglieder; Monatsumsatz Abo; Kündigungen je Monat |
-| **S4 Firmen und Gründer.** KI-Workshops und Beratung, schnellster Hebel zu 10.000 €, weil wenige Kunden reichen. Aufhänger: EU AI Act Art. 4, Firmen müssen seit 02.02.2025 für KI-Kompetenz ihrer Leute sorgen. | Gespräche je Monat; Angebote raus | Aufträge; Monatsumsatz Firmen; Referenzen |
+| **S4 High-Ticket: erst Coaches und Creator, später Firmen.** Business-Gehirn auf Claude-Basis, 6 Wochen, 2 Piloten zu 1.500 €, dann 3.000 € ([[Be Obsessed High-Ticket Angebot]]). Schnellster Hebel zu 10.000 €, weil wenige Kunden reichen und kein Publikum nötig ist. Firmen danach, Aufhänger EU AI Act Art. 4 (KI-Kompetenz-Pflicht seit 02.02.2025). | Direktansprachen je Woche; Erstgespräche; Angebote raus | Piloten verkauft; gemessene Fallstudien (Ziel 3); Monatsumsatz High-Ticket |
 | **S5 Sauberer Rahmen.** Gewerbe mit KI-Coaching im Gegenstand, Arbeitgeber, Steuer, Recht, Kosten klein halten. | Checkliste in [[Be Obsessed]] abgehakt, bevor der erste Euro kommt | Vor dem ersten zahlenden Kunden nur das Start-Equipment (bis 100 €); BOS-Reserve unberührt |
 
 ## Was bewusst nicht drin ist
 
-- **Trading-Edge oder Konten im Content.** Getrennter Kanal, keine Kontonummern, keine Strategien, kein Buch.
+- **Trading-Edge oder Konten im Content.** Trading ja, aber nur als eigene Doku und Methodik: keine Strategie-Regeln, keine Kontonummern, kein Buch, nie Signale oder Anlageberatung (Max, 22.10.).
 - **Arbeitgeber nennen oder Firmen-Interna zeigen.** Die Nebentätigkeits-Genehmigung ist widerruflich.
+- **Posten vor der schriftlichen GEWO-Zustimmung.** Vorher nur vorbereiten und auf Vorrat drehen.
 - **Ausgaben auf Verdacht.** Einzige Ausnahme ist das Start-Equipment bis 100 € (Max, 15.10.2026). Bezahlplattform, Werbung, Upgrades erst, wenn Geld reinkommt. Ab 04.07.2027 gibt es kein Gehalt mehr.
 - **Abo-Verträge mit 16- und 17-Jährigen ohne Eltern.** Rechtlich wacklig, siehe [[Be Obsessed]].
 
