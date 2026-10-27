@@ -1,7 +1,7 @@
 ---
 tags: [trading, box, nt8, deploy, anleitung, opex, ld01]
 datum: 2026-10-24
-status: Stufe 1 deployt und geprüft (25.10. 00:30), OpEx live ab 20.11., offen Sim-Host Sim101 und Feiertags-Check, Stufe 2 (LD01 live) frühestens 31.10.
+status: Stufe 1 deployt (25.10.), OpEx live ab 20.11.; Deploy-Abend Mi 28.10. (Stop-Verzögerung, Sim-Host, Feiertage) vorbereitet; LD01 live frühestens Do 05.11.
 tickets: [AP394, AP395]
 ---
 
@@ -127,6 +127,33 @@ powershell -ExecutionPolicy Bypass -File .\deploy_ld01_20261024.ps1
 - RiskGuard-Log je Konto: Start, `CONFIG-INAKTIVITAET aktiv=ja`, `CONFIG-KOMMISSION` wie seit 22.10.
 - VIX: Task `MaxLab VIX-Feed` läuft alle 15 Minuten, `maxlab_vix.csv` hat den 23.10.
 - Danach: Register-Belegung um OpEx ergänzen und einen neuen Kartenlauf anstoßen (konto-analyst), damit die Konto-Karten das 5-Bein-Buch kennen. Tickets AP394 und AP395 fortschreiben.
+
+> [!info] Zwischenstand Di 27.10. 17:26 Boxzeit (Claude per SSH)
+> - **VIX-Feed bisher grün:** kein Alarm, Task fehlerfrei. Der Schluss vom 26.10. (18,39) war um 00:01 ET da, 9,65 h vor der LD01-Entscheidung. Der VIX liegt über 16, LD01 hätte nicht gehandelt.
+> - **Sim-Host auf Sim101 läuft noch nicht.** Anleitung für Teil B und C ging an die Übersichts-Session (Fenster nach 21:05 oder vor 14:30 Boxzeit).
+> - **Verschiebung Stufe 2:** a) volle 5 Sim-Tage 28.10. bis 03.11., Host-JSON frühestens Di 03.11. nach 22:05, erster Live-Trade Mi 04.11. 15:40 Boxzeit (Empfehlung). b) 3 Sim-Tage, dann bleibt es beim Wochenende 31.10./01.11. und Mo 02.11. 15:40.
+
+## Deploy-Abend Mi 28.10.2026 (Entscheidungen Max 27.10.)
+
+Max hat entschieden: volle 5 Sim-Tage, D1 = Stop-Verzögerung nachrüsten (LD01 auch auf FFN), RDP-Block Mi 28.10. etwa 22:30 bis 23:15 Boxzeit. Das passt gut: 22:00 bis 23:00 Boxzeit ist die tägliche Globex-Pause, kein Markt offen.
+
+**Was neu gebaut ist (Claude, 27.10.):** Das Modul `momentum` meldet beim Entry sein R, damit die Stop-Verzögerung wie bei PB3 erlaubt ist (`MaxBookHost_Module_Momentum.cs` `32406B6E` statt `1754238F`). Ohne Verzögerung ändert sich nichts: der LD01-Replay-Report ist byte-gleich zum alten Code (163 von 163), 15 von 15 neue Tests grün, Pre-Flight auf der Box grün. Die Sim-JSON bekommt die Verzögerung wie später auf FFN (10 s, Kat-Stop 2 R), damit der Sim-Lauf den neuen Codepfad mitprüft (`ecfe57a4` statt `f114c9f8`). Staging: `trading-data/nt8_staging_20261028_ld01_delay/`.
+
+**Ablauf für Max:**
+
+0. PowerShell am PC (ab 22:05 Boxzeit, beendet NT8 und startet es neu, etwa 5 Minuten):
+   ```
+   cd C:\Users\maxlk\Projects\trading-data\nt8_staging_20261028_ld01_delay
+   powershell -ExecutionPolicy Bypass -File .\deploy_abend_20261028.ps1
+   ```
+   - Eine Rückfrage `Deploy-Abend starten? (ja/nein)` → **`ja`**.
+   - **Erwartet:** dreimal `Paket ok`, `Sim-JSON … wird ersetzt`, `COMPILE OK`, `---- C) … ok`, `[OK] maxlab_book_host.sim_ld01.json -> ecfe57a4…`, `=== DEPLOY-ABEND FERTIG`.
+   - **Fehlerfall:** rote Zeile `!!!` → nichts weiter tun, NT8 nicht selbst starten, Stichwort **„Deploy Fehler“**. Claude rollt über das Backup zurück.
+1. RDP: NT8-Login (macht der Auto-Login meist selbst), Connections grün, alle 5 Hosts und 5 RiskGuards aktiv (Häkchen). Stichwort **„Hosts aktiv“**.
+2. Teil B (Sim-Host auf Sim101) und Teil C (Feiertags-Bars) wie oben in Teil 4 Schritt 6 und 7. Erwartete Zeile für den Sim-Host jetzt mit md5 `ecfe57a4` und `NQ_LD01_vix16_fv4(MaxLD01VixNQ x1 stop_delay 10s cat 2.0R)`.
+3. Stichworte **„Sim-Host läuft“** und **„Feiertage ok“** bzw. was zu sehen war.
+
+**Neuer Zeitplan LD01:** Sim-Tage Do 29.10., Fr 30.10., Mo 02.11., Di 03.11., Mi 04.11. Host-JSONs mit LD01 frühestens Mi 04.11. nach 22:05 Boxzeit, erster Live-Trade frühestens **Do 05.11. 15:40 Boxzeit** (09:40 ET, ab 01.11. gilt ET plus 6 Stunden). Auf FFN mit Stop-Verzögerung 10 s / Kat-Stop 2 R, auf E8 und FN ohne.
 
 ## Die Messwoche Mo 26.10. bis Fr 30.10. (LD01, kein Schritt für dich außer den Stichworten)
 

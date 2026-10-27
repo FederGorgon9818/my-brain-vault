@@ -61,6 +61,7 @@ Monate bis 50.000 $ (Median), in Klammern Chance auf das Ziel in 5 Jahren.
 3. **Deckel-Zähler** Käufe minus Payouts in book_state plan (AP204 Schritt 5), hart 2.500 $.
 4. Jedes neue Konto nur über `/neues-konto` (Regeln, RiskGuard-cfg, Telegram im Log prüfen).
 5. **Für FFN:** Preis prüfen (50 %-Code), AP330 (Inaktivitäts-Rollfenster) deployt, AP331 (Asia auf FFN) geklärt oder Asia dort aus, höchstens 5 FFN-Konten gleichzeitig.
+   - Stand 27.10.: STEADY 150k über Rithmic mit Code DOUBLE50 kostet 292,50 $ (kein Enddatum). Nexus mit 70 % (175,50 $) nur, wenn FFN NT8-Algo auf Nexus schriftlich bestätigt. Ob BOGO auf STEADY greift, ist widersprüchlich, vor dem Kauf klären. Details [[Research-Cache]], Abschnitt „FFN Angebot Nexus Connect / Rithmic / BOGO“.
 6. **Für E8 (ab Dezember):** AP111 schriftlich (Caps der 4er-Staffel, Gratis-Challenge nach dem 4. Payout), E8-Konto innerhalb von 7 Tagen nach Aktivierung handeln, Inaktivitätsalarm auch für E8.
 7. **Neu rechnen am 05.11.** mit den Kontoständen von dann, und mit dem NT8-Export Oktober, falls er bis dahin da ist (AP356).
 

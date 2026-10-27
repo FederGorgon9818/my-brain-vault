@@ -17,7 +17,7 @@ status: gebaut und abgenommen (12.10.2026), offene Punkte siehe Stand-Kasten
 > **Benutzen:** im Chat einfach nach einem Konto fragen („wie steht FFN2?“, „darf FFN1 auf k2?“), dann liest der Agent `konto-analyst` die Karten. Im Strategy Lab unter Lab → Reiter **Konten**. Von Hand im Engine-Ordner:
 > - `python -m konten.account_sync --check` vergleicht Register und Box, `--pull` übernimmt den Box-Stand
 > - `python -m konten.account_card --account all --fleet` holt alle Karten (rechnet nur bei geändertem Fingerabdruck, kalt rund 3 Minuten, sonst 1 Sekunde) und bündelt sie fürs Lab
-> - `python -m konten.test_konten` ist die Abnahme (6 Tests, frisch rund 5 Minuten)
+> - `python -m konten.test_konten` ist die Abnahme (11 Tests, frisch rund 14 Minuten; seit 26.10. wieder grün, Sollzahlen nach RTY-Rauswurf, AP426 und 6er-Buch neu eingefroren, siehe [[Daily Notes/2026-10-27]])
 >
 > **Wo es liegt:** `engine/konten/` (Register `accounts.json`, Regeln `rules.json`, Karten in `cards/`), Reiter `engine/lab_ui/konten.js`, Agent `.claude/agents/konto-analyst.md`. Der Auto-Check meldet alle 30 Minuten gelb, wenn die Box etwas anderes handelt als im Register steht. `/wochenende` und `/neues-konto` haben je einen Schritt dazubekommen.
 >
