@@ -59,6 +59,14 @@ Wenn etwas gebaut, getestet und für gut befunden wurde, gilt es als **fertig un
 
 ---
 
+## 🧷 Unter-Sessions (Trigger-Regel Max, 26.10.2026)
+
+Sagt Max **„Unter-Session“**, **„unter dir“**, **„zieh sie unter dich“** oder **„öffne sie unter dir“**, heißt das immer: die Session per `start_session` aus **dieser** Session starten (`initiation` „user_asked“), damit sie eingeklappt unter der aktuellen Session hängt. Nie eine freistehende Session, nie nur eine Karte, nie „mach es hier“, keine Rückfrage, was gemeint ist.
+- Titel so, dass man sofort sieht, was die Session macht (Thema: konkrete Aufgabe).
+- Bestehende Sessions lassen sich nicht nachträglich unterhängen. „Zieh sie unter dich“ heißt dann: ihre Wurzel-Session (verschachtelte ziehen mit ihrer Wurzel mit) zusammen mit der aktuellen Session in die Seitenleisten-Gruppe „Orchestrator: offene Arbeit“ verschieben (`move_sessions`) und bei Bedarf per `SendMessage` anschieben.
+
+---
+
 ## 🔢 Rechnen nur in Code (Regel Max, 18.10.2026)
 
 **Jede Berechnung läuft in Python, nie frei im Modell.** Gilt für alles mit Zahlen und Zeiten: Summen, Prozente, Kosten, Steuern, Umrechnungen, Datums- und Zeitabstände, Statistik, auch schnelle Überschläge, und auch für Subagents.
@@ -481,11 +489,13 @@ Gilt als allgemeines Ziel für die Zukunft und steht über allen Teilzielen unte
 
 **Max arbeitet Vollzeit und will aus dem Trading-System ein Vermögen bauen, das ihn unabhängig macht** (Immobilien, davon leben, „reich werden"), **nicht erst in 30 Jahren, sondern so schnell wie ehrlich möglich.** Prop-Payouts sind dafür nur die Eintrittskarte, nicht das Ziel.
 
+**⭐ Nordstern (Max, 22.10.2026): der erste 100.000-€-Monat.** Steht über allen anderen Zielen, 50k $ Eigenkapital, 10k netto bis 2031 und Be Obsessed 10k bis Juli 2027 sind Etappen. Der Weg dahin wird auf **einem ehrlichen Self-Brand-Kanal (Be Obsessed)** dokumentiert: Gedanken, Schritte, wo Max steht und wie genau er es macht, KI und Trading zusammen. Leitplanken: die Edge bleibt privat (Prozess ja, Strategie-Regeln nie), veröffentlicht wird erst nach schriftlicher GEWO-Zustimmung und GEWO wird nie genannt, Trading nur als eigene Doku und Methodik, nie Signale oder Anlageberatung. Details: [[Be Obsessed]], [[Großes Ziel]].
+
 **Das eigentliche Asset ist der belegte Track Record plus das dokumentierte System**, nicht der einzelne Payout. Sobald Live-Evidenz da ist, dass es funktioniert und regelmäßig Einkommen liefert, öffnen sich mehrere Wege gleichzeitig: eigenes Live-Konto, Bonität für Immobilien, und das Wissen verkaufen (Mentorship / „so baust du dir dein System"), das über Abos schneller zu einer Million skaliert als Payouts allein. **Deshalb ist die Doku-Disziplin (Vault, Skills, Logbuch, Friedhof, Hooks) kein Overhead, sondern das Produkt in Vorbereitung** und muss durchgehend nachvollziehbar bleiben.
 
 **Heilige Reihenfolge (Einschätzung Claude, von Max mitgetragen):**
 1. **Jetzt: Beweise sammeln und Sharpe hoch.** Beweis heißt Live, nicht Backtest: `live-reconciler` grün, Firmen-Zertifikate, Payout-Belege, Steuerbescheide, mindestens 12 Monate. Zeit bis Ziel hängt fast nur am Sharpe des Buchs (18.09.: Monate bis 50k ≈ 1 / (0,0147 · (SR − 0,35))). Sharpe kommt aus neuen unabhängigen Mechanismen und Märkten, nicht aus Feintuning der drei Beine und nicht aus Regeln (Deckel, Gewinnstopp, Konsistenz-Ideen verschieben Monate, nicht Jahre; Gewinnstopp am 21.09. beerdigt).
-2. **Nebenbei und früh: den Weg öffentlich dokumentieren**, Publikum aufbauen, bevor es ein Produkt gibt. Alleinstellungsmerkmal ist der Friedhof: dokumentierte Todesurteile mit Reichweite und Stempel zeigt sonst niemand.
+2. **Nebenbei und früh: den Weg öffentlich dokumentieren** (Be-Obsessed-Kanal, siehe Nordstern), Publikum aufbauen, bevor es ein Produkt gibt. Alleinstellungsmerkmal ist der Friedhof: dokumentierte Todesurteile mit Reichweite und Stempel zeigt sonst niemand.
 3. **Nach dem Live-Beleg: eigenes Konto (100k) und erstes Produkt gleichzeitig.**
 4. **Nie vor dem Beleg verkaufen.** Vertrauen ist später das Geschäft.
 

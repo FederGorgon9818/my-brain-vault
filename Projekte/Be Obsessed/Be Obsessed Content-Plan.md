@@ -108,20 +108,26 @@ Feinschnitt: Claude bekommt nur Transkript und Schnittliste (wenige KB), ändert
 
 ## E-Mail-Liste ab Tag 1
 
-1. **Aufruf in jedem Video:** „Kommentiere KI“. Ein Kommentar-Werkzeug (z.B. ManyChat) schickt automatisch eine DM mit dem Gratis-Download.
-2. **Gratis-Download:** ein kurzes Prompt-Playbook als PDF. Das ist „Wissen verschenken“ nach Caleb. Muss bis zum Start fertig sein.
-3. **Die Liste ist die Warteliste** aus dem [[Be Obsessed Fahrplan]]. Es gibt eine Liste, nicht zwei.
-4. **Werkzeuge mit Gratis-Plan** (Newsletter: Kit, Beehiiv oder Substack). Grenzen und Kosten vor dem Start prüfen, die goldene Regel bleibt: 0 € bis zum ersten Kunden.
-5. **Pflicht in Deutschland, bevor die erste Adresse reinkommt:** Double-Opt-In, Datenschutzerklärung, Impressum.
-6. Verkauft wird über die Liste erst nach dem Beweis. Bis dahin gibt es nur Wert.
+> [!warning] Stand 26.10.2026 (Max): noch nichts einrichten
+> Erst nach der **schriftlichen Freigabe der Führungskraft bei GEWO**. Bis dahin liegt alles fertig vorbereitet in Ticket **AP445** (Backlog, Board Privat). Recherche, Werkzeug-Vergleich und Rechts-Checkliste: [[Be Obsessed E-Mail-Liste (Werkzeuge und Recht)]].
+
+1. **Aufruf in jedem Video:** „Kommentiere KI, ich schick dir mein Playbook“. Eine Automatik schickt auf den Kommentar **eine** DM mit Link aufs Anmeldeformular (Meta erlaubt nur eine Nachricht je Kommentar).
+2. **Ablauf:** Kommentar → DM mit Link → Anmeldeformular → Bestätigungsmail (Double-Opt-In) → Playbook als PDF. Die Adresse landet nur beim Newsletter-Werkzeug, nicht beim DM-Werkzeug. Das ist der 0-€-Weg und beim Datenschutz der sauberste.
+3. **Das Playbook:** [[Be Obsessed Prompt-Playbook (Entwurf)]], reines KI-Playbook für Einsteiger (Max 26.10.), rund 8 Seiten. Das ist „Wissen verschenken“ nach Caleb. Muss bis zum Start fertig sein.
+4. **Nach außen nie „gratis“ oder „kostenlos“ sagen**, weil das Playbook gegen die Adresse getauscht wird. „Gratis-Download“ ist nur unser interner Name.
+5. **Die Liste ist die Warteliste** aus dem [[Be Obsessed Fahrplan]]. Es gibt eine Liste, nicht zwei.
+6. **Werkzeuge (Empfehlung Claude 16.10., Entscheidung erst nach der Freigabe):** Newsletter **Brevo Gratis** (EU-Server, deutsche Oberfläche, Double-Opt-In), DM über **Instagram selbst** (Meta Business Suite, „Comment to Message“, erst im eigenen Konto testen), Ersatz **CreatorFlow Gratis** (EU, 500 DMs im Monat). **ManyChat Gratis taugt nicht mehr** (seit 03/2026 nur 25 Kontakte im Monat, Pro 29 $). Preise und Grenzen vor dem Einrichten neu prüfen.
+7. **Kosten bis zum ersten Kunden: 0 €.** Einzige mögliche Ausnahme: c/o-Adresse fürs Impressum, rund 36 € im Jahr, falls die Wohnadresse nicht öffentlich werden soll (Entscheidung später). Später: Brevo Starter ab 9 $ ab rund 300 Abos, CreatorFlow Pro 15 $ ab 500 DMs im Monat.
+8. **Pflicht in Deutschland, bevor die erste Adresse reinkommt** (keine Rechtsberatung): Freigabe GEWO, Gewerbe, Impressum, Datenschutzerklärung, AVV mit den Werkzeugen, Double-Opt-In mit Protokoll, ehrlicher Einwilligungstext (Playbook plus Newsletter, Abmeldung jederzeit), Hinweis „ab 16“, Öffnungs- und Klick-Tracking aus. Details in [[Be Obsessed E-Mail-Liste (Werkzeuge und Recht)]].
+9. Verkauft wird über die Liste erst nach dem Beweis. Bis dahin gibt es nur Wert.
 
 ## Neu in Phase 0 (bis 31.10.)
 
 - [ ] **Brand Journey** schriftlich (Caleb): Was will ich erreichen? Wofür muss ich bekannt sein? Was muss ich dafür tun? Was lerne ich jetzt?
 - [ ] **Brand Story** in drei Teilen: Auslöser (warum es dich gibt), Kernwahrheit (was du glaubst, was andere nicht glauben), Beweis (was es belegt).
 - [ ] **Nicht-Assoziationen:** womit du nie in Verbindung gebracht werden willst (Vorschlag: Get-rich-quick, Guru-Szene, Trading-Signale).
-- [ ] **Prompt-Playbook** als Gratis-Download.
-- [ ] **E-Mail-Werkzeug und Kommentar-DM** einrichten, Rechtliches (Double-Opt-In, Datenschutz, Impressum).
+- [ ] **Prompt-Playbook** als Gratis-Download. Entwurf v1 steht ([[Be Obsessed Prompt-Playbook (Entwurf)]], 16.10.), offen: Gegenlesen durch Max, Prompts testen, Cheat-Sheet, PDF.
+- [ ] **E-Mail-Werkzeug und Kommentar-DM** einrichten, Rechtliches (Double-Opt-In, Datenschutz, Impressum). Recherche fertig, Einrichtung erst nach der schriftlichen Freigabe von GEWO (AP445).
 - [ ] **Schnitt-Pipeline** am ersten echten Talking Head abnehmen. **Max am 16.10.: das Testvideo (Testbild, Computerstimme) hat ihm gar nicht gefallen.** In der Woche ab 19.10. gemeinsam mit den ersten echten Videos klären, was genau nicht passt (Untertitel, Zoom, Tempo, Schnitte) und den Look anpassen. Vorher nichts ändern (Max).
 - [ ] **Start der Produktion:** erst nach der Antwort des Arbeitgebers am Montag 19.10. (AP406), dann ab nächster Woche Videos drehen und mit Claude schneiden.
 - [ ] **Lightning-EarPods** als Mikro bis zum neuen iPhone (wie minolee), falls keine da sind.

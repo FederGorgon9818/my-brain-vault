@@ -21,6 +21,10 @@ Gilt als allgemeines Ziel für die Zukunft und steht über allen Teilzielen. Her
 
 **Lebensziel Einkommen: rund 250.000 € im Jahr, also etwa 20.000 € brutto und 10.000 € netto im Monat.** Weg dahin: erst Prop-Payouts, danach das eigene Live-Konto. Das ist die Messlatte hinter „davon leben“. Das Etappenziel 50.000 $ Eigenkapital aus Payouts bleibt der nächste Schritt, nicht das Ende. Der Ein-Seiten-Plan dazu (Ziele, Wege, Kennzahlen): [[OGSM (10k netto bis 2031)]].
 
+## Nordstern: der erste 100.000-€-Monat (Max, 22.10.2026)
+
+**Steht über allen anderen Zielen.** 50.000 $ Eigenkapital, 10.000 € netto bis 2031 und Be Obsessed 10.000 € bis Juli 2027 sind Etappen auf dem Weg. Der Weg wird auf **einem ehrlichen Self-Brand-Kanal** dokumentiert, dem Be-Obsessed-Kanal: Gedanken, Schritte, wo Max steht und wie genau er es macht, KI und Trading zusammen. Leitplanken: Edge bleibt privat (Prozess ja, Strategie-Regeln nie), veröffentlicht wird erst nach schriftlicher GEWO-Zustimmung und GEWO wird nie genannt, Trading nur als eigene Doku und Methodik, nie Signale oder Anlageberatung. Details: [[Be Obsessed]].
+
 ## Das eigentliche Asset
 
 **Der belegte Track Record plus das dokumentierte System**, nicht der einzelne Payout. Sobald Live-Evidenz da ist, dass es funktioniert und regelmäßig Einkommen liefert, öffnen sich mehrere Wege gleichzeitig:
@@ -48,3 +52,5 @@ Gilt als allgemeines Ziel für die Zukunft und steht über allen Teilzielen. Her
 ## Realistischer Horizont
 
 Wenn beides läuft (Trading-System und Doku/Produkt): eigenes Konto in 2 bis 3 Jahren, davon leben in 5 bis 8. Schneller nur mit Sharpe-Sprung oder fremdem Kapital.
+
+Was mit Max passiert, wenn er 5 Jahre so weitermacht wie im Oktober 2026, und was sich ändert, wenn er das schlechteste Habit weglässt: [[5-Jahres-Prognose (Okt. 2026)]].
