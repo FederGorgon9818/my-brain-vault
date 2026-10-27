@@ -72,8 +72,8 @@ Beide STEADY 150k sind seit 26.10. zu, weil an einem Tag mit nur zwei Trades je 
 - **Mit DOUBLE50 ist der Neukauf billiger** (585 statt 960 $ für beide). DOUBLE50 gilt laut Landingpage nur für neue Evaluations, ein Reset mit 50 % braucht einen eigenen Code (laut FFN-Artikel kommen Rabatte über Discord). Ohne jeden Code ist der Reset billiger (960 statt 1.170 $). Preis am Kauftag prüfen, funded.now nennt für die Rithmic-Aktion den 31.10. als Ende.
 - **Überschneidung mit der Empfehlung:** der für den 06.11. geplante FFN-Kauf ist schon ein neues STEADY 150k. Die eigentliche Frage ist also, ob **zusätzlich** eins oder beide zurückkommen.
 - **Harter Deckel:** die Empfehlung plant bis Gehaltsende schon 2.210 $, Rest 290 $. Beide zurückholen liegt in jeder Variante darüber (190 bis 880 $). Dafür fällt später mindestens ein geplanter Kauf weg, oder Max hebt den Deckel an.
-- **Offen (Max):** zählt ein Reset als Kauf im Sinn der Regel „höchstens ein 150k-Konto je Monat“? Wenn ja, geht neben dem FFN-Kauf am 06.11. kein Reset im selben Monat.
-- **Rechnung am 05.11.** (Punkt 7): Bestand ohne FFN1/FFN2 als Basis, dazu die Varianten keins, eins oder beide zurück, jeweils gegen den Deckel und mit Nulldrift-Zwilling.
+- **Entschieden (Max, 27.10.):** ein Reset zählt **nicht** unter die Regel „höchstens ein 150k-Konto je Monat“, es gilt nur der harte Deckel. Neben dem FFN-Kauf am 06.11. dürfen FFN1 und FFN2 also im selben Monat resettet werden, solange der Deckel reicht. Ein zusätzlicher **Neukauf** statt Reset fällt dagegen weiter unter die Monatsregel. Das spricht für den Reset, auch wenn der Neukauf mit DOUBLE50 billiger wäre.
+- **Rechnung am 05.11.** (Punkt 7): Bestand ohne FFN1/FFN2 als Basis, dazu die Varianten keins, eins oder beide zurück, jeweils gegen den Deckel und mit Nulldrift-Zwilling. Resets laufen dabei außerhalb der Monatsrunde und zählen nur gegen den Deckel.
 - **Vorschlag als Bedingung für jedes FFN-Konto:** keine Hand-Trades mehr auf Prop-Konten, Tests nur auf Sim101. Schon ein Hand-Trade an einem Tag mit 1 bis 3 Trades reißt die 30-%-Grenze.
 
 ## Muss vor dem ersten Kauf
