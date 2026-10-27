@@ -1,7 +1,7 @@
 ---
 tags: [trading, ausfuehrung, live, entscheidung, ap426]
 datum: 2026-10-18
-status: A umgesetzt (18.10.2026), Tick-Befund 26.10. fertig, B' Entscheidung Max offen
+status: A umgesetzt (18.10.2026), B' Option 2 entschieden (26.10.), historischer Beweis über Databento offen
 ticket: AP426
 ---
 
@@ -97,8 +97,8 @@ Stufe 1 hält mit dem realistischen Modell bei allen drei Beinen (t LastHour 3,2
 
 ## Tick-Befund 26.10.2026 und Entscheidung zu B'
 
-> [!question] Entscheidung Max offen
-> Was passiert mit B' (Exit vor 15:55)? Empfehlung: **erst historisch beweisen** (Option 2 unten), weil der Live-Versuch die erwartete Größe nicht auflösen kann.
+> [!success] Entschieden 26.10.2026 (Max): Option 2
+> „Erst historisch beweisen mit Databento-Ticks seit 10/2018 (AP143), Kosten vorher per Abfrage prüfen.“ **B' bleibt aus**, bis der historische Beweis die vorab festgelegte Regel erfüllt. Geladen wird erst nach Max' OK zu den Kosten. Stand der Kostenabfrage: siehe AP428.
 
 **Daten:** NT8-Tick-Export MNQ 12-26, 21.09. bis 26.10.2026 (26 Handelstage, 13 davon Live-Tage mit 15:55-Exit). Original bleibt auf der Box (`Documents\NinjaTrader 8\export\MNQ 12-26.Last.txt`, 2,9 GB, Zeitstempel UTC), gekürzt auf 15:40 bis 15:59 unter `C:\Users\Administrator\ap427_mnq_1540_1559.txt`. Skripte `engine/_scratch_ap426/tick_burst.py`, `tick_burst_all.py`, Quant-Team `st_ap428_main.py`, `ap428_tstar.py`.
 

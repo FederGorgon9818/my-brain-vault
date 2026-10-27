@@ -130,6 +130,15 @@ Klick auf ein Bein landete im rohen `Error code: 404 / Message: Not Found` statt
 ## 📐 MFE/MAE in jedem Trade-Record (seit 03.09.2026)
 Jeder Trade-Record trägt neben `mae_r` jetzt auch **`mfe_r`** (Maximum Favorable Excursion in R), erzeugt in `qbt._mfe_r` (alle 8 qbt-Loops), `sigcore.simulate_trade`, `vwap_pullback.py`, `asian.py`, `rv.py`. Rein deskriptiv, fließt nirgends in Exit, Gates oder Sizing zurück. Zwei Vorbehalte beim Auswerten ([[Strategie-Logbuch]] #142): bei `stop`- und `time`-Exits zählt die Exit-Bar nicht (Untergrenze), bei `target`-Exits ist der Wert per Konstruktion ≈ Ziel (zensiert), `rv.py` misst auf Close-PnL statt intrabar. Sweeney-/E-Ratio-Tabellen deshalb nur über `eod`/`time`-Exits bilden und nie Trail-Trigger aus einer MFE-Verteilung über ein Grid ableiten. `vwap_pullback.py` kennt seit demselben Tag das opt-in BE/Trailing-Overlay (`be_trigger`/`trail_trigger`, Default aus, bitgleich).
 
+## 🌙 S-NACHT-GATE: Nacht-Long kausal (27.10.2026, AP412)
+`asian.py`, Modus `asia_mode="drift"`, eingeschaltet über **`as_r_atr`**. Ohne den Schalter rechnet drift wie bisher (bitgleich, Golden Master `NQ_drift_alt`), der alte Zweig hat aber zwei Zukunftsgriffe: R aus der Asia-Range 19:00 bis 03:00 (liegt im Handelsfenster) und ein Filter auf Bars in diesem Fenster (warf die Limit-down-Nacht 2020-03-16 raus). **Für neue Nacht-Jobs immer `as_r_atr` setzen.**
+- **R** = `as_r_atr` × atr20 des letzten RTH-Tags **vor** der Session (gleiche ATR wie `sigcore.daily_context`). Dollar ändern sich dadurch nicht, nur die R-Einheit.
+- **Gates** auf den letzten RTH-Tag x < d (Montag liest Freitag, höchstens 4 Tage zurück, Halbtage unter 300 Bars geben NaN, NaN gibt nie frei): `as_prev_cpos_max/_min` (Lage des Closes in der Tagesrange), `as_prev_l45_max/_min` (Rendite 15:15 bis 15:59). Die `_min`-Keys sind das Gegenstück für die Inversions-Kontrolle (`controls.GATE_OFF` / `GATE_INVERT_PAIR` kennen alle vier).
+- **Opt-in Katastrophenstop** `as_cat_stop_atr` (Gap-Through füllt am Open). Kein Vollständigkeitsfilter: ein 80-%-Filter auf die Fensterbars hätte vor allem die Limit-down-Nächte März 2020 gelöscht.
+- **Zeitbasis:** `tmin_entry` zählt wie bei den RTH-Modi ab 09:30, die Nacht ist negativ (18:15 = −915). So sortiert der Tagesstopp in `cage_policy_lib`/`tempo_plan` die Nacht vor den RTH-Tag. `weekend_check` und `konten/leg_cells` kennen die Ausnahme.
+- **Schutz:** unbekannte `as_*`-Keys, Range-/NR-Filter im drift-Zweig, Gate ohne `as_r_atr` und wirkungslose Keys im kausalen Zweig werfen einen Fehler statt still ignoriert zu werden.
+- **Prüfung:** Kanarie `discovery/gm_nacht_gate_canary.py` (Merkmals-Truncation, Leck-Kanarie, atr20-Gleichheit, Tagesstopp-Reihenfolge, Delay), läuft im `engine-regression-tester` mit. Erster Job: `night_cpos_NQ` ([[Discovery-Runner v2]], AP412).
+
 ## Nächste Schritte
 - [ ] Regime-Filter + Selektivität testen (weniger, bessere Trades statt 261/Woche)
 - [ ] Andere Signale aus [[Mean-Reversion Paper (High-Winrate Fokus)]] durchjagen

@@ -10,9 +10,9 @@ status: Themen stehen, Videoliste kommt noch
 
 ⬅️ [[Be Obsessed]] · [[Be Obsessed OGSM]]
 
-Allgemeine Punkte, die jede Firma und jede Person kennen muss, die KI aktiv nutzt, und wie man das Meiste rausholt. Ziel laut OGSM: alle 8 Themen bis 31.01.2027 durch, jedes als Content verarbeitet (Strategy S1, Learn in public).
+Allgemeine Punkte, die jede Firma und jede Person kennen muss, die KI aktiv nutzt, und wie man das Meiste rausholt. Ziel laut OGSM: alle 7 Themen bis 31.01.2027 durch, jedes als Content verarbeitet (Strategy S1, Learn in public).
 
-## Die 8 Themen (Max, 15.10.2026)
+## Die 7 Themen (Max, 15.10.2026, Thema 8 am 27.10. gestrichen)
 
 | Nr. | Thema | Worum es geht | Passt zu | Was Max schon aus der Praxis kann | Status |
 |---|---|---|---|---|---|
@@ -23,7 +23,6 @@ Allgemeine Punkte, die jede Firma und jede Person kennen muss, die KI aktiv nutz
 | 5 | Sicherheit | Prompt Injection, Geheimnisse, was nie in eine KI gehört | Firmen | Passwörter nie im Vault, Mails nur mit Freigabe senden | offen |
 | 6 | Recht und Datenschutz | DSGVO, EU AI Act (Art. 4 KI-Kompetenz-Pflicht seit 02.02.2025), Urheberrecht | Firmen | | offen |
 | 7 | Marktüberblick | Claude, ChatGPT, Gemini, offene Modelle, Preise und Abos | beide | | offen |
-| 8 | „overall wage“ (Wortlaut aus dem Diktat, unklar) | **Max: was ist gemeint?** | | | offen |
 
 ## Vorschlag Claude: Themen für den jungen Wunschkunden
 
