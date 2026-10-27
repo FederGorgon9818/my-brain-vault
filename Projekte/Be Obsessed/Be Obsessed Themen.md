@@ -18,7 +18,7 @@ Alles, was sich aus deinem Leben filmen lässt: Alltag, Gym, Trading, KI, Highs 
 > Feste Formate sind nur noch **Talking Head** und **Montage**. Talk und Screen werden Talking Heads (Screen mit Screenshot-Einblendung oben), Alltag, Gym und Check-in werden Montagen, Story kann beides sein. Pro Woche: 2 KI-Lektionen (Di, Do) und 1 Journey-Video (So). Alles andere läuft über den Ideen-Slot.
 
 > [!warning] Leitplanken
-> Trading nur als Teil deines Lebens zeigen: keine Kontonummern, keine Strategien, keine Kontostände. Die Tiefe gehört in den getrennten Trading-Kanal ([[Social Media & Wissensprodukt]]). Den Arbeitgeber nie nennen und nie auf der Arbeit filmen. Andere Leute nur mit deren OK im Bild (auch im Gym).
+> Trading nur als Teil deines Lebens zeigen: keine Kontonummern, keine Strategien, keine Kontostände. Seit 22.10.2026 läuft Trading im selben Kanal mit (Max), als eigene Doku und Methodik, die Edge bleibt privat und es gibt nie Signale oder Anlageberatung. Den Arbeitgeber nie nennen und nie auf der Arbeit filmen. Andere Leute nur mit deren OK im Bild (auch im Gym).
 
 ## Serien (laufen immer mit)
 

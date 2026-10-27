@@ -5,7 +5,7 @@ tags:
   - ki-coaching
 erstellt: 2026-10-15
 deadline: 2027-07-03
-status: Idee, OGSM-Entwurf steht, Entscheidungen bei Max offen
+status: vorbereitet, live erst nach GEWO-Freigabe, Entscheidungen bei Max (Stand 27.10.2026)
 ---
 # 🦁 Be Obsessed (KI-Mentorship)
 
@@ -87,6 +87,7 @@ Die Idee ist gut und passt zu Max. Das Ziel bis Juli ist sehr sportlich, aber mi
 
 - [ ] **Arbeitgeber: neue Nebentätigkeit anzeigen und genehmigen lassen, vor dem Live-Start.** Geprüft 16.10.: Die Genehmigung vom 23.09. deckt nur „Entwicklung und Betrieb automatisierter Software zur Analyse von Finanzmarktdaten; Dienstleistungen für ausländische Auftraggeber“ ([[Steuer & Gewerbe (Prop-Payouts)]]). Coaching und Content sind eine andere Art, und laut §8.2/8.3 braucht jede Nebentätigkeit vorher Anzeige **und** Zustimmung. Weg: REX-Portal, Feld „2. Nebentätigkeit (Art)“. Textvorschlag: „Nebenberufliche Schulungen, Coaching und Workshops zur Nutzung von KI-Anwendungen sowie Erstellung von Social-Media-Inhalten; außerhalb der Arbeitszeit, ca. 6 bis 8 Std. pro Woche, ohne Bezug zu Kunden, Produkten oder Interna der GEWO.“
   - **Stundenfrage (16.10.):** Angegeben waren 40 h Job plus 8 h Trading. Real schwankt die Nebenarbeit zwischen 8 und 15 h pro Woche, und Be Obsessed verschiebt nur die Gewichtung, die Freizeit bleibt gleich. Einschätzung Claude (keine Rechtsberatung): Die 48 h aus dem Arbeitszeitgesetz zählen nur Jobs bei mehreren Arbeitgebern, Selbstständiges zählt nicht mit, aber GEWO darf ablehnen, wenn die Arbeitskraft leidet. Max fragt am **Mo 19.10.** in der Personalabteilung nach, Ticket **AP406** mit den Fragen.
+  - **Stand 27.10.:** Empfehlung vom 22.10. (Session 8631ecca): bestehende Genehmigung um einen Gesamtrahmen für beide Tätigkeiten erweitern, Stundenzahl 12 oder 15 offen. AP406 wurde am 26.10. gelöscht, ob das HR-Gespräch stattfand und der Antrag raus ist, steht nirgends. Kein Ticket verfolgt die Freigabe mehr, nur AP445 (E-Mail-Liste) wartet darauf. Frage an Max ist gestellt.
 - [ ] **Gewerbe (Oktober):** KI-Coaching und Beratung gleich mit in den Gegenstand ([[Unternehmensgründung Entscheidung]]).
 - [ ] **Steuer, Frage an die Freundin** ([[Gespräch mit Freundin (Steuer & Gründung)]]):
   - Ist Coaching gewerblich oder freiberuflich (unterrichtende Tätigkeit)?
@@ -98,19 +99,23 @@ Die Idee ist gut und passt zu Max. Das Ziel bis Juli ist sehr sportlich, aber mi
 ## Entscheidungen bei Max
 
 - [x] Format: Reels hochkant, 30 bis 90 Sekunden (Max, 15.10.)
-- [ ] Plattform-Schwerpunkt: Max noch unsicher (16.10.). Vorschlag: dasselbe Video auf Instagram, TikTok und Shorts, Mitte Dezember nach Zahlen entscheiden ([[Be Obsessed Profil]]).
-- [ ] Wochenstunden für Be Obsessed, realistisch neben Job und Trading?
-- [ ] Was bekommt man im Abo für 50 bzw. 100 € (Community, Calls, Anleitungen, Vorlagen)?
+- [x] Plattform: Instagram im Fokus, dasselbe Video auf TikTok und Shorts, Mitte Dezember nach Zahlen entscheiden ([[Be Obsessed Content-Plan]], 16.10.)
+- [x] Wochenrhythmus: rund 3 bis 4 Std. pro Woche laut [[Be Obsessed Content-Plan]] (16.10.)
+- [x] Kanal: ein Self-Brand-Kanal für KI und Trading, Nordstern erster 100.000-€-Monat (Max, 22.10.)
+- [x] Firmenweg: Leiter-Modell, Coaches und Creator zuerst per High-Ticket, Firmen später ([[Be Obsessed High-Ticket Angebot]], 19.10.)
+- [x] „Claude verkaufen“ heißt: Business-Gehirn auf Claude-Basis bauen und beibringen, keine Lizenzen ([[Be Obsessed High-Ticket Angebot]], 19.10.)
+- [ ] **Offen, am 27.10. an die Übersichts-Session geschickt:** Stand GEWO-Antrag und Stundenrahmen, erster Verkauf (Coach-Pilot oder Gründungsmitglied), Zwischenziele an das Freigabedatum koppeln, Account-Name, Abo-Inhalt, Thema 8 „overall wage“.
 - [ ] Bezahlplattform (Skool, Discord, eigene Seite)? Erst ab dem ersten Kunden.
-- [ ] Firmenweg ab wann, und welche Firmen zuerst (eigenes Umfeld, junge Gründer)?
-- [ ] Was heißt „Claude verkaufen“: nur Nutzung beibringen, oder auch Lizenzen und Partnerprogramme? (Ob Anthropic ein Partnerprogramm hat, ist nicht geprüft.)
-- [ ] Zwischenziele im [[Be Obsessed OGSM]] bestätigen oder ändern.
 
 ## Nächste Schritte
 
 Entschieden am 15.10.: Reels zuerst (Instagram, gleiches Video auf TikTok und Shorts), iPhone, Equipment bis 100 €, Schnitt-Skripte in eigener Session.
 
-1. Phase 0 aus dem [[Be Obsessed Fahrplan]] bis 31.10.: Name sichern, Profil, Warteliste, Equipment, 10 Videos auf Vorrat.
-2. Max schickt die Links zu Vorbild-Videos (Schnittstil), daraus wird der Stil-Steckbrief.
-3. Max schickt das Cheat-Sheet (Text in diesen Ordner, Fotos oder PDF nach `Anhänge/`).
-4. Arbeitgeber fragen, Gewerbe mit KI-Coaching anmelden.
+Stand 27.10.:
+
+1. **GEWO-Freigabe holen.** Davon hängt alles Öffentliche ab (posten, E-Mail-Liste AP445, Coach-Outreach).
+2. Bis dahin Phase 0 aus dem [[Be Obsessed Fahrplan]]: Name, Profil, Equipment, Videos auf Vorrat, erstes Video mit der Schnitt-Pipeline schneiden.
+3. Gewerbe mit KI-Coaching und Content im Gegenstand anmelden.
+4. Max schickt das Cheat-Sheet (Text in diesen Ordner, Fotos oder PDF nach `Anhänge/`).
+
+Erledigt: Stil-Steckbrief aus den Vorbild-Videos (16.10.), Content-Plan (16.10.), High-Ticket-Angebot (19.10.), E-Mail-Liste und Playbook vorbereitet (26.10.), Vertrauens-Konzept (26.10.).

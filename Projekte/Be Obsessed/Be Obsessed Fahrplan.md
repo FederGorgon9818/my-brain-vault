@@ -22,6 +22,13 @@ status: Vorschlag Claude v1, Max bestätigt oder ändert
 
 **Goldene Regel:** Vor dem ersten zahlenden Kunden wird außer dem Start-Equipment nichts gekauft. Keine Werbung, keine Kurse, keine Plattform.
 
+> [!warning] Stand 27.10.2026: was sich seit dem Entwurf geändert hat
+> - **Live erst nach der schriftlichen GEWO-Zustimmung** (Max, 22.10.). Phase 0 läuft also bis zur Freigabe, nicht fest bis 31.10., und Phase 1 startet mit der Freigabe. Bis dahin vorbereiten und auf Vorrat drehen.
+> - **Ein Kanal für KI und Trading** (Max, 22.10.), Edge bleibt privat.
+> - **Leiter-Modell** (19.10., [[Be Obsessed High-Ticket Angebot]]): Coaches und Creator per Direktansprache zuerst, das braucht kein Publikum. Abo für junge Leute unten, Firmen später. Ob der erste Verkauf in Phase 2 ein Coach-Pilot oder ein Gründungsmitglied im Abo ist, entscheidet Max.
+> - **Warteliste heißt jetzt E-Mail-Liste** mit Gratis-Playbook ([[Be Obsessed Content-Plan]], Einrichtung nach der Freigabe, Ticket AP445).
+> - **Wochenrhythmus und Formate** gelten aus dem [[Be Obsessed Content-Plan]].
+
 ---
 
 ## Phase 0: Vorbereiten (bis 31.10.2026)
