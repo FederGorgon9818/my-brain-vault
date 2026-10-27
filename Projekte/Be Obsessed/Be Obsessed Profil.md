@@ -20,7 +20,9 @@ Worauf achten:
 - **Keine Zahlen, keine Unterstrich-Ketten.**
 - **Nicht nur auf KI festlegen.** Du wächst, der Name bleibt.
 
-Ideen zum Weiterdenken: `maxkho` · `max.kho` · `itsmaxkho` · `maxbuilds` · `maxkho.builds`
+**Entschieden (Max, 27.10.2026): `maxkho`**, auf Instagram, TikTok und YouTube gleich. Noch prüfen, ob der Name überall frei ist, und erst nach der GEWO-Freigabe öffentlich nutzen.
+
+Frühere Ideen: `max.kho` · `itsmaxkho` · `maxbuilds` · `maxkho.builds`
 
 **Anzeigename** (das Feld über der Bio) wird bei Instagram mit durchsucht, da gehören Stichworte rein, z.B. „Max | KI & Business mit 19“.
 

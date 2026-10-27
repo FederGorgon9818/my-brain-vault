@@ -4,7 +4,7 @@ tags:
   - ki-coaching
   - plan
 erstellt: 2026-10-15
-status: Vorschlag Claude v1, Max bestätigt oder ändert
+status: v2 (Max, 27.10.2026), Zeitplan an die GEWO-Freigabe gekoppelt
 ---
 # 🗺️ Be Obsessed: Fahrplan bis zum ersten Kunden und danach
 
@@ -14,9 +14,9 @@ status: Vorschlag Claude v1, Max bestätigt oder ändert
 
 | Phase | Wann | Ziel | Filmen | Kaufen |
 |---|---|---|---|---|
-| **0 Vorbereiten** | bis 31.10.2026 | Profil steht, 10 Videos auf Vorrat | Vorstellung, Manifest, „unsicher vor der Kamera“, Setup, 3× KI in 60 Sekunden, Vorrat an Alltagsclips | Stativ, Mikro, Licht, höchstens 100 € ([[Be Obsessed Filmstil]]) |
-| **1 Kanal live** | November 2026 | 4 Wochen ohne Lücke, 3 Reels pro Woche, erste Leute auf der Warteliste | Road to 10k, KI in 60 Sekunden, Alltag, Gym | nichts |
-| **2 Erster Kunde** | Dezember 2026 | erster zahlender Kunde | Gründung, Erstgespräche (ohne Namen), „mein erster Kunde“ (mit OK) | nichts, Bezahlung per Rechnung |
+| **0 Vorbereiten** | bis zur GEWO-Freigabe (AP450) | Profil steht, 10 Videos auf Vorrat | Vorstellung, Manifest, „unsicher vor der Kamera“, Setup, 3× KI in 60 Sekunden, Vorrat an Alltagsclips | Stativ, Mikro, Licht, höchstens 100 € ([[Be Obsessed Filmstil]]) |
+| **1 Kanal live** | ab Tag der Freigabe | 4 Wochen ohne Lücke, 3 Reels pro Woche, erste Leute auf der Warteliste | Road to 10k, KI in 60 Sekunden, Alltag, Gym | nichts |
+| **2 Erster Kunde** | Freigabe plus 6 Wochen | erster Coach-Pilot (1.500 €) | Gründung, Erstgespräche (ohne Namen), „mein erster Kunde“ (mit OK) | nichts, Bezahlung per Rechnung |
 | **3 Aufbauen** | Januar bis April 2027 | 2.000 € im Februar, 5.000 € im April | 4 bis 5 Reels pro Woche, Kundenergebnisse, Firmen-Workshops | Community-Plattform, erst ab dem ersten Kunden |
 | **4 Ziel** | Mai bis Juli 2027 | 10.000 € im Monat | Collabs, Ergebnisse, Road to 10k Finale | Upgrades nur aus Einnahmen |
 
@@ -25,13 +25,14 @@ status: Vorschlag Claude v1, Max bestätigt oder ändert
 > [!warning] Stand 27.10.2026: was sich seit dem Entwurf geändert hat
 > - **Live erst nach der schriftlichen GEWO-Zustimmung** (Max, 22.10.). Phase 0 läuft also bis zur Freigabe, nicht fest bis 31.10., und Phase 1 startet mit der Freigabe. Bis dahin vorbereiten und auf Vorrat drehen.
 > - **Ein Kanal für KI und Trading** (Max, 22.10.), Edge bleibt privat.
-> - **Leiter-Modell** (19.10., [[Be Obsessed High-Ticket Angebot]]): Coaches und Creator per Direktansprache zuerst, das braucht kein Publikum. Abo für junge Leute unten, Firmen später. Ob der erste Verkauf in Phase 2 ein Coach-Pilot oder ein Gründungsmitglied im Abo ist, entscheidet Max.
+> - **Leiter-Modell** (19.10., [[Be Obsessed High-Ticket Angebot]]): Coaches und Creator per Direktansprache zuerst, das braucht kein Publikum. Abo für junge Leute unten, Firmen später. **Erster Verkauf in Phase 2 ist ein Coach-Pilot zu 1.500 € (Max, 27.10.).** Das Abo kommt später, seinen Inhalt legt Max erst beim Abo-Start fest.
+> - **Zeitplan an die Freigabe gekoppelt** (Max, 27.10.): Start = Tag der GEWO-Freigabe (Ticket AP450), erster Kunde = Freigabe plus 6 Wochen, Endziel 10.000 € bis Juli 2027 bleibt.
 > - **Warteliste heißt jetzt E-Mail-Liste** mit Gratis-Playbook ([[Be Obsessed Content-Plan]], Einrichtung nach der Freigabe, Ticket AP445).
 > - **Wochenrhythmus und Formate** gelten aus dem [[Be Obsessed Content-Plan]].
 
 ---
 
-## Phase 0: Vorbereiten (bis 31.10.2026)
+## Phase 0: Vorbereiten (bis zur GEWO-Freigabe)
 
 - [ ] **Account-Name:** dein eigener Name, nicht „Be Obsessed“ (das ist nur der Projekttitel, Max 16.10.). Ein Handle, der auf Instagram, TikTok und YouTube gleich ist. Ideen in [[Be Obsessed Profil]].
 - [ ] **Profil:** Bild, Bio, Link zur Warteliste. Beispiele in [[Be Obsessed Profil]].
@@ -41,7 +42,7 @@ status: Vorschlag Claude v1, Max bestätigt oder ändert
 - [ ] **Kamera-Training:** jeden Tag eine Minute in die Kamera reden, nicht posten. Nach zwei Wochen ist die Unsicherheit deutlich kleiner.
 - [ ] **Formales anstoßen:** Coaching und Content im REX-Portal als zweite Nebentätigkeit anzeigen und Zustimmung abwarten (die Genehmigung vom 23.09. deckt nur die Finanzmarkt-Software, Textvorschlag in [[Be Obsessed]] unter „Checkliste Rahmen“). Live erst nach der Zustimmung. Gewerbe mit KI-Coaching und Content im Gegenstand anmelden ([[Unternehmensgründung Entscheidung]]).
 
-## Phase 1: Kanal live (November 2026)
+## Phase 1: Kanal live (ab Tag der Freigabe)
 
 Details seit 16.10.2026: [[Be Obsessed Content-Plan]].
 
@@ -54,11 +55,12 @@ Details seit 16.10.2026: [[Be Obsessed Content-Plan]].
 - **Im November jedes Video als Test:** Hook-Arten durchwechseln, Zahlen sammeln (Median erst ab rund 10 Videos), 70/20/10 ab Dezember.
 - Ende November: Monats-Check im [[Be Obsessed OGSM]] ausfüllen (Meilenstein M1), zusammen mit dem Content-Check (beste 10 %).
 
-## Phase 2: Der erste Kunde (Dezember 2026)
+## Phase 2: Der erste Kunde (Freigabe plus 6 Wochen)
 
 Erst verkaufen, dann bauen. Das Angebot wird getestet, **bevor** es eine Plattform gibt.
 
-1. **Angebot „Be Obsessed Circle, Gründungsmitglied“:** 50 € im Monat, nur die ersten 20 Plätze, der Preis bleibt für immer. Dafür: wöchentlicher Gruppen-Call, eine Gruppe (Discord oder WhatsApp, kostenlos), KI-Vorlagen und Anleitungen, direkter Draht zu dir. Ab 18, Jüngere nur mit den Eltern.
+0. **Zuerst: Coach-Pilot zu 1.500 € (Max, 27.10.).** Direktansprache von Solo-Coaches und Creatorn, 6 Wochen Business-Gehirn, Details und Messaging im [[Be Obsessed High-Ticket Angebot]]. Die Punkte 1 und 2 unten (Abo) kommen erst später, der Abo-Inhalt wird beim Abo-Start festgelegt.
+1. **Später: Angebot „Be Obsessed Circle, Gründungsmitglied“** (Entwurf, Inhalt offen bis zum Abo-Start): 50 € im Monat, nur die ersten 20 Plätze, der Preis bleibt für immer. Dafür: wöchentlicher Gruppen-Call, eine Gruppe (Discord oder WhatsApp, kostenlos), KI-Vorlagen und Anleitungen, direkter Draht zu dir. Ab 18, Jüngere nur mit den Eltern.
 2. **10 kostenlose Erstgespräche** (20 Minuten) mit Leuten von der Warteliste oder aus den DMs. Fragen: Was willst du? Woran hängt es? Was hast du schon probiert? Am Ende das Angebot nennen.
 3. **Firmenweg parallel:** 3 Gespräche im eigenen Umfeld (Familie, Bekannte mit Firma, Gym, junge Gründer). Angebot: KI-Workshop, 2 Stunden online, Festpreis (Preis noch festlegen). Aufhänger: Firmen müssen seit Februar 2025 für KI-Kompetenz ihrer Leute sorgen (EU AI Act Art. 4).
 4. **Bezahlung:** Rechnung und Überweisung. Dafür müssen vorher Gewerbe, Arbeitgeber-OK, Rechnungsvorlage und Impressum stehen.
@@ -67,7 +69,7 @@ Erst verkaufen, dann bauen. Das Angebot wird getestet, **bevor** es eine Plattfo
 ## Phase 3: Aufbauen (Januar bis April 2027)
 
 - Community-Plattform einrichten, **erst jetzt** (Skool, Discord o.ä., vorher Kosten vergleichen).
-- 4 bis 5 Reels pro Woche, alle 8 Lernthemen bis 31.01. durch.
+- 4 bis 5 Reels pro Woche, alle 7 Lernthemen bis 31.01. durch.
 - Ergebnisse der Mitglieder sammeln (mit OK): das sind deine Beweise.
 - 1 bis 2 Firmen-Workshops im Monat, tagsüber nur mit Urlaubstag, abends online.
 - Monats-Check: Februar 2.000 €, April 5.000 €. Unter der Hälfte heißt umsteuern (OGSM-Regel).

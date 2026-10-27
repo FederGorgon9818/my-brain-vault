@@ -5,7 +5,7 @@ tags:
   - ki-coaching
   - ogsm
 erstellt: 2026-10-15
-status: Entwurf v1 (Max, 15.10.2026), Zwischenziele sind Vorschlag Claude, nichts gerechnet
+status: v2 (Max, 27.10.2026), Zwischenziele an die GEWO-Freigabe gekoppelt, nichts gerechnet
 ---
 # 🎯 OGSM: Be Obsessed, 10.000 € im Monat bis Juli 2027
 
@@ -24,15 +24,15 @@ Ein-Seiten-Plan nach OGSM (Objective, Goals, Strategies, Measures, Erklärung im
 | Nr. | Goal | Bis wann | Stand 15.10.2026 |
 |---|---|---|---|
 | G1 | **10.000 € Umsatz im Monat** | 03.07.2027 | 0 € |
-| G2 | Kanal „Be Obsessed“ läuft ohne Lücke, jede Woche Content | ab 30.11.2026 durchgehend | noch kein Kanal |
-| G3 | Alle 8 Lernthemen durch, jedes als Content verarbeitet | 31.01.2027 | angefangen |
+| G2 | Kanal „Be Obsessed“ läuft ohne Lücke, jede Woche Content | ab der GEWO-Freigabe durchgehend | noch kein Kanal, Antrag AP450 |
+| G3 | Alle 7 Lernthemen durch, jedes als Content verarbeitet (Thema 8 gestrichen, Max 27.10.) | 31.01.2027 | angefangen |
 
-**Zwischenziele (Vorschlag Claude, Max bestätigt oder ändert):**
+**Zwischenziele (Max, 27.10.2026: an die GEWO-Freigabe gekoppelt, Endziel Juli 2027 bleibt):**
 
 | Meilenstein | Bis | Umsatz im Monat | Publikum |
 |---|---|---|---|
-| M1 Start | 30.11.2026 | 0 € | Kanal live, 4 Wochen ohne Lücke, Lernthemen 1 bis 3 durch |
-| M2 erstes Geld | 31.12.2026 | erster zahlender Kunde | 1.000 Follower, 50 auf der Warteliste |
+| M1 Start | Tag der GEWO-Freigabe | 0 € | Kanal live, ab da 4 Wochen ohne Lücke, Lernthemen 1 bis 3 durch |
+| M2 erstes Geld | Freigabe plus 6 Wochen | erster Coach-Pilot (1.500 €) | 1.000 Follower, 50 auf der E-Mail-Liste |
 | M3 | 28.02.2027 | 2.000 € | 3.000 Follower |
 | M4 | 30.04.2027 | 5.000 € | 7.000 Follower |
 | M5 Ziel | 03.07.2027 | 10.000 € | 15.000 Follower |
@@ -54,7 +54,7 @@ Umsatz ist nicht Gewinn: davon gehen Plattformgebühren, je nach Steuerform 19 %
 
 | Strategy | Measures (früh) | Measures (Ergebnis) |
 |---|---|---|
-| **S1 Learn in public.** Lernen und Filmen in einem Schritt: jedes Lernthema wird zu Content. Mein eigenes System (zweites Gehirn, Agents, Hooks) ist das Anschauungsmaterial. | Lernstunden je Woche; Themen durch (Ziel 8 von 8 bis 31.01.2027) | Videos je Lernthema (mindestens eins) |
+| **S1 Learn in public.** Lernen und Filmen in einem Schritt: jedes Lernthema wird zu Content. Mein eigenes System (zweites Gehirn, Agents, Hooks) ist das Anschauungsmaterial. | Lernstunden je Woche; Themen durch (Ziel 7 von 7 bis 31.01.2027) | Videos je Lernthema (mindestens eins) |
 | **S2 Founder-Kanal „Be Obsessed“.** Ein ehrlicher Self-Brand-Kanal für KI und Trading zusammen (Max, 22.10.), Edge bleibt privat. Kurzfilme: 19, Vollzeitjob, zwei Side-Hustles, jedes Hoch und jedes Tief. Hustle, Get Better, Be the Best, Believe. | Videos je Woche (Vorschlag 3); Wochen ohne Lücke | Follower; Reichweite; Anmeldungen auf der Warteliste |
 | **S3 Mentorship-Abo für junge Leute.** Für alle, die unbedingt etwas machen wollen, aber nicht wissen was: mit KI das eigene Ding finden und bauen. 50 bis 100 € im Monat. Ab 18, Jüngere nur mit den Eltern. | Warteliste; Erstgespräche; Preis und Inhalt stehen | Zahlende Mitglieder; Monatsumsatz Abo; Kündigungen je Monat |
 | **S4 High-Ticket: erst Coaches und Creator, später Firmen.** Business-Gehirn auf Claude-Basis, 6 Wochen, 2 Piloten zu 1.500 €, dann 3.000 € ([[Be Obsessed High-Ticket Angebot]]). Schnellster Hebel zu 10.000 €, weil wenige Kunden reichen und kein Publikum nötig ist. Firmen danach, Aufhänger EU AI Act Art. 4 (KI-Kompetenz-Pflicht seit 02.02.2025). | Direktansprachen je Woche; Erstgespräche; Angebote raus | Piloten verkauft; gemessene Fallstudien (Ziel 3); Monatsumsatz High-Ticket |
