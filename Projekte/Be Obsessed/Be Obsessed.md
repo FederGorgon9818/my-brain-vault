@@ -35,7 +35,7 @@ status: vorbereitet, live erst nach GEWO-Freigabe, Entscheidungen bei Max (Stand
 
 ## Lernplan
 
-→ [[Be Obsessed Lernplan]]: 8 Themen, die jede Firma und jede Person kennen muss, die KI aktiv nutzt. Eine fertige Lern-Videoliste gibt es noch nicht (Stand 15.10.).
+→ [[Be Obsessed Lernplan]]: 7 Themen, die jede Firma und jede Person kennen muss, die KI aktiv nutzt. Eine fertige Lern-Videoliste gibt es noch nicht (Stand 15.10.).
 
 ## Alle Notizen im Projekt
 
@@ -46,7 +46,7 @@ status: vorbereitet, live erst nach GEWO-Freigabe, Entscheidungen bei Max (Stand
 | [[Be Obsessed Themen]] | 30 Video-Themen mit Hook, Format und Phase, drei Serien |
 | [[Be Obsessed Video-Aufbau]] | Grundgerüst, Hook-Arten, sechs Vorlagen, Skript schreiben |
 | [[Be Obsessed Filmstil]] | Stil, iPhone-Einstellungen, Licht, Ton, Equipment bis 100 € |
-| [[Be Obsessed Lernplan]] | 8 Lernthemen plus Vorschläge für junge Leute |
+| [[Be Obsessed Lernplan]] | 7 Lernthemen plus Vorschläge für junge Leute |
 | [[Be Obsessed Profil]] | Account-Name, Bio-Beispiele, welche Plattform |
 | [[Be Obsessed Content-Plan]] | **gilt seit 16.10.:** Wochenplan, Formate, Mini-Story, Messen, 70/20/10, E-Mail-Liste, Schnitt-Ablauf |
 | [[Be Obsessed Stil-Steckbrief]] | Analyse der vier Vorbild-Reels, Look und Untertitel |
@@ -85,16 +85,22 @@ Die Idee ist gut und passt zu Max. Das Ziel bis Juli ist sehr sportlich, aber mi
 
 ## Checkliste Rahmen (vor dem ersten Euro)
 
-- [ ] **Arbeitgeber: neue Nebentätigkeit anzeigen und genehmigen lassen, vor dem Live-Start.** Geprüft 16.10.: Die Genehmigung vom 23.09. deckt nur „Entwicklung und Betrieb automatisierter Software zur Analyse von Finanzmarktdaten; Dienstleistungen für ausländische Auftraggeber“ ([[Steuer & Gewerbe (Prop-Payouts)]]). Coaching und Content sind eine andere Art, und laut §8.2/8.3 braucht jede Nebentätigkeit vorher Anzeige **und** Zustimmung. Weg: REX-Portal, Feld „2. Nebentätigkeit (Art)“. Textvorschlag: „Nebenberufliche Schulungen, Coaching und Workshops zur Nutzung von KI-Anwendungen sowie Erstellung von Social-Media-Inhalten; außerhalb der Arbeitszeit, ca. 6 bis 8 Std. pro Woche, ohne Bezug zu Kunden, Produkten oder Interna der GEWO.“
-  - **Stundenfrage (16.10.):** Angegeben waren 40 h Job plus 8 h Trading. Real schwankt die Nebenarbeit zwischen 8 und 15 h pro Woche, und Be Obsessed verschiebt nur die Gewichtung, die Freizeit bleibt gleich. Einschätzung Claude (keine Rechtsberatung): Die 48 h aus dem Arbeitszeitgesetz zählen nur Jobs bei mehreren Arbeitgebern, Selbstständiges zählt nicht mit, aber GEWO darf ablehnen, wenn die Arbeitskraft leidet. Max fragt am **Mo 19.10.** in der Personalabteilung nach, Ticket **AP406** mit den Fragen.
-  - **Stand 27.10.:** Empfehlung vom 22.10. (Session 8631ecca): bestehende Genehmigung um einen Gesamtrahmen für beide Tätigkeiten erweitern, Stundenzahl 12 oder 15 offen. AP406 wurde am 26.10. gelöscht, ob das HR-Gespräch stattfand und der Antrag raus ist, steht nirgends. Kein Ticket verfolgt die Freigabe mehr, nur AP445 (E-Mail-Liste) wartet darauf. Frage an Max ist gestellt.
+- [ ] **Arbeitgeber: neue Nebentätigkeit anzeigen und genehmigen lassen, vor dem Live-Start.** Geprüft 16.10.: Die Genehmigung vom 23.09. deckt nur „Entwicklung und Betrieb automatisierter Software zur Analyse von Finanzmarktdaten; Dienstleistungen für ausländische Auftraggeber“ ([[Steuer & Gewerbe (Prop-Payouts)]]). Coaching und Content sind eine andere Art, und laut §8.2/8.3 braucht jede Nebentätigkeit vorher Anzeige **und** Zustimmung. Weg: REX-Portal, als Erweiterung der bestehenden Genehmigung. **Textentwurf (Stand 27.10., final erst nach Max' Wahl A oder B nach dem Termin bei Personal am 28.10.):**
+    > Ich beantrage die Erweiterung meiner am 23.09.2026 genehmigten Nebentätigkeit (Entwicklung und Betrieb automatisierter Software zur Analyse von Finanzmarktdaten). Hinzu kommen die Erstellung und Veröffentlichung von Social-Media-Inhalten zu KI-Nutzung, Lernen, Alltag und eigenen Projekten, zunächst ohne Einnahmen, sowie später nebenberufliche Schulungen, Coachings und Workshops zur Nutzung von KI-Anwendungen. Beide Tätigkeiten übe ich selbstständig und ausschließlich außerhalb der Arbeitszeit aus, zusammen im Umfang von durchschnittlich ca. 12 und höchstens 15 Stunden pro Woche. Es besteht kein Bezug zu Kunden, Produkten oder Interna der GEWO, der Arbeitgeber wird nicht genannt, und Arbeitsmittel des Arbeitgebers werden nicht genutzt.
+
+    Das ist Variante B (Empfehlung Claude). Variante A: gleicher Text, nur „zusammen im Umfang von höchstens 8 Stunden pro Woche“.
+  - **Stundenfrage (16.10.):** Angegeben waren 40 h Job plus 8 h Trading. Real schwankt die Nebenarbeit zwischen 8 und 15 h pro Woche, und Be Obsessed verschiebt nur die Gewichtung, die Freizeit bleibt gleich. Einschätzung Claude vom 16.10. (keine Rechtsberatung, **am 27.10. relativiert**): Nach dem Gesetzeswortlaut zählen die 48 h nur Jobs bei mehreren Arbeitgebern, und das GEWO-Formular sagt selbst „Höchstarbeitszeit gilt nicht bei Selbstständigkeit“. Praktiker-Quellen (IHK, Für-Gründer.de, DHZ) rechnen Selbstständiges aber trotzdem an, ein Urteil gibt es nicht. Also ungeklärt, nicht gesichert ([[Research-Cache]], Abschnitt „Nebentätigkeit, ArbZG und Social Media (27.10.2026)“). Geplant war, am Mo 19.10. bei Personal nachzufragen (Ticket AP406). Das Gespräch hat nicht stattgefunden, es wird am 28.10. nachgeholt (siehe nächster Punkt).
+  - **Stand 27.10. abends (Max):** Das HR-Gespräch aus AP406 hat **nie stattgefunden**, eine Stundenvorgabe von HR gibt es also nicht. AP406 wurde am 26.10. zu Unrecht gelöscht, die Freigabe verfolgt jetzt **AP450** (fällig 28.10.). Max fragt am **Mi 28.10.** bei Personal nach und entscheidet danach A oder B. Fragen für den Termin:
+    1. Welcher Stundenrahmen ist ok für beide Nebentätigkeiten zusammen: höchstens 8 (A) oder durchschnittlich ca. 12, höchstens 15 Std./Woche (B)?
+    2. Gibt es interne Regeln, wie Mitarbeitende privat online posten dürfen (Social-Media-Richtlinie)?
+  - **Posten erst nach der schriftlichen Zustimmung** (Max, 27.10.). Bis dahin nur filmen, schneiden, Vorrat anlegen. Das Posten steht im Antrag.
 - [ ] **Gewerbe (Oktober):** KI-Coaching und Beratung gleich mit in den Gegenstand ([[Unternehmensgründung Entscheidung]]).
 - [ ] **Steuer, Frage an die Freundin** ([[Gespräch mit Freundin (Steuer & Gründung)]]):
   - Ist Coaching gewerblich oder freiberuflich (unterrichtende Tätigkeit)?
   - Kleinunternehmer-Grenze seit 2025: 25.000 € im Vorjahr und 100.000 € im laufenden Jahr. Sie gilt für das ganze Unternehmen, also Trading und Coaching zusammen. Mit 10.000 € im Monat wäre sie bald gesprengt.
 - [ ] **Minderjährige:** Bezahlprodukt erst ab 18 oder nur mit Zustimmung der Eltern.
 - [ ] **Impressum, Datenschutz, AGB** für Kanal und Bezahlprodukt.
-- [ ] **Account-Name:** eigener Name statt „Be Obsessed“ (Max, 16.10.), Handle überall gleich, Ideen in [[Be Obsessed Profil]].
+- [x] **Account-Name:** `maxkho` (Max, 27.10.), überall gleich. Noch prüfen, ob er frei ist ([[Be Obsessed Profil]]).
 
 ## Entscheidungen bei Max
 
@@ -104,7 +110,17 @@ Die Idee ist gut und passt zu Max. Das Ziel bis Juli ist sehr sportlich, aber mi
 - [x] Kanal: ein Self-Brand-Kanal für KI und Trading, Nordstern erster 100.000-€-Monat (Max, 22.10.)
 - [x] Firmenweg: Leiter-Modell, Coaches und Creator zuerst per High-Ticket, Firmen später ([[Be Obsessed High-Ticket Angebot]], 19.10.)
 - [x] „Claude verkaufen“ heißt: Business-Gehirn auf Claude-Basis bauen und beibringen, keine Lizenzen ([[Be Obsessed High-Ticket Angebot]], 19.10.)
-- [ ] **Offen, am 27.10. an die Übersichts-Session geschickt:** Stand GEWO-Antrag und Stundenrahmen, erster Verkauf (Coach-Pilot oder Gründungsmitglied), Zwischenziele an das Freigabedatum koppeln, Account-Name, Abo-Inhalt, Thema 8 „overall wage“.
+- [x] Erster Verkauf: Coach-Pilot zu 1.500 € (Max, 27.10.)
+- [x] Zwischenziele an die GEWO-Freigabe gekoppelt, Endziel Juli 2027 bleibt (Max, 27.10.)
+- [x] Abo-Inhalt erst beim Abo-Start festlegen (Max, 27.10.)
+- [x] Lernplan-Thema 8 gestrichen (Max, 27.10.)
+- [x] Posten erst nach der GEWO-Zustimmung, bis dahin nur Vorrat (Max, 27.10.)
+- [ ] **GEWO-Antrag (AP450):** noch nicht raus. Stundenzahl A (8) oder B (12 bis 15) offen, Max fragt erst am Mi 28.10. bei Personal (Max, 27.10.). Recherche 27.10. (research-scout, keine Rechtsberatung):
+  - **48 h:** Wortlaut und GEWO-Formular sprechen dagegen, dass Selbstständiges mitzählt, Praktiker rechnen es trotzdem an, kein Urteil. Eine feste Stundengrenze gibt es nicht, Maßstab ist, ob die Arbeit bei GEWO leidet.
+  - **Ehrlichkeit vor Zahl:** Der Vertrag verlangt den zeitlichen Umfang. Wer regelmäßig mehr macht als genehmigt, riskiert Abmahnung. Bei echten Wochen von 8 bis 15 Std. ist „8“ das größere Risiko als eine ehrliche höhere Zahl.
+  - **Unbezahltes Posten vor der Freigabe:** nicht sicher frei. Die Klausel nimmt nur Ehrenamt aus, und ein Kanal, der erkennbar ein Geschäft vorbereitet (E-Mail-Liste, Playbook, Coaching), zählt eher als Aufnahme der Nebentätigkeit. Fehlende Zustimmung reicht laut BAG für eine Abmahnung, auch wenn ein Anspruch bestanden hätte. Filmen, Schneiden, Vorrat sind unkritisch.
+  - **Im Antrag nennen:** ja, einmal neutral.
+  - Zwei Textvarianten (8 Std. oder ehrlich 12 bis 15 Std.) stehen oben in der Checkliste Rahmen. Max entscheidet nach dem Termin am 28.10., danach wird der Text final.
 - [ ] Bezahlplattform (Skool, Discord, eigene Seite)? Erst ab dem ersten Kunden.
 
 ## Nächste Schritte
@@ -113,7 +129,7 @@ Entschieden am 15.10.: Reels zuerst (Instagram, gleiches Video auf TikTok und Sh
 
 Stand 27.10.:
 
-1. **GEWO-Freigabe holen.** Davon hängt alles Öffentliche ab (posten, E-Mail-Liste AP445, Coach-Outreach).
+1. **GEWO-Freigabe holen (AP450).** Mi 28.10. bei Personal nachfragen (Stundenrahmen, Social-Media-Richtlinie), dann A oder B wählen, Antrag im REX-Portal abschicken. Davon hängt alles Öffentliche ab (posten, E-Mail-Liste AP445, Coach-Outreach).
 2. Bis dahin Phase 0 aus dem [[Be Obsessed Fahrplan]]: Name, Profil, Equipment, Videos auf Vorrat, erstes Video mit der Schnitt-Pipeline schneiden.
 3. Gewerbe mit KI-Coaching und Content im Gegenstand anmelden.
 4. Max schickt das Cheat-Sheet (Text in diesen Ordner, Fotos oder PDF nach `Anhänge/`).
