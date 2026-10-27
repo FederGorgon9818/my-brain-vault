@@ -27,6 +27,9 @@ tickets: [AP204, AP245, AP248, AP260, AP288, AP238]
 | FN1 / FN2 | Challenge | +719 / +757 $ | 895 / 922 $ (1,5 Schwankungen) | bust-nah, 12 Monate ohne Bust nur rund 4 % |
 | FFN1 / FFN2 | Eval | +51 / +10 $ | 4.600 $ (8 Schwankungen) | 2 von 3 Handelstagen je 29 fehlen noch |
 
+> [!warning] Stand 27.10.: FFN1 und FFN2 sind seit 26.10. zu (HFT-Regel 3.8)
+> Damit fehlen zwei Konten im Bestand, mit dem alles unten gerechnet wurde. Die Zahlen sind bis zur Neurechnung am 05.11. zu freundlich. Ob die beiden zurückkommen, ist eine eigene Option, siehe [[#Option FFN1 und FFN2 zurückholen (Entscheidung nach AP238)]].
+
 ## Ergebnis (Kalender-Modus, 400 Welten je Regime, Nulldrift 200)
 
 Monate bis 50.000 $ (Median), in Klammern Chance auf das Ziel in 5 Jahren.
@@ -54,6 +57,25 @@ Monate bis 50.000 $ (Median), in Klammern Chance auf das Ziel in 5 Jahren.
 - Nur in der guten Welt (letzte 3 Jahre) finanziert das Programm das BOS: nach 24 Monaten +27.800 $ (Median). Alle Jahre: +5.200 $.
 - Deshalb: Kauf erst nach AP238, und der Deckel ist **hart** (2.500 $ inkl. Resets), kein Richtwert. Ein weicher Deckel macht den Nulldrift-Zwilling wertlos (#106, Nachkauf-Lotterie).
 
+## Option FFN1 und FFN2 zurückholen (Entscheidung nach AP238)
+
+Beide STEADY 150k sind seit 26.10. zu, weil an einem Tag mit nur zwei Trades je ein Hand-Trade über den Chart Trader unter 5 s lag (20.10., nach NT8-Absturz, nicht der Algo). Einspruch abgelehnt. FFN-Support 27.10. 12:16 ET: **Reset gegen Gebühr geht, weil beide noch Evals sind. BOGO auf STEADY gibt es derzeit nicht.** Details [[Firm-Regeln je Konto]], [[Daily Notes/2026-10-27]].
+
+| Weg | je Konto | beide Konten | Anteil am Deckel 2.500 $ (beide) |
+|---|---|---|---|
+| Reset ohne Rabatt | 480 $ | 960 $ | 38,4 % |
+| Reset mit 50 % (nur mit eigenem Rabattcode) | 240 $ | 480 $ | 19,2 % |
+| Neukauf mit DOUBLE50 | 292,50 $ | 585 $ | 23,4 % |
+| Neukauf ohne Code | 585 $ | 1.170 $ | 46,8 % |
+
+- **Ein Reset bringt nichts zurück.** Das Konto startet wieder bei 150k mit vollem Ziel, wie ein neues. Reset und Neukauf sind derselbe Neustart zu verschiedenen Preisen.
+- **Mit DOUBLE50 ist der Neukauf billiger** (585 statt 960 $ für beide). DOUBLE50 gilt laut Landingpage nur für neue Evaluations, ein Reset mit 50 % braucht einen eigenen Code (laut FFN-Artikel kommen Rabatte über Discord). Ohne jeden Code ist der Reset billiger (960 statt 1.170 $). Preis am Kauftag prüfen, funded.now nennt für die Rithmic-Aktion den 31.10. als Ende.
+- **Überschneidung mit der Empfehlung:** der für den 06.11. geplante FFN-Kauf ist schon ein neues STEADY 150k. Die eigentliche Frage ist also, ob **zusätzlich** eins oder beide zurückkommen.
+- **Harter Deckel:** die Empfehlung plant bis Gehaltsende schon 2.210 $, Rest 290 $. Beide zurückholen liegt in jeder Variante darüber (190 bis 880 $). Dafür fällt später mindestens ein geplanter Kauf weg, oder Max hebt den Deckel an.
+- **Offen (Max):** zählt ein Reset als Kauf im Sinn der Regel „höchstens ein 150k-Konto je Monat“? Wenn ja, geht neben dem FFN-Kauf am 06.11. kein Reset im selben Monat.
+- **Rechnung am 05.11.** (Punkt 7): Bestand ohne FFN1/FFN2 als Basis, dazu die Varianten keins, eins oder beide zurück, jeweils gegen den Deckel und mit Nulldrift-Zwilling.
+- **Vorschlag als Bedingung für jedes FFN-Konto:** keine Hand-Trades mehr auf Prop-Konten, Tests nur auf Sim101. Schon ein Hand-Trade an einem Tag mit 1 bis 3 Trades reißt die 30-%-Grenze.
+
 ## Muss vor dem ersten Kauf
 
 1. **AP238** BOS-Plan steht (Reserve reicht auch ohne die 2.210 $ und ohne jeden Payout).
@@ -62,6 +84,7 @@ Monate bis 50.000 $ (Median), in Klammern Chance auf das Ziel in 5 Jahren.
 4. Jedes neue Konto nur über `/neues-konto` (Regeln, RiskGuard-cfg, Telegram im Log prüfen).
 5. **Für FFN:** Preis prüfen (50 %-Code), AP330 (Inaktivitäts-Rollfenster) deployt, AP331 (Asia auf FFN) geklärt oder Asia dort aus, höchstens 5 FFN-Konten gleichzeitig.
    - Stand 27.10.: STEADY 150k über Rithmic mit Code DOUBLE50 kostet 292,50 $ (kein Enddatum). Nexus mit 70 % (175,50 $) nur, wenn FFN NT8-Algo auf Nexus schriftlich bestätigt. Ob BOGO auf STEADY greift, ist widersprüchlich, vor dem Kauf klären (Support-Mail 27.10. gesendet, Antwort offen). Details [[Research-Cache]], Abschnitt „FFN Angebot Nexus Connect / Rithmic / BOGO“.
+   - BOGO auf STEADY: FFN-Support hat am 27.10. 12:16 ET im Schließungs-Thread (web.de) geschrieben, dass es das derzeit nicht gibt. Nexus und Payout-Caps aus der Gmail-Mail sind weiter offen.
 6. **Für E8 (ab Dezember):** AP111 schriftlich (Caps der 4er-Staffel, Gratis-Challenge nach dem 4. Payout), E8-Konto innerhalb von 7 Tagen nach Aktivierung handeln, Inaktivitätsalarm auch für E8.
 7. **Neu rechnen am 05.11.** mit den Kontoständen von dann, und mit dem NT8-Export Oktober, falls er bis dahin da ist (AP356).
 
