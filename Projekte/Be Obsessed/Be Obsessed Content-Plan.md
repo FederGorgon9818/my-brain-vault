@@ -72,7 +72,7 @@ Skript-Regel bleibt: erst Hook, dann Lehre, dann die Mitte. Stichpunkte statt ga
 |---|---|---|
 | **Sonntag** | Drehblock: 2 Talking Heads für die kommende Woche, Voiceover fürs Journey-Video | 60 bis 90 Min |
 | **unter der Woche** | Journey-Clips nebenbei filmen, **quer** (für den Kino-Streifen) | ein paar Minuten |
-| **Sonntagabend** | Clips per USB-Kabel auf den PC, Skript schneidet vor, Feinschnitt mit Claude | Ziel rund 15 Min je Video, nach den ersten Videos messen |
+| **Sonntagabend** | Clips per OneDrive (am PC `C:\Onedrive`) oder USB-Kabel auf den PC, Skript schneidet vor, Feinschnitt mit Claude | Ziel rund 15 Min je Video. Rechenzeit ohne dich: rund 5 bis 8 Min je 2,5-Min-Talking-Head (gemessen 27.10.) |
 | **beim Hochladen** | Musik aus der App drunter, Text, Hashtags | 5 Min je Video |
 | **täglich** | Kommentare und DMs beantworten (die sind dein Ideen-Vorrat) | 10 Min |
 | **letzter Sonntag im Monat** | Monats-Check (siehe unten) | 30 Min |
@@ -82,7 +82,7 @@ Das liegt unter den 6 bis 8 Std. aus dem alten Fahrplan, weil das Skript den Gro
 
 ## Schnitt-Pipeline (lokal, kostet keine Tokens)
 
-Liegt in `C:\Users\maxlk\Projects\be-obsessed-schnitt\` (nicht im Vault, Videos nie ins Git). Look nach [[Be Obsessed Stil-Steckbrief]].
+Liegt in `C:\Users\maxlk\Projects\be-obsessed-schnitt\` (nicht im Vault, Videos nie ins Git). Look nach [[Be Obsessed Stil-Steckbrief]]. Bedienung und Messwerte im `README.md` dort. **iPhone: 4K mit 30 fps, HDR aus** (4K für den Zoom-Wechsel, ohne HDR keine Farbumrechnung). Das Vorbereiten von 4K-HDR-Material ist seit 27.10. rund 3,7 Mal schneller.
 
 | Preset | Für | Was das Skript macht |
 |---|---|---|
@@ -128,7 +128,7 @@ Feinschnitt: Claude bekommt nur Transkript und Schnittliste (wenige KB), ändert
 - [ ] **Nicht-Assoziationen:** womit du nie in Verbindung gebracht werden willst (Vorschlag: Get-rich-quick, Guru-Szene, Trading-Signale).
 - [ ] **Prompt-Playbook** als Gratis-Download. Entwurf v1 steht ([[Be Obsessed Prompt-Playbook (Entwurf)]], 16.10.), offen: Gegenlesen durch Max, Prompts testen, Cheat-Sheet, PDF.
 - [ ] **E-Mail-Werkzeug und Kommentar-DM** einrichten, Rechtliches (Double-Opt-In, Datenschutz, Impressum). Recherche fertig, Einrichtung erst nach der schriftlichen Freigabe von GEWO (AP445).
-- [ ] **Schnitt-Pipeline** am ersten echten Talking Head abnehmen. **Max am 16.10.: das Testvideo (Testbild, Computerstimme) hat ihm gar nicht gefallen.** In der Woche ab 19.10. gemeinsam mit den ersten echten Videos klären, was genau nicht passt (Untertitel, Zoom, Tempo, Schnitte) und den Look anpassen. Vorher nichts ändern (Max).
+- [x] **Schnitt-Pipeline** am ersten echten Talking Head abgenommen (23.10., Session „Hyperframes GitHub Repo für Videoschnitt“): aus Max' Bewerbungsvideo (2:24 min) ein 28,5-s-Reel „Beste Version von mir“, Max: „fürs erste passt, wir machen weiter, wenn ich Videos mache“. Vorher am 16.10. gefiel ihm das Testvideo mit Testbild und Computerstimme nicht. Look-Feinschliff beim nächsten echten Video. Preset **montage** wird gebaut, sobald die ersten Journey-Clips da sind.
 - [ ] **Start der Produktion:** erst nach der Antwort des Arbeitgebers am Montag 19.10. (AP406), dann ab nächster Woche Videos drehen und mit Claude schneiden.
 - [ ] **Lightning-EarPods** als Mikro bis zum neuen iPhone (wie minolee), falls keine da sind.
 
