@@ -1,7 +1,7 @@
 ---
 date: 2026-10-24
 tags: [projekt, prop-firm, mffu, static-drawdown, tempo_plan, recherche]
-status: Bericht fertig, Entscheidungen bei Max
+status: Bericht fertig, MFFU-Antwort da (27.10.), Keep-alive nicht freigegeben, damit nach eigener Bedingung kein Kauf
 ---
 
 # 🏦 MFFU- und Static-DD-Check (24.10.2026): bringt MyFundedFutures oder ein Static-Drawdown-Konto die Zeit bis 50k nach vorn?
@@ -9,6 +9,16 @@ status: Bericht fertig, Entscheidungen bei Max
 Auftrag Max 24.10.2026: intensive Recherche zu MyFundedFutures (MFFU), „My-Studios / My-Funded Studios“ und Static-Drawdown-Plänen, Regeln genau prüfen, und ob wir das mit der Box nutzen können, um schneller ans Ziel zu kommen. Session 40bff0bb. Recherche über zwei `research-scout`-Läufe (Cache-Abschnitte siehe unten), Rechnung auf der Box, gegengelesen vom Quant-Team.
 
 Verwandt: [[CFD-Check 23.10.2026]] (gleiche Methode, Vergleichszeilen E8/FFN/FN stammen von dort), [[Kaufvorlage Kaufrunde 06.11.2026]], [[Firm-Regeln je Konto]], [[MFFU 50k Pläne (Regeln + Wahl)]] (Stand 04.08., überholt), [[Research-Cache]].
+
+> ## ✉️ Stand 27.10.2026: Antwort eines Menschen von MFFU (Pratap, Staff, 26.10. 23:29 UTC, Thread 1a16e27923c48c8a)
+>
+> | Frage | Antwort | Wertung |
+> |---|---|---|
+> | 1. Keep-alive-Trade (1 Micro mit Stop, nur gegen die Inaktivität), Ja/Nein | „You would need to trade normally while following the inactivity rule.“ | **Nicht freigegeben** (Wertung Max 27.10.). Kein Ja, deckt sich mit „strategy must remain consistent“ vom 29.09. Das „A) Allowed“ von Spark (KI-Agent) ist damit überstimmt. |
+> | 2. Position oder Order aus Versehen im T1-Fenster (Rapid EOD 50K Sim Funded) | „Your account would be breached.“ | Harter Bruch, nicht nur Gewinn weg. Rapid EOD nur mit fertiger News-Sperre (AP335). |
+> | 3. Kommission je Round Turn | Tabelle „Tradovate Sim Fees“: MNQ, MES, M2K, MYM 1,74 $, MGC 2,04 $, MCL 1,80 $, NQ/ES/RTY 4,58 $ | Gerechnet war 1,90 $, also vorsichtig. Keine Neurechnung nötig. |
+>
+> MFFU hat das Ticket danach geschlossen. **Folge nach der Bedingung dieses Berichts** („Rapid EOD 50K nur kaufen, wenn MFFU den Keep-alive-Trade schriftlich erlaubt“): ohne Keep-alive ist der Kaufplan **mit** MFFU 4,75 ± 0,40 Monate **langsamer** (Abschnitt 10, quant-mathematician). Ein MFFU-Kauf ist damit derzeit nicht empfohlen. Gilt für alle MFFU-Pläne, weil die 7-Tage-Inaktivität überall gilt. Weiter offen und nicht mehr gefragt: Live-Wechsel, NT8-Lizenz, Reset-Preis.
 
 > ## 🔁 Zweite Runde (24.10. nachmittags, Auftrag Max: Rapid EOD 50K komplett nachrechnen, Kriterien prüfen, offen Gebliebenes per Mail klären)
 >
@@ -249,8 +259,8 @@ Nulldrift: in allen 10 Politiken 0,0 % Zielerreichung. Chance auf 50k in 5 Jahre
 | Consistency | ✅ Eval 30 % (nur das Ziel steigt, kein Bruch), Funded keine | Help Center |
 | Kontraktlimit | ✅ 3 Minis / 30 Micros, wir handeln höchstens 5 Micros | Help Center |
 | Flat-Zeit | ✅ Auto-Close 16:10 ET, wir sind 15:55 flat | Help Center, Support |
-| **News (T1) im Funded** | ⚠️ für Rapid EOD widersprüchlich (Plan-Artikel ja, Policy und Support nennen nur Rapid und Pro). Falls ja: Sperre 13:58 bis 14:02 an FOMC/Minutes, LastHour ist dann immer offen, also AP335 bauen. Kostet rechnerisch rund 1 Monat | Help Center, Support 28.09. |
-| **Inaktivität 7 Tage** | ❌ **entscheidend:** ohne erlaubten Keep-alive ist MFFU im Kaufplan 4,75 Monate langsamer statt 5,3 schneller. Ein reiner Mini-Trade ist nicht eindeutig erlaubt („strategy must remain consistent“), Frage 1 der Mail | Support 29.09., quant-mathematician |
+| **News (T1) im Funded** | ⚠️ gilt für Rapid EOD Sim Funded, auch Stop/Target-Orders müssen im Fenster raus (Spark 24.10.), ein Verstoß bricht das Konto (Pratap 26.10.). Sperre 13:58 bis 14:02 an FOMC/Minutes, LastHour ist dann immer offen, also AP335 bauen. Kostet rechnerisch rund 1 Monat | Help Center, Support 28.09., Mails 24./26.10. |
+| **Inaktivität 7 Tage** | ❌ **entscheidend und nicht erfüllt:** Keep-alive-Trade nicht freigegeben (Pratap 26.10.: „trade normally while following the inactivity rule“, Wertung Max 27.10.). Ohne Keep-alive ist MFFU im Kaufplan 4,75 Monate langsamer statt 5,3 schneller | Support 29.09. und 26.10., quant-mathematician |
 | **Hedging** | ❓ „hedging of any kind“ verboten, gegenläufige Beine im selben Konto nicht geklärt, bewusst nicht gefragt (Max 24.10.) | Help Center |
 | HFT, schnelle Stop-outs | ⚠️ keine Zahl, PB3 hat rund 11 % Stop-outs in der ersten Minute | Help Center |
 | Kontolimits | ✅ 10 Konten, bis 3 Rapid EOD Funded | Support 28.09. |
@@ -261,7 +271,7 @@ Nulldrift: in allen 10 Politiken 0,0 % Zielerreichung. Chance auf 50k in 5 Jahre
 
 ## 12. Nachfrage-Mail an MFFU
 
-Neue, kurze Mail an support@myfundedfutures.com (Gmail maxlkho4), **gesendet 24.10.2026 18:41 (MESZ) nach Max' OK**, Thread 1a16e27923c48c8a, Betreff „Questions before purchase: Rapid EOD 50K“. **Antwort nach 1 Minute von „Spark“, MFFUs KI-Support-Agent (kein Mensch):** Keep-alive-Trade „A) Allowed“ (Regel verlange nur einen Trade je 7 Kalendertage), T1 gilt für Rapid EOD Sim Funded und auch Stop/Target-Orders müssen im Fenster raus, Folge eines Verstoßes, Live-Auslöser, NT8-Lizenz, Provision und Reset-Preis „nicht dokumentiert“. Weil Frage 1 die Kaufentscheidung trägt, fehlt noch die Bestätigung durch einen Menschen (Rückfrage nach einem Menschen zu Keep-alive, Folge eines T1-Verstoßes und Kommission MNQ am 26.10. um 22:40 gesendet, Antwort steht aus), bewusst **nicht** als Antwort im alten Verlauf, weil dort andere Firmen erwähnt sind. Regel Max 24.10.: nur das Nötige fragen, nichts schon Beantwortetes wiederholen (VPS, Automation), keine anderen Firmen erwähnen, nichts Unnötiges über das System preisgeben.
+Neue, kurze Mail an support@myfundedfutures.com (Gmail maxlkho4), **gesendet 24.10.2026 18:41 (MESZ) nach Max' OK**, Thread 1a16e27923c48c8a, Betreff „Questions before purchase: Rapid EOD 50K“. **Antwort nach 1 Minute von „Spark“, MFFUs KI-Support-Agent (kein Mensch):** Keep-alive-Trade „A) Allowed“ (Regel verlange nur einen Trade je 7 Kalendertage), T1 gilt für Rapid EOD Sim Funded und auch Stop/Target-Orders müssen im Fenster raus, Folge eines Verstoßes, Live-Auslöser, NT8-Lizenz, Provision und Reset-Preis „nicht dokumentiert“. Weil Frage 1 die Kaufentscheidung trägt, fehlt noch die Bestätigung durch einen Menschen (Rückfrage nach einem Menschen zu Keep-alive, Folge eines T1-Verstoßes und Kommission MNQ am 26.10. um 22:40 gesendet; **Antwort Pratap 26.10. 23:29 UTC:** Keep-alive kein Ja, T1-Verstoß bricht das Konto, MNQ 1,74 $, Details im Kasten oben), bewusst **nicht** als Antwort im alten Verlauf, weil dort andere Firmen erwähnt sind. Regel Max 24.10.: nur das Nötige fragen, nichts schon Beantwortetes wiederholen (VPS, Automation), keine anderen Firmen erwähnen, nichts Unnötiges über das System preisgeben.
 
 Gefragt wird nur noch: (1) Keep-alive-Trade gegen die Inaktivität, entscheidet (A/B, mit Ausweichfrage), (2) gilt T1 für Rapid EOD Funded, zählen Stop/Target-Orders, Folge eines Verstoßes, (3) Live-Wechsel und Rest-Saldo, (4) NT8-Lizenz für Automation, (5) Provision MNQ und Reset-Preis. Ticket AP440.
 

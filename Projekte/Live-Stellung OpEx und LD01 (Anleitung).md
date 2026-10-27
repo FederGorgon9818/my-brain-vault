@@ -1,7 +1,7 @@
 ---
 tags: [trading, box, nt8, deploy, anleitung, opex, ld01]
 datum: 2026-10-24
-status: Stufe 1 deployt und geprüft (25.10. 00:30), OpEx live ab 20.11., offen Sim-Host Sim101 und Feiertags-Check, Stufe 2 (LD01 live) frühestens 31.10.
+status: Stufe 1 deployt (25.10.), OpEx live ab 20.11., Sim-Host Sim101 fehlt noch (Stand 27.10.), Stufe 2 frühestens 03.11. (5 Sim-Tage) bzw. 31.10. (3 Sim-Tage)
 tickets: [AP394, AP395]
 ---
 
@@ -127,6 +127,11 @@ powershell -ExecutionPolicy Bypass -File .\deploy_ld01_20261024.ps1
 - RiskGuard-Log je Konto: Start, `CONFIG-INAKTIVITAET aktiv=ja`, `CONFIG-KOMMISSION` wie seit 22.10.
 - VIX: Task `MaxLab VIX-Feed` läuft alle 15 Minuten, `maxlab_vix.csv` hat den 23.10.
 - Danach: Register-Belegung um OpEx ergänzen und einen neuen Kartenlauf anstoßen (konto-analyst), damit die Konto-Karten das 5-Bein-Buch kennen. Tickets AP394 und AP395 fortschreiben.
+
+> [!info] Zwischenstand Di 27.10. 17:26 Boxzeit (Claude per SSH)
+> - **VIX-Feed bisher grün:** kein Alarm, Task fehlerfrei. Der Schluss vom 26.10. (18,39) war um 00:01 ET da, 9,65 h vor der LD01-Entscheidung. Der VIX liegt über 16, LD01 hätte nicht gehandelt.
+> - **Sim-Host auf Sim101 läuft noch nicht.** Anleitung für Teil B und C ging an die Übersichts-Session (Fenster nach 21:05 oder vor 14:30 Boxzeit).
+> - **Verschiebung Stufe 2:** a) volle 5 Sim-Tage 28.10. bis 03.11., Host-JSON frühestens Di 03.11. nach 22:05, erster Live-Trade Mi 04.11. 15:40 Boxzeit (Empfehlung). b) 3 Sim-Tage, dann bleibt es beim Wochenende 31.10./01.11. und Mo 02.11. 15:40.
 
 ## Die Messwoche Mo 26.10. bis Fr 30.10. (LD01, kein Schritt für dich außer den Stichworten)
 
