@@ -1,7 +1,7 @@
 ---
 date: 2026-10-27
 tags: [projekt, kalender, tickets, automatisierung, fokus]
-status: Konzept entschieden (27.10.2026), Bau offen
+status: gebaut bis zum Zugang (28.10.2026), Abnahme hält mit Auflagen, scharf erst nach AP455 (Zugang, Herzschlag, Block unter Aufsicht)
 ---
 
 # 🗓️ Fokus-Planer: deine wichtigsten Tickets automatisch im Kalender
@@ -121,3 +121,40 @@ Danach läuft alles von allein.
 3. Mittwoch ab 21:30.
 4. Technik: Skript auf der Box (Weg B). Der geplante Claude-Task am PC (Weg A) fällt weg.
 5. **Donnerstag ist ein Kreativ-Tag, an dem Max neues Alpha sucht.** Dort plant der Planer keine Tickets ein.
+
+## 12. Klick-Anleitung: Google-Zugang einrichten (einmalig, rund 20 Minuten)
+
+Weg laut [[Research-Cache]] (Abschnitt „Google Calendar API für Box-Skripte“, 27.10.2026): **Dienstkonto mit Schlüsseldatei.** Nichts davon läuft ab, und das Skript sieht nur die zwei Kalender, die du freigibst. Fallback, falls Schritt 6 gesperrt ist: OAuth mit Status „In Produktion“ (steht im Research-Cache, nur auf Zuruf).
+
+1. **Kalender „Tickets“ anlegen.** Google Kalender im Browser, links neben „Weitere Kalender“ auf „+“, „Neuen Kalender einrichten“, Name `Tickets`, „Kalender einrichten“.
+   Erwartet: „Tickets“ steht links unter „Meine Kalender“. Fehlerfall: der Punkt heißt bei dir „Neuen Kalender erstellen“, gleiche Wirkung.
+2. **Google Cloud Console öffnen:** `console.cloud.google.com`, angemeldet als maxlkho7@gmail.com, Nutzungsbedingungen bestätigen. **Keine Testversion („Kostenlos testen“) und kein Rechnungskonto anlegen**, sonst hängt Google eine Organisation dran, die Schlüssel sperrt.
+   Erwartet: Startseite der Console, keine Zahlungsdaten verlangt. Fehlerfall: sie will eine Kreditkarte, dann abbrechen und mir Bescheid geben.
+3. **Projekt anlegen:** oben die Projektauswahl, „Neues Projekt“, Name `fokus-planer`, Speicherort „Keine Organisation“, „Erstellen“.
+   Erwartet: oben steht `fokus-planer` als aktives Projekt.
+4. **Calendar API einschalten:** `https://console.cloud.google.com/apis/enableflow;apiid=calendar-json.googleapis.com` öffnen (Projekt `fokus-planer` oben gewählt), „Aktivieren“.
+   Erwartet: Seite „Google Calendar API“, Status aktiviert. Fehlerfall: falsches Projekt oben gewählt, umschalten und nochmal.
+5. **Dienstkonto anlegen:** Menü, „IAM und Verwaltung“, „Dienstkonten“, „Dienstkonto erstellen“, Name `fokus-planer`, „Erstellen und fortfahren“, **keine Rolle**, „Fertig“.
+   Erwartet: Eintrag mit Adresse `fokus-planer@<projekt>.iam.gserviceaccount.com`. Die Adresse kopieren, du brauchst sie in Schritt 8 bis 10.
+6. **Schlüssel erzeugen:** Dienstkonto anklicken, Reiter „Schlüssel“, „Schlüssel hinzufügen“, „Neuen Schlüssel erstellen“, „JSON“, „Erstellen“.
+   Erwartet: der Browser lädt eine Datei wie `fokus-planer-1a2b3c4d.json` herunter (geht nur dieses eine Mal). Fehlerfall: Knopf ausgegraut oder Meldung mit `disableServiceAccountKeyCreation`: stoppen und mir Bescheid geben, dann nehmen wir den Fallback.
+7. **Schlüssel auf die Box legen** (am PC in PowerShell, Dateiname anpassen):
+   `scp "$env:USERPROFILE\Downloads\fokus-planer-1a2b3c4d.json" Administrator@100.127.89.9:C:/Users/Administrator/fokus_planer_google.json`
+   Danach die Datei im Download-Ordner löschen und den Papierkorb leeren. Die Datei ist ein Dauerschlüssel, sie gehört nur auf die Box, nie in den Vault oder ins Git.
+   Erwartet: scp endet ohne Meldung. Fehlerfall: „No such file“, dann den Dateinamen im Download-Ordner prüfen.
+8. **Hauptkalender freigeben:** Google Kalender, links unter „Meine Kalender“ bei deinem Hauptkalender die drei Punkte, „Einstellungen und Freigabe“, „Für bestimmte Personen oder Gruppen freigeben“, „Personen und Gruppen hinzufügen“, Dienstkonto-Adresse einfügen, Berechtigung **„Alle Termindetails anzeigen“** (heißt je nach Stand auch „Termindetails aufrufen“), „Senden“.
+   Erwartet: die Adresse steht in der Liste. Fehlerfall: Hinweis, dass die Adresse außerhalb ist oder keine Mail bekommt, einfach bestätigen.
+9. **„Tickets“ freigeben:** dieselben Schritte im Kalender „Tickets“, Berechtigung **„Änderungen an Terminen vornehmen“** (heißt auch „Änderungen vornehmen und Termindetails ansehen“). Nicht die Stufe mit „Freigabe verwalten“.
+10. **Kalender-ID holen:** in „Einstellungen und Freigabe“ von „Tickets“ runter zu „Kalender integrieren“, dort „Kalender-ID“ kopieren (endet meist auf `@group.calendar.google.com`). **Mir die Kalender-ID und die Dienstkonto-Adresse in den Chat geben**, beides ist kein Geheimnis.
+11. Optional: bei „Tickets“ unter „Termin-Benachrichtigungen“ eine Erinnerung einstellen (z. B. 5 Minuten vorher), wenn du je Posten einen Hinweis willst. Das Skript selbst setzt keine.
+12. **Den Rest mache ich:** Config auf der Box anlegen, `python fokus_planer.py --check-access --write-test` (liest beide Kalender, legt einen Testtermin an, ändert und löscht ihn), Probelauf zeigen, Aufgabe scharf schalten.
+
+## 13. Stand Bau (28.10.2026)
+
+- **`ticket_tool step`** (PC und Box): `step done AP433 5 [--note "..."]`, `step undo`, `step add AP433 "Max [30m][box-flat]: ..." [--at 3]`, `step list` (alle offenen Max-Schritte mit Dauer und Zeitfenster). `show` zeigt jetzt Schritt-Nummern. `new` warnt bei Max-Schritten ohne Dauer, mit krummer Dauer oder über 60 Minuten.
+- **Format für Max-Arbeit:** `Max [30m][box-flat]: Was genau`. Kürzel: Dauer `[15m] [1h] [1h30m]` im 15er-Raster, höchstens 60 min; `[läuft 2h]` für die Nebenspur; Zeitfenster `[box-flat] [werktags] [ab 2026-11-05]`. Ohne Dauer plant der Planer 15 min, bei RDP/NT8 30 min und `box-flat`. Ticket bewusst nicht in den Kalender: Label `kein-kalender`.
+- **`engine/fokus_planer.py`** auf PC und Box, Selbsttest `python test_fokus_planer.py` 25 von 25 grün (Reihenfolge, box-flat mit Sommerzeit und den Wochen mit verschobener Umstellung, Mittwoch ab 21:30, Donnerstag frei, fremder Termin, Überlauf mit Rest, neues Ticket schiebt, Handänderung bleibt, Löschen heißt heute nicht, ✅ hakt ab (auch über den echten Weg in `ticket_lib`), zwei Spuren, laufender Block mit fortlaufender Nummer, neue ID nach eigenem Löschen, Rest und „läuft:“ löschen, Zustandsverlust, etag ohne Zeitänderung, Lauf-Sperre, Schutz gegen leere tasks.json, Schutz wenn kein Block sichtbar ist).
+- **Abnahme `verdict-auditor` 28.10.: hält mit Auflagen.** Eingebaut am selben Abend: Lauf-Sperre, Zustand und Log nach `C:\Users\Administrator\` (raus aus dem Sync-Pfad), kein stummer Absturz unter pythonw, Handänderung über die Planzeit im Termin statt über das etag, Abhaken erst unter der Ticket-Sperre per Text-Hash (schlägt es fehl, bleibt dein ✅-Termin stehen und das Ticket bekommt eine Notiz), Schritte und Haken beim Abgleich PC/Box nur zusammen gemischt, gelöschter „Rest“ kommt nicht wieder, nur „läuft:“ gelöscht lässt den Posten im Block, Nummern laufen im laufenden Block weiter, keine Erinnerungen per API (deine Standard-Erinnerung von „Tickets“ greift). **Vor dem Scharfschalten noch offen** (Schritte in AP455): Herzschlag von außen (`last_ok` älter als 2 h) und erster Block unter Aufsicht (Soll: kein Termin gilt als Handänderung, ohne dass du ihn angefasst hast).
+- **Bewusst so gelassen (deine Entscheidung offen):** Ein offener Claude-Schritt vor einem Max-Schritt hält ihn nicht zurück, nur ein „Warten, bis …“-Schritt tut das (Beispiel AP288: Schritt 3 RiskGuard wird geplant, obwohl Claudes Schritt 2 offen ist). Ein Max-Schritt in einem Claude-Ticket zählt immer als „Claude wartet“ (AP386, AP397). Ein auf einen anderen Wochentag verschobener Deep-Work-Block zählt nicht als Ticket-Block.
+- **Regeln, die beim Bau dazukamen:** Ein Ticket mit ausdrücklichen „Max“-Schritten wird je Schritt geplant, ein Max-Ticket ohne solche Schritte ist ein Posten mit der Ticket-Schätzung (höchstens 60 min). Ein offener Warte-Schritt („Warten, bis …“) stoppt alles dahinter. „Claude wartet“ heißt: Max-Schritt in einem Claude-Ticket, danach kommt ein offener „Claude:“-Schritt, oder ein offenes Claude-Ticket hängt per `blocked_by` daran. Ein ✅ auf einem Ticket-Posten schiebt das Ticket nach „Prüfen“. Ein künftiger Termin mit ✅ verschwindet, der Rest rückt auf; begonnene bleiben stehen.
+- Box: `google-auth` systemweit installiert (28.10.). Offen: Zugang (Abschnitt 12), danach Aufgabe „MaxLab Fokus-Planer“ scharf schalten.

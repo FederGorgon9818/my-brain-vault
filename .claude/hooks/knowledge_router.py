@@ -147,6 +147,14 @@ TOPICS = [
      [],
      ["Werkzeuge: pyright nach Python-Aenderung, overfit_crosscheck.py nach overfit.py, .venv-analysis nie ins System-Python."],
      "Ressourcen/Werkzeug-Einsatz.md"),
+    ("fokus",
+     [r"\bfokus\s?planer\b", r"\bticket\s?(bloeck|block)\w*", r"\bdeep work\b", r"\bmax\s?schritt\w*",
+      r"\babhak\w*", r"\bhak\w*\b.{0,40}\bab\b",
+      r"\b(leg|lege|legst|anlegen|neues?)\b.{0,20}\btickets?\b", r"\btickets?\b.{0,20}\banleg\w*",
+      r"\bkalender\b.{0,30}\btickets?\b", r"\btickets?\b.{0,30}\bkalender\b"],
+     [],
+     ["Max-Arbeit in Tickets immer als Schritte mit Dauer und Zeitfenster: 'Max [30m][box-flat]: ...' (15er-Raster, hoechstens 60 min), ticket_tool step add/done/list. Der Fokus-Planer (Box, alle 30 min) legt die wichtigsten in Max' Ticket-Bloecke (Mi ab 21:30, Sa; Do ist Kreativ-Tag)."],
+     "Projekte/Fokus-Planer (Tickets im Kalender).md"),
 ]
 
 # Nachrichten, die nicht von Max getippt wurden (Subagent-Rueckmeldungen, System-
