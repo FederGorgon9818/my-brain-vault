@@ -1,7 +1,7 @@
 ---
 tags: [projekt/trading, alpha-suche, methode]
 erstellt: 2026-10-13
-status: Entwurf, Entscheidungen bei Max
+status: entschieden (Max 28.10.2026, E1 bis E10), Umsetzung über Tickets AP457 bis AP480
 ---
 
 # Alpha-Suche Playbook: unabhängige Beine finden, ohne etwas auszugrenzen
@@ -727,34 +727,34 @@ Die Spalte „Vorab?“ macht aus deinen Vorhersagen nach ein paar Monaten einen
 
 ---
 
-## 8. Was an Werkzeug und Daten fehlt (Ticket-Vorschläge, nicht angelegt)
+## 8. Was an Werkzeug und Daten fehlt (angelegt am 28.10.2026 als AP458 bis AP479, Epic AP457, alles im Backlog)
 
 Sortiert nach Nutzen. Die Zahl in Klammern ist die Zahl der Landkarten-Felder, die das Ticket öffnet (Zählung vom 13.10.).
 
 | Nr | Ticket | Nutzen | Wer |
 |---|---|---|---|
-| T01 | **Vorlage mit 7 Angaben + Beobachtungs-Tagebuch + Wissens-Inventur (40 Fragen)** (179 Felder) | öffnet alle Mensch-Wege und dein Wissen; Prüfung an den nächsten 10 Ideen | Claude + Max |
-| T02 | **Werkzeug-Paket Markt-Uhr** (W0-4). **Teil A vor Welle 1:** Fenster in Runner, Controls und Nullmodellen, ohne 390 Minuten. **Teil B vor Welle 2:** Generator, Bank, 9 RTH-feste Modi, Klon-Weg, Generator-Märkte aus Konfiguration (93 Felder) | ohne Teil A enden 8 von 10 Feldern der Welle 1 an der Tafel; mit Teil B werden 6E, ZS und ZW überhaupt testbar | Entwickler, Pipeline-Prüfer, Golden Master |
-| T03 | **Eichung der Stufenregel** (W0-1): mindestens 200 Placebo-Felder auf GC, CL, 6E, ZS, ZW, BTC, Power per Signal-Einbau, eigene Beine nur als Plausibilitätsprobe | ohne Eichung sind alle Power- und p0-Zahlen Obergrenzen | Statistiker, Backtest-Runner |
-| T04 | **Tafel-Standardeingang ohne scipy** (die Tafel-Bibliothek bricht am PC ab), mit Querzeile nach R8, Verzögerungs-Zelle nach R5, Register-Typ Tafel/Grid (99 Felder) | ersetzt 6 Handskripte in 18 Tagen | Entwickler |
-| T05 | **Buch-Profil und Steckbrief für das 6er-Buch neu** (W0-3): Liste im Kasten „Stand 27.10.“ | alle Zahlen in Abschnitt 1 bis 2 sind vom 13.10. | Claude + Mathematiker |
-| T06 | **Erste Fassung automatisch:** das Hochstufen ins Next-Buch schreibt den Eintrag mit, Satzungs-Vorlage mit Pflichtfeldern (Why-Status, erster Blick, Hash) und Sperre „kein Job ohne Satzung“ | Blocker aus der Methoden-Prüfung | Entwickler |
-| T07 | **Walk-Forward-Start** fest übergeben (R13) | sonst gilt auf Märkten mit Start 12/2015 „6 von 10“ | Pipeline-Prüfer |
-| T08 | **Unabhängigkeit messen** (W0-2): Nacht ES, YM, RTY gegen das Buch, BTC-Volumen außerhalb RTH, Rohbewegung 6B, ZN, ZB, FDAX gegen NQ | U in der Reihung bisher ungemessen; Platz 7 bis 9 der Welle hängen daran | Claude |
-| T09 | **Wiedervorlage nach Bedingung** statt nur nach Datum | jedes „unentscheidbar“ und „nicht testbar, weil“ kommt von selbst zurück | Entwickler |
-| T10 | **Termin-Dateien** EIA, WASDE, COT, Crop Progress, Treasury-Auktionen, EZB, LBMA, Index-Roll | öffnet Termin- und Ursache-Wege auf allen Märkten | Claude |
-| T11 | **Roll-Maske / Roll-Adjuster** für GC, CL, 6E, ZS, ZW (18 Felder direkt, viele indirekt; Welle 1 Nr. 2 und 3 brauchen eine Roll-Tage-Liste) | Vortag, Gap und Nacht auf Nicht-Index | Entwickler |
-| T12 | **Übergabe paper-edge zu Satzung**, Eingangsfilter „Index-Fokus“ entkoppeln | Paper-Weg ohne Vorurteil | Claude |
-| T13 | **Engine-Tabellen 6B, ZN, ZB, FDAX**, Gebühren gegen Primärquelle (64 Felder 6B) | vier Märkte mit Daten werden testbar | Entwickler |
-| T14 | **Modus „Auslöser in A, Handel in B“** mit eigener Uhr je Seite (60 Felder) | Fremdmarkt als Auslöser, nicht nur als Tor | Entwickler |
-| T15 | **Einzelkontrakt-Loader** aus dem NT8-Export (52 Felder) | Terminkurve, Roll, Lebensende | Entwickler |
-| T16 | **FFN-Produktliste per Support** (129 Felder P), Text in Abschnitt 9 | ZN/ZB, FDAX, Micro-Ag, Silber, Kupfer, M6E handelbar ja/nein | **Max** |
-| T17 | **Daten:** Databento 2010 bis 2015 (Kostenabfrage vorher) für H110 und verdeckte Jahre. NT8-Export der 7 fehlenden Marktgruppen und Softs (866 Felder D). Entscheidung zu den Index-Dateien (Ende 10.08. gegen NT8 bis 18.09.). | mehr Jahre sind der einzige Hebel auf die Nachweisgrenze (16,2 Jahre → 0,62) | Max entscheidet, Claude fragt Kosten ab |
-| T18 | **Reichweite-Felder** in Ideen-Liste und Landkarte (G mit N, Wiedervorlage-Bedingung, Zusatz /K, Mehrtages-Form P) | „tot“ wird ein Objekt mit Rand | Claude |
-| T19 | **alpha-scout und familien-scout** auf Zeit bis 50k umstellen: kein Frequenz-Bonus, kein „unter 3 Punkten tot“, kein „HF vor LF“; Mindestgröße der Bank (10 bis 400 Varianten) um einen Tafel-Pfad ergänzen | Vorab-Sortierung im Werkzeug entfernen | Claude |
-| T20 | **Pflege:** Research-Cache Zeile 793 und Gold-Karte Randbedingung 11 (Zinsen bei E8 nicht handelbar), Micro-Ag und Micro Ultra Treasuries nachtragen. Sechs Altdateien aus dem ersten Lauf im Engine-Ordner aufräumen. Fehlalarm der Sperre bei Scratch-Skripten prüfen. Overrides aus `p6_neu.py` in `p3_build.py` übernehmen und die volle Landkarte neu bauen. | Konsistenz | Claude |
-| T21 | **Kosten-Messung je Markt (neu):** Databento-Kostenabfrage für Kursbuch-Spitze (MBP-1) und Trades, 3 Monate je Markt (GC, CL, 6E, ZS, ZW, ZN, MBT), daraus mittlerer Spread und Rutschen je Uhrzeit. Parallel H41 Probe-Handel auf Sim mit 50 Orders je Markt. | ersetzt die Pauschale 1 bzw. 2 Ticks in R2 und in der Kosten-Bremse; öffnet H46 bis H48 außerhalb NQ/ES | Max gibt die Kostenabfrage frei, Claude rechnet |
-| T22 | **Anhang-Code (neu):** Banner über jeder Anleitung, Block-IDs `^h01` bis `^h110`, Korrekturen aus 4.2 an Ort und Stelle; volle Landkarte als zweite Anhang-Notiz in den Vault | Anleitungen widersprechen dem Hauptteil nicht mehr, Links springen genau | Hauptsession (Vault-Schreibrecht) |
+| T01 (AP458) | **Vorlage mit 7 Angaben + Beobachtungs-Tagebuch + Wissens-Inventur (40 Fragen)** (179 Felder) | öffnet alle Mensch-Wege und dein Wissen; Prüfung an den nächsten 10 Ideen | Claude + Max |
+| T02 (AP459) | **Werkzeug-Paket Markt-Uhr** (W0-4). **Teil A vor Welle 1:** Fenster in Runner, Controls und Nullmodellen, ohne 390 Minuten. **Teil B vor Welle 2:** Generator, Bank, 9 RTH-feste Modi, Klon-Weg, Generator-Märkte aus Konfiguration (93 Felder) | ohne Teil A enden 8 von 10 Feldern der Welle 1 an der Tafel; mit Teil B werden 6E, ZS und ZW überhaupt testbar | Entwickler, Pipeline-Prüfer, Golden Master |
+| T03 (AP460) | **Eichung der Stufenregel** (W0-1): mindestens 200 Placebo-Felder auf GC, CL, 6E, ZS, ZW, BTC, Power per Signal-Einbau, eigene Beine nur als Plausibilitätsprobe | ohne Eichung sind alle Power- und p0-Zahlen Obergrenzen | Statistiker, Backtest-Runner |
+| T04 (AP461) | **Tafel-Standardeingang ohne scipy** (die Tafel-Bibliothek bricht am PC ab), mit Querzeile nach R8, Verzögerungs-Zelle nach R5, Register-Typ Tafel/Grid (99 Felder) | ersetzt 6 Handskripte in 18 Tagen | Entwickler |
+| T05 (AP462) | **Buch-Profil und Steckbrief für das 6er-Buch neu** (W0-3): Liste im Kasten „Stand 27.10.“ | alle Zahlen in Abschnitt 1 bis 2 sind vom 13.10. | Claude + Mathematiker |
+| T06 (AP463) | **Erste Fassung automatisch:** das Hochstufen ins Next-Buch schreibt den Eintrag mit, Satzungs-Vorlage mit Pflichtfeldern (Why-Status, erster Blick, Hash) und Sperre „kein Job ohne Satzung“ | Blocker aus der Methoden-Prüfung | Entwickler |
+| T07 (AP464) | **Walk-Forward-Start** fest übergeben (R13) | sonst gilt auf Märkten mit Start 12/2015 „6 von 10“ | Pipeline-Prüfer |
+| T08 (AP465) | **Unabhängigkeit messen** (W0-2): Nacht ES, YM, RTY gegen das Buch, BTC-Volumen außerhalb RTH, Rohbewegung 6B, ZN, ZB, FDAX gegen NQ | U in der Reihung bisher ungemessen; Platz 7 bis 9 der Welle hängen daran | Claude |
+| T09 (AP466) | **Wiedervorlage nach Bedingung** statt nur nach Datum | jedes „unentscheidbar“ und „nicht testbar, weil“ kommt von selbst zurück | Entwickler |
+| T10 (AP467) | **Termin-Dateien** EIA, WASDE, COT, Crop Progress, Treasury-Auktionen, EZB, LBMA, Index-Roll | öffnet Termin- und Ursache-Wege auf allen Märkten | Claude |
+| T11 (AP468) | **Roll-Maske / Roll-Adjuster** für GC, CL, 6E, ZS, ZW (18 Felder direkt, viele indirekt; Welle 1 Nr. 2 und 3 brauchen eine Roll-Tage-Liste) | Vortag, Gap und Nacht auf Nicht-Index | Entwickler |
+| T12 (AP469) | **Übergabe paper-edge zu Satzung**, Eingangsfilter „Index-Fokus“ entkoppeln | Paper-Weg ohne Vorurteil | Claude |
+| T13 (AP470) | **Engine-Tabellen 6B, ZN, ZB, FDAX**, Gebühren gegen Primärquelle (64 Felder 6B) | vier Märkte mit Daten werden testbar | Entwickler |
+| T14 (AP471) | **Modus „Auslöser in A, Handel in B“** mit eigener Uhr je Seite (60 Felder) | Fremdmarkt als Auslöser, nicht nur als Tor | Entwickler |
+| T15 (AP472) | **Einzelkontrakt-Loader** aus dem NT8-Export (52 Felder) | Terminkurve, Roll, Lebensende | Entwickler |
+| T16 (AP473) | **FFN-Produktliste per Support** (129 Felder P), Text in Abschnitt 9 | ZN/ZB, FDAX, Micro-Ag, Silber, Kupfer, M6E handelbar ja/nein | **Max** |
+| T17 (AP474) | **Daten:** Databento 2010 bis 2015 (Kostenabfrage vorher) für H110 und verdeckte Jahre. NT8-Export der 7 fehlenden Marktgruppen und Softs (866 Felder D). Entscheidung zu den Index-Dateien (Ende 10.08. gegen NT8 bis 18.09.). | mehr Jahre sind der einzige Hebel auf die Nachweisgrenze (16,2 Jahre → 0,62) | Max entscheidet, Claude fragt Kosten ab |
+| T18 (AP475) | **Reichweite-Felder** in Ideen-Liste und Landkarte (G mit N, Wiedervorlage-Bedingung, Zusatz /K, Mehrtages-Form P) | „tot“ wird ein Objekt mit Rand | Claude |
+| T19 (AP476) | **alpha-scout und familien-scout** auf Zeit bis 50k umstellen: kein Frequenz-Bonus, kein „unter 3 Punkten tot“, kein „HF vor LF“; Mindestgröße der Bank (10 bis 400 Varianten) um einen Tafel-Pfad ergänzen | Vorab-Sortierung im Werkzeug entfernen | Claude |
+| T20 (AP477) | **Pflege:** Research-Cache Zeile 793 und Gold-Karte Randbedingung 11 (Zinsen bei E8 nicht handelbar), Micro-Ag und Micro Ultra Treasuries nachtragen. Sechs Altdateien aus dem ersten Lauf im Engine-Ordner aufräumen. Fehlalarm der Sperre bei Scratch-Skripten prüfen. Overrides aus `p6_neu.py` in `p3_build.py` übernehmen und die volle Landkarte neu bauen. | Konsistenz | Claude |
+| T21 (AP478) | **Kosten-Messung je Markt (neu):** Databento-Kostenabfrage für Kursbuch-Spitze (MBP-1) und Trades, 3 Monate je Markt (GC, CL, 6E, ZS, ZW, ZN, MBT), daraus mittlerer Spread und Rutschen je Uhrzeit. Parallel H41 Probe-Handel auf Sim mit 50 Orders je Markt. | ersetzt die Pauschale 1 bzw. 2 Ticks in R2 und in der Kosten-Bremse; öffnet H46 bis H48 außerhalb NQ/ES | Max gibt die Kostenabfrage frei, Claude rechnet |
+| T22 (AP479) | **Anhang-Code (neu):** Banner über jeder Anleitung, Block-IDs `^h01` bis `^h110`, Korrekturen aus 4.2 an Ort und Stelle; volle Landkarte als zweite Anhang-Notiz in den Vault | Anleitungen widersprechen dem Hauptteil nicht mehr, Links springen genau | Hauptsession (Vault-Schreibrecht) |
 
 ---
 
@@ -762,7 +762,7 @@ Sortiert nach Nutzen. Die Zahl in Klammern ist die Zahl der Landkarten-Felder, d
 
 | Nr | Wer | Was |
 |---|---|---|
-| 1 | **Max** | (a) Lies die Vorschläge zu E1 bis E10 in Abschnitt 10. Wenn du bis Samstag 31.10. nichts sagst, gilt jeweils der Vorschlag. Widersprich nur, wo du anders willst. (b) Schick zwei Nachrichten (5 Minuten). An den FFN-Support: „Which individual futures can I trade on my FFN 150k account? Specifically: ZN, ZB, FDAX, micro ag (MZC/MZW/MZS), silver, copper, M6E.“ An den E8-Support: „Can I confirm that holding a futures position from 18:15 ET until the next morning within the same trading day is allowed, and at what time do the daily loss limit and drawdown reset?“ |
+| 1 | **Max** | (a) Erledigt am 28.10.: E1 bis E10 entschieden (Abschnitt 10). (b) Schick zwei Nachrichten (5 Minuten). An den FFN-Support: „Which individual futures can I trade on my FFN 150k account? Specifically: ZN, ZB, FDAX, micro ag (MZC/MZW/MZS), silver, copper, M6E.“ An den E8-Support: „Can I confirm that holding a futures position from 18:15 ET until the next morning within the same trading day is allowed, and at what time do the daily loss limit and drawdown reset?“ |
 | 2 | **Max + Claude** | Erste Sitzung Wissens-Inventur, 5 Fragen aus Block A, per Diktat (15 Minuten). Start: Schreib Claude „Inventur Block A, stell mir Frage 1“. Claude fragt einzeln, du antwortest per Diktat, Claude schreibt mit. Danach das Beobachtungs-Tagebuch anlegen (T01). |
 | 3 | **Claude** | Welle 0 Messung: Buch-Profil für das 6er-Buch neu (T05) und Unabhängigkeit messen (T08). Danach Reihung neu rechnen (`p6_neu.py`). |
 | 3b | **Max, dann Claude** | Kostenabfrage für Kursbuch- und Trade-Daten freigeben (T21, nur Abfrage, gekauft wird erst nach Preis). Parallel H41 auf Sim, wenn du Lust hast. |
@@ -804,20 +804,20 @@ Sortiert nach Nutzen. Die Zahl in Klammern ist die Zahl der Landkarten-Felder, d
 - Die Anleitungen stammen von mehreren Agenten. Ihre Lücken-Listen enthalten Doppelungen und teils überholte Pfad-Angaben. Es gelten R1 bis R16, Tabelle 4.2 und die Pfade im Anhang.
 - Zuordnung im Buch: LD01 = H06 (VIX-Filter als Tagesauswahl auf dem PB3-Mechanismus), OpEx = H90.
 
-**Entscheidungen bei Max:**
+**Entscheidungen (Max, 28.10.2026, per Abfrage in der Playbook-Session):**
 
-| Nr | Frage | Vorschlag |
-|---|---|---|
-| E1 | Stufenregel (4 Zellen, t ab 1,60, Grid bis 24, Šidák als Etikett nach R9) **vorläufig** freigeben, bis die Eichung (T03) da ist? | ja, mit dem Vermerk „ungeeicht“ in jedem Urteil |
-| E2 | Zählung der Tafel-Zellen: alle gerechneten Zellen mit Handelsregel **ins Register** (Pipeline-Prüfer) oder **nur in N der Satzung** (Strategie-Prüfer)? | ins Register mit Typ Tafel. Dann misst die Kampagnen-Bilanz alles gleich. |
-| E3 | Gewichte der Reihung 3/2/3/2 (Bedarf, Unabhängigkeit, Testbarkeit, Kosten) | übernehmen. Die Gewichte sind eine Setzung: Platz 1 bis 6 hängen nicht daran, Platz 7 bis 10 schon. |
-| E4 | Welle 0 (Eichung, 6er-Profil, Unabhängigkeit messen, Werkzeug Teil A) vor Welle 1, Teil B vor Welle 2 | ja |
-| E5 | Datenkauf 2010 bis 2015 (Databento, Preis vorher per Kostenabfrage) | Kostenabfrage freigeben, kaufen erst nach Preis |
-| E6 | Index-Dateien (Ende 10.08.) durch NT8-Versionen ersetzen, offen seit 19.09. | entscheiden, weil es den Herkunftsmarkt aller Beine betrifft |
-| E7 | Nacht-Halten: Innerhalb des Handelstags ist es bei E8 (ab 18:15 ET) und FundedNext (ab 18:00 ET) erlaubt, über den Tagesschluss nicht (Firm-Regeln, 01.10./12.10.). Bei E8 folgt das Halten bis in den Morgen aus der Regel, wörtlich bestätigt ist es nicht. Offen ist die E8-Reset-Zeit für Drawdown und Tageslimit. | nur diese zwei Punkte in einer Nachricht an E8 (Text in Schritt 1) |
-| E8 | Märkte testen, die heute kein Konto handeln darf (ZN/ZB, FDAX, Softs) | testen ja, als Signalquelle sofort. Ins Buch erst mit Erlaubnis. |
-| E9 | Unabhängigkeit nachts: nur Gemessenes zählt (ungemessene Nacht-Paare U 1) oder jede Nacht zählt als unabhängig (U 2, Fassung des verdict-auditor)? | nur Gemessenes, bis W0-2 die Nacht-Reihen von ES, YM, RTY gemessen hat. Danach erledigt sich die Frage durch Messung. |
-| E10 | Kostenabfrage Kursbuch- und Trade-Daten für 7 Märkte (T21) | freigeben, nur Abfrage |
+| Nr | Frage | Vorschlag | Entscheidung Max 28.10. |
+|---|---|---|---|
+| E1 | Stufenregel (4 Zellen, t ab 1,60, Grid bis 24, Šidák als Etikett nach R9) **vorläufig** freigeben, bis die Eichung (T03) da ist? | ja, mit dem Vermerk „ungeeicht“ in jedem Urteil | übernommen |
+| E2 | Zählung der Tafel-Zellen: alle gerechneten Zellen mit Handelsregel **ins Register** (Pipeline-Prüfer) oder **nur in N der Satzung** (Strategie-Prüfer)? | ins Register mit Typ Tafel. Dann misst die Kampagnen-Bilanz alles gleich. | übernommen |
+| E3 | Gewichte der Reihung 3/2/3/2 (Bedarf, Unabhängigkeit, Testbarkeit, Kosten) | übernehmen. Die Gewichte sind eine Setzung: Platz 1 bis 6 hängen nicht daran, Platz 7 bis 10 schon. | übernommen |
+| E4 | Welle 0 (Eichung, 6er-Profil, Unabhängigkeit messen, Werkzeug Teil A) vor Welle 1, Teil B vor Welle 2 | ja | übernommen |
+| E5 | Datenkauf 2010 bis 2015 (Databento, Preis vorher per Kostenabfrage) | Kostenabfrage freigeben, kaufen erst nach Preis | **jetzt nicht** (keine Kostenabfrage 2010 bis 2015) |
+| E6 | Index-Dateien (Ende 10.08.) durch NT8-Versionen ersetzen, offen seit 19.09. | entscheiden, weil es den Herkunftsmarkt aller Beine betrifft | **erst prüfen lassen**, nichts tauschen (Ticket AP480) |
+| E7 | Nacht-Halten: Innerhalb des Handelstags ist es bei E8 (ab 18:15 ET) und FundedNext (ab 18:00 ET) erlaubt, über den Tagesschluss nicht (Firm-Regeln, 01.10./12.10.). Bei E8 folgt das Halten bis in den Morgen aus der Regel, wörtlich bestätigt ist es nicht. Offen ist die E8-Reset-Zeit für Drawdown und Tageslimit. | nur diese zwei Punkte in einer Nachricht an E8 (Text in Schritt 1) | übernommen |
+| E8 | Märkte testen, die heute kein Konto handeln darf (ZN/ZB, FDAX, Softs) | testen ja, als Signalquelle sofort. Ins Buch erst mit Erlaubnis. | übernommen |
+| E9 | Unabhängigkeit nachts: nur Gemessenes zählt (ungemessene Nacht-Paare U 1) oder jede Nacht zählt als unabhängig (U 2, Fassung des verdict-auditor)? | nur Gemessenes, bis W0-2 die Nacht-Reihen von ES, YM, RTY gemessen hat. Danach erledigt sich die Frage durch Messung. | übernommen |
+| E10 | Kostenabfrage Kursbuch- und Trade-Daten für 7 Märkte (T21) | freigeben, nur Abfrage | übernommen (nur Kostenabfrage, AP478) |
 
 ---
 
