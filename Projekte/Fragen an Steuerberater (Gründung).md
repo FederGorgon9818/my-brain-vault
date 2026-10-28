@@ -96,7 +96,7 @@ Bei meiner Recherche bin ich auf die Preisgeld-Rechtsprechung gestoßen (EuGH C-
 Soweit ich sehe, ist keine davon eine EU-Gesellschaft.
 
 3. Funded-Konten vor dem 01.10.
-Ja. Bei Alpha Futures habe ich drei Evaluations bestanden, zwei am 08.12.2025 und eine am 27.02.2026 (Zertifikate im Anhang). Alle drei Funded-Konten sind geplatzt, eine Auszahlung gab es nie. Prop-Challenges kaufe ich seit 2024, damals noch manuell gehandelt. Die automatisierte Software entwickle ich seit Juni 2026. Bleibt es dann beim Beginn 01.10.2026, oder soll ich einen früheren Beginn angeben? Und was heißt das für Kosten vor Juni 2026?
+Ja. Bei Alpha Futures habe ich drei Evaluations bestanden, zwei am 08.12.2025 und eine am 27.02.2026 (Zertifikate im Anhang). Alle drei Funded-Konten sind geplatzt, eine Auszahlung gab es nie. Prop-Challenges kaufe ich seit 2024, damals noch manuell gehandelt. Die automatisierte Software entwickle ich seit Juni 2026. Bleibt es dann beim Beginn 01.10.2026, oder soll ich einen früheren Beginn angeben? Und was heißt das für Kosten vor Juni 2026? Für 2023 bis 2025 gebe ich noch freiwillige Erklärungen ab (bisher nie eine gemacht). Kann ich die Eval-Kosten 2024 und 2025 dort als Verlust feststellen lassen, damit er später gegen Gewinne läuft?
 
 4. Rechnungen
 Hardware habe ich noch keine gekauft. Contabo und E8 stellen auf meinen Namen und meine Adresse aus, FundedNext mit Name, E-Mail und Land, Anthropic an mein Konto mit meiner Adresse.
@@ -186,6 +186,8 @@ Dateien: E8 Terms `Anhänge/E8_Terms_2026-08-23.pdf` (Vault), Zertifikate `C:\Us
 - Wie lange akzeptiert das Finanzamt Verluste ohne Payout? Was soll ich dokumentieren?
 - ⭐ **Verlustrücktrag (§ 10d EStG):** Wenn ich 2028 in der BOS unterm Strich Verlust mache (Kosten laufen weiter, kein Payout), geht der Verlust dann zuerst nach 2027 und danach nach 2026 zurück, also wieder gegen Gehalt? Passiert das automatisch, und sollte ich ihn begrenzen, damit der Grundfreibetrag 2027 nicht verpufft?
 
+- **Eval-Kosten vor der Gründung (neu 28.10.2026):** 2024 und 2025 habe ich manuell (ICT) auf Prop-Firmen gehandelt, nur Kosten, nie ein Payout. Für die Jahre gebe ich jetzt freiwillige Erklärungen ab (Ausbildung, Lohnsteuer zurück). Kann oder sollte ich die Eval-Kosten dort als Verlust feststellen lassen (Gewerbe oder § 22 Nr. 3), damit er später gegen Gewinne läuft? Oder ist das wegen Liebhaberei aussichtslos und gefährdet eher die Anerkennung ab 2026?
+
 ## 7. Später (kurz anreißen)
 - Content und Coaching im selben Gewerbe, was ändert sich dann bei der Umsatzsteuer?
 - Krankenversicherung und Familienversicherung in der Schulzeit ab Sept. 2027, wenn Gewinn kommt?
@@ -245,5 +247,6 @@ Tel. +49 173 7476673
 | ⭐ Homeoffice-Pauschale | |
 | ⭐ Investitionsabzugsbetrag | |
 | ⭐ Verlustrücktrag | |
+| Eval-Kosten 2024/2025 als Verlust | |
 | ⭐ Studium / BOS als Werbungskosten | |
 | Kosten Steuerberater | |
