@@ -4,7 +4,7 @@ tags:
   - bereich/business
   - steuer
 erstellt: 2026-10-10
-status: Steuerberater angefragt (22.10.2026, Empfehlung von Marco), Antwort offen
+status: Antwort Dr. Hahn da (28.10.2026, über Marko), seine Rückfragen offen, Fragebogen bis 02.11.
 ---
 # ❓ Fragen an den Steuerberater (Gründung)
 
@@ -15,6 +15,49 @@ status: Steuerberater angefragt (22.10.2026, Empfehlung von Marco), Antwort offe
 
 > [!tip] ⭐ = neu am 15.10.2026
 > Sechs Punkte aus dem Steuer-Überblick vom 15.10. (Session 1d436a4b) sind mit ⭐ markiert: Zahlungszeitpunkt (Abschnitt 4), Korrektur 31.12.2027, Homeoffice-Pauschale und Investitionsabzugsbetrag (Abschnitt 5), Verlustrücktrag (Abschnitt 6), Studium als Werbungskosten (Abschnitt 7). Alles Stand meines Wissens, deshalb als Frage formuliert.
+
+## ✉️ Antwort Dr. Anders Hahn (28.10.2026, Mail an Marko „Prop-Trading-Gewerbe, Fragebogen bis 02.11.“)
+
+**Empfehlung:** Gewerbebetrieb, EÜR, **Verzicht auf die Kleinunternehmerregelung**, USt-IdNr. beantragen. Er liest den Fragebogen vor dem Absenden gegen, sobald er die Antworten auf seine Rückfragen hat (unter einer halben Stunde).
+
+**Seine Begründung, kurz:**
+- **Payouts:** Dienstleistung an Unternehmen außerhalb der EU, Leistungsort beim Kunden (§ 3a Abs. 2 UStG), in Deutschland nicht steuerbar, egal ob Kleinunternehmer. Gilt später auch für Coaching an Firmen im Ausland, an deutsche Privatleute wären 19 % fällig.
+- **Kleinunternehmer kostet nur:** keine Vorsteuer auf Hardware, und § 13b auf die Auslandseinkäufe muss trotzdem gezahlt werden, ohne Gegenrechnung. Bei den 3.500 € bis Sommer 2027 rund 650 € Mehrkosten. Regelbesteuerung ist ein Nullsummenspiel. Vorsteuerabzug nicht ausgeschlossen, weil die Leistung im Inland nicht steuerfrei wäre (§ 15 Abs. 2 Nr. 2 UStG, Abschn. 15.14 UStAE).
+- **Verzicht bindet 5 Jahre (bis Ende 2030).** Voranmeldung vierteljährlich bis zum 10. des Folgemonats, dazu die Jahreserklärung, meist drei Zahlen. Lästig nur bei vielen deutschen Privatkunden im Coaching unter 25.000 €.
+- **Erst Kleinunternehmer, später wechseln:** geht rückwirkend, für 2026 bis 29.02.2028. Er rät ab (Steuer auf Auslandseinkäufe sowieso anmelden, dann Nachmeldungen und Korrekturen).
+- **§ 13b auch als Kleinunternehmer** (Abschn. 13b.1 UStAE), EU-Anbieter Abs. 1, Drittland Abs. 2 Nr. 1. Betrifft Challenge- und Kontogebühren, KI-Abo, später Börsendaten, je nach Anbieter den Server. Bei Regelbesteuerung sofort als Vorsteuer zurück, der Beleg reicht.
+- **KI-Abo:** Reverse Charge nur mit hinterlegter USt-IdNr. Ohne läuft man als Privatkunde, zahlt Mehrwertsteuer, die man nicht zurückholt, und schuldet die deutsche Steuer trotzdem.
+- **Gebühren seit Juni** fallen schon unter § 13b (Unternehmer ab Vorbereitung, Abschn. 2.6 UStAE): nachträgliche Voranmeldungen für Q2 und Q3 2026, Zahllast null.
+- **Einkunftsart: Gewerbe (§ 15 EStG).** Keine Abgeltungsteuer (kein eigenes Kapital, Payout ist erfolgsabhängige Vergütung). § 22 Nr. 3 wäre ein Nachteil, weil Verluste nur mit gleichartigen Einkünften verrechnet werden dürfen, der Anlaufverlust 2026 würde verpuffen. Beim Gewerbe geht er gegen das Gehalt: bei rund 43.000 € Jahresbrutto bringen 2.000 € Verlust grob 500 bis 600 € zurück. Gewerbesteuer wegen Freibetrag 24.500 € auf absehbare Zeit nicht.
+- **Ehrlich von ihm:** kein BFH-Urteil und kein Erlass zu Prop-Payouts, Gewerbe ist gängige Beraterpraxis. Angreifbar nur die Gewinnerzielungsabsicht (Liebhaberei). Deshalb **ab jetzt eine kurze Notiz führen:** Geschäftsidee, Stand der Software, bestandene Challenges, Zeitplan bis zur ersten Auszahlung.
+- **Schätzungen:** unverbindlich, nur für Vorauszahlungen. 2026: Umsatz 0, Verlust 2.000 bis 2.500 € (er schreibt „wenn die Hardware noch dieses Jahr kommt“). 2027: nicht null/null, sondern Umsatz 2.000 bis 3.000 € bei Gewinn um null. Kosten seit Juni sind vorweggenommene Betriebsausgaben, der Gewerbeschein spielt dafür keine Rolle.
+- **EÜR ab sofort:** Belegordner digital, Dollar in Euro (Einkommensteuer Tageskurs, Umsatzsteuer BMF-Monatskurs), je Auszahlung Eigenbeleg oder Abrechnung der Firma, 8 Jahre aufbewahren.
+- **USt-IdNr.:** im Fragebogen mitbeantragen, kommt 2 bis 4 Wochen nach der Steuernummer. Je Prop-Firma einen Nachweis ablegen, dass es ein Unternehmen ist (Vertrag mit Anschrift, Registerauszug oder Impressum, Abschn. 3a.2 UStAE).
+- **Zum Ankreuzen:** gewerblich, Tätigkeit aus der Gewerbeanmeldung, Beginn 01.10.2026, EÜR, Einkünfte 2026 rund −2.000 bis −2.500 €, 2027 rund 0, Umsätze 2026 null, 2027 2.000 bis 3.000 €, Kleinunternehmer: Verzicht, Voranmeldung vierteljährlich, USt-IdNr. beantragen, keine Arbeitnehmer, eigenes Geschäftskonto.
+- **Termine:** Fragebogen bis 02.11. über ELSTER. Voranmeldung Q4 2026 bis 11.01.2027, Q2 und Q3 gleich mit. Einkommensteuer 2026 (Anlage G, EÜR) und Umsatzsteuererklärung 2026 bis 31.07.2027.
+- **Außerhalb der Fragen:** Krankenkasse: solange angestellt kein Thema. Ab Sept. 2027 Familienversicherung über die Eltern nur bei Einkommen inkl. Gewerbegewinn bis 565 €/Monat (2026, für 2027 sind 590 € vorgesehen), vor Juli mit der Kasse klären. BaFin: ohne fremdes Geld, Beratung, Signale keine Erlaubnis nötig, geht Coaching Richtung Handelsempfehlungen, vorher melden.
+
+### Seine Rückfragen vor dem Absenden: Stand 28.10. (Abgleich Vault)
+
+| # | Rückfrage | Stand aus dem Vault | Offen bei |
+|---|---|---|---|
+| 1 | Wie nennen die Verträge das Verhältnis? „independent contractor“, „services“, „trading data“ ideal, nur „profit share“ ohne Leistungsbezug muss jemand lesen | **Passt nicht zu seiner Annahme.** E8 Terms: „payout awards related to performance“, Max ist „Participant“, Ziff. 7.3 „Submission of data … does not entitle the Participant to compensation“. FundedNext: Reward „does not constitute … financial remuneration“ (Ziff. 12.1). FFN: nur Blog „independent contractor“, Terms nicht gelesen. Quelle: [[Research-Cache]] Abschnitt „Umsatzsteuer bei Prop-Firm-Payouts“, E8 als PDF in `Anhänge/E8_Terms_2026-08-23.pdf` | Dr. Hahn muss die Auszüge lesen |
+| 2 | Sitz und Rechtsform laut Vertrag, EU-Firma? | E8 Funding, LLC, Dallas TX, USA (Rechnung). FundedNext: Ajman Free Zone, VAE (Rechnung, Terms: GrowthNext F.Z.E., die Futures-Terms sind ungelesen). FFN: Funded Futures Network LLC (PayPal-Beleg), Anschrift fehlt. **Keine EU-Firma** | FFN-Anschrift |
+| 3 | Vor dem 01.10. schon auf Funded-Konten gehandelt? | Laut Vault nein, nur Challenges (Bulenox 24.07., E8 50k 28.07., FN1/FN2 02.09.). Damit bleibt 01.10. | Max bestätigt |
+| 4 | Auf wen lauten die Rechnungen seit Juni, vor allem Hardware? | Hardware: keine gekauft. E8: Name und Adresse. FundedNext: Name, Mail, Land. Anthropic: „maxlkho7@gmail.com's Organization“ mit Adresse. Contabo: PDF nicht auslesbar | Max prüft Contabo |
+| 5 | Server und KI-Abo: Land, USt-IdNr., MwSt drauf? | Anthropic, PBC, San Francisco, USA, EU VAT IE4276970QH, **19 % deutsche MwSt ausgewiesen**, also Privatkunde, nach der USt-IdNr. umstellen. Contabo ist eine deutsche Firma, 19 % drauf ist dort normal (Vorsteuer mit Rechnung auf Max' Namen, kein § 13b) | – |
+| 6 | Steuernummer vom FA Erding? | Fürs Gewerbe noch keine, kommt nach dem Fragebogen. Persönliche aus einer früheren Erklärung unbekannt | Max |
+| 7 | Nebentätigkeitsgenehmigung: Umfang oder inhaltliche Einschränkung? | Genehmigt 23.09., widerruflich (§ 8.4), deckt „Entwicklung und Betrieb automatisierter Software zur Analyse von Finanzmarktdaten; Dienstleistungen für ausländische Auftraggeber“. Content und Coaching nicht gedeckt, Erweiterung läuft ([[Be Obsessed]]). Stundenlimit oder Auflagen unbekannt | Max (Wortlaut) |
+| 8 | Eltern gesetzlich versichert? | Laut [[Gründung Zeitplan]] ja (Angabe Max) | Max bestätigt bei den Eltern |
+| 9 | Auszahlungsweg: Bank, Deel/Rise, Krypto? | E8 über WorkMarket/Rise mit KYC (Research-Cache), FN und FFN offen. Plan AP37: Revolut Pro als Auszahlungskonto | Max entscheidet (Krypto vermeiden) |
+
+### Selbst aufgefallen (nicht in seiner Mail)
+- **Punkt 1 trägt seine ganze USt-Empfehlung.** Ist der Payout kein Entgelt für eine Leistung (Preisgeld-Linie, Research 22.10.), wackelt die Unternehmereigenschaft fürs Trading und damit die Vorsteuer. Deshalb die Auszüge vor dem Ankreuzen zu ihm. Kommt bis zur Frist keine Antwort: Kleinunternehmer ankreuzen (bis 29.02.2028 rückwirkend drehbar), Regelbesteuerung bindet 5 Jahre.
+- **Schätzung 2026 andersrum verstanden:** laut Vault sind 2.000 bis 2.500 € Verlust die Zahl **ohne** Hardware, mit Hardware im Dezember eher 4.500 bis 5.000 €. Hardware ist für 2026 nicht geplant (AP239), die Zahl passt also trotzdem.
+- **Krankenkasse auch Juli/August 2027:** zwischen Jobende 03.07. und Schulstart weder angestellt noch Schüler, Vollzeit selbstständig. Familienversicherung setzt „nicht hauptberuflich selbstständig“ voraus. Mit der Kasse mitklären.
+- **Fürs Formular fehlt das Gehalt:** voraussichtliche Einkünfte aus nichtselbständiger Arbeit 2026 und 2027 (Lohnabrechnung, Jahresbrutto).
+- **Belege:** E8 150k (05.10.) liegt nicht im Belegordner, von FFN nur der PayPal-Beleg.
+- **Nicht beantwortet, eilt nicht (bis EÜR 2026):** Rücklage-Prozent, Claude-Anteil, Hardware-Privatanteil und Kaufzeitpunkt, Kalenderjahr-Korrektur 2027, Homeoffice-Pauschale, IAB, Verlustrücktrag, Studium/BOS, Ist-Versteuerung (Vault: ja, beim Gegenlesen bestätigen), Voranmeldung 2027 monatlich oder vierteljährlich, Honorar.
 
 ## Kurz zu mir (zum Mitschicken)
 - 19 Jahre, Angestellter (Vollzeit, 3.600 € brutto, befristet bis 03.07.2027), danach ab Sept. 2027 Schule (BOS), Gewerbe läuft weiter.
@@ -120,10 +163,10 @@ Tel. +49 173 7476673
 ## Ergebnis (nach der Beratung ausfüllen)
 | Frage | Antwort |
 |---|---|
-| USt | |
-| Einkunftsart | |
-| Fragebogen-Werte | |
-| Dollar-Kurs, Rücklage | |
+| USt | Dr. Hahn 28.10.: Verzicht auf Kleinunternehmer, USt-IdNr. beantragen (Vorbehalt Vertragswortlaut, siehe Rückfrage 1) |
+| Einkunftsart | Dr. Hahn 28.10.: Gewerbe § 15, nicht § 22 Nr. 3 |
+| Fragebogen-Werte | Dr. Hahn 28.10.: siehe „Zum Ankreuzen“ oben |
+| Dollar-Kurs, Rücklage | Kurs: ESt Tageskurs, USt BMF-Monatskurs. Rücklage offen |
 | Claude-Anteil, Hardware | |
 | ⭐ Kalenderjahr 2027 (Korrektur Zeitplan) | |
 | ⭐ Zahlungszeitpunkt | |
