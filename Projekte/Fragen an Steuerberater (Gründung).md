@@ -51,6 +51,20 @@ status: Antwort Dr. Hahn da (28.10.2026, über Marko), seine Rückfragen offen, 
 | 8 | Eltern gesetzlich versichert? | Laut [[Gründung Zeitplan]] ja (Angabe Max) | Max bestätigt bei den Eltern |
 | 9 | Auszahlungsweg: Bank, Deel/Rise, Krypto? | E8 über WorkMarket/Rise mit KYC (Research-Cache), FN und FFN offen. Plan AP37: Revolut Pro als Auszahlungskonto | Max entscheidet (Krypto vermeiden) |
 
+### Antworten Max (28.10.2026 abends, per Abfrage)
+
+| # | Punkt | Antwort |
+|---|---|---|
+| 3 | **Funded vor 01.10.** | **Ja, korrigiert den Vault-Stand:** drei Funded-Konten bei **Alpha Futures**, zwei ab 08.12.2025, eins ab 27.02.2026, alle geplatzt, **nie ein Payout**. Prop-Challenges kauft Max **seit 2024** (auch manuell, auch andere Firmen). Zertifikate schickt Max am 29.10. Muss so an Dr. Hahn, er entscheidet über den Beginn (Max fragte, ob man das weglassen kann: nein, Dr. Hahn braucht die echten Fakten, ein früherer Beginn kann sogar Kosten von Anfang 2026 absetzbar machen) |
+| 4 | Contabo-Rechnung | Passt: alle drei an „Herrn Maximilian kho, Ahamstr. 11, 85570 Ottenhofen“, Contabo GmbH München, USt-IdNr. DE267602842, Umsatzsteuer ausgewiesen (aus den PDFs gelesen) |
+| 6 | Steuernummer | Keine, noch nie eine Steuererklärung gemacht |
+| 7 | Nebentätigkeitsgenehmigung | Formular im REX-Portal: Art, Beschäftigungsart, Umfang in Wochenstunden, Zusicherung Arbeitszeitgesetz (§ 3, § 5 ArbZG), Vertrags-§ Nebentätigkeit gilt fort. Eingetragener Stundenumfang und genauer Wortlaut der Genehmigung: Screenshot von Max am 29.10. |
+| 8 | Eltern | Papa gesetzlich, Mama Beamtin privat versichert, **Papa verdient mehr.** Damit greift der Ausschluss für Kinder privat versicherter Eltern nicht, Familienversicherung über Papa grundsätzlich möglich (Einkommensgrenze und „nicht hauptberuflich selbstständig“ bleiben) |
+| 9 | Auszahlungsweg | Bank bzw. Rise auf Revolut Pro, kein Krypto |
+| – | Geschäftskonto | Revolut Pro eröffnet, IBAN da |
+| – | Hardware 2026 | Noch offen, Schätzung ohne Hardware nehmen |
+| – | Gehalt | 3.600 € brutto erst seit 02.07.2026, vorher Ausbildung. Jahressumme Abrechnung 10.2026: 22.773,42 €. Sonderzahlung im Nov./Dez. etwas unter einem Monatsgehalt (Teil kam schon Anfang des Jahres, Urlaubsgeld wohl dabei). **Hochgerechnet (Python, 28.10.):** Brutto 2026 29.973,42 bis 33.573,42 €, Einkünfte nach Pauschale 1.230 € 28.743,42 bis 32.343,42 €. 2027 bis 03.07. ohne Sonderzahlung 21.948,39 € brutto, Einkünfte 20.718,39 €. **Dr. Hahn rechnete mit rund 43.000 € Jahresbrutto**, die Erstattung aus dem Verlust 2026 fällt also kleiner aus |
+
 ### Selbst aufgefallen (nicht in seiner Mail)
 - **Punkt 1 trägt seine ganze USt-Empfehlung.** Ist der Payout kein Entgelt für eine Leistung (Preisgeld-Linie, Research 22.10.), wackelt die Unternehmereigenschaft fürs Trading und damit die Vorsteuer. Deshalb die Auszüge vor dem Ankreuzen zu ihm. Kommt bis zur Frist keine Antwort: Kleinunternehmer ankreuzen (bis 29.02.2028 rückwirkend drehbar), Regelbesteuerung bindet 5 Jahre.
 - **Schätzung 2026 andersrum verstanden:** laut Vault sind 2.000 bis 2.500 € Verlust die Zahl **ohne** Hardware, mit Hardware im Dezember eher 4.500 bis 5.000 €. Hardware ist für 2026 nicht geplant (AP239), die Zahl passt also trotzdem.
