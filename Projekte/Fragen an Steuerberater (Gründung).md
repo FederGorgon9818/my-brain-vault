@@ -71,6 +71,8 @@ status: Steuerberater angefragt (22.10.2026, Empfehlung von Marco), Antwort offe
 - Wie lange akzeptiert das Finanzamt Verluste ohne Payout? Was soll ich dokumentieren?
 - ⭐ **Verlustrücktrag (§ 10d EStG):** Wenn ich 2028 in der BOS unterm Strich Verlust mache (Kosten laufen weiter, kein Payout), geht der Verlust dann zuerst nach 2027 und danach nach 2026 zurück, also wieder gegen Gehalt? Passiert das automatisch, und sollte ich ihn begrenzen, damit der Grundfreibetrag 2027 nicht verpufft?
 
+- **Eval-Kosten vor der Gründung (neu 28.10.2026):** 2024 und 2025 habe ich manuell (ICT) auf Prop-Firmen gehandelt, nur Kosten, nie ein Payout. Für die Jahre gebe ich jetzt freiwillige Erklärungen ab (Ausbildung, Lohnsteuer zurück). Kann oder sollte ich die Eval-Kosten dort als Verlust feststellen lassen (Gewerbe oder § 22 Nr. 3), damit er später gegen Gewinne läuft? Oder ist das wegen Liebhaberei aussichtslos und gefährdet eher die Anerkennung ab 2026?
+
 ## 7. Später (kurz anreißen)
 - Content und Coaching im selben Gewerbe, was ändert sich dann bei der Umsatzsteuer?
 - Krankenversicherung und Familienversicherung in der Schulzeit ab Sept. 2027, wenn Gewinn kommt?
@@ -130,5 +132,6 @@ Tel. +49 173 7476673
 | ⭐ Homeoffice-Pauschale | |
 | ⭐ Investitionsabzugsbetrag | |
 | ⭐ Verlustrücktrag | |
+| Eval-Kosten 2024/2025 als Verlust | |
 | ⭐ Studium / BOS als Werbungskosten | |
 | Kosten Steuerberater | |

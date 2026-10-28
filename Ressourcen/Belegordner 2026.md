@@ -21,6 +21,8 @@ Dazu: `EUeR-2026.csv` (eine Zeile pro Beleg) und `README.md` mit Namenskonventio
 ## Workflow
 Wenn Max einen Beleg gibt (Datei/Screenshot), sortiert Claude ihn **automatisch** ein: umbenennen nach Konvention, in den passenden Unterordner legen, Zeile in die EÜR-CSV schreiben (USD → EUR zum Tageskurs, Kurs in Notiz-Spalte).
 
+**Abgleich mit dem Konto (seit 28.10.2026):** Gewerbe-Zahlungen laufen über Revolut (Konto seit 09.08.2026, vorher anderes Konto). Beim Monats-Ticket legt Max den Revolut-Export nach `C:\Users\maxlk\Documents\Steuer\Kontoauszuege\`, dann `/steuer abgleich`. Der Bericht landet in `_Abgleich\` und zeigt Abbuchungen ohne Beleg, Payouts ohne Eigenbeleg, PayPal ohne Händler und Belege ohne Abbuchung. Details: [[Steuer-Werkzeuge]].
+
 ## Rückwirkend gesammelt (AP36, erledigt 24.09.26)
 10 Zeilen in `EUeR-2026.csv`, zusammen **666,47 €** (Juni bis Sept.). Liegt komplett für den Termin mit Freundin ([[Gespräch mit Freundin (Steuer & Gründung)]], AP235).
 - [x] E8 Signature 50k, 113 USD (Liste 150, Rabatt), 28.07.2026 → `Challenges/` (24.09.)
