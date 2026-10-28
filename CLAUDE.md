@@ -210,6 +210,7 @@ Tickets laufen seit 29.09. im Strategy Lab → Tickets im Jira-Aufbau (Boards, B
 - **Neue Tickets landen immer im Backlog**, egal ob von Claude, `ticket_tool.py`, Auto-Check oder Box. Claude plant nie von sich aus Tickets in einen Sprint, startet oder schließt keinen Sprint und schlägt kein Planning vor.
 - **`/sprint` nur auf Zuruf.** Ruft Max ihn auf, darf Claude einen Vorschlag machen, geschrieben wird erst nach seinem OK.
 - Ein leerer Sprint-Container (z.B. S2026-41 aus der Migration) ist kein Planning und bleibt leer, bis Max ihn füllt.
+- **Max-Arbeit in Tickets immer als einzelne Schritte mit Dauer und Zeitfenster anlegen (Regel Max, 27.10.2026):** `Max [30m][box-flat]: was genau`, 15-Minuten-Raster, höchstens 60 min (länger zerlegen), `[läuft 2h]` für Dinge, die allein weiterlaufen. Anhängen und abhaken mit `ticket_tool.py step add|done`. Der Fokus-Planer auf der Box legt die wichtigsten davon automatisch in Max' Ticket-Blöcke (Mi ab 21:30, Sa; Do ist Kreativ-Tag). Details: [[Fokus-Planer (Tickets im Kalender)]].
 
 ---
 
