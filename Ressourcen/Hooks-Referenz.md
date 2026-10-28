@@ -165,7 +165,7 @@ Anlass: am 12.10.2026 wurde die Belegung von FFN2 aus dem Kopf falsch angenommen
 Teil des Umbaus [[CLAUDE.md Verschlankung]]. Ziel: die CLAUDE.md schlank machen, ohne dass eine Session etwas nicht mehr weiß.
 
 **Wissens-Router** (`.claude/hooks/knowledge_router.py`, aufgerufen in `on_prompt.py` Abschnitt 0)
-- Erkennt im Prompt das Thema (17 Themen: Juli-Modus, Developer, Hub, Gate, Discovery, RiskGuard, Konto, GitHub, Mail, Sprint, Tot, Box, Buch, Claude, Gründung, Ziel, Werkzeug) und legt Kernzeilen plus „lies Notiz X" hin. Je Thema nur beim ersten Auftauchen in einer Session.
+- Erkennt im Prompt das Thema (19 Themen: Juli-Modus, Developer, Hub, Gate, Discovery, RiskGuard, Konto, GitHub, Mail, Sprint, Tot, Box, Buch, Claude, Gründung, Ziel, Konten, Werkzeug, Fokus-Planer) und legt Kernzeilen plus „lies Notiz X" hin. Je Thema nur beim ersten Auftauchen in einer Session.
 - Gebaut für Max' echte Sprache (945 Prompts, 30 Tage): „Cloud" = Claude (nie GitHub), „hab" ist nie Hub, „Juni-Modus" = Juli-Modus, „i8" = E8, „Funnet Next" = FundedNext, „Stereolab" = Strategy Lab. Ticketnummern („AP 72", „AP73") holen den Tickettitel aus `tasks.json` und routen ihn mit.
 - Läuft vor dem 12-Zeichen-Filter, damit kurze Prompts wie „Juli-Modus" zünden.
 - Subagent-Rückmeldungen und System-Benachrichtigungen (`<agent-message`, `<task-notification`, „Another Claude session sent a message") sind nicht von Max: kein Routing, kein Agent-Reflex, keine Quittung. Fix für die sechs Fehlalarme vom 05.10.
@@ -206,3 +206,18 @@ Zur CLAUDE.md-Regel „Rechnen nur in Code“: jede Berechnung mit Zahlen und Ze
 - Auswertung: `python .claude/scripts/rechen_report.py --days 7` (Hinweise je Tag, Quote mit und ohne Hinweis samt 95-%-Bereich, Basis und Urteilsgrenze, Stichprobe der Prompts samt Belegen, Hook-Fehler). Der `retro-agent` liest sie sonntags mit.
 - Bekannte Lücken: `ruft_python` übersieht Python in Schleifen mit mehreren Anführungsebenen und Aufrufe wie `Get-Process python` zählen bewusst nicht. Bei gleichen Prompts in einer Session (z.B. „ja“) trennt die uuid des Prompt-Eintrags die Züge.
 - Tests: `python .claude/scripts/test_rechen_zaehler.py` (78 Fälle: Zahlen- und Python-Erkennung, Zug-Zeilen auf synthetischen Transkripten, Reset je Prompt, Report samt Basis, echte Aufrufe von `on_stop.py`, einer mit fehlendem Modul, einer der zeigt, dass Teil 7 allein nie ausgibt).
+
+## Fokus-Planer: Box-Aufgabe und Schritt-Format (Max, 27.10.2026)
+
+Konzept, Entscheidungen und Klick-Anleitung: [[Fokus-Planer (Tickets im Kalender)]]. Kein Claude-Hook, sondern eine Automatik auf der Box plus eine Prüfung in `ticket_tool`. Steht hier, weil sie wie ein Reflex wirkt: jede Session legt Max-Arbeit so an, dass sie von selbst im Kalender landet.
+
+**Schritt-Format** (`engine/ticket_lib.py`, Abschnitt „Schritte“): `Max [30m][box-flat]: was genau`. Kürzel: Dauer `[15m] [1h] [1h30m]` im 15er-Raster, höchstens 60 min; `[läuft 2h]` für die Nebenspur; Zeitfenster `[box-flat] [werktags] [ab JJJJ-MM-TT]`. Ohne Dauer: 15 min, bei RDP/NT8 30 min plus `box-flat`. „Warten, bis …“ ist ein Warte-Schritt und stoppt alles dahinter. `Optional Max: …` kommt nie in den Kalender. Label `kein-kalender` nimmt ein Ticket ganz raus (z.B. AP258, Checkliste für den Pass-Tag).
+- `ticket_tool.py step add|done|undo|list`, `show` zeigt Schritt-Nummern. `new` und `step add` warnen (blocken nicht) bei Max-Schritten ohne Dauer, mit krummer Dauer, über 60 min, mit unbekanntem Kürzel oder ohne Namen vorne; `new --assignee max` ohne Schritte und ohne `--hours` ebenso.
+- Router-Thema `fokus` in `knowledge_router.py` (Ticket anlegen, abhaken, Ticket-Blöcke), im Schattenbetrieb nur geloggt. Tests in `test_router.py` (55 Fälle).
+
+**Planer** (`engine/fokus_planer.py`, Windows-Aufgabe „MaxLab Fokus-Planer“ auf der Box: SYSTEM, `pythonw`, versteckt, alle 30 min, eingerichtet mit `engine/fokus_planer_aufgabe.ps1`, `-Enable` schaltet scharf)
+- Liest `tasks.json` der Box und im Hauptkalender die Termine „Deep Work Fokus Time“ (Mi ab 21:30, Sa; Do nie). Schreibt nur in den Kalender „Tickets“, mit festen Termin-IDs je Posten und Block, nur Unterschiede, und nur wenn sich der Fingerabdruck geändert hat.
+- Max im Kalender: verschieben oder verlängern bleibt so, löschen heißt „heute nicht“, ✅ vor dem Titel hakt den Schritt in `tasks.json` ab (Notiz im Ticket; ein Ticket-Posten ohne Schritte geht nach „Prüfen“). Begonnene und vergangene Termine bleiben stehen.
+- Schutz: bei leerer oder unlesbarer `tasks.json` bricht der Lauf ab, statt alle Termine zu löschen. Fehler → `engine/fokus_planer.log`, Zustand `engine/fokus_planer_state.json` (fail_count, last_ok), Telegram (maxbot) ab dem zweiten Fehlschlag in Folge, danach höchstens einmal am Tag, und eine Entwarnung, wenn es wieder läuft.
+- Zugang: Dienstkonto mit Schlüssel `C:\Users\Administrator\fokus_planer_google.json`, Config `C:\Users\Administrator\fokus_planer.json` (nie im Vault oder Git). Prüfen mit `python fokus_planer.py --check-access --write-test`. Weg laut [[Research-Cache]] (Abschnitt „Google Calendar API für Box-Skripte“).
+- Tests: `python test_fokus_planer.py` (19 Fälle, ohne Google und ohne echte Tickets). Probelauf ohne Zugang: `python fokus_planer.py --dry-run --calendar-json <events.json> --now 2026-10-28T19:00`.
