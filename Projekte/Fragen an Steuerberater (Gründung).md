@@ -55,7 +55,7 @@ status: Antwort Dr. Hahn da (28.10.2026, über Marko), seine Rückfragen offen, 
 
 | # | Punkt | Antwort |
 |---|---|---|
-| 3 | **Funded vor 01.10.** | **Ja, korrigiert den Vault-Stand:** drei Funded-Konten bei **Alpha Futures**, zwei ab 08.12.2025, eins ab 27.02.2026, alle geplatzt, **nie ein Payout**. Prop-Challenges kauft Max **seit 2024** (auch manuell, auch andere Firmen). Zertifikate schickt Max am 29.10. Muss so an Dr. Hahn, er entscheidet über den Beginn (Max fragte, ob man das weglassen kann: nein, Dr. Hahn braucht die echten Fakten, ein früherer Beginn kann sogar Kosten von Anfang 2026 absetzbar machen) |
+| 3 | **Funded vor 01.10.** | **Ja, korrigiert den Vault-Stand:** drei Funded-Konten bei **Alpha Futures**, zwei ab 08.12.2025, eins ab 27.02.2026, alle geplatzt, **nie ein Payout**. Prop-Challenges kauft Max **seit 2024** (auch manuell, auch andere Firmen). Zertifikate liegen seit 28.10. in `C:\Users\maxlk\Documents\Gewerbe\Nachweise\Alpha-Futures\` (die zwei vom 08.12.2025 sind byte-gleich, nur einmal abgelegt, kein Konto auf dem Zertifikat). Muss so an Dr. Hahn, er entscheidet über den Beginn (Max fragte, ob man das weglassen kann: nein, Dr. Hahn braucht die echten Fakten, ein früherer Beginn kann sogar Kosten von Anfang 2026 absetzbar machen) |
 | 4 | Contabo-Rechnung | Passt: alle drei an „Herrn Maximilian kho, Ahamstr. 11, 85570 Ottenhofen“, Contabo GmbH München, USt-IdNr. DE267602842, Umsatzsteuer ausgewiesen (aus den PDFs gelesen) |
 | 6 | Steuernummer | Keine, noch nie eine Steuererklärung gemacht |
 | 7 | Nebentätigkeitsgenehmigung | Formular im REX-Portal: Art, Beschäftigungsart, Umfang in Wochenstunden, Zusicherung Arbeitszeitgesetz (§ 3, § 5 ArbZG), Vertrags-§ Nebentätigkeit gilt fort. Eingetragener Stundenumfang und genauer Wortlaut der Genehmigung: Screenshot von Max am 29.10. |
@@ -72,6 +72,64 @@ status: Antwort Dr. Hahn da (28.10.2026, über Marko), seine Rückfragen offen, 
 - **Fürs Formular fehlt das Gehalt:** voraussichtliche Einkünfte aus nichtselbständiger Arbeit 2026 und 2027 (Lohnabrechnung, Jahresbrutto).
 - **Belege:** E8 150k (05.10.) liegt nicht im Belegordner, von FFN nur der PayPal-Beleg.
 - **Nicht beantwortet, eilt nicht (bis EÜR 2026):** Rücklage-Prozent, Claude-Anteil, Hardware-Privatanteil und Kaufzeitpunkt, Kalenderjahr-Korrektur 2027, Homeoffice-Pauschale, IAB, Verlustrücktrag, Studium/BOS, Ist-Versteuerung (Vault: ja, beim Gegenlesen bestätigen), Voranmeldung 2027 monatlich oder vierteljährlich, Honorar.
+
+### ✉️ Mail an Dr. Hahn (Entwurf 28.10.2026, noch nicht gesendet)
+Geht über Marko oder direkt, falls Max die Adresse hat. Offen vor dem Senden: Punkt 7 mit dem Screenshot der Genehmigung (29.10.) füllen, FFN-Anschrift wenn vorhanden.
+```
+Betreff: Antworten auf Ihre Rückfragen zum Fragebogen (Frist 02.11.)
+
+Guten Tag Herr Dr. Hahn,
+
+vielen Dank für Ihre ausführliche Einschätzung, Marko hat sie mir weitergeleitet. Hier meine Antworten auf Ihre Punkte, in Ihrer Reihenfolge.
+
+1. Vertragswortlaut der Prop-Firmen
+Leider eher der Fall, den Sie lesen wollten:
+- E8 (Terms of Service vom 03.11.2025, PDF im Anhang): Ich bin dort "Participant", nicht Contractor. Nach Ziff. 5.1 bis 5.3 gibt es leistungsabhängige Payout Awards, die E8 nach eigenem Ermessen einbehalten oder widerrufen kann. Nach Ziff. 7.3 begründen meine Handelsdaten ausdrücklich keinen Vergütungsanspruch, obwohl sich E8 in Ziff. 7.1 und 7.2 eine dauerhafte, übertragbare Lizenz daran einräumen lässt.
+- FundedNext (Terms of Service, Ziff. 3 und 12.1, fundednext.com/terms-of-service): Der Reward sei weder Vergütung noch Gehalt, Provision oder Anlageertrag. "Independent contractor" kommt nicht vor.
+- Funded Futures Network: Die Terms konnte ich noch nicht abrufen. In einem Blogbeitrag schreibt FFN, der Trader handle technisch als "independent contractor", US-Trader bekommen ein Form 1099-NEC.
+Bei meiner Recherche bin ich auf die Preisgeld-Rechtsprechung gestoßen (EuGH C-432/15 Baštová, BFH XI R 37/14, BFH V R 21/16). Könnte das Finanzamt die Payouts so einordnen, und was hieße das für die Vorsteuer auf die Trading-Kosten? Bevor ich Regelbesteuerung ankreuze, wäre ich froh, wenn Sie das kurz ansehen.
+
+2. Sitz und Rechtsform
+- E8 Funding, LLC, 4101 McEwen Rd, Suite 205, Dallas TX 75244, USA (laut Rechnung)
+- FundedNext: Ajman Free Zone, VAE (laut Rechnung, Vertragspartner laut Terms GrowthNext F.Z.E.)
+- Funded Futures Network LLC (laut PayPal-Beleg), die Anschrift reiche ich nach
+Soweit ich sehe, ist keine davon eine EU-Gesellschaft.
+
+3. Funded-Konten vor dem 01.10.
+Ja. Bei Alpha Futures habe ich drei Evaluations bestanden, zwei am 08.12.2025 und eine am 27.02.2026 (Zertifikate im Anhang). Alle drei Funded-Konten sind geplatzt, eine Auszahlung gab es nie. Prop-Challenges kaufe ich seit 2024, damals noch manuell gehandelt. Die automatisierte Software entwickle ich seit Juni 2026. Bleibt es dann beim Beginn 01.10.2026, oder soll ich einen früheren Beginn angeben? Und was heißt das für Kosten vor Juni 2026?
+
+4. Rechnungen
+Hardware habe ich noch keine gekauft. Contabo und E8 stellen auf meinen Namen und meine Adresse aus, FundedNext mit Name, E-Mail und Land, Anthropic an mein Konto mit meiner Adresse.
+
+5. Server und KI-Abo
+Contabo GmbH, München, USt-IdNr. DE267602842, 19 % Umsatzsteuer ausgewiesen. Anthropic, PBC, San Francisco, mit EU-VAT-Nummer IE4276970QH, berechnet 19 % deutsche Umsatzsteuer. Dort laufe ich also als Privatkunde und stelle um, sobald die USt-IdNr. da ist.
+
+6. Steuernummer
+Nein, ich habe noch nie eine Steuererklärung abgegeben.
+
+7. Nebentätigkeitsgenehmigung
+Genehmigt am 23.09.2026, widerruflich. Genehmigt sind Entwicklung und Betrieb automatisierter Software zur Analyse von Finanzmarktdaten und Dienstleistungen für ausländische Auftraggeber. [Umfang laut Genehmigung: ___ Stunden pro Woche, weitere Auflagen: ___, Screenshot im Anhang.] Content und Coaching sind nicht abgedeckt, die Erweiterung beantrage ich gesondert.
+
+8. Eltern
+Mein Vater ist gesetzlich versichert und verdient mehr, meine Mutter ist Beamtin und privat versichert.
+
+9. Auszahlungen
+Per Banküberweisung bzw. über Rise auf mein Geschäftskonto bei Revolut, keine Krypto.
+
+Zwei Korrekturen zu Ihren Annahmen:
+- Gehalt: Die 3.600 € bekomme ich erst seit Juli 2026, vorher war ich in der Ausbildung. Brutto 2026 voraussichtlich 29.973 bis 33.573 € (je nach Sonderzahlung), 2027 bis zum Vertragsende am 03.07. etwa 21.948 €. Also deutlich unter den 43.000 €.
+- Hardware: Die 2.000 bis 2.500 € Verlust 2026 sind meine Schätzung ohne Hardware. Ob PC und Monitor noch dieses Jahr kommen, ist offen.
+
+Den Fragebogen fülle ich bis Freitag in ELSTER aus und schicke Ihnen die Vorschau als PDF, bevor ich ihn absende. Falls Sie es vor Montag nicht schaffen, würde ich vorsorglich Kleinunternehmer ankreuzen und den Verzicht nach Ihrer Prüfung rückwirkend erklären. Wäre das für Sie in Ordnung?
+
+Was darf ich Ihnen für Ihre Hilfe zahlen?
+
+Viele Grüße
+Maximilian Kho
+
+Anhänge: E8 Terms of Service (PDF), zwei Zertifikate Alpha Futures (08.12.2025, 27.02.2026), Screenshot Nebentätigkeitsgenehmigung
+```
+Dateien: E8 Terms `Anhänge/E8_Terms_2026-08-23.pdf` (Vault), Zertifikate `C:\Users\maxlk\Documents\Gewerbe\Nachweise\Alpha-Futures\`.
 
 ## Kurz zu mir (zum Mitschicken)
 - 19 Jahre, Angestellter (Vollzeit, 3.600 € brutto, befristet bis 03.07.2027), danach ab Sept. 2027 Schule (BOS), Gewerbe läuft weiter.
