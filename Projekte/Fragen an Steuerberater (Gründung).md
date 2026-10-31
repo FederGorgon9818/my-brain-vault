@@ -116,7 +116,7 @@ Antwort:
 Soweit ich sehe, ist keine davon eine EU-Gesellschaft.
 
 Frage 3: Habe ich vor dem 1. Oktober schon auf Funded-Konten gehandelt, aus denen Auszahlungen hätten entstehen können?
-Antwort: Ja. Bei Alpha Futures habe ich drei Evaluations bestanden, zwei am 08.12.2025 und eine am 27.02.2026 (Zertifikate im Anhang). Alle drei Funded-Konten sind geplatzt, eine Auszahlung gab es nie. Prop-Challenges kaufe ich seit 2024, damals noch manuell gehandelt. Die automatisierte Software entwickle ich seit Juni 2026.
+Antwort: Ja. Bei Alpha Futures habe ich drei Evaluations bestanden, zwei am 08.12.2025 und eine am 27.02.2026 (Zertifikate im Anhang). Alle drei Funded-Konten sind geplatzt, eine Auszahlung gab es nie. Prop-Challenges kaufe ich seit 2024 (per Mail belegt ab Mai 2025), damals noch manuell gehandelt. Die automatisierte Software entwickle ich seit Juni 2026. Kosten vor Juni 2026, soweit per Mail belegt: 1.181,71 USD (Apex 527,80 USD in 12 Zahlungen von Mai bis November 2025, Trading-Tools 653,91 USD von März bis Mai 2026, Liste im Anhang). Dazu kommen Käufe bei Alpha Futures, Topstep, FundedNext und MyFundedFutures, deren Beträge nicht in den Mails stehen. Die reiche ich aus dem Kontoauszug nach.
 
 Frage 4: Auf wen lauten die Rechnungen seit Juni, vor allem die Hardware?
 Antwort: Hardware habe ich noch keine gekauft. Contabo und E8 stellen auf meinen Namen und meine Adresse aus, FundedNext mit Name, E-Mail und Land, Anthropic an mein Konto mit meiner Adresse.
@@ -150,7 +150,7 @@ Meine Fragen an Sie:
 Viele Grüße
 Maximilian Kho
 
-Anhänge: E8 Terms of Service (PDF), zwei Zertifikate Alpha Futures (08.12.2025, 27.02.2026), Nebentätigkeitsvereinbarung mit Genehmigung (PDF)
+Anhänge: E8 Terms of Service (PDF), zwei Zertifikate Alpha Futures (08.12.2025, 27.02.2026), Nebentätigkeitsvereinbarung mit Genehmigung (PDF), Liste der per Mail belegten Prop- und Tool-Kosten (CSV)
 ```
 Dateien: E8 Terms `Anhänge/E8_Terms_2026-08-23.pdf` (Vault), Zertifikate `C:\Users\maxlk\Documents\Gewerbe\Nachweise\Alpha-Futures\`.
 
