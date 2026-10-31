@@ -74,7 +74,7 @@ status: Antwort Dr. Hahn da (28.10.2026, über Marko), seine Rückfragen offen, 
 - **Nicht beantwortet, eilt nicht (bis EÜR 2026):** Rücklage-Prozent, Claude-Anteil, Hardware-Privatanteil und Kaufzeitpunkt, Kalenderjahr-Korrektur 2027, Homeoffice-Pauschale, IAB, Verlustrücktrag, Studium/BOS, Ist-Versteuerung (Vault: ja, beim Gegenlesen bestätigen), Voranmeldung 2027 monatlich oder vierteljährlich, Honorar.
 
 ### ✉️ Mail an Dr. Hahn (Entwurf 28.10.2026, noch nicht gesendet)
-Geht über Marko oder direkt, falls Max die Adresse hat. Stand 31.10.: versandfertig, Punkt 7 aus dem Genehmigungs-PDF gefüllt. FFN-Anschrift fehlt weiter (steht als „reiche ich nach“ drin).
+Geht über Marko oder direkt, falls Max die Adresse hat. Stand 31.10.: versandfertig, Punkt 7 aus dem Genehmigungs-PDF gefüllt. FFN-Anschrift fehlt weiter (steht als „reiche ich nach“ drin). **Versandpaket für Marko** (Mail-Text mit Begleitsatz plus alle Anhänge): `C:\Users\maxlk\Documents\Gewerbe\Steuerberater\2026-10-31 Antwort an Dr. Hahn\`. ELSTER-Werte: [[ELSTER-Fragebogen Ausfüllzettel (AP35)]].
 ```
 Betreff: Antworten auf Ihre Rückfragen zum Fragebogen (Frist 02.11.)
 
@@ -120,7 +120,7 @@ Zwei Korrekturen zu Ihren Annahmen:
 - Gehalt: Die 3.600 € bekomme ich erst seit Juli 2026, vorher war ich in der Ausbildung. Brutto 2026 voraussichtlich 29.973 bis 33.573 € (je nach Sonderzahlung), 2027 bis zum Vertragsende am 03.07. etwa 21.948 €. Also deutlich unter den 43.000 €.
 - Hardware: Die 2.000 bis 2.500 € Verlust 2026 sind meine Schätzung ohne Hardware. Ob PC und Monitor noch dieses Jahr kommen, ist offen.
 
-Den Fragebogen fülle ich bis Freitag in ELSTER aus und schicke Ihnen die Vorschau als PDF, bevor ich ihn absende. Falls Sie es vor Montag nicht schaffen, würde ich vorsorglich Kleinunternehmer ankreuzen und den Verzicht nach Ihrer Prüfung rückwirkend erklären. Wäre das für Sie in Ordnung?
+Den Fragebogen fülle ich am Wochenende in ELSTER mit Ihren Werten aus und schicke Ihnen die Vorschau als PDF, bevor ich ihn absende. Abgabefrist ist Montag, der 02.11. Falls Sie es bis dahin nicht schaffen, würde ich vorsorglich Kleinunternehmer ankreuzen, als Beginn den 01.10.2026 aus der Gewerbeanmeldung eintragen und beides nach Ihrer Prüfung korrigieren bzw. den Verzicht rückwirkend erklären. Wäre das für Sie in Ordnung?
 
 Was darf ich Ihnen für Ihre Hilfe zahlen?
 
