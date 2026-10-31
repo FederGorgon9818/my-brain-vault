@@ -41,6 +41,8 @@ Sicherheit: es wird nie ein echter Ordner gelöscht, nur Brücken nach Prüfung.
 
 Der Umzug kann nicht aus einer Desktop-Session laufen: Windows sperrt den Ordner, in dem die Session läuft.
 
+Erster Startversuch 31.10. 16:28: sauber abgebrochen, nichts verändert (Claude-App offen, Notepad mit `Mail an Dr. Hahn.txt`, Live-Sync-Lauf). Seitdem wartet das Skript nach dem Pausieren der Tasks bis 3 Minuten auf laufende Auto-Check-/Live-Sync-Prozesse, statt abzubrechen.
+
 ### Anleitung für Max
 
 1. Claude Desktop ganz beenden (auch im Tray), Obsidian, VS Code, Hub und offene Editoren schließen.
