@@ -58,7 +58,7 @@ status: Antwort Dr. Hahn da (28.10.2026, über Marko), seine Rückfragen offen, 
 | 3 | **Funded vor 01.10.** | **Ja, korrigiert den Vault-Stand:** drei Funded-Konten bei **Alpha Futures**, zwei ab 08.12.2025, eins ab 27.02.2026, alle geplatzt, **nie ein Payout**. Prop-Challenges kauft Max **seit 2024** (auch manuell, auch andere Firmen). Zertifikate liegen seit 28.10. in `C:\Users\maxlk\Documents\Gewerbe\Nachweise\Alpha-Futures\` (die zwei vom 08.12.2025 sind byte-gleich, nur einmal abgelegt, kein Konto auf dem Zertifikat). Muss so an Dr. Hahn, er entscheidet über den Beginn (Max fragte, ob man das weglassen kann: nein, Dr. Hahn braucht die echten Fakten, ein früherer Beginn kann sogar Kosten von Anfang 2026 absetzbar machen) |
 | 4 | Contabo-Rechnung | Passt: alle drei an „Herrn Maximilian kho, Ahamstr. 11, 85570 Ottenhofen“, Contabo GmbH München, USt-IdNr. DE267602842, Umsatzsteuer ausgewiesen (aus den PDFs gelesen) |
 | 6 | Steuernummer | Keine, noch nie eine Steuererklärung gemacht |
-| 7 | Nebentätigkeitsgenehmigung | Formular im REX-Portal: Art, Beschäftigungsart, Umfang in Wochenstunden, Zusicherung Arbeitszeitgesetz (§ 3, § 5 ArbZG), Vertrags-§ Nebentätigkeit gilt fort. Eingetragener Stundenumfang und genauer Wortlaut der Genehmigung: Screenshot von Max am 29.10. |
+| 7 | Nebentätigkeitsgenehmigung | Formular im REX-Portal: Art, Beschäftigungsart, Umfang in Wochenstunden, Zusicherung Arbeitszeitgesetz (§ 3, § 5 ArbZG), Vertrags-§ Nebentätigkeit gilt fort. **PDF von Max (31.10.):** beantragt 10.08.2026 (digital signiert 10:18), genehmigt von Personal am 23.09.2026, 14:31 (digitale Unterschrift im PDF). Art: „Gewerbliche Nebentätigkeit – Entwicklung und Betrieb automatisierter Software zur Analyse von Finanzmarktdaten; Dienstleistungen für ausländische Auftraggeber“, Selbstständigkeit/gewerblich, **Umfang 8 Stunden pro Woche**, sonst keine Auflagen. Abgelegt: `C:\Users\maxlk\Documents\Gewerbe\Nachweise\2026-08-10_Nebentaetigkeitsvereinbarung_GEWO.pdf` |
 | 8 | Eltern | Papa gesetzlich, Mama Beamtin privat versichert, **Papa verdient mehr.** Damit greift der Ausschluss für Kinder privat versicherter Eltern nicht, Familienversicherung über Papa grundsätzlich möglich (Einkommensgrenze und „nicht hauptberuflich selbstständig“ bleiben) |
 | 9 | Auszahlungsweg | Bank bzw. Rise auf Revolut Pro, kein Krypto |
 | – | Geschäftskonto | Revolut Pro eröffnet, IBAN da |
@@ -74,7 +74,7 @@ status: Antwort Dr. Hahn da (28.10.2026, über Marko), seine Rückfragen offen, 
 - **Nicht beantwortet, eilt nicht (bis EÜR 2026):** Rücklage-Prozent, Claude-Anteil, Hardware-Privatanteil und Kaufzeitpunkt, Kalenderjahr-Korrektur 2027, Homeoffice-Pauschale, IAB, Verlustrücktrag, Studium/BOS, Ist-Versteuerung (Vault: ja, beim Gegenlesen bestätigen), Voranmeldung 2027 monatlich oder vierteljährlich, Honorar.
 
 ### ✉️ Mail an Dr. Hahn (Entwurf 28.10.2026, noch nicht gesendet)
-Geht über Marko oder direkt, falls Max die Adresse hat. Offen vor dem Senden: Punkt 7 mit dem Screenshot der Genehmigung (29.10.) füllen, FFN-Anschrift wenn vorhanden.
+Geht über Marko oder direkt, falls Max die Adresse hat. Stand 31.10.: versandfertig, Punkt 7 aus dem Genehmigungs-PDF gefüllt. FFN-Anschrift fehlt weiter (steht als „reiche ich nach“ drin).
 ```
 Betreff: Antworten auf Ihre Rückfragen zum Fragebogen (Frist 02.11.)
 
@@ -108,7 +108,7 @@ Contabo GmbH, München, USt-IdNr. DE267602842, 19 % Umsatzsteuer ausgewiesen. An
 Nein, ich habe noch nie eine Steuererklärung abgegeben.
 
 7. Nebentätigkeitsgenehmigung
-Genehmigt am 23.09.2026, widerruflich. Genehmigt sind Entwicklung und Betrieb automatisierter Software zur Analyse von Finanzmarktdaten und Dienstleistungen für ausländische Auftraggeber. [Umfang laut Genehmigung: ___ Stunden pro Woche, weitere Auflagen: ___, Screenshot im Anhang.] Content und Coaching sind nicht abgedeckt, die Erweiterung beantrage ich gesondert.
+Beantragt am 10.08.2026, genehmigt am 23.09.2026 (PDF im Anhang). Genehmigt ist eine gewerbliche Nebentätigkeit: Entwicklung und Betrieb automatisierter Software zur Analyse von Finanzmarktdaten und Dienstleistungen für ausländische Auftraggeber, Umfang 8 Stunden pro Woche. Weitere Auflagen gibt es nicht, nur die übliche Zusicherung zum Arbeitszeitgesetz und dass die Regelung im Arbeitsvertrag weiter gilt (die Zustimmung ist dort widerruflich). Content und Coaching sind nicht abgedeckt, die Erweiterung beantrage ich gesondert.
 
 8. Eltern
 Mein Vater ist gesetzlich versichert und verdient mehr, meine Mutter ist Beamtin und privat versichert.
@@ -127,7 +127,7 @@ Was darf ich Ihnen für Ihre Hilfe zahlen?
 Viele Grüße
 Maximilian Kho
 
-Anhänge: E8 Terms of Service (PDF), zwei Zertifikate Alpha Futures (08.12.2025, 27.02.2026), Screenshot Nebentätigkeitsgenehmigung
+Anhänge: E8 Terms of Service (PDF), zwei Zertifikate Alpha Futures (08.12.2025, 27.02.2026), Nebentätigkeitsvereinbarung mit Genehmigung (PDF)
 ```
 Dateien: E8 Terms `Anhänge/E8_Terms_2026-08-23.pdf` (Vault), Zertifikate `C:\Users\maxlk\Documents\Gewerbe\Nachweise\Alpha-Futures\`.
 
