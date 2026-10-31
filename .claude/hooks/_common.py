@@ -30,12 +30,15 @@ for _stream in (sys.stdin, sys.stdout, sys.stderr):
 VAULT = Path(os.environ.get("CLAUDE_PROJECT_DIR") or Path(__file__).resolve().parents[2])
 
 # Engine-Ordner: PC-Pfad, per Env überschreibbar (Tests, Laptop, spätere Umzüge).
+# Umzug nach C:\Claude (31.10.2026): neuer Ort zuerst, der alte Pfad ist danach nur noch eine Brücke.
 _ENGINE_CANDIDATES = [
     os.environ.get("MAXLAB_ENGINE"),
+    r"C:\Claude\projekte\trading-data\engine",
     r"C:\Users\maxlk\Projects\trading-data\engine",
 ]
 ENGINE = next((Path(p) for p in _ENGINE_CANDIDATES if p and Path(p).is_dir()), None)
-HUB = next((Path(p) for p in [os.environ.get("MAXLAB_HUB"), r"C:\Users\maxlk\Projects\hub"] if p and Path(p).is_dir()), None)
+HUB = next((Path(p) for p in [os.environ.get("MAXLAB_HUB"), r"C:\Claude\projekte\hub", r"C:\Users\maxlk\Projects\hub"]
+            if p and Path(p).is_dir()), None)
 
 # Marker-Dateien: im Engine-Ordner (nicht versioniert, gilt für alle Sessions auf
 # dem Gerät). Ohne Engine (Laptop) im Vault unter .claude/hooks/.state (gitignored).
