@@ -15,7 +15,7 @@ Claude-Code-Session-Logs, gleiche Logik wie die Token Tracker App
 ## Schritt 1: Report ausführen
 
 ```
-python "C:\Users\maxlk\Projects\token-tracker\chat_report.py"
+python "C:\Claude\projekte\token-tracker\chat_report.py"
 ```
 
 Bei Bedarf `--json` anhängen für Rohdaten (z.B. zur Weiterverarbeitung).
@@ -49,7 +49,7 @@ Zahlen kompakt übernehmen (keine Textwüste, siehe [[Schreibstil]]), immer eino
 
 ## Verwandt
 
-- Volles Dashboard mit Charts (Browser): `python "C:\Users\maxlk\Projects\token-tracker\server.py"`
+- Volles Dashboard mit Charts (Browser): `python "C:\Claude\projekte\token-tracker\server.py"`
   → http://localhost:8712, oder Doppelklick auf `TokenTracker.exe`.
 - Native Claude-Code-Wege, Verbrauch zu sehen: `/cost`, `/context`, Statusline
   (`statusLine` in settings.json), rohe Logs unter `~/.claude/projects/**/*.jsonl`,

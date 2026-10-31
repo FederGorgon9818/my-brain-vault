@@ -5,7 +5,7 @@
       "name": "strategy-lab-preview",
       "runtimeExecutable": "python",
       "runtimeArgs": ["app_server.py"],
-      "cwd": "C:\\Users\\maxlk\\Projects\\trading-data\\engine",
+      "cwd": "C:\\Claude\\projekte\\trading-data\\engine",
       "env": { "MAXLAB_PORT": "8799" },
       "port": 8799
     }

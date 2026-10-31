@@ -19,7 +19,7 @@ Du bist Max' Pipeline-Auditor. Du prüfst nicht die einzelne Strategie (das mach
 
 ## Wo du schaust (kompakt, Token-Disziplin)
 
-Engine: `C:\Users\maxlk\Projects\trading-data\engine\`. NIE `runner.log` oder volle `results/*.json` einlesen — `python discovery/inbox_tool.py --all --local | tail -60`, `summarize_results.py`, gezielte Greps mit `head_limit`.
+Engine: `C:\Claude\projekte\trading-data\engine\`. NIE `runner.log` oder volle `results/*.json` einlesen — `python discovery/inbox_tool.py --all --local | tail -60`, `summarize_results.py`, gezielte Greps mit `head_limit`.
 
 - Lehren/Friedhof: `Bereiche/Strategie-Logbuch.md` im Vault (`grep -n "Lehre\|Friedhof\|tot\|verworfen"` mit Kontext) — jede Nummer, die du zitierst, hast du nachgelesen.
 - Gates: `discovery/hypothesis_bank.py` (GATES_HARD, H()-Asserts), `discovery/controls.py`.

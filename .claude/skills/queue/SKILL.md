@@ -7,7 +7,7 @@ description: Discovery-Stand kompakt - Inbox von der Box holen, Runner-Status, Q
 
 ## Schritte
 
-1. Im Engine-Ordner `C:\Users\maxlk\Projects\trading-data\engine`: auf der Box (Hostname `vmd202078`) `python discovery/inbox_tool.py --local`, sonst `python discovery/inbox_tool.py --pull` (holt Inbox, Register, Next-Buch, Tickets von der Box). Nie `runner.log` oder volle `results/*.json` lesen; bei Bedarf `python summarize_results.py <results.json>`.
+1. Im Engine-Ordner (PC `C:\Claude\projekte\trading-data\engine`, Box und Laptop `C:\Users\maxlk\Projects\trading-data\engine`): auf der Box (Hostname `vmd202078`) `python discovery/inbox_tool.py --local`, sonst `python discovery/inbox_tool.py --pull` (holt Inbox, Register, Next-Buch, Tickets von der Box). Nie `runner.log` oder volle `results/*.json` lesen; bei Bedarf `python summarize_results.py <results.json>`.
 2. Aus `discovery/queue.json` zählen: pending / running / done / skipped, davon `tag` = `variant_*` und `generator_coverage`, handgebaute Jobs mit `priority` ≥ 60. Vorrat in Tagen grob aus pending ÷ ~41 Slots/Tag (Messung 09.09.2026).
 3. Heartbeat-Alter des Runners; älter als 30 Minuten bei pending-Jobs = steht (Neustart per WMI-Zeile in `box_provision_discovery.ps1`, nur nach Ansage).
 

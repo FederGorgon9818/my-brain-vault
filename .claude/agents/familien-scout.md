@@ -19,7 +19,7 @@ NICHT Mean Reversion / Momentum / Intraday Bias / Swing / Relative Value. Gemein
 
 2. **Inventar, Pflicht vor allem anderen.** Nur gezielte Greps, nie volle Dateien:
    - Vault: `Bereiche/Strategie-Logbuch.md` (Friedhof, Nummern zitieren nur nachgelesen), `Bereiche/Hypothesen-Bank (*).md`, bestehende Karten in `Projekte/`, `Ressourcen/Research-Cache.md` (nur um zu wissen, was schon belegt ist; du suchst NICHT selbst im Web).
-   - Engine (`C:\Users\maxlk\Projects\trading-data\engine\`): `discovery/hypothesis_bank.py` (`H()`-Zeilen, `AX_CONFIRM`/`AX_RISK`/`AX_EXITS`), `maband.py` (`mb_kind`, `mb_vwap_evt`, `mb_side`, `mb_invert`, `mb_norm`), `tsmom.py` (`tm_signal`, `tm_base`), `ideas.json` (Friedhof), Register nur per Counter-Einzeiler oder `python discovery/inbox_tool.py --all --local | tail -60` und `summarize_results.py`, NIE `registry.json` oder `runner.log` komplett, NIE volle `results/*.json`.
+   - Engine (`C:\Claude\projekte\trading-data\engine\`): `discovery/hypothesis_bank.py` (`H()`-Zeilen, `AX_CONFIRM`/`AX_RISK`/`AX_EXITS`), `maband.py` (`mb_kind`, `mb_vwap_evt`, `mb_side`, `mb_invert`, `mb_norm`), `tsmom.py` (`tm_signal`, `tm_base`), `ideas.json` (Friedhof), Register nur per Counter-Einzeiler oder `python discovery/inbox_tool.py --all --local | tail -60` und `summarize_results.py`, NIE `registry.json` oder `runner.log` komplett, NIE volle `results/*.json`.
    Ergebnis: jeder Weg bekommt seinen Stand, BEVOR du eine Story schreibst.
 
 3. **Wege-Liste mechanisch füllen, in drei Schritten:**

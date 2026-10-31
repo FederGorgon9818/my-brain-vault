@@ -2,7 +2,7 @@ import re
 import sys
 from pathlib import Path
 
-VAULT = Path(r"C:\Users\maxlk\Documents\Obsidaian\My Brain\My Brain")
+VAULT = Path(r"C:\Claude\My Brain")
 sys.path.insert(0, str(VAULT / ".claude" / "hooks"))
 
 # guard_chain ruft am Modulende `run(main)` auf -- beim Import wuerde der Hook also

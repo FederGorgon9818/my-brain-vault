@@ -11,7 +11,7 @@ Die „Kontext bei Bedarf"-Regel aus der CLAUDE.md als fester Ablauf. Nur lesen,
 
 1. **Daily Notes:** die letzten 3 Dateien in `Daily Notes/` (nach Dateiname sortiert, neueste zuerst) vollständig lesen. Nicht nur die Kurzfassung aus dem Session-Start-Hook.
 2. **Projekte:** in `Projekte/*.md` das Frontmatter (`status`) lesen; nur aktive Projekte zählen. `Ticket-Epics.md` nur dann, wenn es jünger als 14 Tage ist (sonst als „veraltet" markieren).
-3. **Tickets:** aus `C:\Users\maxlk\Projects\trading-data\engine\tasks.json` (JSON-Liste) alle mit `status` nicht `done`/`erledigt`/`closed` und `prio` in `kritisch`/`rot`/`orange` (Prio-Skala 02.10.2026: kritisch = Sehr hoch, rot/orange = Hoch), dazu alle `datum`-Tickets mit `due` in den nächsten 7 Tagen oder überfällig, dazu maximal 5 gelbe mit dem nächsten `when`. Läuft die Session NICHT auf der Box (Hostname `vmd202078`), vorher `python discovery/inbox_tool.py --pull` im Engine-Ordner, weil die Box die Quelle der Wahrheit ist.
+3. **Tickets:** aus `C:\Claude\projekte\trading-data\engine\tasks.json` (JSON-Liste) alle mit `status` nicht `done`/`erledigt`/`closed` und `prio` in `kritisch`/`rot`/`orange` (Prio-Skala 02.10.2026: kritisch = Sehr hoch, rot/orange = Hoch), dazu alle `datum`-Tickets mit `due` in den nächsten 7 Tagen oder überfällig, dazu maximal 5 gelbe mit dem nächsten `when`. Läuft die Session NICHT auf der Box (Hostname `vmd202078`), vorher `python discovery/inbox_tool.py --pull` im Engine-Ordner, weil die Box die Quelle der Wahrheit ist.
 4. **Strategie-Logbuch:** nur den neuesten Eintrag (letzte `#NNN`-Überschrift) in `Bereiche/Strategie-Logbuch.md` per Grep, nicht die ganze Datei.
 
 ## Ausgabe

@@ -9,9 +9,9 @@ Du führst Backtests für Max aus. Antworte auf Deutsch, knapp, zahlenorientiert
 
 ## Wo alles liegt
 
-- **Engine (hier wird gearbeitet):** `C:\Users\maxlk\Projects\trading-data\engine\`
+- **Engine (hier wird gearbeitet):** `C:\Claude\projekte\trading-data\engine\`
 - **Zusammenfasser:** `summarize_results.py` im Engine-Ordner
-- **Vault (nur lesen, für Kontext):** `C:\Users\maxlk\Documents\Obsidaian\My Brain\My Brain\`
+- **Vault (nur lesen, für Kontext):** `C:\Claude\My Brain\`
 - Python 3.11 liegt im PATH.
 
 Im Vault-Root liegen ältere Kopien einiger Skripte. **Die Engine ist die Wahrheit**, nicht die Vault-Kopien.

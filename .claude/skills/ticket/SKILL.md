@@ -5,7 +5,7 @@ description: Ticket aus dem Tracker tasks.json lesen, anlegen, verschieben oder 
 
 # Skill: Ticket lesen, anlegen, verwalten
 
-Tracker: `C:\Users\maxlk\Projects\trading-data\engine\tasks.json`. **Die Box ist die Quelle der Wahrheit** (Regel Max, 06.09.2026). Seit 28.09.2026 gibt es dazu das Ticket-Board im Jira-Stil ([[Ticket-Board (Jira-Stil)]]): Boards, Sprints, Schätzung in Stunden.
+Tracker: `C:\Claude\projekte\trading-data\engine\tasks.json`. **Die Box ist die Quelle der Wahrheit** (Regel Max, 06.09.2026). Seit 28.09.2026 gibt es dazu das Ticket-Board im Jira-Stil ([[Ticket-Board (Jira-Stil)]]): Boards, Sprints, Schätzung in Stunden.
 
 **Alles läuft über `engine/ticket_tool.py`**, nie tasks.json von Hand editieren (das Tool hält die Sperre, schreibt Backup + Verlauf und gleicht mit der Box ab). Aufruf im Engine-Ordner mit `PYTHONIOENCODING=utf-8`.
 

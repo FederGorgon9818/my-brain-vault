@@ -2,7 +2,7 @@
   "mcpServers": {
     "whoop": {
       "command": "python",
-      "args": ["C:\\Users\\maxlk\\Projects\\whoop-mcp\\server.py"]
+      "args": ["C:\\Claude\\projekte\\whoop-mcp\\server.py"]
     }
   }
 }

@@ -8,7 +8,7 @@ USD gegen Originalbetrag, Revolut-Gebuehr addiert), danach Zahlungsdienste wie P
 gegen uebrige Belege und nur ueber den Betrag (eigener Abschnitt, immer pruefen).
 Private Umsaetze ohne Regel-Treffer tauchen im Bericht nicht auf (ausser mit --ohne-regel-ab).
 
-    python abgleich.py C:/Users/maxlk/Documents/Steuer/Kontoauszuege/revolut_2026-10.csv
+    python abgleich.py C:/Claude/buero/Steuer/Kontoauszuege/revolut_2026-10.csv
     python abgleich.py auszug.csv --von 2026-08-09 --bis 2026-10-31 --euer EUeR-2026.csv --out bericht.md
 """
 import argparse

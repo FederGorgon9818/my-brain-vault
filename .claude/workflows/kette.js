@@ -67,7 +67,7 @@ if (!TASK || TASK.length < 15) {
 }
 
 const ENGINE_NOTE = [
-  'Engine-Pfad: C:\\Users\\maxlk\\Projects\\trading-data\\engine (PC).',
+  'Engine-Pfad: C:\\Claude\\projekte\\trading-data\\engine (PC; Box: C:\\Users\\maxlk\\Projects\\trading-data\\engine).',
   'Fehlt der Pfad, per `ssh Administrator@100.127.89.9` auf der Box arbeiten (gleicher Pfad dort).',
   'Vault: Bereiche/, Projekte/, Ressourcen/ -- nur gezielte Greps, nie volle Logs oder results/*.json.',
 ].join(' ')

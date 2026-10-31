@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Homeoffice-Tage als Nachweis fuehren und die Tagespauschale je Seite zaehlen.
 
-Datei je Jahr: C:/Users/maxlk/Documents/Steuer/<jahr>/homeoffice.csv (datum;seite;notiz).
+Datei je Jahr: C:/Claude/buero/Steuer/<jahr>/homeoffice.csv (datum;seite;notiz).
 Seite gewo = Homeoffice fuer den Job (Werbungskosten, wirkt erst ueber dem Pauschbetrag),
 Seite gewerbe = Tag, an dem zu Hause am Gewerbe gearbeitet wurde (Betriebsausgabe, ob das
 neben einem GEWO-Tag zaehlt, klaert der Steuerberater). Pauschale nur einmal je Kalendertag.

@@ -26,7 +26,7 @@ offene Jahre: [[Steuererklärungen 2023 bis 2025 nachholen]].
 - **Rechnen nur über die Skripte oder `python -c`**, nie im Kopf. Werte je Jahr stehen in
   `steuerlib.WERTE` (Stand 28.10.2026, vor Abgabe gegen bmf/elster prüfen). Neues Jahr: dort nachtragen.
 - **Persönliche Daten nie in den Vault** (der wird gepusht). Ablage nur unter
-  `C:\Users\maxlk\Documents\Steuer\` und `C:\Users\maxlk\Documents\Gewerbe\Belege\`.
+  `C:\Claude\buero\Steuer\` und `C:\Claude\buero\Gewerbe\Belege\`.
 - Skripte liegen in diesem Ordner, Aufruf mit `python "<skill-ordner>/<skript>.py"`. Selbsttest nach
   jeder Änderung: `python test_steuer.py`.
 

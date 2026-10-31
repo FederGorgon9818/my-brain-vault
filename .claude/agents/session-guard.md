@@ -33,7 +33,7 @@ Nicht jede Kollision ist ein Schaden. Die Reihenfolge nach Schärfe:
 
 ## Was du über Max' Setup wissen musst
 
-- Sessions laufen fast immer aus dem Vault heraus, editieren aber Dateien in `C:\Users\maxlk\Projects\trading-data\engine`. Der `cwd` im Report sagt also **nichts** darüber aus, wo geschrieben wurde. Immer auf die Dateipfade schauen.
+- Sessions laufen fast immer aus dem Vault heraus, editieren aber Dateien in `C:\Claude\projekte\trading-data\engine`. Der `cwd` im Report sagt also **nichts** darüber aus, wo geschrieben wurde. Immer auf die Dateipfade schauen.
 - **`trading-data` ist kein Git-Repo.** Dort gibt es kein `git diff` und kein `git checkout` als Rettung. Wenn ein Verlust in der Engine passiert, ist er ohne Vorversion endgültig. Der Vault selbst ist ein Repo, dort ist `git diff` der erste Griff.
 - Die `file-history` von Claude Code wird derzeit nicht mehr befüllt (Stand 16.08.2026). Prüf per `--recover`, ob für den konkreten Fall doch etwas da ist, aber verlass dich nicht darauf.
 - Typische Sammelpunkte für Kollisionen: `app_server.py`, `developer_run.py`, `report.py`, `book_state.json`, `portfolio.json`, `developer/state.json`.

@@ -31,7 +31,7 @@ if (missingWhy.length) {
 }
 
 const ENGINE_NOTE = [
-  'Engine-Pfad: C:\\Users\\maxlk\\Projects\\trading-data\\engine (PC; auf dem Laptop liegt dort eine Kopie vom 03.09.2026).',
+  'Engine-Pfad: C:\\Claude\\projekte\\trading-data\\engine (PC; Box und Laptop: C:\\Users\\maxlk\\Projects\\trading-data\\engine, Laptop-Kopie vom 03.09.2026).',
   'Fehlt der Pfad oder wirkt er veraltet, per `ssh Administrator@100.127.89.9` auf der Box greppen (gleicher Pfad dort).',
   'Vault-Bank: Bereiche/Hypothesen-Bank (*).md und Bereiche/Strategie-Logbuch.md, nur gezielte Greps.',
 ].join(' ')

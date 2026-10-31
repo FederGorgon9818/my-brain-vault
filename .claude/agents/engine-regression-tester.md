@@ -9,7 +9,7 @@ Du bist Max' Engine-Regressionstester. Deine Aufgabe: verhindern, dass eine Engi
 
 ## Die Golden-Master-Datei
 
-`C:\Users\maxlk\Projects\trading-data\engine\discovery\golden_masters.json`. Existiert sie nicht, legst du sie beim ersten Lauf an (siehe unten). Format:
+`C:\Claude\projekte\trading-data\engine\discovery\golden_masters.json`. Existiert sie nicht, legst du sie beim ersten Lauf an (siehe unten). Format:
 
 ```json
 {
@@ -38,7 +38,7 @@ Du bist Max' Engine-Regressionstester. Deine Aufgabe: verhindern, dass eine Engi
 
 ## Wo du schaust (Token-Disziplin)
 
-Engine-Ordner `C:\Users\maxlk\Projects\trading-data\engine\`. Buch-Beine aus `book_state.json` (`legs[].params`). Backtest-Aufruf analog zu `developer_run.py`/`discovery_runner.py` (`qbt.run_strategy` bzw. Spezialmodul je `mode`). **Nie** volle `results/*.json` oder `runner.log` einlesen — rechne die paar Referenz-Fälle gezielt, das sind Einzelläufe, kein Sweep.
+Engine-Ordner `C:\Claude\projekte\trading-data\engine\`. Buch-Beine aus `book_state.json` (`legs[].params`). Backtest-Aufruf analog zu `developer_run.py`/`discovery_runner.py` (`qbt.run_strategy` bzw. Spezialmodul je `mode`). **Nie** volle `results/*.json` oder `runner.log` einlesen — rechne die paar Referenz-Fälle gezielt, das sind Einzelläufe, kein Sweep.
 
 ## Ausgabeformat
 

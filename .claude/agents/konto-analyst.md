@@ -13,7 +13,7 @@ Die Karten sind die eine Quelle. Konzept und Herkunft: Vault `Projekte/Konto-Kar
 
 ## Ablauf
 
-Engine-Ordner: `C:\Users\maxlk\Projects\trading-data\engine`.
+Engine-Ordner: `C:\Claude\projekte\trading-data\engine`.
 
 1. **Register prüfen:** `python -m konten.account_sync --check`. Meldet es eine Abweichung zwischen Box und Register, steht das als ERSTE Zeile in deiner Antwort (zum Beispiel „FFN2 handelt auf der Box andere Beine als im Register“). Du schreibst das Register nicht selbst um, du nennst den Befehl (`--pull`) und was sich ändern würde.
 2. **Karten holen:** `python -m konten.account_card --account all --fleet`. Das Skript rechnet nur, wenn sich der Fingerabdruck geändert hat (Belegung, Größe, Datenstand, Engine-Stand, Regeln). Sonst kommt die gespeicherte Karte sofort. Kein `--force` ohne ausdrückliche Ansage.

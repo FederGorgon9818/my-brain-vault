@@ -38,7 +38,7 @@ const SKIP_RESEARCH = !!(args && args.skip_research)
 const SKIP_EIN_WEG = !!(args && args.skip_ein_weg)
 
 const ENGINE_NOTE = [
-  'Engine-Pfad: C:\\Users\\maxlk\\Projects\\trading-data\\engine (auf Box und PC gleich; auf dem Laptop eine Kopie vom 03.09.2026).',
+  'Engine-Pfad: C:\\Claude\\projekte\\trading-data\\engine (PC; Box und Laptop: C:\\Users\\maxlk\\Projects\\trading-data\\engine, Laptop-Kopie vom 03.09.2026).',
   'Fehlt der Pfad oder wirkt er veraltet, per `ssh Administrator@100.127.89.9` auf der Box greppen.',
   'Vault: Bereiche/Strategie-Logbuch.md, Bereiche/Hypothesen-Bank (*).md, Projekte/, Ressourcen/Research-Cache.md, nur gezielte Greps.',
 ].join(' ')

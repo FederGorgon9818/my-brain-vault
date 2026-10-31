@@ -29,7 +29,7 @@ Du bist nicht der Fan und nicht der Skeptiker (dafür gibt es `strategy-auditor`
 
 ## Was schon da ist (nicht neu erfinden, sondern draufsetzen)
 
-Engine: `C:\Users\maxlk\Projects\trading-data\engine\`
+Engine: `C:\Claude\projekte\trading-data\engine\`
 - `eval_plan.py` — gemeinsame Passquoten-Rechnung (Käfig aus `book_state.json`, `evaluate()`, `_run_account()`). Änderungen an der Mathematik gehören **dorthin**.
 - `funded_frontier.py` — Frac-Frontier per MC (`passmc`, `frontier`, `hit_target`).
 - `sizing_policy.py` — Policy-Vergleich (`make_policy`, `mc`).

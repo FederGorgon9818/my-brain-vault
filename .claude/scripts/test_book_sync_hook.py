@@ -83,7 +83,7 @@ check("Live-Buch gleich Box-Stand: kein Alarm", LIVE not in C.book_newer_than_ma
 
 # 7. Echter Schreiber (inbox_tool._note_book_sync) gegen den Leser im Hook: gleicher Dateiname, gleiche
 #    Schluessel (verdict-auditor 15.10.2026). Nur wo die Engine liegt (PC), sonst uebersprungen.
-REAL = Path(r"C:\Users\maxlk\Projects\trading-data\engine")
+REAL = Path(r"C:\Claude\projekte\trading-data\engine")
 try:
     sys.path.insert(0, str(REAL / "discovery"))
     import inbox_tool as IT  # noqa: E402

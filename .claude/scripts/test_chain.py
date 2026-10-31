@@ -4,7 +4,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-VAULT = Path(r"C:\Users\maxlk\Documents\Obsidaian\My Brain\My Brain")
+VAULT = Path(r"C:\Claude\My Brain")
 # Die Hooks neben diesem Skript, nicht fest die des Vaults: so prueft eine Kopie des
 # .claude-Ordners (Staging) ihre EIGENEN Hooks. VAULT bleibt fest, weil die Testpfade
 # echte Vault-Pfade sein muessen -- unter Temp/ griffe sonst die Freiliste.
@@ -101,7 +101,7 @@ b2 = {"session_id": SID, "transcript_path": str(tr)}
 res, err = hook("guard_chain.py", dict(b2, tool_name="WebSearch", tool_input={"query": "x"}))
 check("WebSearch ohne research-scout blockt", decision(res) == "deny", res)
 res, err = hook("guard_chain.py", dict(b2, tool_name="Write",
-                tool_input={"file_path": r"C:\Users\maxlk\Projects\hub\static\app.js", "content": "x"}))
+                tool_input={"file_path": r"C:\Claude\projekte\hub\static\app.js", "content": "x"}))
 check("Hub-Datei ohne design-guard blockt", decision(res) == "deny", res)
 res, err = hook("guard_chain.py", dict(b2, tool_name="Bash",
                 tool_input={"command": ".\\hot_reload.ps1"}))
@@ -114,7 +114,7 @@ tr_ui = tdir / "fake_transcript_ui.jsonl"
 tr_ui.write_text(json.dumps({
     "type": "assistant", "timestamp": "2026-09-21T20:00:00Z",
     "message": {"content": [{"type": "tool_use", "name": "Edit",
-                             "input": {"file_path": r"C:\Users\maxlk\Projects\hub\static\app.js"}}]}}) + "\n",
+                             "input": {"file_path": r"C:\Claude\projekte\hub\static\app.js"}}]}}) + "\n",
     encoding="utf-8")
 res, err = hook("guard_chain.py", {"session_id": SID, "transcript_path": str(tr_ui),
                                    "tool_name": "Bash", "tool_input": {"command": ".\\hot_reload.ps1"}})
@@ -129,16 +129,16 @@ res, err = hook("guard_chain.py", dict(b2, tool_name="Edit", tool_input={
     "old_string": "Tippfehlr", "new_string": "Tippfehler"}))
 check("Logbuch-Tippfehler blockt NICHT", decision(res) is None, res)
 res, err = hook("guard_chain.py", dict(b2, tool_name="Write", tool_input={
-    "file_path": r"C:\Users\maxlk\Projects\trading-data\engine\book_state.json", "content": "{}"}))
+    "file_path": r"C:\Claude\projekte\trading-data\engine\book_state.json", "content": "{}"}))
 check("book_state ohne Quant/Auditor blockt", decision(res) == "deny", res)
 
 # hub_config.json: Roster-Pflege ist keine UI-Arbeit, Layout-Aenderung schon
 res, err = hook("guard_chain.py", dict(b2, tool_name="Edit", tool_input={
-    "file_path": r"C:\Users\maxlk\Projects\hub\hub_config.json",
+    "file_path": r"C:\Claude\projekte\hub\hub_config.json",
     "old_string": '"mock_loops": [', "new_string": '"mock_loops": [ {"name": "x"},'}))
 check("hub_config Roster-Eintrag blockt NICHT", decision(res) is None, res)
 res, err = hook("guard_chain.py", dict(b2, tool_name="Edit", tool_input={
-    "file_path": r"C:\Users\maxlk\Projects\hub\hub_config.json",
+    "file_path": r"C:\Claude\projekte\hub\hub_config.json",
     "old_string": '"apps": [', "new_string": '"apps": [ {"name": "neu"},'}))
 check("hub_config Layout-Aenderung blockt", decision(res) == "deny", res)
 
@@ -160,7 +160,7 @@ check("Sperre sagt dem Subagent, dass er zurueckmelden soll",
       "Subagent `quant-mathematician`" in str(res), str(res)[:200])
 res, err = hook("guard_chain.py", dict(b2, tool_name="Write", agent_id="a0000000000000001",
                 agent_type="research-scout",
-                tool_input={"file_path": r"C:\Users\maxlk\Projects\hub\static\app.js", "content": "x"}))
+                tool_input={"file_path": r"C:\Claude\projekte\hub\static\app.js", "content": "x"}))
 check("Web-Freiheit gilt nur fuer Web: research-scout auf Hub-Datei blockt", decision(res) == "deny", res)
 
 # Workflow-Journal: <sid>/subagents/workflows/<wf>/journal.jsonl + agent-<id>.meta.json
@@ -193,7 +193,7 @@ check("ohne agent_type: Typ kommt aus der meta.json", decision(res) is None, res
 fake_wf("wf_buch", "a5a0000000000001", "strategy-auditor", ["started"])
 fake_wf("wf_buch", "a5a0000000000002", "quant-statistician", ["started"])
 res, err = hook("guard_chain.py", dict(bw, tool_name="Write", tool_input={
-    "file_path": r"C:\Users\maxlk\Projects\trading-data\engine\book_state.json", "content": "{}"}))
+    "file_path": r"C:\Claude\projekte\trading-data\engine\book_state.json", "content": "{}"}))
 check("abgebrochener Workflow-Auditor gibt book_state nicht frei", decision(res) == "deny", res)
 # Gemessene Eingabe eines LAUFENDEN Workflow-Agents (Mini-Workflow hook-probe, 28.09.2026):
 # agent_id + agent_type, transcript_path = Haupt-Transkript, im Journal nur `started`.
@@ -384,17 +384,17 @@ res, err = hook("guard_chain.py", dict(b2, tool_name="Bash", tool_input={
     "command": 'grep -n "tot" "' + str(VAULT / "Projekte" / "ADX Wege-Karte.md") + '"'}))
 check("reines Lesen per Bash blockt nicht", decision(res) is None, res)
 res, err = hook("guard_chain.py", dict(b2, tool_name="Bash", tool_input={
-    "command": 'sed -i s/a/b/ C:/Users/maxlk/Projects/trading-data/engine/book_state.json'}))
+    "command": 'sed -i s/a/b/ C:/Claude/projekte/trading-data/engine/book_state.json'}))
 check("book_state per Bash blockt", decision(res) == "deny", res)
 R.path_for(SID).unlink(missing_ok=True)
 
 # (4) UI-Gate: gemischte Backend/UI-Dateien nur bei echter Oberflaechen-Aenderung
 res, err = hook("guard_chain.py", dict(b2, tool_name="Edit", tool_input={
-    "file_path": r"C:\Users\maxlk\Projects\trading-data\engine\app_server.py",
+    "file_path": r"C:\Claude\projekte\trading-data\engine\app_server.py",
     "old_string": "def load_book(path):", "new_string": "def load_book(path, strict=False):"}))
 check("app_server Backend-Edit blockt NICHT", decision(res) is None, res)
 res, err = hook("guard_chain.py", dict(b2, tool_name="Edit", tool_input={
-    "file_path": r"C:\Users\maxlk\Projects\trading-data\engine\app_server.py",
+    "file_path": r"C:\Claude\projekte\trading-data\engine\app_server.py",
     "old_string": "<div class='row'>", "new_string": "<div class='row wide'><button>Neu</button>"}))
 check("app_server UI-Edit blockt", decision(res) == "deny", res)
 

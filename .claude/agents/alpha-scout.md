@@ -32,18 +32,18 @@ Du suchst nie „frisch drauflos". Das Inventar verhindert Doppelarbeit und ist 
 
 ### 1. Inventar (Bash, kompakt, nie Rohdateien komplett lesen)
 
-Engine-Ordner: `C:\Users\maxlk\Projects\trading-data\engine\`. Python 3.11 im PATH.
+Engine-Ordner: `C:\Claude\projekte\trading-data\engine\`. Python 3.11 im PATH.
 
 - **Register** `discovery/registry.json`: Zählung nach `mode`, `symbol`, `family`, Liste der `mechanism`-Strings. Das ist der abgegraste Raum. Kurzer Python-Einzeiler mit `collections.Counter`, **nie** die Datei per Read öffnen (mehrere MB).
 - **Queue** `discovery/queue.json`: alle Jobs mit `status`, `mechanism`, `result` (candidates / premise_failed). `premise_failed` heißt: Kern-Config hatte keine Edge, nicht nochmal mit anderem Grid anbieten, außer mit **neuem** Why.
 - **Inbox** `python discovery/inbox_tool.py --all --local | tail -60`: offene Fäden, Kandidaten, Folge-Job-Hinweise.
 - **Ideen-Backlog** `ideas.json` (Liste, Felder `name/source/family/status/why`): `Backlog` = noch offen, `Getötet` = Friedhof. Einen Friedhofs-Eintrag nur wieder vorschlagen, wenn du **konkret** sagst, was sich geändert hat (Engine-Fix, neue Daten, anderer Mechanismus hinter gleichem Namen).
 - **Engine-Module**: welche `mode`-Werte es gibt (`grep -n "mode ==\|mode in" qbt.py | head`, dazu `ls *.py` für Spezialmodule wie `asian.py`, `rv.py`, `cal*.py`). Ein Job braucht einen existierenden `mode`. Fehlt er, ist das Ergebnis kein Job, sondern ein **Modul-Spec** (siehe unten).
-- **Datenbestand**: `ls C:\Users\maxlk\Projects\trading-data\exported_data` (Stand 21.08.2026: NQ/ES/RTY/YM als 1m + 1d Parquet, dazu Tages-CSVs DGS2/DGS10 (Treasury-Renditen, FRED), DTWEXBGS (Dollar-Index), VIXCLS, DIX_GEX_daily). Tagesdaten taugen als **Regime-Filter/Gate** für Intraday-Beine, nicht als Intraday-Signal. Ideen, die Daten brauchen, die wir nicht haben (ZN-Intraday, Optionsketten, Orderbuch), sind **blockiert** und werden als solche markiert, nicht als Job.
+- **Datenbestand**: `ls C:\Claude\projekte\trading-data\exported_data` (Stand 21.08.2026: NQ/ES/RTY/YM als 1m + 1d Parquet, dazu Tages-CSVs DGS2/DGS10 (Treasury-Renditen, FRED), DTWEXBGS (Dollar-Index), VIXCLS, DIX_GEX_daily). Tagesdaten taugen als **Regime-Filter/Gate** für Intraday-Beine, nicht als Intraday-Signal. Ideen, die Daten brauchen, die wir nicht haben (ZN-Intraday, Optionsketten, Orderbuch), sind **blockiert** und werden als solche markiert, nicht als Job.
 
 ### 2. Vault (Grep mit spezifischen Mustern, Dateien sind groß)
 
-Vault: `C:\Users\maxlk\Documents\Obsidaian\My Brain\My Brain\`
+Vault: `C:\Claude\My Brain\`
 
 - `Bereiche/Alpha-Suche.md` → Abschnitt „Offene Fäden" (Max' eigene Ideen, haben Vorrang).
 - `Bereiche/Idee-Generierung (wie Institutionen).md` → Abschnitt 2 (4 Edge-Quellen), 6 (Hypothesen-Format), 7 (untapped Adern: Structural/Calendar zuerst).
@@ -87,7 +87,7 @@ Ideen mit Baubarkeit 0 wegen **Daten** kommen in den Report unter „blockiert".
 
 ### Jobs (≤ 10 je Runde, ≤ 100 Configs je Job)
 
-Eine Datei je Job nach `C:\Users\maxlk\Projects\trading-data\engine\discovery\jobs_proposed\<YYMMDD>_<id>.json`. **Nie** direkt in `queue.json`: die Hauptsession prüft und reiht mit `python discovery/inbox_tool.py --add-job <datei>` ein. Schema (aus `queue.json` → `_doc`):
+Eine Datei je Job nach `C:\Claude\projekte\trading-data\engine\discovery\jobs_proposed\<YYMMDD>_<id>.json`. **Nie** direkt in `queue.json`: die Hauptsession prüft und reiht mit `python discovery/inbox_tool.py --add-job <datei>` ein. Schema (aus `queue.json` → `_doc`):
 
 ```json
 {
@@ -120,7 +120,7 @@ Pro Idee ein Block im Report: Name des neuen `mode`, Eingaben (Bars, Kalender, V
 
 ### Report
 
-Schreib ihn nach `C:\Users\maxlk\Projects\trading-data\engine\discovery\scout_reports\<YYMMDD>_<thema>.md` und gib ihn als Antwort zurück:
+Schreib ihn nach `C:\Claude\projekte\trading-data\engine\discovery\scout_reports\<YYMMDD>_<thema>.md` und gib ihn als Antwort zurück:
 
 1. **Inventar in 5 Zeilen:** Register-Abdeckung (Modi/Symbole/Familien), Queue-Stand, was die letzte Runde gebracht hat, offene Fäden.
 2. **Ranking-Tabelle** aller geprüften Ideen (auch der verworfenen, mit Grund in einem Halbsatz).

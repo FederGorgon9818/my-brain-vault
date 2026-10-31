@@ -20,9 +20,9 @@ except AttributeError:
     pass
 
 # Ablage: persoenliche Daten liegen NIE im Vault (der wird gepusht), nur hier.
-STEUER = Path(r"C:\Users\maxlk\Documents\Steuer")
+STEUER = Path(r"C:\Claude\buero\Steuer")
 KONTOAUSZUEGE = STEUER / "Kontoauszuege"
-GEWERBE_BELEGE = Path(r"C:\Users\maxlk\Documents\Gewerbe\Belege")
+GEWERBE_BELEGE = Path(r"C:\Claude\buero\Gewerbe\Belege")
 
 # Werte je Steuerjahr, Stand 28.10.2026 (Wissen Claude, vor Abgabe gegen bmf/elster pruefen).
 # pendel_bis20 / pendel_ab21: Entfernungspauschale je km einfache Strecke und Arbeitstag.

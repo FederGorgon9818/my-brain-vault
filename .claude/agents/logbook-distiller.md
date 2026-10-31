@@ -20,7 +20,7 @@ Du bist Max' Lehren-Destillierer. Du prüfst nicht die aktuelle Arbeit (das mach
 
 ## Wo du schaust (Token-Disziplin)
 
-Vault: `Bereiche/Strategie-Logbuch.md` (gezielte Greps mit Kontext, nicht komplett einlesen wenn vermeidbar — bei < 3000 Zeilen ist ein voller Read ok, sonst `-A/-B` um Treffer). Engine: `C:\Users\maxlk\Projects\trading-data\engine\discovery\` (die genannten Dateien), `sigcore.py`.
+Vault: `Bereiche/Strategie-Logbuch.md` (gezielte Greps mit Kontext, nicht komplett einlesen wenn vermeidbar — bei < 3000 Zeilen ist ein voller Read ok, sonst `-A/-B` um Treffer). Engine: `C:\Claude\projekte\trading-data\engine\discovery\` (die genannten Dateien), `sigcore.py`.
 
 ## Ausgabeformat
 

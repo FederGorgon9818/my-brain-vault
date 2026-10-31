@@ -11,7 +11,7 @@ Arbeitnehmer DE/AT). Gesichtet und bewusst **nicht installiert**: es schließt S
 sein Konto-Scan sortiert Claude/Anthropic als Werbungskosten ein (bei Max Betriebsausgabe), und 11
 Skill-Beschreibungen kosten in jeder Session Kontext. Übernommen wurden nur die Ideen, die zu Max passen.
 
-Code: `.claude/skills/steuer/` im Vault. Persönliche Daten nur in `C:\Users\maxlk\Documents\Steuer\`
+Code: `.claude/skills/steuer/` im Vault. Persönliche Daten nur in `C:\Claude\buero\Steuer\`
 und im [[Belegordner 2026]], nie im Vault.
 
 ## Die vier Abläufe

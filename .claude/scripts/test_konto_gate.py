@@ -12,7 +12,7 @@ import re
 import sys
 from pathlib import Path
 
-VAULT = Path(r"C:\Users\maxlk\Documents\Obsidaian\My Brain\My Brain")
+VAULT = Path(r"C:\Claude\My Brain")
 sys.path.insert(0, str(VAULT / ".claude" / "hooks"))
 
 # guard_chain ruft am Modulende `run(main)` auf -- Quelltext laden, letzte Zeile kappen
@@ -50,13 +50,13 @@ PROMPTS = [
 ]
 
 FILES = [
-    (True, "c:/users/maxlk/projects/trading-data/nt8_staging_20261003_host/maxlab_book_host.live_ffn150k_2.json"),
-    (True, "c:/users/maxlk/projects/trading-data/x/maxlab_riskguard.cfg"),
-    (True, "c:/users/maxlk/projects/trading-data/nt8_staging/cfg_vorlage_ffn_150k.txt"),
-    (False, "c:/users/maxlk/projects/trading-data/nt8_staging_20261003_host/maxlab_book_host.sim.json"),
-    (False, "c:/users/maxlk/projects/trading-data/nt8_staging_20261003_host/maxlab_book_host.example.json"),
-    (False, "c:/users/maxlk/projects/trading-data/engine/konten/accounts.json"),
-    (False, "c:/users/maxlk/projects/trading-data/engine/book_state.json"),
+    (True, "C:/Claude/projekte/trading-data/nt8_staging_20261003_host/maxlab_book_host.live_ffn150k_2.json"),
+    (True, "C:/Claude/projekte/trading-data/x/maxlab_riskguard.cfg"),
+    (True, "C:/Claude/projekte/trading-data/nt8_staging/cfg_vorlage_ffn_150k.txt"),
+    (False, "C:/Claude/projekte/trading-data/nt8_staging_20261003_host/maxlab_book_host.sim.json"),
+    (False, "C:/Claude/projekte/trading-data/nt8_staging_20261003_host/maxlab_book_host.example.json"),
+    (False, "C:/Claude/projekte/trading-data/engine/konten/accounts.json"),
+    (False, "C:/Claude/projekte/trading-data/engine/book_state.json"),
 ]
 
 CMDS = [

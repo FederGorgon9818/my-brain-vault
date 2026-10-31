@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Werbungskosten eines Jahres zusammenrechnen und gegen den Arbeitnehmer-Pauschbetrag stellen.
 
-Eingabe: C:/Users/maxlk/Documents/Steuer/<jahr>/werbungskosten.csv
+Eingabe: C:/Claude/buero/Steuer/<jahr>/werbungskosten.csv
 Kopf:    art;beschreibung;menge;wert;anteil;beleg;mittel;kauf
   pendeln       menge = Arbeitstage am Betrieb, wert = km einfache Strecke (Entfernungspauschale,
                 egal welches Verkehrsmittel). Jobticket/Zuschuss vom Betrieb: --z17/--z18

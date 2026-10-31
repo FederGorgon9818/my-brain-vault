@@ -20,7 +20,7 @@ Hintergrund (Regel Max, 23.08.2026, "Der EINE Weg"): jede Hypothese wird nie als
    - **Verwandt, lebt noch:** eine bestehende ID testet einen ähnlichen Mechanismus anders → in der Ausgabe referenzieren, damit die Achsen sich NICHT mit der bestehenden Zeile überschneiden (sonst zählt die Zufallsdecke doppelt für dieselbe Idee).
    - **Verwandt, bereits tot:** die Hypothesen-Bank oder das Strategie-Logbuch zeigt einen Friedhofs-Eintrag oder ein `❌`-Ergebnis für einen nahen Verwandten (z.B. #138 für λ-Proxy-Richtungssignale) → **explizit warnen**, dass die neue Variante an derselben Stelle scheitern könnte, und benennen, was sich UNTERSCHEIDET (andere Formel, anderer Nenner, andere Richtungsdefinition) und was NICHT (gleiche Datenbasis, gleiches Grundproblem). Kein automatisches Verwerfen — aber die Kontamination steht sichtbar in der Ausgabe.
 
-3. **Engine-Fähigkeiten gegenlesen.** Lies (nicht raten) die relevanten Stellen in `C:\Users\maxlk\Projects\trading-data\engine\`:
+3. **Engine-Fähigkeiten gegenlesen.** Lies (nicht raten) die relevanten Stellen in `C:\Claude\projekte\trading-data\engine\`:
    - `discovery/hypothesis_bank.py` — `AX_CONFIRM`, `AX_RISK`, `AX_EXITS`, `AX_FILTERS_COMBO(_ATR)`, `EMA_LADDER_*`: welche Bestätigungs-/Stop-/Exit-Achsen existieren SCHON und sind ohne neuen Code nutzbar.
    - `tsmom.py` (`tm_signal`, `tm_base`, `tm_norm`, ...) und `maband.py` (`mb_kind`, `mb_norm`, ...): welche Signal-/Basis-Varianten der bestehende Modus schon kann.
    - `sigcore.py`: welche Features (RVOL, Delta-Proxy, λ-Proxy, Session-Kontext) bereits berechnet werden und als Achse oder Gate direkt nutzbar sind.
@@ -41,7 +41,7 @@ Hintergrund (Regel Max, 23.08.2026, "Der EINE Weg"): jede Hypothese wird nie als
 
 ## Wo du schaust (Token-Disziplin)
 
-Vault: gezielte Greps in `Bereiche/Hypothesen-Bank (*).md` (mehrere hundert KB, nie komplett einlesen), `Bereiche/Strategie-Logbuch.md` für Friedhofs-Referenzen. Engine: `C:\Users\maxlk\Projects\trading-data\engine\discovery\hypothesis_bank.py`, `tsmom.py`, `maband.py`, `sigcore.py` — gezielt die genannten Symbole grep-en, nicht die ganzen Dateien lesen wenn sie groß sind.
+Vault: gezielte Greps in `Bereiche/Hypothesen-Bank (*).md` (mehrere hundert KB, nie komplett einlesen), `Bereiche/Strategie-Logbuch.md` für Friedhofs-Referenzen. Engine: `C:\Claude\projekte\trading-data\engine\discovery\hypothesis_bank.py`, `tsmom.py`, `maband.py`, `sigcore.py` — gezielt die genannten Symbole grep-en, nicht die ganzen Dateien lesen wenn sie groß sind.
 
 ## Ausgabeformat
 

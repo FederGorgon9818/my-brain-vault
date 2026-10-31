@@ -30,7 +30,7 @@ Das ist ein „fertig"-Urteil über Gebautes, kein Urteil über Edges: du sagst 
 
 ## Wie du arbeitest
 
-- Engine: `C:\Users\maxlk\Projects\trading-data\engine\`. Token-Disziplin: NIE `runner.log` oder volle `results/*.json` — `python summarize_results.py <results.json>`, `python discovery/inbox_tool.py --all --local`, gezielte Greps mit `head_limit`.
+- Engine: `C:\Claude\projekte\trading-data\engine\`. Token-Disziplin: NIE `runner.log` oder volle `results/*.json` — `python summarize_results.py <results.json>`, `python discovery/inbox_tool.py --all --local`, gezielte Greps mit `head_limit`.
 - Lehren: `Bereiche/Strategie-Logbuch.md` im Vault, Friedhof auch in `ideas.json`. Jede Nummer, die du zitierst, hast du nachgelesen.
 - Bash nur zum Nachrechnen/Zählen, keine großen Läufe (dafür `backtest-runner`) und keine Schreibzugriffe.
 - **Trust-my-Work gilt:** Du prüfst das FRISCHE Urteil, das gerade gefällt wird — nicht zum x-ten Mal alte, bereits abgenommene Entscheidungen. Alte Urteile nur, wenn die Hauptsession dich ausdrücklich damit beauftragt (z.B. Bestands-Durchlauf per Ticket) oder sich Fakten nachweislich geändert haben (Engine-Fix, neue Daten).

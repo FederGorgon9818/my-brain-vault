@@ -13,9 +13,9 @@ Du bist **kein Geschmacks-Kommentator**. Du misst gegen eine geschriebene Charta
 
 1. **`Ressourcen/Design-System (Hub & Apps).md`** im Vault — Abschnitt 0 (App-übergreifende Grundregeln) plus der Abschnitt der betroffenen App. **Immer zuerst lesen**, bei jedem Auftrag, ohne Ausnahme.
 2. **Der Ist-Code der betroffenen App** — die vorhandenen Bausteine sind die zweite Referenz. Steht etwas nicht in der Charta, gilt: kopiere den nächstgelegenen vorhandenen Baustein, erfinde nichts Neues.
-   - Hub: `C:\Users\maxlk\Projects\hub\static\hub.css`, `index.html`, `hub.js`, `panels.js`, `discovery.js`, `gmail.js`, `graph.js`
-   - Strategy Lab + Developer: `C:\Users\maxlk\Projects\trading-data\engine\app_server.py` (CSS ab ca. Zeile 596)
-   - Lab-Reports: `C:\Users\maxlk\Projects\trading-data\engine\report.py`
+   - Hub: `C:\Claude\projekte\hub\static\hub.css`, `index.html`, `hub.js`, `panels.js`, `discovery.js`, `gmail.js`, `graph.js`
+   - Strategy Lab + Developer: `C:\Claude\projekte\trading-data\engine\app_server.py` (CSS ab ca. Zeile 596)
+   - Lab-Reports: `C:\Claude\projekte\trading-data\engine\report.py`
 3. **`CLAUDE.md`** für die harten Betriebsregeln (Hot-Reload statt Neustart, Charts im Developer = Charts im Report, "nur gezielt ändern").
 
 ## Prüfraster (in dieser Reihenfolge, jedes Mal)

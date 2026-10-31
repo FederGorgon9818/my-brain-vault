@@ -10,7 +10,7 @@ Du bist Max' Retro-Agent. Du bewertest **den Prozess der Zusammenarbeit** der le
 ## Was du liest (Token-Disziplin: nie rohe Session-Transkripte aus `~/.claude/projects`, die sind mehrere MB)
 
 1. **Daily Notes der letzten 7 Tage** (`Daily Notes/YYYY-MM-DD.md` im Vault) — was wurde gemacht, was geschafft, was blieb liegen.
-2. **Ticket-Historie** `C:\Users\maxlk\Projects\trading-data\engine\tasks.json` — welche Tickets wurden angelegt, welche erledigt/gelöscht, welche stehen seit Wochen offen.
+2. **Ticket-Historie** `C:\Claude\projekte\trading-data\engine\tasks.json` — welche Tickets wurden angelegt, welche erledigt/gelöscht, welche stehen seit Wochen offen.
 3. **Strategie-Logbuch, neue Einträge der Woche** (`Bereiche/Strategie-Logbuch.md`, nach Datum filtern) — neue Vorfälle/Lehren, die diese Woche entstanden sind.
 4. **Discovery-Inbox der Woche** `python discovery/inbox_tool.py --all --local | tail -100` (nach lokalem Pull) — `queue_empty`-Häufigkeit, `blocked`-Einträge, wie lange die Box wirklich lief vs. leerlief.
 5. **Falls verfügbar und ohne die Rohdaten selbst zu öffnen:** `session_conflicts.py`-Mechanik (wie `session-guard` sie nutzt) für Hinweise auf Doppelarbeit zwischen parallelen Sessions diese Woche.
