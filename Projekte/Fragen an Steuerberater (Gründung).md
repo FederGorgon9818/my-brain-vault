@@ -65,6 +65,17 @@ status: Antwort Dr. Hahn da (28.10.2026, über Marko), seine Rückfragen offen, 
 | – | Hardware 2026 | Noch offen, Schätzung ohne Hardware nehmen |
 | – | Gehalt | 3.600 € brutto erst seit 02.07.2026, vorher Ausbildung. Jahressumme Abrechnung 10.2026: 22.773,42 €. Sonderzahlung im Nov./Dez. etwas unter einem Monatsgehalt (Teil kam schon Anfang des Jahres, Urlaubsgeld wohl dabei). **Hochgerechnet (Python, 28.10.):** Brutto 2026 29.973,42 bis 33.573,42 €, Einkünfte nach Pauschale 1.230 € 28.743,42 bis 32.343,42 €. 2027 bis 03.07. ohne Sonderzahlung 21.948,39 € brutto, Einkünfte 20.718,39 €. **Dr. Hahn rechnete mit rund 43.000 € Jahresbrutto**, die Erstattung aus dem Verlust 2026 fällt also kleiner aus |
 
+### Kosten vor Juni 2026 aus den Postfächern (Scan 31.10.2026)
+Gescannt: web.de (`Max.Kho@web.de`, reicht nur bis **24.10.2025** zurück, 545 Prop-Mails) und Gmail (`maxlkho4@gmail.com`). Beträge nur aus Kaufbelegen, Summen per Python, Liste als CSV: `C:\Users\maxlk\Documents\Gewerbe\Steuerberater\Prop- und Tool-Kosten aus Mails (Stand 2026-10-31).csv`.
+
+| | vor Juni 2026 | ab Juni 2026 |
+|---|---|---|
+| Prop (mit Betrag) | 527,80 USD (12 Apex-Zahlungen, 19.05. bis 03.11.2025) | 589,23 USD (Bulenox, E8 50k, FN1/FN2, FFN) |
+| Tools (mit Betrag) | 653,91 USD (Volumetrica, Deepcharts, Bookmap, März bis Mai 2026) | 482,31 USD |
+| **Summe belegt** | **1.181,71 USD** | 1.071,54 USD |
+
+**Gekauft, aber Betrag steht nicht in der Mail** (nur über Konto- oder Kartenauszug zu holen, Paddle-Zahlungen liefen über Karte Endung 6148): Topstep (Combine Mai 2025 mit Rebill, neue Combine Nov. 2025), **Alpha Futures** (Käufe vor den Pässen 08.12.2025, Zero 50k 13.02.2026, 2× Premium 50k 28.05.2026, Abo-Rebills 16.01., 16.02., 27.06.2026), FundedNext (3 bis 4 Konten 12.01.2026), MFFU (Evaluation und DXFeed 16.03.2026), TradingView (9 Rechnungen März bis Sept. 2025). **E8 150k (AP214, laut Tickets am 05.10. gekauft): kein Kaufbeleg im web.de gefunden.** Für 2024 in keinem der zwei Postfächer etwas gefunden (frühester Prop-Kauf Mai 2025).
+
 ### Selbst aufgefallen (nicht in seiner Mail)
 - **Punkt 1 trägt seine ganze USt-Empfehlung.** Ist der Payout kein Entgelt für eine Leistung (Preisgeld-Linie, Research 22.10.), wackelt die Unternehmereigenschaft fürs Trading und damit die Vorsteuer. Deshalb die Auszüge vor dem Ankreuzen zu ihm. Kommt bis zur Frist keine Antwort: Kleinunternehmer ankreuzen (bis 29.02.2028 rückwirkend drehbar), Regelbesteuerung bindet 5 Jahre.
 - **Schätzung 2026 andersrum verstanden:** laut Vault sind 2.000 bis 2.500 € Verlust die Zahl **ohne** Hardware, mit Hardware im Dezember eher 4.500 bis 5.000 €. Hardware ist für 2026 nicht geplant (AP239), die Zahl passt also trotzdem.
