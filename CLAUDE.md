@@ -46,6 +46,8 @@ Volle Regeln in [[Schreibstil]]. Kurzfassung:
 
 Max hat mehrfach angemerkt, zu oft nicht gefragt worden zu sein, bevor etwas geändert wurde. Ab jetzt: **im Zweifelsfall immer fragen**, auch wenn es nach der zweiten Nachfrage in Folge aussieht.
 
+**Immer per Popup fragen (Regel Max, 01.11.2026):** Hast du Annahmen und bist dir unsicher, frag **immer im Popup** (`AskUserQuestion`-Tool), nicht als Frage im Fließtext. Konkrete Optionen anbieten, Empfehlung als erste Option mit „(Empfohlen)". Gilt auch für scheinbar kleine Annahmen, z.B. welche Datei gemeint ist.
+
 ---
 
 ## 🤝 Trust my Work (Regel Max, 15.08.2026)
