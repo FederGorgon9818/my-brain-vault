@@ -127,6 +127,8 @@ Die Idee ist gut und passt zu Max. Das Ziel bis Juli ist sehr sportlich, aber mi
 
 Entschieden am 15.10.: Reels zuerst (Instagram, gleiches Video auf TikTok und Shorts), iPhone, Equipment bis 100 €, Schnitt-Skripte in eigener Session.
 
+**Stand 01.11. (Max): Projekt vorerst geparkt.** Fokus auf eine Sache, zu viele Baustellen gleichzeitig. Das Gespräch bei Personal hat noch nicht stattgefunden, AP450 bleibt ohne Fälligkeit im Backlog, Antragstext A/B bleibt Entwurf. Fund 31.10.: die Genehmigung vom 23.09. lautet schon auf 8 Std./Woche, B wäre eine echte Erhöhung. Wieder aufnehmen nur auf Max' Ansage.
+
 Stand 27.10.:
 
 1. **GEWO-Freigabe holen (AP450).** Mi 28.10. bei Personal nachfragen (Stundenrahmen, Social-Media-Richtlinie), dann A oder B wählen, Antrag im REX-Portal abschicken. Davon hängt alles Öffentliche ab (posten, E-Mail-Liste AP445, Coach-Outreach).
