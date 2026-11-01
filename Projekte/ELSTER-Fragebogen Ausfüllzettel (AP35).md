@@ -4,7 +4,7 @@ tags:
   - steuer
   - gründung
 erstellt: 2026-10-31
-status: Ausfüllen am Wochenende, Absenden Mo 02.11.2026
+status: ausgefüllt und als Entwurf gespeichert (01.11.2026), wartet auf Dr. Hahn, nicht abgesendet
 ---
 # 📝 ELSTER-Fragebogen: Ausfüllzettel (AP35)
 
@@ -20,6 +20,13 @@ status: Ausfüllen am Wochenende, Absenden Mo 02.11.2026
 > 1. Alles ausfüllen, bei 🟡 schon mal den **Wert von Dr. Hahn** eintragen.
 > 2. Zwischenspeichern, „Prüfen“, PDF-Vorschau ziehen und über Marko an Dr. Hahn.
 > 3. **Montag:** Antwort da → seine Korrekturen rein. Keine Antwort → die 🟡-Felder auf den Rückfall-Wert stellen. Dann absenden.
+
+> [!success] Stand 01.11.2026 abends
+> In ELSTER komplett ausgefüllt, „Speichern und Verlassen“ (Entwurf), **nicht abgesendet**. Max wartet auf Dr. Hahn (Antworten per WhatsApp an Marko), Monatsfrist ist weich.
+> - **Ausdruck der Prüfseite:** `C:\Users\maxlk\Documents\Gewerbe\Steuerberater\2026-11-01 ELSTER-Fragebogen Entwurf (nicht abgesendet).pdf` (6 Seiten, Text nicht maschinenlesbar).
+> - Eingetragen: alle 🟡-Felder mit Dr. Hahns Wert (Beginn 01.10.2026, Zeile 93 Nein, Zeile 132 Verzicht, 133 Zahllast 0, 154/155 Ist, 158 USt-IdNr.). Gewerbe −2.000 / 0, Lohn 32.343 / 20.718, Umsatz 0 / 2.000. Tätigkeitstext gekürzt auf 192 Zeichen (Feld fasst rund 200). Vorname aus dem Profil: „Maximilian Han San“.
+> - **Bank:** IBAN `DE09 1001 0178 0592 2013 11` = **Revolut Pro** (Geschäftskonto, von Max bestätigt), gültig für alle Steuerarten, kein SEPA-Lastschriftmandat.
+> - **An Dr. Hahn noch offen:** Beginn inkl. Vorbereitungshandlungen (Zeile 69, Kosten seit Juni, Alpha Futures seit 12.2025), Zeile 93, Zeile 131/132.
 
 ## 1. Persönliche Angaben
 | Feld | Wert |
