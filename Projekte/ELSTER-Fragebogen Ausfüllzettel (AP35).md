@@ -4,7 +4,7 @@ tags:
   - steuer
   - gründung
 erstellt: 2026-10-31
-status: ausgefüllt und als Entwurf gespeichert (01.11.2026), wartet auf Dr. Hahn, nicht abgesendet
+status: ausgefüllt und als Entwurf gespeichert (01.11.2026), wartet bis 06.11. auf Dr. Hahn, nicht abgesendet
 ---
 # 📝 ELSTER-Fragebogen: Ausfüllzettel (AP35)
 
@@ -27,6 +27,9 @@ status: ausgefüllt und als Entwurf gespeichert (01.11.2026), wartet auf Dr. Hah
 > - Eingetragen: alle 🟡-Felder mit Dr. Hahns Wert (Beginn 01.10.2026, Zeile 93 Nein, Zeile 132 Verzicht, 133 Zahllast 0, 154/155 Ist, 158 USt-IdNr.). Gewerbe −2.000 / 0, Lohn 32.343 / 20.718, Umsatz 0 / 2.000. Tätigkeitstext gekürzt auf 192 Zeichen (Feld fasst rund 200). Vorname aus dem Profil: „Maximilian Han San“.
 > - **Bank:** IBAN `DE09 1001 0178 0592 2013 11` = **Revolut Pro** (Geschäftskonto, von Max bestätigt), gültig für alle Steuerarten, kein SEPA-Lastschriftmandat.
 > - **An Dr. Hahn noch offen:** Beginn inkl. Vorbereitungshandlungen (Zeile 69, Kosten seit Juni, Alpha Futures seit 12.2025), Zeile 93, Zeile 131/132.
+
+> [!info] Stand 02.11.2026
+> Noch keine Antwort von Dr. Hahn. Max wartet bis **06.11.**, fasst bei Marko nach. Kommt bis dahin nichts: Zeile 131 Kleinunternehmer statt 132, Zeilen 133, 154 und 155 leeren, absenden.
 
 ## 1. Persönliche Angaben
 | Feld | Wert |
