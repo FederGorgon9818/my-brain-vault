@@ -3433,3 +3433,18 @@ Anlass: Frage Max, ob Slack als Erweiterung taugt (Ticket AP453, ohne Eile). Que
 | Gen Z nutzt zu 56,9 % Social Media regelmäßig zur Information, 62,4 % halten klassische Medien für vertrauenswürdiger | [IU](https://www.iu.de/forschung/studien/medienkompetenz/social-media/) | Studie |
 | Telefonwerbung bei Verbrauchern nur mit vorheriger ausdrücklicher Einwilligung; Makler-Service-Calls können Werbung sein | [Betriebs-Berater, OLG Düsseldorf](https://betriebs-berater.ruw.de/wirtschaftsrecht/urteile/Service-Calls-eines-Versicherungsmaklers-als-Werbung-39567) | Rechtsprechung |
 | Werbekennzeichnung und Offenlegung von Interessenkonflikten gelten auch auf Social Media | [ESMA/BaFin Factsheet](https://www.esma.europa.eu/sites/default/files/2026-01/DE_Germany_de_-_Finfluencers_factsheet.pdf) | Aufsicht, nur Auszug gelesen |
+
+## Sprach-Assistent: Claude-Code-Mods und Echtzeit-Dienste (Stand 04.11.2026)
+
+| Aussage | Quelle | Status |
+|---|---|---|
+| Claude Code `/voice` ist nur Diktat, keine Sprachausgabe, kein Gespräch; Deutsch und Windows ja, nur mit claude.ai-Login | [Doku Voice Dictation](https://code.claude.com/docs/en/voice-dictation) | bestätigt (Hersteller-Doku) |
+| Sprachmodus der Claude-App ist ein echtes Gespräch, in Claude Code aber nicht verfügbar, nur Diktat; Nicht-Englisch in Beta | [Support Voice Mode](https://support.claude.com/en/articles/11101966-use-voice-mode) | bestätigt (Hersteller-Doku) |
+| VoiceMode (mbailey): Zwei-Wege-Gespräch als MCP/Plugin für Claude Code, Stille-Erkennung, MIT, lokal kostenlos, Version 9.0.2 vom 29.10.2026. Barge-in nicht dokumentiert, Latenz ungemessen, Deutsch nicht dokumentiert, Windows laut PyPI nativ oder WSL, laut Website nur WSL | [GitHub](https://github.com/mbailey/voicemode), [PyPI](https://pypi.org/project/voice-mode/) | bestätigt (Hersteller-Angaben, Lücken offen) |
+| OpenAI gpt-realtime-2: Audio Input 32 $, Cached 0,4 $, Output 64 $ je 1M Tokens; Barge-in über `interrupt_response` | [Modell](https://developers.openai.com/api/docs/models/gpt-realtime-2), [VAD](https://developers.openai.com/api/docs/guides/realtime-vad) | bestätigt (Hersteller-Doku), Deutsch-Qualität offen |
+| Deepgram Voice Agent 0,075 $/min (PAYG), Flux mehrsprachig 0,0078 $/min, Flux Satzende "~260ms"; Deutsch bei Flux nicht bestätigt | [Preise](https://deepgram.com/pricing), [Flux](https://developers.deepgram.com/docs/flux/quickstart) | bestätigt (Hersteller-Doku), Deutsch offen |
+| ElevenLabs Agents 0,08 $/min, LLM extra | [Preise](https://elevenlabs.io/pricing/agents) | bestätigt (Hersteller-Doku) |
+| Cartesia Voice Agents 0,03 $/min, LLM extra; Ink-2-STT nennt kein Deutsch | [Preise](https://cartesia.ai/pricing), [STT](https://docs.cartesia.ai/build-with-cartesia/stt-models) | bestätigt (Hersteller-Doku) |
+| Gemini Live (gemini-3.8-live): Input 0,005 $/min, Output 0,018 $/min, Free Tier; Deutsch, Latenz, Barge-in ungeprüft | [Preise](https://aistudio.google.com/docs/pricing) | bestätigt (Hersteller-Doku), Rest offen |
+| Kokoro hat kein Deutsch | [GitHub](https://github.com/hexgrad/kokoro) | bestätigt (Hersteller-Doku) |
+| Baukästen für eigenen Aufbau: Pipecat, LiveKit Agents; Windows bei Pipecat nicht belegt | [Pipecat](https://github.com/pipecat-ai/pipecat), [LiveKit](https://github.com/livekit/agents) | bestätigt (Hersteller-Doku), Windows offen |
