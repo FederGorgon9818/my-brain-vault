@@ -165,6 +165,11 @@ TOPICS = [
      [],
      ["Max-Arbeit in Tickets immer als Schritte mit Dauer und Zeitfenster: 'Max [30m][box-flat]: ...' (15er-Raster, hoechstens 60 min), ticket_tool step add/done/list. Der Fokus-Planer (Box, alle 30 min) legt die wichtigsten in Max' Ticket-Bloecke (Mi ab 21:30, Sa; Do ist Kreativ-Tag)."],
      "Projekte/Fokus-Planer (Tickets im Kalender).md"),
+    ("praelux",
+     [r"\bpraelux\b", r"\bprelux\b", r"\bprelox\b", r"\blearningsuite\b"],
+     [],
+     ["PraeLux: Max startet als Vertriebspartner, Stand, offene Klaerungen (GEWO, Verguetung, Partnervertrag) und Kurs-Stichpunkte in der Projektnotiz. Kurs-Videos: Transkript per Schalter im Untertitel-Menue des Players."],
+     "Projekte/PraeLux Vertrieb.md"),
 ]
 
 # Nachrichten, die nicht von Max getippt wurden (Subagent-Rueckmeldungen, System-

@@ -59,3 +59,39 @@ Geprüft: Maklervertrag, Erstgesprächsbogen, drei Baloise-Kundenmappen (150, 20
 - Laufzeit 48 Jahre gegenüber 15 Jahren Anlagehorizont im Bogen. Befristung und BOS stehen nicht im Bogen.
 - Maklervertrag: vertauschte Rollen in I.1, weitreichende Vollmacht, Werbe-Häkchen schon gesetzt, Änderungen durch Schweigen. Noch nicht unterschreiben, bis das geklärt ist.
 - Offen: Partnervertrag, Provision für den eigenen Abschluss, Herleitung der Depot-Steuern.
+
+## Akademie (Kurs im Intranet)
+
+Eigene Stichpunkte, kein Wortlaut. Kurs: `praelux.learningsuite.io`, Bereich Akademie. Der Player hat ein Transkript: Untertitel-Menü, Schalter „Transkript". Es ist automatisch erzeugt und hat Hörfehler.
+
+### Woche 1: Ausbildungs-Guide (Andreas Gulke, Geschäftsführung, Aufnahme 17.07.2024, 34:24)
+
+**Ablauf der 8 Wochen**
+
+| Woche | Thema |
+|---|---|
+| 1 | Onboarding, Wertekanon, Vision, Ziele statt Wünsche, Video „Das Ziel deiner Reise" |
+| 2 | Kundengewinnung: Zielgruppe, Akquise digital oder analog, Events |
+| 3 | Terminieren der Top 3 Potenziale, Kennenlerngespräch, Vertrauensaufbau, Pitch und Einwandbehandlung mit Roleplay |
+| 4 | Kundengewinnung nach Berufsgruppen: Selbstständige, Angestellte, Beamte (im Video teils als „Woche 3" bezeichnet) |
+| 5 | Vertriebspartneraufbau, Impulsgespräch |
+| 6 | Motivation, eigenes Warum, Ego, Resilienz |
+| 7 | Terminieren am Telefon, Roleplay im eigenen Umfeld statt an echten Kunden |
+| 8 | Perspektive, Unternehmensaufbau, danach Strategie-Wochenende |
+
+**Aussagen des Unternehmens (damaliger Stand, nicht geprüft)**
+
+- Gegründet 2016 mit knapp 30 Leuten, 1.400 eingestellte Vertriebspartner über die Jahre.
+- Wachstum im Mittel 32,8 % pro Jahr (Juni 2016 bis Juni 2024), Ziel über 30 %.
+- Ziel bis 2030: Top 3 der inhabergeführten Finanzdienstleister in Deutschland.
+- Ein Drittel des Teams hauptberuflich, Status Makler für Investment, Versicherung und Finanzierung.
+- Anteile werden innerhalb der Handelsvertretung vergeben (Gesellschaftermodell). Beteiligung an Bestandsprovisionen, das nennt das Unternehmen Passivität.
+- Leitsatz: Tradition trifft Innovation, „Finanzrenaissance".
+
+**Was von Max erwartet wird**
+
+- Aktive Teilnahme, Roleplays, montags 19 Uhr Live-Vorträge.
+- Eigenen Zielplan mit der Führungskraft festlegen, Kundenanalyse und Liste möglicher Kontakte führen.
+- Bezahlung nach Leistung, kein Stundenlohn.
+
+**Gegenprüfen:** Die Vergütung kommt hier nur als Prinzip vor, konkrete Zahlen fehlen. Das bleibt bei den offenen Punkten oben (Vergütung, Stornohaftung, Partnervertrag). Das Video sagt, dass eine Mandantenliste aus dem Umfeld gebraucht wird: passt zu Punkt 1 der Strategie, aber vor dem ersten echten Gespräch muss die GEWO-Frage geklärt sein.
