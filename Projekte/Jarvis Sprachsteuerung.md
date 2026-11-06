@@ -34,6 +34,16 @@ datum: 2026-11-04
 - **Eine Haupt-Session „Jarvis"**, ID in `%LOCALAPPDATA%\Jarvis\haupt_session.txt`, übersteht Neustarts. Ursache der vielen Sessions: Test-Läufe und Kopien beim Öffnen alter Jarvis-Sessions im Terminal. 13 alte Dateien nach `%LOCALAPPDATA%\Jarvislte_sessions` verschoben. Tests nutzen eine Wegwerf-Session und löschen sie. Wer die Haupt-Session im Terminal öffnet, während Jarvis läuft, erzeugt wieder eine Kopie.
 - **Session-Übersicht:** Jarvis liest laufende Claude-Sessions (`~/.claude/sessions`, Thema, letzte Antwort, wartet oder arbeitet). „Nicht die Tickets" schaltet Tickets ab.
 
+## Stufe 2: Jarvis gibt Arbeit weiter (06.11.2026, Max: alles auf einmal)
+- Jarvis (Haiku) arbeitet nie selbst, sondern schreibt Aktionen in doppelten eckigen Klammern, die das Programm ausführt und nie vorliest:
+  - **AUFTRAG:** Hintergrund-Arbeiter `claude -p` in `C:\Claude`, sonnet, Rechte-Modus `auto`, Name „Jarvis: Titel", höchstens 3 parallel, Zeitlimit 45 min. Beendet jede Antwort mit einer „FÜR JARVIS"-Zeile, die als Fertig-Meldung gesprochen wird, sobald gerade niemand redet.
+  - **SESSION:** neue sichtbare Session als Tab in Windows Terminal (`session_start.py`), für Loops und alles zum Zuschauen.
+  - **NACHRICHT:** an eine laufende Session über ListAgents und SendMessage (Haiku-Arbeiter).
+  - **ABBRECHEN** eines laufenden Auftrags.
+- **Heikles nur mit F9:** Jarvis markiert es selbst mit Ausrufezeichen, dazu fängt eine Wortliste Handlungen wie Neustart, Stoppen, Löschen, Mail senden, Push, Kauf, Deploy. Nachrichten an Sessions brauchen immer F9. Ohne F9 bekommt der Arbeiter die Regel, nichts Außenwirksames zu tun.
+- Getestet: Selbsttest grün (Ordner zählen im Hintergrund, 8 s, Fertig-Meldung gesprochen; Runner-Neustart wartet auf F9), neues Terminal-Fenster geöffnet, Nachricht an dieses Testfenster angekommen. Mit Max' Stimme noch nicht getestet.
+- Offen: Arbeiter-Sessions tauchen in der Session-Liste auf (gewollt, Name „Jarvis: …"). Ob Pflichtketten und Hooks im Vault-Ordner einen Arbeiter blockieren, ist ungetestet, die Arbeiter laufen in `C:\Claude`, wo keine Hooks greifen.
+
 ## Nächste Schritte
 1. Max testet, ob sich das Tempo brauchbar anfühlt.
 2. Stufe 2: Hintergrund-Arbeiter, „wie weit bist du", Fertig-Meldungen, Bestätigung per Taste. Vorher klären, wie sich Pflichtketten und Stop-Hook in Prozessen ohne Bildschirm verhalten.
