@@ -27,6 +27,13 @@ datum: 2026-11-04
 - Dauerhaft offener Claude-Prozess bringt laut Messung keinen klaren Vorteil.
 - Fertige Lösungen und Preise: [[Research-Cache]], Abschnitt „Sprach-Assistent". Echtes Telefonat geht nur mit bezahltem Sprachdienst, Entscheidung bei Max.
 
+## Verstehen, Haupt-Session, Sessions (06.11.2026)
+- Max: Abfragen klappt, aber er versteht oft falsch, und bei „offene Sessions, nicht die Tickets" kamen trotzdem Tickets.
+- **Mikro-Test** (`mic_test.cmd`, 5 Sätze, alle Mikros gleichzeitig): Trust GXT 232 am besten (base 0,779, small 0,895, turbo 0,897 bei rund 8,8 s je Satz). Jabra und Webcam schlechter, Realtek liefert nichts.
+- An Max' Aufnahmen mit `small`: Wortliste mit Session und Jarvis 0,919, Hilfesatz 0,835 bis 0,895. Nur 5 Sätze, der Abstand ist dünn. Eingestellt: `small` plus Wortliste. Erwartung rund 4 bis 6 s bis zum ersten Ton, an echten Runden noch nicht gemessen.
+- **Eine Haupt-Session „Jarvis"**, ID in `%LOCALAPPDATA%\Jarvis\haupt_session.txt`, übersteht Neustarts. Ursache der vielen Sessions: Test-Läufe und Kopien beim Öffnen alter Jarvis-Sessions im Terminal. 13 alte Dateien nach `%LOCALAPPDATA%\Jarvislte_sessions` verschoben. Tests nutzen eine Wegwerf-Session und löschen sie. Wer die Haupt-Session im Terminal öffnet, während Jarvis läuft, erzeugt wieder eine Kopie.
+- **Session-Übersicht:** Jarvis liest laufende Claude-Sessions (`~/.claude/sessions`, Thema, letzte Antwort, wartet oder arbeitet). „Nicht die Tickets" schaltet Tickets ab.
+
 ## Nächste Schritte
 1. Max testet, ob sich das Tempo brauchbar anfühlt.
 2. Stufe 2: Hintergrund-Arbeiter, „wie weit bist du", Fertig-Meldungen, Bestätigung per Taste. Vorher klären, wie sich Pflichtketten und Stop-Hook in Prozessen ohne Bildschirm verhalten.
