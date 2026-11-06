@@ -44,6 +44,11 @@ datum: 2026-11-04
 - Getestet: Selbsttest grün (Ordner zählen im Hintergrund, 8 s, Fertig-Meldung gesprochen; Runner-Neustart wartet auf F9), neues Terminal-Fenster geöffnet, Nachricht an dieses Testfenster angekommen. Mit Max' Stimme noch nicht getestet.
 - Offen: Arbeiter-Sessions tauchen in der Session-Liste auf (gewollt, Name „Jarvis: …"). Ob Pflichtketten und Hooks im Vault-Ordner einen Arbeiter blockieren, ist ungetestet, die Arbeiter laufen in `C:\Claude`, wo keine Hooks greifen.
 
+## Nachschärfung 06.11.2026 abends
+- Max' erster Test nach Stufe 2: Jarvis sagte weiter „kann ich nicht", weil die Haupt-Session noch seine alten Absagen enthielt. Haupt-Session einmal frisch gestartet (alte im Archiv), dazu ein kurzer System-Hinweis an jede Nachricht. Merke: nach einer Änderung der Fähigkeiten die Haupt-Session neu anlegen.
+- Verneinte Treffer („nichts neu starten") lösen kein F9 mehr aus. Arbeiter und neue Sessions bekommen den Hinweis auf `logs/jarvis.log` für den Gesprächszusammenhang.
+- Echter Box-Check als Hintergrund-Auftrag: 57 s, Ergebnis laut Arbeiter: Box läuft, NT8 mit sechs Strategien bereit, Discovery-Dienst an, Queue seit rund 48 Tagen leer (nicht nachgeprüft).
+
 ## Nächste Schritte
 1. Max testet, ob sich das Tempo brauchbar anfühlt.
 2. Stufe 2: Hintergrund-Arbeiter, „wie weit bist du", Fertig-Meldungen, Bestätigung per Taste. Vorher klären, wie sich Pflichtketten und Stop-Hook in Prozessen ohne Bildschirm verhalten.
