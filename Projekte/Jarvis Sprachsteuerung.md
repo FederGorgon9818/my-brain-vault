@@ -49,6 +49,12 @@ datum: 2026-11-04
 - Verneinte Treffer („nichts neu starten") lösen kein F9 mehr aus. Arbeiter und neue Sessions bekommen den Hinweis auf `logs/jarvis.log` für den Gesprächszusammenhang.
 - Echter Box-Check als Hintergrund-Auftrag: 57 s, Ergebnis laut Arbeiter: Box läuft, NT8 mit sechs Strategien bereit, Discovery-Dienst an, Queue seit rund 48 Tagen leer (nicht nachgeprüft).
 
+## Angepinnt in der Cockpit-Leiste, Kontext klein (06.11.2026)
+- Max: eine Haupt-Session oben angepinnt, Klick öffnet Jarvis, alles von Jarvis Gestartete darunter, Kontext darf nicht volllaufen.
+- Leiste (`~/.claude/mods/cockpit-sessions`): Bereich **JARVIS** ganz oben. Klick auf „Jarvis" startet ihn als Tab „Jarvis" oder springt hin. Darunter seine Aufträge und Fenster, die dafür aus OFFEN verschwinden. Daten aus `%LOCALAPPDATA%\Jarvis\sidebar.json`.
+- Haupt-Session wird ab 60.000 Tokens im Hintergrund verdichtet (`/compact` ohne Fenster getestet: gleiche ID, Erinnerung bleibt).
+- Getestet: Leisten laden den Code und laufen stabil, Jarvis als Tab gestartet, Leiste erkennt ihn als laufend und findet den Tab. Klick in der Leiste selbst noch nicht von Max ausprobiert.
+
 ## Nächste Schritte
 1. Max testet, ob sich das Tempo brauchbar anfühlt.
 2. Stufe 2: Hintergrund-Arbeiter, „wie weit bist du", Fertig-Meldungen, Bestätigung per Taste. Vorher klären, wie sich Pflichtketten und Stop-Hook in Prozessen ohne Bildschirm verhalten.
