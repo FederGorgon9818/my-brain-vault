@@ -23,7 +23,7 @@ Gilt als allgemeines Ziel für die Zukunft und steht über allen Teilzielen. Her
 
 ## Nordstern: der erste 100.000-€-Monat (Max, 22.10.2026)
 
-**Steht über allen anderen Zielen.** 50.000 $ Eigenkapital, 10.000 € netto bis 2031 und Be Obsessed 10.000 € bis Juli 2027 sind Etappen auf dem Weg. Der Weg wird auf **einem ehrlichen Self-Brand-Kanal** dokumentiert, dem Be-Obsessed-Kanal: Gedanken, Schritte, wo Max steht und wie genau er es macht, KI und Trading zusammen. Leitplanken: Edge bleibt privat (Prozess ja, Strategie-Regeln nie), veröffentlicht wird erst nach schriftlicher GEWO-Zustimmung und GEWO wird nie genannt, Trading nur als eigene Doku und Methodik, nie Signale oder Anlageberatung. Details: [[Be Obsessed]].
+**Steht über allen anderen Zielen.** 50.000 $ Eigenkapital, 10.000 € netto bis 2031 und Be Obsessed 10.000 € bis Juli 2027 sind Etappen auf dem Weg. Der Weg wird auf **einem ehrlichen Self-Brand-Kanal** dokumentiert, dem Be-Obsessed-Kanal: Gedanken, Schritte, wo Max steht und wie genau er es macht, KI und Trading zusammen. Leitplanken: Edge bleibt privat (Prozess ja, Strategie-Regeln nie), veröffentlicht wird erst nach schriftlicher GEWO-Zustimmung und GEWO wird nie genannt, Trading nur als eigene Doku und Methodik, nie Signale oder Anlageberatung. Details: [[Be Obsessed]]. **Be Obsessed liegt seit 08.11.2026 auf Eis (Max).**
 
 ## Das eigentliche Asset
 

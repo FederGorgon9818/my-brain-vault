@@ -5,9 +5,12 @@ tags:
   - ki-coaching
 erstellt: 2026-10-15
 deadline: 2027-07-03
-status: vorbereitet, live erst nach GEWO-Freigabe, Entscheidungen bei Max (Stand 27.10.2026)
+status: auf Eis (Max, 08.11.2026), vorher vorbereitet, live erst nach GEWO-Freigabe
 ---
 # 🦁 Be Obsessed (KI-Mentorship)
+
+> [!warning] Auf Eis seit 08.11.2026 (Max)
+> Projekt pausiert. Alles hier bleibt als Stand erhalten, wird aber nicht weiterverfolgt, bis Max es wieder aufnimmt.
 
 ⬅️ [[_Projekte|Projekte]] · [[Be Obsessed OGSM]] · [[Be Obsessed Lernplan]] · [[Unternehmensgründung Entscheidung]] · [[Gründung Zeitplan]]
 
