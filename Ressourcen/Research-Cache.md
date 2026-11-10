@@ -236,6 +236,22 @@ zweck: Persistenter Evidence Store. VOR jeder Websuche hier greppen. Nach jeder 
 | Parallel-Konten: eigene Trades zwischen eigenen Konten kopieren erlaubt (Replikanto/Tradovate-Copy), auch mit anderer Size; Limits: 750k $ Gesamt-Challenge-Allokation, **max. 5 aktive Funded-Konten** | Mail 20.08. | **bestätigt (Primärquelle)** |
 | **Tempo-Relevanz (Ziel „erster Payout"):** Target 2.500 $ (statt 3.000), Preis ab ~80 $, erste Auszahlung schon ab 500 $ Profit + 5 Benchmark-Tagen möglich (vs. E8: 2.625 $ über Start nötig) — ABER der Käfig ist 1.500 $ intraday statt 2.000 $. Ob das netto schneller ist, entscheidet die Passquote des Buchs im engeren Käfig, nicht die Schwellen | eigene Ableitung aus den Mails, 24.08.2026 | offen — MC-Rechnung nötig |
 
+## FundedNext Futures Flex Funded: Account Agreement (gelesen 10.11.2026, gültig Stand 10.11.2026)
+
+> Quelle: FundedNext Account Agreement (Futures) zum bestandenen Konto FNFTCHMAXIMILIANKHO71491, von Max zur Unterschrift eingefügt, plus FN-Wissensbasis per Connector am 10.11.2026. Primärquelle.
+
+| Claim | Quelle | Status |
+|---|---|---|
+| Flex Funded: keine Consistency-Rule, kein Daily Loss Limit, keine News-Regel | KB „FundedNext Futures Flex FundedNext Account All Rules“, „Are there any news trading rules for FundedNext Futures?“ | **bestätigt (Primärquelle)** |
+| Kontraktlimit Flex 50K: 3 Minis / 30 Micros, fest ab Kontoerstellung, Funded wie Challenge | KB Flex All Rules | **bestätigt (Primärquelle)** |
+| Payout Flex: 5 Benchmark-Tage (50K: ≥ 200 $), min. 500 $ Gewinn, bis 50 % vom Gewinn, 250 $ bis 1.500 $ je Antrag (50K), Split **95 %**, Konto schließt automatisch mit dem 5. Payout | Agreement + KB | **bestätigt (Primärquelle)**. Split jetzt 95 % (Mail 08/2026 nannte 80 % plus Add-on) |
+| Zahlungsgebühr bis 3,5 % je Auszahlung, vom Zahlungsanbieter | Agreement | **bestätigt (Primärquelle)** |
+| Inaktivität Flex: 30 Kalendertage ohne Trade, dann deaktiviert | Agreement | **bestätigt (Primärquelle)** |
+| Hedging über eigene Konten bei FN **und mit anderen Prop-Firmen** verboten, im selben Konto erlaubt; Copy-Trading eigener Konten auch firmenübergreifend erlaubt | Agreement + KB „copy & group trading policy“ | **bestätigt (Primärquelle)** |
+| Algo/Bots in Challenge und Funded erlaubt, HFT wird überwacht und geahndet | KB „Is the usage of Automated Trading Systems allowed in FundedNext Futures?“, „Does FundedNext Futures Allow HFT?“ | **bestätigt (Primärquelle)** |
+| FN darf vollständige Strategie-Offenlegung verlangen, sonst Kündigung; Vertraulichkeit unbefristet inkl. Existenz des Vertrags; Daten an andere Prop-Firmen; Name/Payout für Werbung | Agreement | **bestätigt (Primärquelle)** |
+| Live-Review-Pool Flex: nach 15 Payouts, starkem FN-Verlauf oder Live-Erfahrung, nur nach Ermessen | Agreement | **bestätigt (Primärquelle)** |
+
 ## Exit-Overlays: Break-Even & Trailing Stops (recherchiert 29.07.2026)
 
 | Claim | Quelle | Status |

@@ -72,7 +72,7 @@ Quelle FN: FundedNext-Wissensbasis, Artikel „Does FundedNext Futures allow ove
 | Firma | Regel (Wortlaut-Kern) | Zählweise | Was zählt | Folge | Quelle |
 |---|---|---|---|---|---|
 | **E8 Futures** (Signature, Eval und Funded) | „After 60 or 7 days of inactivity (Depending on the market), the account will be closed", „7 Day inactivity applies to all Futures accounts", gilt auch für frisch gekaufte Konten ohne Trade | **Support bestätigt 18.10.: rollierend ab dem letzten geschlossenen Trade, Kalendertage, 7 Tage für Futures** (nicht 60) | ein **geschlossener** Trade (nur eröffnen zählt nicht), jede Größe, auch Break-even | Konto wird geschlossen, keine Warnstufe genannt. Reise: vorher an Support melden | Help Center Art. 9453425 (Primärquelle, 14.10.) plus Support-Mail 18.10.2026 (Gmail-Thread 1a14c477dbf350bd), Details im [[Research-Cache]] Abschnitt „E8 Futures: Inaktivitätsregel“ |
-| **FundedNext Futures** | 30 Tage ohne Trade = Verstoß | nicht geprüft, wir rechnen 1 Tag in jedem 30-Tage-Fenster | ein Trade | Breach | Research-Cache (FN-Abschnitt) |
+| **FundedNext Futures** | 30 **Kalendertage** ohne Trade = inaktiv, danach deaktiviert (Flex, Challenge und Funded; Direct-Konten: 1 Trade je Handelswoche) | Kalendertage laut Funded-Agreement (10.11.2026), Startpunkt nicht genannt, wir rechnen 1 Tag in jedem 30-Tage-Fenster | ein Trade | Breach/Deaktivierung | Funded-Agreement 10.11.2026 plus Research-Cache (FN-Abschnitt) |
 | **FFN STEADY** | mindestens 3 qualifizierende Handelstage in jeder 29-Tage-Periode | „every 29-day period“, Start nicht genannt. **Wir rechnen rollierend ab Aktivierung** (FFN1 05.10., FFN2 08.10.), die strengste Lesart | Tag mit realisiertem Gewinn oder Verlust von mindestens 5 $ | automatische Kündigung, gilt auch für geblasene Konten | FFN Art. 6.5 (Primärquelle) |
 
 **Zwei Widersprüche bei E8, beide zu unseren Gunsten aufgelöst (strengere Zahl gilt):** der Produktartikel „E8 Signature“ nennt 60 Tage (gemeinsamer Text für Forex und Futures, ohne Markt-Kennzeichnung), die ESPA §9.3 nennt 30 Kalendertage „Dormant“ mit Suspendierung nach Ankündigung. Der Inaktivitätsartikel sagt ausdrücklich 7 Tage für alle Futures-Konten. Betriebsregel bleibt **7 Kalendertage rollierend**. Die E8-Mail vom 12.10. (Thread 1a13026f39da17d7) sagt zur Inaktivität nichts.
@@ -109,6 +109,38 @@ Wortlaut FN zur Gap-Regel: Orders in „gapped or illiquid market conditions" zu
 
 > [!warning] Offene Frage vor jedem Gap-Bein auf FN (22.09.2026)
 > Der Wortlaut zielt auf das Ausnutzen dünner Bücher, nicht auf eine reguläre RTH-Order um 09:30 im liquidesten Moment des Tages. Unser historisches Gap-Bein (`RTY_Gap-fade`, Entry nach 10 Min Bestätigung innerhalb RTH) fällt nach dem Sinn der Regel nicht darunter. **Aber:** bevor ein Bein mit „Gap" im Mechanismus auf FN1/FN2 läuft, gehört das schriftlich vom FN-Support bestätigt. Der Name allein kann bei einer Payout-Prüfung Fragen auslösen. Bei E8 ist die Regellage dazu **noch gar nicht geprüft** — nachholen, bevor dort ein Gap-Bein läuft. **Nachgeholt 10.10.2026 (AP234):** E8 hat dieselbe Klausel, aber enger gefasst („exploit imperfections of the simulated market, such as Gapped, Illiquid Market Trading"), zusätzlich „reliance on micro-scalping during illiquid market hours" und die Regel „mindestens 50 % aller Gewinne aus Trades mit Haltedauer ≥ 10 Sekunden" (Art. 10209270). Kein Verbot von Gap-Strategien oder Handel um Eröffnungen als solchem, aber Ermessen des Risk-Teams. News-Trading bei E8 ohne Einschränkung (Art. 10209321, 27.08.2026).
+
+## 🟩 FundedNext Flex 50K Funded: Account Agreement (eingetragen 10.11.2026)
+
+> [!important] Konto `FNFTCHMAXIMILIANKHO71491` (Login 964331151) hat die Challenge bestanden
+> Am 10.11.2026 lag das FundedNext Account Agreement (Futures) zur Unterschrift vor, Vertragspartner FundedNext Limited, Hongkong. Max hat es mit Claude durchgelesen, Ergebnis: nichts im Text verbietet unser Setup, unterschreiben ok. Gegengeprüft mit der FN-Wissensbasis (Connector, 10.11.).
+
+**Regelwerte Flex 50K Funded (laut Agreement + Wissensbasis):**
+
+| Regel | Wert | Abgleich mit uns |
+|---|---|---|
+| Max Loss | 1.500 $, aus dem höchsten Tagesend-Kontostand, Start-Schwelle 48.500 $, trailt bis 50.100 $ und bleibt dort | wie Challenge, Breach bleibt intraday auf Floating-Equity (Support-Mail 08/2026) |
+| Daily Loss Limit | keins | RiskGuard-Tagesstopp ist nur unsere eigene Bremse |
+| Consistency | **keine** im Funded (KB-Artikel „Flex FundedNext Account All Rules“) | ⚠️ **offen:** cfg `dailyprofitcap 0.36` steht für 71491 noch drin (Challenge-Wert), für das Funded-Konto rausnehmen |
+| Kontraktlimit | 3 Minis / 30 Micros, fest ab Kontoerstellung, wächst nicht mit Gewinn | wir handeln weit drunter |
+| News | keine Regel (KB) | ok |
+| Algo/Bots | erlaubt in Challenge und Funded, kein Support; HFT wird überwacht und geahndet | ok, wir sind kein HFT. Lehre FFN 26.10.: schnelle Hand-Trades vermeiden |
+| Inaktivität | 30 Kalendertage ohne Trade | siehe Inaktivitäts-Tabelle |
+| Payout-Voraussetzung | 5 Benchmark-Tage (Tagesgewinn ≥ 200 $) und mind. 500 $ Gewinn seit Start bzw. letztem Payout | |
+| Payout-Höhe | bis 50 % vom Gewinn, je Antrag 250 $ bis 1.500 $ | |
+| Split | 95 % | |
+| Gebühr | bis 3,5 % Zahlungsgebühr je Auszahlung (vom Zahlungsanbieter) | neu, im Tempo-Plan noch nicht drin |
+| Ende | **Konto schließt automatisch mit dem 5. Payout**, ohne weitere Ankündigung | Konto zählt im Tempo-Plan als höchstens 5 Payouts |
+| Live-Programm | Review-Pool nach 15 Payouts, bei starkem FN-Verlauf oder Live-Erfahrung; nur nach Ermessen des Risk Desk, Wechsel kann sofort verlangt werden | betrifft uns vorerst nicht |
+
+**Neue Pflichten und Risiken aus dem Vertragstext (vorher nicht bekannt):**
+- **Hedging über eigene Konten verboten, auch mit anderen Prop-Firmen.** Im selben Konto ist Hedging erlaubt. Copy-Trading auf eigene Konten (auch firmenübergreifend) bleibt laut KB erlaubt. ⚠️ Fahren FN und E8 unterschiedliche Beine, kann ein Konto MNQ long und ein anderes gleichzeitig MNQ short sein. Vor dem ersten Funded-Trade prüfen, ob die Belegung gegenläufige Positionen über Konten erzeugen kann.
+- **Strategie-Offenlegung auf Anfrage:** FN kann jederzeit eine vollständige Offenlegung der Strategie verlangen, sonst Kündigung. Haltung: Logik erklären, Code nicht rausgeben.
+- **Vertraulichkeit unbefristet:** Vertragsbedingungen, die Existenz des Vertrags, Kommunikation mit FN und alle Konto-Infos. Für eine spätere Doku nach außen gilt: über FundedNext keine Kontodetails.
+- **Werbung:** FN darf Name, Auszahlungsbetrag und Interview für Werbung nutzen.
+- **Datenweitergabe:** Handels- und Personendaten dürfen an andere Prop-Firmen gehen (Betrugserkennung).
+- **Ermessen:** „Abweichungen vom echten Markt“ können den Payout kürzen; Entscheidungen des Risk-Teams sind endgültig. Verstoß gegen die „Prohibited Trading Practices“ (Abschnitt 2 der Futures Challenge Terms) kostet alle Rewards.
+- **Add-ons aus der Challenge gelten im Funded weiter.**
 
 ## 🟦 Funded Futures Network (FFN) STEADY 150K (eingetragen 05.10.2026)
 
