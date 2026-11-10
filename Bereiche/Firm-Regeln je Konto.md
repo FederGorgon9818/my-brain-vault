@@ -39,7 +39,7 @@ Quelle: `fn_lib.py` Kopf-Kommentar (`_scratch_box_urlaub/1e3478e2/qm/fn_lib.py`,
 | Auszahlung (Funded) | — | min(50% des aktuellen Kontogewinns, Cap) |
 | Gratis-Reset nach 5 Payouts | — (Annahme, nicht belegt) | ❌ **KEIN** Gratis-Reset — Live-Programm, alle Challenge-Konten schließen, Sim-Profit verfällt (Research-Cache 21.09.) |
 | Haushaltsgrenze | max. 5 aktive Performance-Konten | 750k inkl. laufender Challenges zählt mit |
-| Aktuelle RiskGuard-Werte live | `MaxTrailingDD 2000 · DailyLossLimit 900 · EvalProfitTarget 3000` (Konto E61803453048) | `MaxTrailingDD 1500 · DailyLossLimit 600 · EvalProfitTarget 2500` (Konten FNFTCHMAXIMILIANKHO71491/89622) |
+| Aktuelle RiskGuard-Werte live | **seit 10.11.2026 Funded:** `maxdd 2000 · dailyloss 900 · EvalProfitTarget 0 (UI)` (Konto E62701907262). Bis 10.11.: Eval E61803453048 mit Target 3000 | **seit 10.11.2026 Funded:** `maxdd 1500 · dailyloss 600 · lockoffset 100 · EvalProfitTarget 0 (UI) · kein Consistency-Deckel` (FN1 FNFTFAMAXIMILIANKHO29486, FN2 FNFTFAMAXIMILIANKHO22193). Bis 10.11.: Challenge FNFTCHMAXIMILIANKHO71491/89622 |
 
 > [!note] Noch nicht eingebaut
 > Diese Tabelle ist reine Vault-Doku, nicht maschinenlesbar. Ob sich daraus eine zentrale `firm_rules`-Registry lohnt, die `MaxRiskGuard.cs` UND `cage_policy_lib`/`evaluate_v2` gemeinsam lesen (statt die Werte doppelt in NT8-Properties und Python-Konstanten zu pflegen), ist eine offene Folge-Entscheidung — siehe AP204.
@@ -114,6 +114,10 @@ Wortlaut FN zur Gap-Regel: Orders in „gapped or illiquid market conditions" zu
 
 > [!important] Konto `FNFTCHMAXIMILIANKHO71491` (Login 964331151) hat die Challenge bestanden
 > Am 10.11.2026 lag das FundedNext Account Agreement (Futures) zur Unterschrift vor, Vertragspartner FundedNext Limited, Hongkong. Max hat es mit Claude durchgelesen, Ergebnis: nichts im Text verbietet unser Setup, unterschreiben ok. Gegengeprüft mit der FN-Wissensbasis (Connector, 10.11.).
+
+> [!success] Umstellung auf Funded am 10.11.2026 (alle drei Konten haben bestanden)
+> Neue Konten: **FN1 `FNFTFAMAXIMILIANKHO29486`**, **FN2 `FNFTFAMAXIMILIANKHO22193`** (Zuordnung FN1/FN2 nach Reihenfolge in NT8, beide Host-Configs sind identisch), **E8 `E62701907262`** (Signature 50K Funded). Auf der Box umgestellt: Feld `account` in `maxlab_book_host.live_fn1/live_fn2/live_e8_50k.json`, RiskGuard-cfg mit neuen Blöcken, alte Challenge-/Eval-Blöcke (71491, 89622, E61803453048) raus. Backup `C:\Users\Administrator\_bak_archiv\funded-20261110-1223`.
+> **Falle:** der cfg-Key `target` nimmt nur 100 bis 50.000. Funded braucht `EvalProfitTarget = 0` (sonst flattet der RiskGuard beim Erreichen von 3.000 $ alles und hält das Konto dauerhaft flat), das geht **nur in der NT8-UI** der RiskGuard-Instanz.
 
 **Regelwerte Flex 50K Funded (laut Agreement + Wissensbasis):**
 
