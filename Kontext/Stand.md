@@ -44,7 +44,7 @@ Alle drei sind **Funded** (seit 10.11.2026), Start je 50.000 $. FN: Floor 48.500
 ## Offen
 
 - RiskGuard: Default `EvalProfitTarget` 0 und cfg `target=0` sind im Quellcode umgebaut (11.11.), Deploy erst am Wochenende, wenn alle Konten flat sind, per RDP. Alte gespeicherte Instanzen danach einmal entfernen und neu hinzufügen.
-- E8 braucht bis **Di 17.11.2026** einen geschlossenen Trade (7 Tage Inaktivität).
+- NT8: die **Market Data Subscriber Certification** lädt seit 11.11. nicht (NinjaTrader-Server liefert das Dokument nicht, „template is not available for preview“). Seit 16.11. drückt `nt8_autologin.ps1` dort automatisch Cancel (nur bei genau diesem Ladefehler), danach verbindet NT8 normal. Selbst unterschreiben ist offen: AP488.
 - FN: HFT-Grenze unbekannt (PB3 ohne Stop-Verzögerung), Split im Dashboard nachsehen, FundedNext-Connector neu verbinden (AUTH_EXPIRED).
 - FFN-Host-Leichen auf der Box (Liste oben) löschen, dann `account_sync --pull`. Nur mit Max' OK.
 

@@ -3464,3 +3464,13 @@ Anlass: Frage Max, ob Slack als Erweiterung taugt (Ticket AP453, ohne Eile). Que
 | Gemini Live (gemini-3.8-live): Input 0,005 $/min, Output 0,018 $/min, Free Tier; Deutsch, Latenz, Barge-in ungeprüft | [Preise](https://aistudio.google.com/docs/pricing) | bestätigt (Hersteller-Doku), Rest offen |
 | Kokoro hat kein Deutsch | [GitHub](https://github.com/hexgrad/kokoro) | bestätigt (Hersteller-Doku) |
 | Baukästen für eigenen Aufbau: Pipecat, LiveKit Agents; Windows bei Pipecat nicht belegt | [Pipecat](https://github.com/pipecat-ai/pipecat), [LiveKit](https://github.com/livekit/agents) | bestätigt (Hersteller-Doku), Windows offen |
+
+## NT8 Market Data Subscriber Certification lädt nicht (recherchiert 16.11.2026, gültig Stand 16.11.2026)
+
+| Claim | Quelle | Status |
+|---|---|---|
+| Kein öffentlicher Treffer (Forum, Status, Release Notes) zum Fehler "Unable to load the Market Data Subscriber Certification" / "template is not available for preview"; Release Notes 8.1.9.0 per Suche nicht auffindbar (jüngste gefundene Seite 8.1.8) | [NT 8.1.8 Release Notes](https://ninjatrader.com/support/helpguides/nt8/8_1_8.htm) | praktiker (Negativbefund, Websuche, nicht abschließend) |
+| Übliche Umgehung: Non-Professional Data Agreement/Certification im Browser unter trader.tradovate.com mit denselben Zugangsdaten abschließen, ohne sie fließen keine Live-Daten in NT8 | [Tradeify Help](https://intercom.help/tradeify/en/articles/12270208-platform-connection-troubleshooting) | praktiker (Prop-Firm-Hilfeseite; nennt Tradovate-Web-Login nicht ausdrücklich, Zitat "mandatory") |
+| Hinweis aus Drittguides: nach Signieren bis 15 Min warten, NT8 neu starten; bei Prop-Evals kann nur die Firma Marktdaten freischalten | [Affordable Indicators](https://affordableindicators.com/ninjatrader-help/connect-tradeify-to-ninjatrader-tradovate/) | praktiker (Blog, ungeprüft) |
+| Professional-/Non-Professional-Kriterien: aktives Futures-Konto, keine Börsenmitgliedschaft, kein Handel als Hauptgeschäft; wer Dritten Finanzdienste anbietet, ist Professional | [NinjaTrader Vendor Support](https://vendor-support.ninjatrader.com/s/article/How-Do-I-Know-if-I-Need-to-Register-as-a-Professional?language=en_US) | bestätigt (Hersteller-Doku, Snippet, nicht im Volltext gelesen) |
+| Eigener Befund aus den Box-Logs: nach Cancel im Certification-Fenster verbindet NT8 8.1.9.0 normal, E8 und Tradovate/FN mit Preis-Feed (11.11., 15.11., 16.11. 22:49) | Box-Logs log/trace 20261111, 20261115, 20261116 | bestätigt (eigene Logs), ob Tradovate die Daten später an die Unterschrift knüpft, offen (AP488) |
