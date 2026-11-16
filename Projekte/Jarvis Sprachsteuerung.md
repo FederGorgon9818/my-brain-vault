@@ -1,9 +1,13 @@
 ---
 tags: [projekt, jarvis, sprache]
 datum: 2026-11-04
+status: geparkt (16.11.2026, Rückkehr in die Desktop-App)
 ---
 
 # Jarvis Sprachsteuerung
+
+> [!note] Geparkt seit 16.11.2026 (Max)
+> Jarvis öffnet Sessions als Windows-Terminal-Fenster und beobachtet nur Terminal-Sessions. Mit der Rückkehr in die Desktop-App liegt er auf Eis: Code bleibt in `C:\Claude\projekte\jarvis\`, nichts startet von selbst (kein Autostart, keine geplante Aufgabe, geprüft 16.11.). Wieder aufnehmen heißt: Sessions der Desktop-App starten und beobachten statt Terminal-Fenster, Arbeiter im Vault-Ordner laufen lassen (sonst keine Hooks). Warum: [[Terminal-Phase Rückblick (16.11.2026)]].
 
 **Ziel (Max, 04.11.2026):** per Taste mit Claude reden und die Antwort hören, während parallel Aufgaben laufen. Bei „was steht an" kommt der Überblick aus dem Ticket-System, sonst redet Jarvis nicht ungefragt darüber.
 

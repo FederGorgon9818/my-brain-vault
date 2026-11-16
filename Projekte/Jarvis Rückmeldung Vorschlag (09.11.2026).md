@@ -1,6 +1,7 @@
 ---
 tags: [projekt, jarvis, vorschlag]
 datum: 2026-11-09
+status: geparkt mit Jarvis (16.11.2026)
 ---
 
 # Jarvis: sofortige Rückmeldung bei fertigen Sessions und Aufträgen (Vorschlag)
