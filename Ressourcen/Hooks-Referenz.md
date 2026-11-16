@@ -185,6 +185,12 @@ Teil des Umbaus [[CLAUDE.md Verschlankung]]. Ziel: die CLAUDE.md schlank machen,
 
 ## Rechen-Hinweis (Regel Max, 18.10.2026)
 
+**Korrektur-Reflex** (`.claude/hooks/korrektur_reflex.py`, aufgerufen in `on_prompt.py` Abschnitt 0c, seit 11.11.2026)
+- Anlass: Max musste „FFN-Konten sind weg" und „NT8-Properties nur per RDP" mehrfach sagen.
+- Erkennt Sätze wie „hab ich dir schon gesagt", „die sind weg", „gibt es nicht mehr", „du kannst das nicht", „geht nur per …", „vergisst immer". Eingefügter Text (`<pasted_content>`) und Zitate in Anführungszeichen zählen nicht.
+- Schreibt den Satz sofort in den Block `KORREKTUREN` von `Kontext/Stand.md` (höchstens 12 Zeilen, Dubletten fliegen raus) und legt Claude einen Hinweis hin: einsortieren (Stand-Abschnitt oder Memory), Zeile löschen, Max sagen wo. Ohne Marker in der Datei wird nichts geschrieben.
+- Fehler landen in `hook_errors.log`. Test: `python .claude/scripts/test_korrektur_reflex.py` (23 Fälle).
+
 Zur CLAUDE.md-Regel „Rechnen nur in Code“: jede Berechnung mit Zahlen und Zeiten läuft in Python, alle Zahlen einer Antwort in einem Aufruf, Eingaben im Output mit anzeigen.
 
 **Rechen-Hinweis** (`.claude/hooks/rechen_hinweis.py`, aufgerufen in `on_prompt.py` Abschnitt 0b)

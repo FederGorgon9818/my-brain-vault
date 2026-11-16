@@ -3107,6 +3107,20 @@ v3 als Ersatz ist die knappste Zahl des Abends (mit alten Kosten −3,0, mit kor
 ### Lehre
 167. **Wenn mehrere Sessions am selben Tag parallel gegen `book_state.json` rechnen, braucht jede Tier-/Käfig-Zahl einen Buch-Fingerprint in der Logbuch-Notiz selbst** (nicht nur im Cache, siehe #159 Lehre 163-165) — sonst weiß eine spätere Session nicht, ob eine im selben Atemzug notierte Nachbar-Rechnung noch gegen dieselbe Basis gilt.
 
+**Nachtrag 01.11.2026 (Session d3293878):** Max' Auftrag „rechne den Outlier-Stresstest nach und pack es ins Next-Week-Buch, wenn es was taugt" ging von einer veralteten Annahme aus (VWAP-PB noch live) — Check per Read bestätigt: weder `book_state.json` noch `book_state_next.json` enthalten das Bein, beide 6 Beine, keine VWAP-Variante.
+
+Quant-Team (frische Daten bis 15.10.2026, n_trials ehrlich 298 statt automatisch gemeldeten 8): Volle Historie sieht signifikant aus (Sharpe 0,73 ann., t 2,44, PSR 99,4 %), hängt aber zu ~91 % (59 von 64,6 R) an 2021-23. OOS (n=442, kalendarisch letzte 30 %) expR nur +0,0052, 90-%-CI [−0,051; +0,061], P(expR≤0)=44 %. Honest-DSR auf OOS 0,3 %. Buch-Beitrag-Stresstest (Top-10-Trades raus, saubere Baseline ohne das Bein) bleibt zwar nominell „besser" (5,98→4,73 pp gegen heutiges 6-Bein-Buch), aber quant-mathematician und strategy-auditor übereinstimmend: Artefakt, weil die Buch-Monte-Carlo aus der VOLLEN Historie zieht und die verfallene 2021-23-Drift mitzieht — keine echte Robustheit gegen Ausreißer, sondern ein Beleg für Zeitverfall. Lehre 82 (z≥1,28) nicht erfüllt/nicht prüfbar (kein Eintrag in `book_erstfassung.json`).
+
+**Reichweite:** Signal-Rolle (Long-only VWAP-Continuation-Pullback), NQ, aktuelle Kostenstruktur/Käfig (E8/FN/FFN).
+**Kategorie:** `echt-aber-zu-klein`, präzisiert als zeitlich verfallen — Effekt war 2020-23 real und belegt ($2.814/Jahr), ist seitdem auf statistisch nicht mehr nachweisbar gefallen ($956/Jahr, OOS nicht von Null zu unterscheiden). Nicht `strukturell-tot` (Mechanismus an sich nicht unmöglich), nicht `unentscheidbar` (Effekt war nachweisbar und ist gemessen schwächer geworden, keine reine Power-Frage).
+**Wiedervorlage:** rollierendes 3-Jahres-expR nach Kosten erreicht wieder t≥2 — gehört als Eintrag in `auto_check.py` (noch nicht gebaut, Ticket offen).
+**Stempel:** Engine-Stand Session d3293878 (01.11.2026), Daten bis 15.10.2026, OOS-Split 70/30 kalendarisch, n_trials=298 (ehrlich nachgezählt #096-#103).
+
+Ergebnis: **nichts geht ins Next-Week-Buch.** Die Entscheidung aus #161 bleibt richtig und wird durch die frischen Daten eher bestätigt als entkräftet.
+
+### Lehre
+168. **Ein Top-K-Outlier-Stresstest gegen die VOLLE Historie eines zeitlich verfallenden Beins sagt nichts über Robustheit**, wenn die Buch-Monte-Carlo die alte In-Sample-Drift mitzieht — die richtige Frage ist der Buch-Beitrag auf `recent3y`/OOS, nicht Top-K auf der Vollhistorie (hier nachträglich erkannt, nicht vorab gebaut — Patch-Bedarf siehe `logbook-distiller`-Lauf zu #096-#103, Lehre 73).
+
 ## #162 — Orderflow-v2-Achse als Gate auf Bestandsbeine: ein vorregistrierter Test, kein Effekt nachweisbar (18.09.2026)
 
 **Anlass:** F2/Punkt 9 der Friedhof-Analyse (17.09.2026) — die Orderflow-v2-Nebenspalten (`ntrades, max_size, big_*, tvwap` u.a., seit 2016 auf der Box, 0 von 63.727 Trials nutzen sie) als „stärkste Zeile der Karte" markiert. Max wollte direkt wissen, ob das als Gate auf die Bestandsbeine funktioniert, statt erst eine Woche Engine-Modul zu bauen.

@@ -4,6 +4,14 @@ Dies ist der persönliche Wissensspeicher (Obsidian Vault) von **Max**. Diese Da
 
 ---
 
+## 📍 Aktueller Stand (Import, seit 11.11.2026)
+
+Welche Konten leben, was tot ist, was Claude kann und nicht kann, was offen ist. **Gilt vor allen Statusangaben weiter unten.** Konten-Tabelle schreibt der Auto-Check aus der Box, Korrekturen von Max schreibt der Korrektur-Reflex hinein.
+
+@Kontext/Stand.md
+
+---
+
 ## 👤 Wer ist der User
 
 - **Name:** Max (Ansprache gerne „Boss").
@@ -347,6 +355,7 @@ Kurzfassung, was blockt statt nur erinnert:
 - `guard_chain.py` (Regel Max, 22.09.2026): ein **Todesurteil** im Strategie-Logbuch wird abgelehnt, solange die vier Pflichtfelder fehlen (siehe nächster Abschnitt). Geprüft wird nur der **Urteilsblock** (`Verdikt:`/`Urteil:`/`Fazit:`), nicht der Fließtext — Rückblicke und Zitate fremder Urteile lösen nichts aus. Fehlalarm-Override `python .claude/hooks/mark.py urteil_ok`. Selbsttest: `python .claude/scripts/test_urteil_gate.py` (7 Fälle, inkl. der Fehlalarm-Quellen).
 - `guard_chain.py` Konto-Sperre (Regel Max, 13.10.2026): **Konto-Fragen werden nie von Hand neu gerechnet, `konto-analyst` liest die Konto-Karten.** Wer die Host-JSON oder die RiskGuard-cfg eines Kontos schreibt oder auf die Box kopiert (Größe, Belegung), wird geblockt, solange `konto-analyst` in der Session nicht lief. Der Prompt-Hook erkennt Konto-Fragen breit (Kontoname plus Größe, Bein, Puffer, Payout, Inaktivität usw.). Gilt für Bash- und PowerShell-Tool, und `konto-analyst` ist Pflichtschritt der Kette `deploy` (reiner Code-Deploy: `--skip konto-analyst` mit Grund). Die älteren Sperren prüfen weiter nur das Bash-Tool (AP362), außer der Box-Sync-Sperre: die gilt seit 16.10. für beide Tools (AP398, [[Hooks-Referenz]]). Selbsttest `python .claude/scripts/test_konto_gate.py` (52 Fälle), Ausweg `receipt.py --skip konto-analyst --why "…"`.
 - `on_stop.py`: Session endet nicht, solange `book_state*.json` neuer als der letzte `--push-next` ist, oder solange eigene Datei-Änderungen ohne Daily-Note-Eintrag im Raum stehen. Seit 25.09.2026 auch nicht, wenn Scratch-Tests gerechnet, aber nicht per `workbench.publish` ins Lab gestellt wurden (Ausweg `mark.py tests_ok`).
+- `korrektur_reflex.py` (über `on_prompt.py`, Max 11.11.2026): sagt Max „hab ich dir schon gesagt", „die sind weg", „du kannst das nicht" o.ä., landet der Satz sofort im Korrektur-Block von `Kontext/Stand.md`. Claude sortiert ihn danach in den richtigen Abschnitt oder ins Memory ein und löscht die Zeile. Zitate und eingefügter Text zählen nicht. Selbsttest `python .claude/scripts/test_korrektur_reflex.py`.
 - **Ein Hook blockiert nie die Arbeit, weil er selbst kaputt ist** — Fehler werden verschluckt und geloggt, nie geworfen.
 - Neue Reflex-Regel geplant? Zuerst fragen, ob sie als Hook abbildbar ist (Dateipfad, Kommando-Muster, Dateizeit), statt sie nur als Text hier abzulegen.
 
@@ -398,6 +407,8 @@ Installiert ist nicht genug: sobald eines davon passt, **von selbst** einsetzen,
 ## 🖥️ Box-Fernzugriff (Regel Max, 11.08.2026 — WICHTIG, nie wieder vergessen)
 
 **Claude hat vollen SSH-Zugriff auf die Trading-Box und soll ihn immer selbst nutzen, statt zu behaupten, er habe keinen Zugriff oder Max müsse das manuell machen.**
+
+**Grenzen (Max, 11.11.2026):** „voller Zugriff" heißt Dateien und Dienste per SSH. **NT8-Strategie-Properties ändern und Instanzen anlegen, entfernen oder aktivieren geht nur per RDP durch Max.** Deshalb Werte immer in die cfg legen (der Guard liest sie beim Start) und Max den RDP-Schritt klar ansagen, nie anbieten, Properties selbst umzustellen. Aktueller Kann/Kann-nicht-Stand: Stand-Datei.
 
 - Zugang: `ssh Administrator@100.127.89.9` (Tailscale, Key lokal unter `C:\Users\maxlk\.ssh\id_ed25519`, kein Passwort nötig). Box-Hostname `vmd202078`, deutsche Zeitzone.
 - **Laptop ist seit 03.09.2026 zweites, dauerhaftes Arbeitsgerät** — gleicher Weg wie vom PC: Vault per Git-Remote, Engine-/Box-Arbeit per SSH mit demselben Key. Kein eigener Discovery-Fallback und kein Hub/Lab-Server am Laptop, die Box bleibt die gemeinsame Instanz.
@@ -517,8 +528,7 @@ Realistischer Horizont, wenn beides läuft: eigenes Konto in 2 bis 3 Jahren, dav
 ## 🎯 Aktueller Fokus
 
 - **Trading-Pipeline: Eval → Funded → Live.** Einstieg immer über [[Day Trading]].
-- **Aktuelle Phase: [[Eval-Passing]]** (Prop-Eval bestehen, **E8**, nicht Apex). **⭐ Die erste ECHTE E8 50k Eval läuft live** (Konto `E61803453048`, handelt unbeaufsichtigt von der Box), dazu FN1/FN2 (FundedNext Flex 50k). **Neu 05.10.2026: Funded Futures Network (FFN, eigene Firma, nicht FundedNext und nicht My Funded Futures) STEADY 150K, Konto `2D-150K394206247048`**, 292,50 $ (50 % + BOGO, Gratis-Zweitkonto beim Support angefragt).
-  - **FFN-Freigabe ist geklärt, nicht erneut fragen:** schriftlich vom FFN-Support am 01.10.2026 (Gmail maxlkho4, Thread „Questions before purchase: STEADY 150K…"): vollautomatische, selbst entwickelte NT8-Strategie, **unbeaufsichtigt, auf Windows-VPS mit Rechenzentrums-IP, in Eval und Funded erlaubt**; dieselbe Strategie auf mehreren FFN-Konten und bei anderen Prop-Firmen erlaubt; Deutschland erlaubt; Live-Review nach 5 Payouts betrifft andere Konten nicht. Technik: NT8 **nur via Rithmic** (nicht Tradovate), **eigene NT8-Lizenz nötig**, Rithmic-Datengebühren trägt FFN, nur **ein Gerät gleichzeitig** eingeloggt. Regelwerte (DD, Ziel, Consistency, Payout): [[Firm-Regeln je Konto]] und Research-Cache, Quelle FFN-Help-Center Artikel 2.5 STEADY + 3.7 Independent Trading Rules.
+- **Aktuelle Phase: [[Funded-Phase]]** seit 10.11.2026. **Welche Konten leben, Kontostände und was offen ist, steht nur in der Stand-Datei** (oben importiert), hier stehen bewusst keine Konten-Angaben mehr. FFN (Konten seit 26.10.2026 zu) und alle Firmenregeln: [[Firm-Regeln je Konto]].
 - **⭐ ZIEL seit 18.09.2026 (Max, präzisiert 21.09.): 50.000 $ Eigenkapital aus gebündelten Prop-Payouts, um ein eigenes Live-Konto (am liebsten 100k) zu eröffnen.** Zielfunktion ist **E[Zeit bis Zielkapital]** (Netto-Payouts minus alle Eval-Käufe), nicht mehr die Passquote je Eval. Die Funded-Phase zählt mit. Laufende Konten laufen weiter, Frage ist nur, was dazukommt. Rechnung: `engine/tempo_plan.py` (Bestandskonten, Kaufpolitiken, Haushaltsgrenzen, Regime-Spalten). **Entschieden (AP204/AP214, Update 05.10.2026): 1× E8 Signature 150k (DD 3.999,90, Preis 333 $) mit k1 (1 Micro je Bein) und RiskGuard-Tagesstopp 2.500 $ (bis 05.10. abends 1.500 $, am 4er-Buch nachgerechnet: Unterschied hängt an 2 Tagen, 2.500 ist im schlechtesten Fall am billigsten), Kauf nach der ausstehenden E8-Antwort; Deckel 2.500 $ Netto-Auslage; FN 150k erst nach AP205, FN-Größe offen (AP248). k2 vom 24.09. galt für das 3-Bein-Buch mit DD 4.500 und alter Vola; mit 7 Beinen ist k1 schon 7 Micros, und bei heutiger NQ-Vola ist k2 nicht schneller, stirbt aber zehnmal so oft (Quant-Team 04./05.10.). Hochstufen auf k2 nur per Vola-Regel (seit 12.10.2026, Max: nur 150k-Konten, 60-Tage-σ des eigenen Kontobuchs höchstens 235 $ bei FFN, Track-Record-Schwelle; die alte Grenze ~400 $ gilt nicht mehr, siehe [[Hochstuf-Regel je Konto (Entwurf)]]).** Details [[Strategie-Logbuch]] #175, [[Daily Notes/2026-09-18]], [[Daily Notes/2026-09-21]], [[Daily Notes/2026-09-24]].
 - **Plattform: NinjaTrader 8 / NinjaScript (C#)** auf Tradovate, nicht MultiCharts/PowerLanguage (siehe [[Tech-Stack]]).
 - Nächster Schwerpunkt: **[[Alpha-Suche]]** (First-Passage-Sizing + Cross-Asset-Signale).

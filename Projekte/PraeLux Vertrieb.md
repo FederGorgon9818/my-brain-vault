@@ -8,7 +8,7 @@ status: Start, Mandantengewinnung zuerst
 ---
 # PraeLux Vertrieb
 
-Max startet als Vertriebspartner bei der PraeLux Gesellschaft für Investmentberatung mbH. Fokus zuerst: Mandanten, nicht Partner. Zielgruppe: 20 bis 30 Jahre. Quellen: [[Research-Cache]], Abschnitt PraeLux und Altersvorsorgedepot.
+Max startet als Vertriebspartner bei der PraeLux Gesellschaft für Investmentberatung mbH. Fokus zuerst: Mandanten, nicht Partner. Zielgruppe: 20 bis 30 Jahre. Quellen: [[Research-Cache]], Abschnitt PraeLux und Altersvorsorgedepot. Lektionen aus der PraeLux-Akademie: [[PraeLux Akademie]].
 
 ## Entscheidungen von Max (02.11.2026)
 

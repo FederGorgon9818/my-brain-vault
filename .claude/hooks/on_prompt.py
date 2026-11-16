@@ -62,6 +62,23 @@ def main():
         except Exception:
             pass
 
+    # --- 0c. Korrektur-Reflex (Max 11.11.2026) -------------------------------
+    # "hab ich dir schon gesagt", "die sind weg", "du kannst das nicht": der Satz landet sofort in
+    # Kontext/Stand.md (Block KORREKTUREN), Claude sortiert ihn ein. Vor dem Laengen-Filter, weil kurz.
+    try:
+        import korrektur_reflex as KX
+        if not prompt.lstrip().startswith("/"):
+            kh = KX.hinweis(prompt)
+            if kh:
+                router_text = "\n".join(t for t in (router_text, kh) if t)
+    except Exception as e:
+        try:
+            STATE.mkdir(parents=True, exist_ok=True)
+            with open(STATE / "hook_errors.log", "a", encoding="utf-8") as f:
+                f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')} on_prompt.py korrektur_reflex: {e!r}\n")
+        except Exception:
+            pass
+
     if len(prompt.strip()) < 12 or prompt.lstrip().startswith("/"):
         context(router_text, "UserPromptSubmit")
 
