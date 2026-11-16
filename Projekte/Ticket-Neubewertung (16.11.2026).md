@@ -1,7 +1,7 @@
 ---
 tags: [tickets, prio, neubewertung]
 datum: 2026-11-16
-status: Neubewertung geschrieben, Lösch-Liste wartet auf Max
+status: erledigt (16.11.2026, 27 Lösch-Kandidaten mit OK von Max gelöscht, 206 offene Tickets)
 ---
 
 # Ticket-Neubewertung (16.11.2026)
@@ -261,7 +261,7 @@ Sofort 2 · Sehr hoch 4 · Hoch 20 · Mittel 59 · Niedrig 111 · Geparkt 10 · 
 | AP445 | Be Obsessed: E-Mail-Liste und Kommentar-DM einrichten (erst nach schriftlicher Freigabe der Führungskraft) |
 | AP450 | GEWO: Nebentätigkeit für Be Obsessed beantragen (Erweiterung der Genehmigung) |
 
-## Lösch-Kandidaten (27), Entscheidung Max
+## Lösch-Kandidaten (27), gelöscht am 16.11.2026
 
 | Ticket | Titel | Grund |
 |---|---|---|
@@ -293,13 +293,14 @@ Sofort 2 · Sehr hoch 4 · Hoch 20 · Mittel 59 · Niedrig 111 · Geparkt 10 · 
 | review-2026-44 | Wochen-Review: Ampeln + Journal + Logbuch | alte Wochen-Review, Woche vorbei |
 | review-2026-45 | Wochen-Review: Ampeln + Journal + Logbuch | alte Wochen-Review, Woche vorbei |
 
-Löschen (nach OK, ganz oder teilweise), im Engine-Ordner:
+**Mit OK von Max („Alle 27 löschen“) am 16.11.2026 gelöscht**, auf PC und Box gleich, Grabsteine für alle 27 im Verlauf. Zurückholen geht einzeln per `ticket_tool.py restore <Ticket>`. Vorher die Details aus AP197 als Notiz an AP459 gehängt (Session-Fenster je Markt, die 390-Minuten-Stellen, Plan), weil AP459 Teil A genau das abdeckt. Beim Löschen von AP334 fiel ein Verweis bei AP387 weg. Danach 206 offene Tickets: Sofort 2 · Sehr hoch 4 · Hoch 20 · Mittel 59 · Niedrig 111 · Geparkt 10.
+
+Verwendeter Befehl, im Engine-Ordner:
 
 ```
 python ticket_tool.py delete AP118 AP121 AP127 AP140 AP192 AP194 AP197 AP198 AP204 AP261 AP272 AP297 AP310 AP331 AP334 AP335 AP337 AP377 AP378 AP420 AP473 AP485 next-week-2026-42 review-2026-42 review-2026-43 review-2026-44 review-2026-45
 ```
 
-Im Lab findest du sie über die Suche `label:loesch-kandidat`.
 
 ## Was nebenbei auffiel
 
