@@ -57,7 +57,7 @@ Entscheidungen Max per Popup: Tickets als **zweiter Tab** in der rechten Mod (nu
 - **Gedächtnis:** Cockpit-Eintrag aktualisiert in das Vault-Gedächtnis geholt, neue Lehre „Sessions im Vault-Ordner“ in beiden Gedächtnissen.
 - **Jarvis geparkt** (Status in beiden Jarvis-Notizen, kein Autostart vorhanden).
 
-**Offen:** echte Optik in der App erst in einer neuen Session sichtbar (diese Session lud die Mods vor dem Umbau). Prüfen dort: Tabs-Reihenfolge, ob der Titel im Ticket-Button sauber gekürzt wird, Fortschrittsbalken.
+**Abnahme 16.11. abends (Screenshots Max nach App-Neustart):** Tabs-Reihenfolge, Ticket-Titel, Fortschrittsbalken passen. Gmail in der Übersicht war kaputt, weil die App den Connector unter einer ID führt statt als „claude.ai Gmail“; behoben in v0.3.1 (Connector wird gesucht, Antwort richtig gelesen, Test dazu).
 
 ## Lehre
 
