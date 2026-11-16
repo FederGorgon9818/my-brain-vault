@@ -334,6 +334,25 @@ Interne Schlüssel bewusst kompatibel gelassen (Box, `auto_check`, `promote_next
 
 **Grenzen:** Das Lab hat noch keinen Löschen-Knopf (nur CLI). Ein laufender Lab-Server lädt den neuen Code erst nach einem Neustart. Box-seitig weiter ohne Sperre geschrieben (AP270, Entwurf im Ticket). Ein gescheiterter `--push-next` schaltet den Buch-Wächter weiter stumm (AP393, gab es schon vorher).
 
+## Stand 16.11.2026: 6-Stufen-Skala, alle offenen Tickets neu bewertet
+
+**Auftrag Max:** alle Tickets neu bewerten, Skala von „muss sofort, unabdingbar“ bis niedrig, 5 oder 6 Stufen. **Entscheidungen Max (Popup):** 6 Stufen, „Wichtig (Datum)“ raus (Fällig-Datum bleibt eigenes Feld), veraltete Tickets nur als Lösch-Kandidat markieren, direkt schreiben. Ergebnis und Lösch-Liste: [[Ticket-Neubewertung (16.11.2026)]].
+
+| Stufe | intern | Symbol | Farbe | heißt |
+|---|---|---|---|---|
+| Sofort | `sofort` (neu) | ‼ als rote Pille | #e66767 | unabdingbar, in den nächsten Tagen, sonst Schaden an Live-Konto, Geld oder Frist |
+| Sehr hoch | `kritisch` | ⇈ | #e66767 | diese Woche angehen |
+| Hoch | `rot` (`orange` = Alt-Alias) | ↑ | #e66767 | in den nächsten zwei bis drei Wochen |
+| Mittel | `gelb` (`datum` = Alt-Wert) | = | `--accent` | normale Arbeit, wenn Platz ist |
+| Niedrig | `gruen` | ↓ | #4bbf8f | wenn Zeit ist |
+| Geparkt | `geparkt` (neu) | ‖ | #8a897c (Backlog-Grau) | bewusst auf Eis, kommt nur bei Bedingung oder Ansage zurück |
+
+**Dringend** (Chip und Tab-Zähler) = Sofort + Sehr hoch + Hoch + jedes nicht geparkte Ticket, das in höchstens 7 Tagen fällig ist. **Glocke** (`auto_check`): Sofort = rot, Sehr hoch und Hoch = gelb. **Fokus-Planer:** wichtig = Sofort, Sehr hoch, Hoch oder fällig in 14 Tagen (geparkt nie), Reihenfolge Sofort vor Sehr hoch. Label `loesch-kandidat` = von Claude zum Löschen vorgeschlagen.
+
+**Geändert:** `ticket_lib.py` (PRIOS, PRIO_LABEL, Alias, Rang), `ticket_tool.py` (Hilfe), `fokus_planer.py`, `auto_check.py`, `lab_ui/tickets_board.js` (PRIO_T/A/D, normPrio, Suche, Dringend, Reihenfolge, Pille für Sofort, Hinweis „Datum fehlt“ raus), `lab_ui/lab.js` (PRIODEF), Mod `cockpit-uebersicht` (Sofort zählt als dringend), Skills `/ticket`, `/sprint`, `/briefing`. Tests: `test_ticket_lib`, `test_ticket_sync`, `test_fokus_planer` grün, `lab_selftest` grün bis auf „Server erreichbar“ (Lab lief lokal nicht). design-guard: konsistent, optionaler Rahmen für Sofort nicht übernommen (Farben bleiben, Max 29.09.).
+
+**Offen:** Box-Code kennt die neuen Stufen erst mit dem nächsten Engine-Sync bzw. AP267, dort sortiert heute nichts nach Prio. Der Lab-Server lief am 16.11. lokal nicht, beim nächsten Start lädt er die neue Liste von selbst.
+
 ## Aus der CLAUDE.md (05.10.2026): Sprint-Regeln und Ticket-Tracker
 
 Aus der CLAUDE.md übernommen (Regel Max, 29.09.2026 und 06.09.2026), damit der Abschnitt dort auf einen Einzeiler schrumpfen kann.
