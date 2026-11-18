@@ -4,9 +4,15 @@ tags:
   - bereich/business
   - steuer
 erstellt: 2026-10-10
-status: Antwort Dr. Hahn da (28.10.2026, über Marko), seine Rückfragen offen, Fragebogen bis 02.11.
+status: Fragebogen abgeschickt (08.11.2026, Kleinunternehmer), Steuernummer da, USt-Voranmeldung Oktober offen (AP489)
 ---
 # ❓ Fragen an den Steuerberater (Gründung)
+
+> [!important] Stand 18.11.2026: Schreiben vom Finanzamt mit Steuernummer
+> Fragebogen wurde mit **Kleinunternehmer** abgeschickt (Angabe Max). Laut Schreiben ist der Voranmeldungszeitraum der **Kalendermonat**, abgeben muss Max nur für Monate mit den dort genannten Vorgängen, darunter Leistungen nach § 13b. Einnahmen spielen dafür keine Rolle.
+> - **Oktober 2026: abgeben.** FFN 292,50 USD am 05.10. = 261,07 € (Tageskurs aus der EÜR-CSV), 19 % = **rund 49,60 €**, als Kleinunternehmer echte Zahlung ohne Vorsteuerabzug. Für die Umsatzsteuer gilt der BMF-Monatskurs, der Betrag kann leicht abweichen. Frist 10.11. ist vorbei, Ticket AP489.
+> - **November 2026:** in web.de und Gmail kein Prop-Kauf gefunden (Stand 18.11.).
+> - **Offen an Dr. Hahn:** (1) Müssen Claude und TradingView gemeldet werden, obwohl dort schon Umsatzsteuer auf der Rechnung steht? (2) Käufe Juni bis Sept. (258,76 €, 19 % = 49,16 €) nachmelden, obwohl der Beginn auf 01.10. steht? (3) Verzicht auf Kleinunternehmer jetzt erklären? (4) Er schrieb „vierteljährlich“, das Finanzamt schreibt „Kalendermonat“.
 
 ⬅️ [[Unternehmensgründung Entscheidung]] · [[Gründung Zeitplan]] · [[Gespräch mit Freundin (Steuer & Gründung)]] · [[Belegordner 2026]]
 
