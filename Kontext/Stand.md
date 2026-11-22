@@ -45,8 +45,8 @@ Alle drei sind **Funded** (seit 10.11.2026), Start je 50.000 $. FN: Floor 48.500
 
 - RiskGuard: Default `EvalProfitTarget` 0 und cfg `target=0` sind im Quellcode umgebaut (11.11.), Deploy erst am Wochenende, wenn alle Konten flat sind, per RDP. Alte gespeicherte Instanzen danach einmal entfernen und neu hinzufügen.
 - NT8: die **Market Data Subscriber Certification** lädt seit 11.11. nicht (NinjaTrader-Server liefert das Dokument nicht, „template is not available for preview“). Seit 16.11. drückt `nt8_autologin.ps1` dort automatisch Cancel (nur bei genau diesem Ladefehler), danach verbindet NT8 normal. Selbst unterschreiben ist offen: AP488.
-- **Alle Strategien seit Di 17.11. 10:22 ET aus** (SSH-Check 22.11.: Parameter und Code stimmen, nur nichts aktiv; NT8 führt doppelte Instanzen für E8- und FN2-Host sowie FN2-Guard). Max schaltet So 22.11. abends per [[Wiedereinschalten 22.11.2026 (Anleitung)]] wieder ein, danach prüft Claude die Logs.
-- E8: Inaktivitäts-Frist laut Guard war der 17.11., Handtrade kam erst am 20.11. (alle drei Konten je 1 MNQ). Im E8-Dashboard prüfen, ob das Konto noch aktiv ist.
+- E8: Lücke zwischen den Handtrades (16.11. und 20.11.) im E8-Dashboard gegenprüfen. Der Guard kennt seit 22.11. den 20.11. als Handelstag (nachgetragen), nächste echte Frist 27.11.
+- NT8-Instanzen brauchen **Trading hours `US Equities RTH`** (Hosts zusätzlich Days to load 45) direkt an der Instanz. Ohne Template stürzt NT8 beim Aktivieren ab (`GetTradingHours`, 17. und 22.11.). Ablauf: [[Wiedereinschalten 22.11.2026 (Anleitung)]].
 - FN: HFT-Grenze unbekannt (PB3 ohne Stop-Verzögerung), Split im Dashboard nachsehen, FundedNext-Connector neu verbinden (AUTH_EXPIRED).
 - FFN-Host-Leichen auf der Box (Liste oben) löschen, dann `account_sync --pull`. Nur mit Max' OK.
 
