@@ -16,7 +16,7 @@ Alle Zeiten sind **Boxzeit** (deutsche Zeit). Der Markt öffnet um 00:00 Boxzeit
 - **Seit Di 17.11. 10:22 ET ist keine Strategie mehr an.** Nach dem Neustart am 17.11. liefen der FN1-Host und die Guards von E8 und FN1 nur eine Minute, die Hosts von E8 und FN2 und der Guard von FN2 gar nicht. Seitdem fehlen alle Trades, auch der erste OpEx-Freitag (20.11.).
 - **Einstellungen stimmen:** alle 5 Beine je Konto wie im Buch, Code gleich dem Stand aus den Paritäts-Tests, Host-Configs werden per Konto automatisch gefunden. Die bestehenden RiskGuards haben `EvalProfitTarget=0` und holen Telegram, Limits und Inaktivität aus der cfg. **An den Eigenschaften der Strategien musst du nichts ändern.**
 - **Chart passt:** MNQ 12-26, 1 Minute, `US Equities RTH`, 45 Tage. Chart nicht anfassen.
-- **Falle:** NT8 hat zusätzliche Instanzen gespeichert, nämlich je einen zweiten Host für E8 und FN2 und einen zweiten Guard für FN2. Zwei Hosts auf einem Konto handeln doppelt. Deshalb Schritt 3.
+- **Falle:** NT8 hat drei zusätzliche Instanzen gespeichert, nämlich je einen zweiten Host für E8 und FN2 und einen zweiten Guard für FN2. Zwei Hosts auf einem Konto handeln doppelt. Dazu kommt: Die sechs richtigen Instanzen hängen **am MNQ-Chart** (Workspace `1`) und nehmen dessen Daten (RTH, 45 Tage). Die drei zusätzlichen hängen nicht am Chart und hätten eigene Daten mit **5 Tagen ohne RTH-Template**, also genau den Fehler vom 16.11. (Template-Wächter sperrt, OpenDrive ohne Historie). Deshalb wird in Schritt 4 über den Chart eingeschaltet und danach aufgeräumt.
 - **Nicht dabei:** RiskGuard-Fix `2D4819A3` (Ziel 0 als Standard), LD01. Beides bleibt für später.
 
 | Kurzname | Konto in NT8 | Floor | Tagesstopp |
@@ -48,33 +48,28 @@ FN ist kein Thema, dort gelten 30 Kalendertage.
 2. Reiter **Orders**: keine Order im Zustand `Working` oder `Accepted`.
    - **Fehlerfall:** offene Position oder Order → nichts schließen, im Hauptkanal **„nicht flat“** schreiben.
 
-## Schritt 3: Doppelte Instanzen raus
+## Schritt 3: Am Chart nachsehen, welche sechs die richtigen sind
 
-Control Center → Reiter **Strategies**. Spalte **Account** ansehen und je Konto zählen.
+1. Den **MNQ 12-26 Chart** im Workspace `1` nach vorne holen (1 Minute, `US Equities RTH`).
+2. Im Chart **rechtsklicken → Strategies…**. Links unter „Configured“ stehen die Strategien, die am Chart hängen.
+   - **Erwartet:** genau 6 Einträge, je Konto ein `MaxBookHost` und ein `MaxRiskGuard` (E8, FN1, FN2), alle aus.
+   - **Fehlerfall:** weniger als 6, mehr als 6 oder ein Konto doppelt → Screenshot des Fensters in den Hauptkanal, nichts einschalten.
+3. **Keine Eigenschaften ändern.** Ziel 0, Limits, Telegram und Config-Datei stimmen bereits (Guard und Host lesen das beim Start aus der cfg bzw. per Konto).
 
-- **Ziel:** je Konto **genau 1× `MaxBookHost` und 1× `MaxRiskGuard`**, also 6 Zeilen.
-- **Laut NT8-Datenbank zu erwarten:** E8 2 Hosts, FN2 2 Hosts und 2 Guards, FN1 je einer. Zeigt der Reiter weniger Zeilen, umso besser: dann nur zählen und weiter.
+## Schritt 4: Einschalten über den Chart, dann aufräumen
 
-So räumst du auf:
+Reihenfolge wie immer: **erst die drei Guards, dann die drei Hosts.** Im selben Fenster („Strategies…“ am Chart) arbeiten.
 
-1. **Doppelter Host (E8, FN2):** egal welcher bleibt, beide lesen dieselbe Config-Datei. Den zweiten rechtsklicken → **Remove**.
-2. **Doppelter Guard (FN2):** beide nacheinander rechtsklicken → **Edit Strategy** (geht nur, solange sie aus sind) und das Feld **`EvalProfitTarget`** ansehen.
-   - Den mit **0** behalten, den mit **3000** (oder einem anderen Wert ungleich 0) per **Remove** entfernen.
-   - Haben beide 0: einen davon entfernen.
-   - Haben beide nicht 0: bei einem `EvalProfitTarget` auf **0** setzen, OK, den anderen entfernen.
-   - Sonst nichts an den Eigenschaften ändern, auch nicht die Telegram-Felder (die kommen aus der cfg).
-3. **Erwartet am Ende:** 6 Zeilen, je Konto ein Host und ein Guard, alle aus.
-   - **Fehlerfall:** du bist unsicher, welche Zeile zu welchem Konto gehört → Screenshot vom Reiter in den Hauptkanal, nichts entfernen.
-
-## Schritt 4: Einschalten
-
-Reihenfolge wie immer: **erst die drei Guards, dann die drei Hosts.** Im Reiter Strategies das Häkchen in der Spalte **Enabled** setzen.
-
-1. `MaxRiskGuard` für E8, FN1, FN2 aktivieren.
-   - **Erwartet:** Häkchen bleibt, Zeile wird grün oder gelb. Je Konto eine Telegram-Startmeldung aufs Handy.
-2. `MaxBookHost` für E8, FN1, FN2 aktivieren.
-   - **Erwartet:** Häkchen bleibt.
+1. Links `MaxRiskGuard` für E8 anklicken, rechts unter Setup **Enabled** ankreuzen, **Apply**. Dasselbe für FN1 und FN2.
+   - **Erwartet:** je Konto eine Telegram-Startmeldung aufs Handy.
+2. Dann `MaxBookHost` für E8, FN1, FN2 genauso: anklicken, **Enabled**, **Apply**. Am Ende **OK**.
    - **Fehlerfall (für beide):** springt eine Instanz sofort wieder auf aus, Konto und Name notieren, **nicht ständig neu klicken**, im Hauptkanal **„springt aus“** plus Konto schreiben.
+3. Control Center → Reiter **Strategies**:
+   - **Erwartet:** 6 Zeilen mit Häkchen bei **Enabled** (die vom Chart).
+   - Jede weitere Zeile `MaxBookHost` oder `MaxRiskGuard` für `E62701907262` oder `FNFTFAMAXIMILIANKHO22193`, die **ohne** Häkchen ist, ist eine der drei zusätzlichen Instanzen → rechtsklicken → **Remove**. Laut Datenbank sind es höchstens drei: ein Host E8, ein Host FN2, ein Guard FN2.
+   - Zeilen für das tote Eval-Konto `E61803453048` (MNQ 09-26) nicht einschalten. Sie dürfen ebenfalls per **Remove** weg.
+   - **Nie** eine Zeile mit Häkchen entfernen.
+   - **Fehlerfall:** du bist unsicher, ob eine Zeile zum Chart gehört → nichts entfernen, Screenshot in den Hauptkanal. Solange sie aus bleibt, handelt sie nicht.
 
 ## Schritt 5: Workspace sichern
 
@@ -97,4 +92,4 @@ Im Hauptkanal **„eingeschaltet“** schreiben. Claude prüft per SSH:
 
 ## Quellen
 
-SSH-Lesung vom 22.11.2026: NT8-Logs 17. bis 22.11., NT8-Datenbank (Tabelle `Strategies`), Host- und Guard-Logs je Konto, `maxlab_riskguard.cfg`, Host-JSONs, Code-Prüfsummen Box gegen `engine/ninjascript`. Format wie [[Deploy-Abend 22.10.2026 (Anleitung)]], Regeln je Konto in [[Firm-Regeln je Konto]], Stand der Konten in [[Stand]].
+SSH-Lesung vom 22.11.2026: NT8-Logs 17. bis 22.11., NT8-Datenbank (Tabelle `Strategies`: 9 aktive Instanzen 398380554 bis 562, gespeicherte Eigenschaften bei allen gleich, Days to load 5, Ziel 0; am Chart laut Workspace `1.xml` nur 554 bis 559), Befund und RDP-Anleitung vom 17.11. in [[2026-11-17]], Host- und Guard-Logs je Konto, `maxlab_riskguard.cfg`, Host-JSONs, Code-Prüfsummen Box gegen `engine/ninjascript`. Format wie [[Deploy-Abend 22.10.2026 (Anleitung)]], Regeln je Konto in [[Firm-Regeln je Konto]], Stand der Konten in [[Stand]].
