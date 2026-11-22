@@ -14,8 +14,8 @@ Wird per Import in jede Session geladen (CLAUDE.md). **Bei Widerspruch zu älter
 
 | Konto | Firma | ID | Beine | Kontostand | Hoch | Puffer bis Floor | Stand vom |
 |---|---|---|---|---|---|---|---|
-| E8 | E8 | `E62701907262` | 5 | 49.602 $ | 50.000 $ | 1.602 $ | 2026-11-16 |
-| FN1 | FundedNext | `FNFTFAMAXIMILIANKHO29486` | 5 | 49.602 $ | 50.000 $ | 1.102 $ | 2026-11-16 |
+| E8 | E8 | `E62701907262` | 5 | 49.593 $ | 50.000 $ | 1.593 $ | 2026-11-17 |
+| FN1 | FundedNext | `FNFTFAMAXIMILIANKHO29486` | 5 | 49.609 $ | 50.000 $ | 1.109 $ | 2026-11-17 |
 | FN2 | FundedNext | `FNFTFAMAXIMILIANKHO22193` | 5 | 49.602 $ | 50.000 $ | 1.102 $ | 2026-11-16 |
 
 Lebend = hat eine aktive `maxdd`-Zeile in der RiskGuard-cfg der Box. Puffer nach Guard-Formel, Firmen-Dashboard kann abweichen.
@@ -45,6 +45,8 @@ Alle drei sind **Funded** (seit 10.11.2026), Start je 50.000 $. FN: Floor 48.500
 
 - RiskGuard: Default `EvalProfitTarget` 0 und cfg `target=0` sind im Quellcode umgebaut (11.11.), Deploy erst am Wochenende, wenn alle Konten flat sind, per RDP. Alte gespeicherte Instanzen danach einmal entfernen und neu hinzufügen.
 - NT8: die **Market Data Subscriber Certification** lädt seit 11.11. nicht (NinjaTrader-Server liefert das Dokument nicht, „template is not available for preview“). Seit 16.11. drückt `nt8_autologin.ps1` dort automatisch Cancel (nur bei genau diesem Ladefehler), danach verbindet NT8 normal. Selbst unterschreiben ist offen: AP488.
+- **Alle Strategien seit Di 17.11. 10:22 ET aus** (SSH-Check 22.11.: Parameter und Code stimmen, nur nichts aktiv; NT8 führt doppelte Instanzen für E8- und FN2-Host sowie FN2-Guard). Max schaltet So 22.11. abends per [[Wiedereinschalten 22.11.2026 (Anleitung)]] wieder ein, danach prüft Claude die Logs.
+- E8: Inaktivitäts-Frist laut Guard war der 17.11., Handtrade kam erst am 20.11. (alle drei Konten je 1 MNQ). Im E8-Dashboard prüfen, ob das Konto noch aktiv ist.
 - FN: HFT-Grenze unbekannt (PB3 ohne Stop-Verzögerung), Split im Dashboard nachsehen, FundedNext-Connector neu verbinden (AUTH_EXPIRED).
 - FFN-Host-Leichen auf der Box (Liste oben) löschen, dann `account_sync --pull`. Nur mit Max' OK.
 
