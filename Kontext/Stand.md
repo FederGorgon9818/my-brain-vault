@@ -14,9 +14,9 @@ Wird per Import in jede Session geladen (CLAUDE.md). **Bei Widerspruch zu älter
 
 | Konto | Firma | ID | Beine | Kontostand | Hoch | Puffer bis Floor | Stand vom |
 |---|---|---|---|---|---|---|---|
-| E8 | E8 | `E62701907262` | 5 | 49.593 $ | 50.000 $ | 1.593 $ | 2026-11-17 |
-| FN1 | FundedNext | `FNFTFAMAXIMILIANKHO29486` | 5 | 49.609 $ | 50.000 $ | 1.109 $ | 2026-11-17 |
-| FN2 | FundedNext | `FNFTFAMAXIMILIANKHO22193` | 5 | 49.602 $ | 50.000 $ | 1.102 $ | 2026-11-16 |
+| E8 | E8 | `E62701907262` | 5 | 49.102 $ | 50.000 $ | 1.102 $ | 2026-11-23 |
+| FN1 | FundedNext | `FNFTFAMAXIMILIANKHO29486` | 5 | 49.041 $ | 50.000 $ | 541 $ | 2026-11-23 |
+| FN2 | FundedNext | `FNFTFAMAXIMILIANKHO22193` | 5 | 48.965 $ | 50.000 $ | 465 $ | 2026-11-23 |
 
 Lebend = hat eine aktive `maxdd`-Zeile in der RiskGuard-cfg der Box. Puffer nach Guard-Formel, Firmen-Dashboard kann abweichen.
 
@@ -47,6 +47,8 @@ Alle drei sind **Funded** (seit 10.11.2026), Start je 50.000 $. FN: Floor 48.500
 - NT8: die **Market Data Subscriber Certification** lädt seit 11.11. nicht (NinjaTrader-Server liefert das Dokument nicht, „template is not available for preview“). Seit 16.11. drückt `nt8_autologin.ps1` dort automatisch Cancel (nur bei genau diesem Ladefehler), danach verbindet NT8 normal. Selbst unterschreiben ist offen: AP488.
 - E8: Lücke zwischen den Handtrades (16.11. und 20.11.) im E8-Dashboard gegenprüfen. Der Guard kennt seit 22.11. den 20.11. als Handelstag (nachgetragen), nächste echte Frist 27.11.
 - NT8-Instanzen brauchen **Trading hours `US Equities RTH`** (Hosts zusätzlich Days to load 45) direkt an der Instanz. Ohne Template stürzt NT8 beim Aktivieren ab (`GetTradingHours`, 17. und 22.11.). Ablauf: [[Wiedereinschalten 22.11.2026 (Anleitung)]].
+- **FN1/FN2: Puffer kleiner als Tagesstopp** (Guard 24.11.: FN1 523 $, FN2 447 $, Tagesstopp 600 $). Der Kill-Switch greift damit nicht mehr vor dem Floor. Ein Tag wie der 23.11. (PB3-Stop plus OpenDrive, FN je rund −638 $) würde FN2 busten. OpenDrive allein riskiert bis zum Katastrophen-Stop rund 1.300 bis 1.400 $ je MNQ. Entscheidung Max offen (konto-analyst / Quant-Team).
+- Nach einem Kill-Switch deaktiviert NT8 Host und Guard des Kontos. Am nächsten Handelstag **vor 15:30 Boxzeit** per RDP wieder einschalten (24.11. erst 15:48, nichts verpasst, weil Asia und PB3 kein Signal hatten).
 - FN: HFT-Grenze unbekannt (PB3 ohne Stop-Verzögerung), Split im Dashboard nachsehen, FundedNext-Connector neu verbinden (AUTH_EXPIRED).
 - FFN-Host-Leichen auf der Box (Liste oben) löschen, dann `account_sync --pull`. Nur mit Max' OK.
 
